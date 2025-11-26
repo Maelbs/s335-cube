@@ -71,12 +71,39 @@
 
 
     <main>
-    
-        <div id="image-carousel" class="carousel">
-          <img src="{{ asset('images/1.png') }}" alt="Image 1" class="carousel-image active">
-          <img src="{{ asset('images/2.jpg') }}" alt="Image 2" class="carousel-image">
-          <img src="{{ asset('images/3.jpg') }}" alt="Image 3" class="carousel-image">
-        </div>
+        <section class="intro-carousel" id="intro-carousel">
+            <div id="image-carousel" class="carousel">
+                <img src="{{ asset('images/1.png') }}" alt="Image 1" class="carousel-image active">
+                <img src="{{ asset('images/2.jpg') }}" alt="Image 2" class="carousel-image">
+                <img src="{{ asset('images/3.jpg') }}" alt="Image 3" class="carousel-image">
+            </div>
+        </section>
+
+        <section class="intro-text" id="intro-text">
+            <h1>Bienvenue chez CUBE Bikes France</h1>
+            <h2>Des vélos d’une qualité exceptionnelle taillés pour la performance</h2>
+            <p>Découvrez notre gamme de vélos et accessoires de qualité supérieure. Que vous soyez un cycliste passionné ou un amateur de balades, nous avons le vélo parfait pour vous.</p>
+        </section>
+
+        <section class="Univers" id="Univers">
+            <h2>Nos Univers</h2>
+            <div class="univers-cards">
+                <div class="card">
+                    <img src="{{ asset('images/velo_route.jpg') }}" alt="Vélo de route">
+                    <h3>Vélos de Route</h3>
+                    <p>Performance et légèreté pour les passionnés de vitesse.</p>
+                </div>
+                <div class="card">
+                    <img src="{{ asset('images/velo_vtt.jpg') }}" alt="VTT">
+                    <h3>VTT</h3>
+                    <p>Robustesse et maniabilité pour les terrains accidentés.</p>
+                </div>
+                <div class="card">
+                    <img src="{{ asset('images/velo_electrique.jpg') }}" alt="Vélos Électriques">
+                    <h3>Vélos Électriques</h3>
+                    <p>Assistance électrique pour des trajets sans effort.</p>
+                </div>
+            </div>
     </main>
 
 

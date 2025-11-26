@@ -4,7 +4,11 @@ let currentImageIndex = 0;
 
 const showImage = (index) => {
   carouselImages.forEach((img, i) => {
-    img.classList.toggle('active', i === index);
+    if (i === index) {
+      img.classList.add('active');
+    } else {
+      img.classList.remove('active');
+    }
   });
 };
 
@@ -18,8 +22,8 @@ const showPrevImage = () => {
   showImage(currentImageIndex);
 };
 
-
+// Auto-slide every 4 seconds
 setInterval(showNextImage, 4000);
 
-
+// Initialize the first image
 showImage(currentImageIndex);
