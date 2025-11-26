@@ -15,9 +15,9 @@
                 <div class="logo">
                     <img src="{{ asset('images/cubelogo.png') }}" alt="CUBE Logo">
                 </div>
-                <li><a href="{{ url('/Velo') }}">Vélos</a></li>
-                <li><a href="{{ url('/bikes') }}">Vélos electriques</a></li>
-                <li><a href="{{ url('/contact') }}">Accessoires</a></li>
+                <li><a id="velo" href="{{ url('/Velo') }}">Vélos</a></li>
+                <li><a id="velo_electrique" href="{{ url('/bikes') }}">Vélos electriques</a></li>
+                <li><a id="accessoire" href="{{ url('/contact') }}">Accessoires</a></li>
             </ul>
         </div>
 
@@ -39,21 +39,21 @@
                     
 
                    
-                    <a href="{{ url('/recherche') }}"><svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" viewBox="0 0 20 20">
+                    <a id="recherche" href="{{ url('/recherche') }}"><svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" viewBox="0 0 20 20">
                         <g>
                             <path fill-rule="evenodd" d="M4.828 4.828A5 5 0 1 0 11.9 11.9a5 5 0 0 0-7.07-7.07Zm6.364 6.364a4 4 0 1 1-5.656-5.657a4 4 0 0 1 5.656 5.657Z" clip-rule="evenodd"/>
                             <path d="M11.192 12.627a1 1 0 0 1 1.415-1.414l2.828 2.829a1 1 0 1 1-1.414 1.414l-2.829-2.829Z"/>
                         </g>
                     </svg></a>
                  
-                    <a href="{{ url('/login') }}"><svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" viewBox="0 0 24 24">
+                    <a id="login" href="{{ url('/login') }}"><svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" viewBox="0 0 24 24">
                         <g stroke-width="2">
                             <path stroke-linejoin="round" d="M4 18a4 4 0 0 1 4-4h8a4 4 0 0 1 4 4a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2Z"/>
                             <circle cx="12" cy="7" r="3"/>
                         </g>
                     </svg></a>
              
-                    <a href="{{ url('/panier') }}"><svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" viewBox="0 0 48 48">
+                    <a id="panier" href="{{ url('/panier') }}"><svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" viewBox="0 0 48 48">
                         <g>
                             <path d="M39 32H13L8 12h36l-5 20Z"/>
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="4" d="M3 6h3.5L8 12m0 0l5 20h26l5-20H8Z"/>
@@ -64,13 +64,17 @@
                 </div>
         </div>
         </nav>
-           
-      
     </header>
 
 
-<main>
+    <main>
     
+        <div id="image-carousel" class="carousel">
+          <img src="{{ asset('images/1.png') }}" alt="Image 1" class="carousel-image active">
+          <img src="{{ asset('images/2.jpg') }}" alt="Image 2" class="carousel-image">
+          <img src="{{ asset('images/3.jpg') }}" alt="Image 3" class="carousel-image">
+        </div>
+    </main>
 
 
     <footer>
@@ -78,4 +82,5 @@
     </footer>
 
 </body>
+    <script src="{{ asset('js/caroussel.js') }}" defer></script>
 </html>
