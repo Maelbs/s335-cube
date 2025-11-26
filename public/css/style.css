@@ -1,37 +1,29 @@
-html{
+html {
   scroll-behavior: smooth;
 }
 
-/* General styles */
 body {
   font-family: Arial, sans-serif;
   margin: 0;
- 
   box-sizing: border-box;
   background-image: url('../images/3.jpg');
-
-
-  
+  background-size: cover;
+  background-repeat: no-repeat;
 }
 
-/* Set the entire header text to white and bold */
 header {
-  background-color: #ffffff00;
+  background-color: transparent;
   color: #ffffff;
   font-weight: bold;
   padding: 15px 0;
-  border-bottom: 1px solid #ddd;
-  
+  border-bottom: 1px solid rgba(221, 221, 221, 0.5);
+  transition: all 0.5s ease;
 }
 
-header a {
-  color: #ffffff;
-  font-weight: bold;
-}
-
-header svg {
-  fill: #ffffff;
-  stroke: #ffffff;
+header:hover {
+  background-color: #ffffff;
+  color: #000000;
+  box-shadow: 0 4px 6px rgba(0,0,0,0.1);
 }
 
 nav {
@@ -39,65 +31,57 @@ nav {
   justify-content: space-between;
   align-items: center;
   padding: 0 40px;
-  font-weight: bolder;
-  color: #fff;
 }
 
-/* Logo styles */
+header a {
+  color: #ffffff;
+  text-decoration: none;
+  transition: color 0.3s ease;
+}
+
+header:hover a {
+  color: #000000;
+}
+
+header a:hover {
+  font-weight: 800;
+}
+
 .logo img {
   height: 100px;
-  
-  transition: transform 0.3s;
+  transition: transform 0.3s, filter 0.3s;
+  filter: brightness(0) invert(1);
 }
 
 .logo img:hover {
-  transform: scale(1.5);
+  transform: scale(1.1);
 }
 
-/* Menu category styles */
+header:hover .logo img {
+  filter: brightness(0); 
+}
+
 .menu-category {
   display: flex;
   align-items: center;
-  color: #fff;
-}
-
-
-
-/* Set the logo to white */
-.menu-category .logo img {
-  filter: brightness(0) invert(1);
-  display: flex;
-  align-items: center;
-  margin-right: 50px;
 }
 
 .menu-category ul {
   list-style: none;
   display: flex;
-  margin: 0;
-  margin-left: 50px;
+  margin: 0 0 0 50px;
   padding: 0;
-  color: #fff;
+  align-items: center;
 }
 
 .menu-category ul li {
   margin: 0 20px;
-  margin-top: 40px;
 }
 
 .menu-category ul li a {
-  text-decoration: none;
-  color: #ffffff;
-  
   font-size: 16px;
   position: relative;
-
-  transition: all ease 0.3s;
   font-weight: 300;
-}
-
-.menu-category ul li a:hover {
-  font-weight: 600;
 }
 
 .menu-category ul li a::after {
@@ -106,109 +90,41 @@ nav {
   width: 0;
   height: 2px;
   background: #2fb5d2;
-  transition: width 1s;
-  position: absolute;
-  bottom: -5px;
-  left: 0;
- 
-  
-}
-
-.menu-category ul li a:hover::after {
-  width: 100%;
-}
-
-/* Menu user styles */
-
-.menu-user {
-  display: flex;
-  align-items: center;
-  margin-right: 20px;
-  color: #fff;
-}
-
-.menu-user ul {
-  list-style:inherit;
-  display: flex;
-  margin: 0;
-  margin-bottom: 26px;
-  padding: 0;
-  color: #fff;
-}
-
-.menu-user ul li {
-  margin: 0 15px;
-
-}
-
-.menu-user ul li a {
-  text-decoration: none;
-  color: #000;
-  font-size: 16px;
-  position: relative;
-  transition: color 0.3s;
-}
-
-
-
-.menu-user ul li a::after {
-  content: '';
-  display: block;
-  width: 0;
-  height: 2px;
-  background: cyan;
   transition: width 0.3s;
   position: absolute;
   bottom: -5px;
   left: 0;
 }
 
-.menu-user ul li a:hover::after {
+.menu-category ul li a:hover::after {
   width: 100%;
 }
 
-.icone{
-  display: inline-block;
-  margin-left: 10px;
-  margin-right: 10px;
+.menu-user {
+  display: flex;
+  align-items: center;
 }
 
-.menu-user a {
-  display: inline-block;
-  color: #ffffff;
-  text-decoration: none;
-  margin-top: 10px;
-  vertical-align: center;
-  margin-right: 10px;
+.icone {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  margin-left: 20px;
 }
 
-/* Set icons and 'Choisir un magasin' text to white */
-.menu-user a {
-  color: #ffffff;
-}
-
-.menu-user svg {
-  fill: #ffffff00;
+header svg {
+  fill: transparent;
   stroke: #ffffff;
+  transition: stroke 0.3s ease;
 }
 
-/* Set all icons in the header to white */
-.menu-user img svg {
-  fill: #ffffff00 !important;
-  stroke: #ffffff !important;
-}
-
-.icone svg {
-  fill: #ffffff00 !important;
-  stroke: #ffffff!important;
-
+header:hover svg {
+  stroke: #000000;
 }
 
 #magasin {
-  margin-bottom: 0;
-  margin-right: 10px;
+  margin-right: 15px;
 }
-
 
 footer {
   background-color: #333;
