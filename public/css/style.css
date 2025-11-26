@@ -6,15 +6,32 @@ html{
 body {
   font-family: Arial, sans-serif;
   margin: 0;
-  padding: 0;
+ 
   box-sizing: border-box;
+  background-image: url('../images/3.jpg');
+
+
+  
 }
 
+/* Set the entire header text to white and bold */
 header {
-  background-color: #fff;
-  color: #000;
+  background-color: #ffffff00;
+  color: #ffffff;
+  font-weight: bold;
   padding: 15px 0;
   border-bottom: 1px solid #ddd;
+  
+}
+
+header a {
+  color: #ffffff;
+  font-weight: bold;
+}
+
+header svg {
+  fill: #ffffff;
+  stroke: #ffffff;
 }
 
 nav {
@@ -22,33 +39,55 @@ nav {
   justify-content: space-between;
   align-items: center;
   padding: 0 40px;
+  font-weight: bolder;
+  color: #fff;
 }
 
 /* Logo styles */
 .logo img {
-  height: 70px;
+  height: 100px;
+  
   transition: transform 0.3s;
 }
 
 .logo img:hover {
-  transform: scale(1.1);
+  transform: scale(1.5);
 }
 
 /* Menu category styles */
+.menu-category {
+  display: flex;
+  align-items: center;
+  color: #fff;
+}
+
+
+
+/* Set the logo to white */
+.menu-category .logo img {
+  filter: brightness(0) invert(1);
+  display: flex;
+  align-items: center;
+  margin-right: 50px;
+}
+
 .menu-category ul {
   list-style: none;
   display: flex;
   margin: 0;
+  margin-left: 50px;
   padding: 0;
+  color: #fff;
 }
 
 .menu-category ul li {
   margin: 0 20px;
+  margin-top: 40px;
 }
 
 .menu-category ul li a {
   text-decoration: none;
-  color: #000;
+  color: #ffffff;
   
   font-size: 16px;
   position: relative;
@@ -80,15 +119,26 @@ nav {
 }
 
 /* Menu user styles */
+
+.menu-user {
+  display: flex;
+  align-items: center;
+  margin-right: 20px;
+  color: #fff;
+}
+
 .menu-user ul {
-  list-style: none;
+  list-style:inherit;
   display: flex;
   margin: 0;
+  margin-bottom: 26px;
   padding: 0;
+  color: #fff;
 }
 
 .menu-user ul li {
   margin: 0 15px;
+
 }
 
 .menu-user ul li a {
@@ -125,15 +175,38 @@ nav {
 
 .menu-user a {
   display: inline-block;
-  color: #000;
+  color: #ffffff;
   text-decoration: none;
   margin-top: 10px;
   vertical-align: center;
   margin-right: 10px;
 }
 
-#magasin{
-  margin-bottom: 10px ;
+/* Set icons and 'Choisir un magasin' text to white */
+.menu-user a {
+  color: #ffffff;
+}
+
+.menu-user svg {
+  fill: #ffffff00;
+  stroke: #ffffff;
+}
+
+/* Set all icons in the header to white */
+.menu-user img svg {
+  fill: #ffffff00 !important;
+  stroke: #ffffff !important;
+}
+
+.icone svg {
+  fill: #ffffff00 !important;
+  stroke: #ffffff!important;
+
+}
+
+#magasin {
+  margin-bottom: 0;
+  margin-right: 10px;
 }
 
 

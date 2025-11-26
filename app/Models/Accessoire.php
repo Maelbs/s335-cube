@@ -25,4 +25,18 @@ class Accessoire extends Article
     {
         return $this->belongsTo(Article::class, 'reference', 'reference');
     }
+
+    public function __toString()
+    {
+        return sprintf(
+            "Accessoire [Ref: %s] : %s | Prix: %s € | Stock: %s | Poids: %s kg | Dispo: %s | Cat ID: %s",
+            $this->reference,
+            $this->nom_article,
+            $this->prix,
+            $this->qte_stock,
+            $this->poids,
+            $this->dispo_en_ligne ? 'Oui' : 'Non',
+            $this->id_categorie_accessoire
+        );
+    }
 }
