@@ -1,0 +1,148 @@
+html{
+  scroll-behavior: smooth;
+}
+
+/* General styles */
+body {
+  font-family: Arial, sans-serif;
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+header {
+  background-color: #fff;
+  color: #000;
+  padding: 15px 0;
+  border-bottom: 1px solid #ddd;
+}
+
+nav {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 40px;
+}
+
+/* Logo styles */
+.logo img {
+  height: 70px;
+  transition: transform 0.3s;
+}
+
+.logo img:hover {
+  transform: scale(1.1);
+}
+
+/* Menu category styles */
+.menu-category ul {
+  list-style: none;
+  display: flex;
+  margin: 0;
+  padding: 0;
+}
+
+.menu-category ul li {
+  margin: 0 20px;
+}
+
+.menu-category ul li a {
+  text-decoration: none;
+  color: #000;
+  
+  font-size: 16px;
+  position: relative;
+
+  transition: all ease 0.3s;
+  font-weight: 300;
+}
+
+.menu-category ul li a:hover {
+  font-weight: 600;
+}
+
+.menu-category ul li a::after {
+  content: '';
+  display: block;
+  width: 0;
+  height: 2px;
+  background: #2fb5d2;
+  transition: width 1s;
+  position: absolute;
+  bottom: -5px;
+  left: 0;
+ 
+  
+}
+
+.menu-category ul li a:hover::after {
+  width: 100%;
+}
+
+/* Menu user styles */
+.menu-user ul {
+  list-style: none;
+  display: flex;
+  margin: 0;
+  padding: 0;
+}
+
+.menu-user ul li {
+  margin: 0 15px;
+}
+
+.menu-user ul li a {
+  text-decoration: none;
+  color: #000;
+  font-size: 16px;
+  position: relative;
+  transition: color 0.3s;
+}
+
+
+
+.menu-user ul li a::after {
+  content: '';
+  display: block;
+  width: 0;
+  height: 2px;
+  background: cyan;
+  transition: width 0.3s;
+  position: absolute;
+  bottom: -5px;
+  left: 0;
+}
+
+.menu-user ul li a:hover::after {
+  width: 100%;
+}
+
+.icone{
+  display: inline-block;
+  margin-left: 10px;
+  margin-right: 10px;
+}
+
+.menu-user a {
+  display: inline-block;
+  color: #000;
+  text-decoration: none;
+  margin-top: 10px;
+  vertical-align: center;
+  margin-right: 10px;
+}
+
+#magasin{
+  margin-bottom: 10px ;
+}
+
+
+footer {
+  background-color: #333;
+  color: #fff;
+  text-align: center;
+  padding: 10px 0;
+  position: fixed;
+  bottom: 0;
+  width: 100%;
+}
