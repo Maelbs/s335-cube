@@ -14,13 +14,13 @@ class CategorieVelo extends Model
     protected $primaryKey = 'id_categorie';
 
     protected $fillable = [
-        'CAT_id_categorie',
+        'cat_id_categorie',
         'nom_categorie',
     ];
 
     protected $casts = [
         'id_categorie' => 'integer',
-        'CAT_id_categorie' => 'integer',
+        'cat_id_categorie' => 'integer',
         'nom_categorie' => 'string',
     ];
 
@@ -31,12 +31,12 @@ class CategorieVelo extends Model
 
     public function parent()
     {
-        return $this->belongsTo(CategorieVelo::class, 'CAT_id_categorie');
+        return $this->belongsTo(CategorieVelo::class, 'cat_id_categorie');
     }
 
     public function enfants()
     {
-        return $this->hasMany(CategorieVelo::class, 'CAT_id_categorie');
+        return $this->hasMany(CategorieVelo::class, 'cat_id_categorie');
     }
 
     public function __toString()
@@ -45,7 +45,7 @@ class CategorieVelo extends Model
             "Catégorie Vélo [ID: %s] : Nom: %s, Catégorie Parent ID: %s",
             $this->id_categorie,
             $this->nom_categorie,
-            $this->CAT_id_categorie
+            $this->cat_id_categorie
         );
     }
 }

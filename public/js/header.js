@@ -1,42 +1,81 @@
 document.addEventListener('DOMContentLoaded', () => {
-    const container = document.querySelector('#menu-categories-container');
-    const header = document.querySelector('header');
-    const btnAccessoire = document.querySelector('#btn-accessoire');
+    let container = document.querySelector('#menu-categories-container');
+    let header = document.querySelector('header');
+    
+    let btnAccessoire = document.querySelector('#btn-accessoire');
+    let btnVeloMusculaire = document.querySelector('#btn-velo');
+    let btnVeloElectrique = document.querySelector('#btn-elec');
+
+    let currentActiveMenu = null; 
 
     function clearNextColumns(currentLevel) {
-        const allCols = container.querySelectorAll('.menu-col');
-        
+        let allCols = container.querySelectorAll('.menu-col');
         allCols.forEach(col => {
-            const colLevel = parseInt(col.dataset.level);
+            let colLevel = parseInt(col.dataset.level);
             if (colLevel > currentLevel) {
                 col.remove();
             }
         });
     }
 
-    function loadColumn(level, parentId) {
-        const url = (level === 0) 
-            ? '/api/categories/parents' 
-            : `/api/categories-accessoires/${parentId}/subCategories`;
+    //Pour faire en sorte que quel que soit l'item recup, on puisse acceder au bon parametre
+    function getCategoryData(item) {
+        return {
+            name: item.nom_categorie_accessoire || item.nom_categorie || item.name, 
+            id: item.id_categorie_accessoire || item.id_categorie || item.id
+        };
+    }
+
+    function loadColumn(linkContent, level, parentId) {
+        let url = '';
+        if (linkContent === 'Accessoires') {
+            url = (level === 0) 
+                ? '/api/categories-accessoires/parents' 
+                : `/api/categories-accessoires/${parentId}/subCategories`;
+        } 
+        else if (linkContent === 'Velos') {
+            url = (level === 0) 
+                ? '/api/categories-velos/parents' 
+                : `/api/categories-velos/${parentId}/subCategories`;
+        } 
+        else if (linkContent === 'Electrique') {
+             url = (level === 0) 
+                ? '/api/categories-velos/parents'
+                : `/api/categories-velos/${parentId}/subCategories`;
+        }
+
+        if (!url) return;
 
         fetch(url)
-            .then(res => res.json())
+            .then(res => {
+                if (!res.ok) throw new Error(`Erreur HTTP: ${res.status}`);
+                return res.json();
+            })
             .then(data => {
-                if (!data || data.length === 0) return;
+                if (!data || data.length === 0) 
+                    return;
 
-                const col = document.createElement('div');
+                let col = document.createElement('div');
                 col.className = 'menu-col';
                 col.dataset.level = level;
                 
-                const ul = document.createElement('ul');
+                let ul = document.createElement('ul');
                 col.appendChild(ul);
 
                 data.forEach(item => {
-                    const li = document.createElement('li');
-                    const a = document.createElement('a');
-                    a.textContent = item.nom_categorie_accessoire;
+                    const categoryData = getCategoryData(item);
 
-                    a.href = `/boutique/categorie/${item.id_categorie_accessoire}`; //A changer au cas ou la sang
+                    if (!categoryData.name || !categoryData.id) {
+                        console.warn("Donnée ignorée (format incorrect):", item);
+                        return;
+                    }
+
+                    let li = document.createElement('li');
+                    let a = document.createElement('a');
+                    
+                    a.textContent = categoryData.name;
+                    a.href = `/boutique/categorie/${categoryData.id}`; //Mettre le vrai lien quand on l'aura
+                    
                     li.appendChild(a);
 
                     li.addEventListener('mouseenter', () => {
@@ -45,7 +84,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
                         clearNextColumns(level);
 
-                        loadColumn(level + 1, item.id_categorie_accessoire);
+                        loadColumn(linkContent, level + 1, categoryData.id);
                     });
 
                     ul.appendChild(li);
@@ -53,21 +92,32 @@ document.addEventListener('DOMContentLoaded', () => {
 
                 container.appendChild(col);
             })
-            .catch(err => console.error("Erreur:", err));
+            .catch(err => { console.error("Erreur Fetch:", err); });
+    }
+
+    function openMenu(type) {
+        container.classList.add('active');
+
+        if (currentActiveMenu !== type || container.innerHTML === '') {
+            container.innerHTML = '';
+            currentActiveMenu = type;
+            loadColumn(type, 0, null);
+        }
     }
 
     if (btnAccessoire) {
-        btnAccessoire.addEventListener('mouseenter', () => {
-            container.classList.add('active');
-
-            if (container.innerHTML === '') {
-                loadColumn(0, null);
-            }
-        });
+        btnAccessoire.addEventListener('mouseenter', () => openMenu('Accessoires'));
+    }
+    if (btnVeloMusculaire) {
+        btnVeloMusculaire.addEventListener('mouseenter', () => openMenu('Velos'));
+    }
+    if (btnVeloElectrique) {
+        btnVeloElectrique.addEventListener('mouseenter', () => openMenu('Velos')); 
     }
 
     header.addEventListener('mouseleave', () => {
         container.classList.remove('active');
         container.innerHTML = '';
+        currentActiveMenu = null;
     });
 });
