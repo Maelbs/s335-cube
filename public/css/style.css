@@ -15,6 +15,101 @@ body {
   
 }
 
+/*Elvis*/
+/* =========================================
+   MEGA MENU - CASCADING COLUMNS (3 LEVELS)
+   ========================================= */
+
+header {
+    position: relative;
+    z-index: 1000;
+}
+
+.mega-menu-container {
+    display: flex; /* Active les colonnes côte à côte */
+    position: absolute;
+    top: 100%;
+    left: 0;
+    width: 100%;
+    height: 500px; /* Hauteur fixe nécessaire pour des colonnes propres */
+    background-color: #fff;
+    border-top: 1px solid #e5e5e5;
+    box-shadow: 0 15px 30px rgba(0,0,0,0.1);
+    z-index: 999;
+    
+    /* Animation */
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.3s ease;
+}
+
+.mega-menu-container.active {
+    opacity: 1;
+    visibility: visible;
+}
+
+/* STYLE DES ÉLÉMENTS DE LISTE */
+.menu-col li {
+    position: relative; /* Indispensable pour positionner la barre ::after */
+    padding: 10px 20px;
+    cursor: pointer;
+    font-size: 14px;
+    color: #444;
+    display: block; /* On remet block pour gérer la largeur */
+    transition: color 0.3s ease; /* Transition douce pour la couleur du texte */
+    border-bottom: 1px solid #f5f5f5; /* Séparation très légère */
+}
+
+/* LA BARRE ANIMÉE (::after) */
+.menu-col li::after {
+    content: ''; /* Contenu vide (remplace la flèche) */
+    position: absolute;
+    bottom: 0; /* Collé en bas de l'élément */
+    left: 0;
+    width: 0; /* Largeur de départ : 0% */
+    height: 3px; /* Épaisseur de la barre */
+    background-color: #2fb5d2; /* Bleu CUBE */
+    transition: width 0.3s ease-in-out; /* L'animation fluide */
+}
+
+/* ÉTAT AU SURVOL (HOVER) OU ACTIF */
+.menu-col li:hover, 
+.menu-col li.active {
+    color: #2fb5d2; /* Le texte devient bleu */
+    background-color: #fcfcfc; /* Fond très légèrement grisé */
+    font-weight: 700; /* Le texte devient GRAS */
+}
+
+/* DÉCLENCHEMENT DE L'ANIMATION DE LA BARRE */
+.menu-col li:hover::after, 
+.menu-col li.active::after {
+    width: 100%; /* La barre s'étend sur toute la largeur */
+}
+
+/* LIENS (Pour le dernier niveau cliquable) */
+.menu-col li a {
+    text-decoration: none;
+    color: inherit;
+    display: block;
+    width: 100%;
+    height: 100%;
+}
+
+/* Suppression de l'ancienne flèche si elle traîne encore dans ton CSS */
+.has-children::after {
+    content: none !important;
+}
+
+/* MESSAGE VIDE */
+.empty-msg {
+    padding: 20px;
+    color: #999;
+    font-style: italic;
+    font-size: 13px;
+}
+
+/*Elvis*/
+
 header {
   background-color: transparent;
   color: #ffffff;
