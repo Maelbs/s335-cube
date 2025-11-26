@@ -1,12 +1,14 @@
 html {
   scroll-behavior: smooth;
+  font-family: "Fira Sans", sans-serif;
 }
+
 
 body {
   font-family: Arial, sans-serif;
   margin: 0;
   box-sizing: border-box;
-
+  font-family: "Fira Sans", sans-serif;
  
   transition: all ease 0.3s;
   background-repeat: no-repeat;
@@ -50,6 +52,17 @@ header a:hover {
   font-weight: 800;
 }
 
+h1{
+  font-weight: 900;
+  font-size: 60px;
+  text-align: center;
+}
+
+h2{
+  font-weight: 800;
+  font-size: 40px;
+  text-align: center;
+}
 .logo img {
   height: 100px;
   margin-right: 40px;
@@ -194,7 +207,105 @@ footer {
 .intro-text {
   position: relative;
   z-index: 2;
-  margin-top: 1050px; /* Adjust this value to create space below the carousel */
+  margin-top: 850px; /* Adjust this value to create space below the carousel */
   background-color: white; /* Optional: Add a background to separate it visually */
   padding: 20px;
+  text-align: center;
 }
+
+
+
+
+.Univers {
+  padding: 60px 20px;
+  text-align: center;
+  background-color: #f9f9f9;
+  margin-bottom: 40px ;
+}
+/* Added styles to align text and images side by side in the Univers section */
+
+.univers-cards {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  justify-content: center;
+}
+
+.card {
+  display: flex;
+  flex: 1 1 calc(50% - 20px); /* Adjust width to 50% */
+  max-width: 600px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.card-content {
+  display: flex;
+  width: 100%;
+}
+
+.card:hover {
+  box-shadow: 0 8px 12px rgba(0, 0, 0, 0.2);
+  transform: translateY(-5px);
+  transition: all 0.3s ease;
+}
+.card-text {
+  flex: 1;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  border: 10px solid #f9f9f9;
+}
+
+
+.card-text p {
+  flex: 1;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+
+
+.card-image {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #f9f9f9;
+}
+
+.card-image img {
+  max-width: 100%;
+  
+  height: auto;
+  object-fit: cover;
+}
+
+
+
+button, .btn {
+  background-color: #2fb5d2; /* Primary color */
+  width: fit-content;
+  color: #ffffff; /* White text */
+  border: none;
+  border-radius: 5px;
+  padding: 10px 20px;
+  font-size: 16px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+button:hover, .btn:hover {
+  background-color: #1a8ca8; /* Darker shade for hover */
+  transform: translateY(-2px); /* Lift effect */
+  box-shadow: 0 6px 8px rgba(0, 0, 0, 0.15);
+}
+
+
