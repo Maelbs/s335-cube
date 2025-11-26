@@ -11,16 +11,14 @@
     <header>
         <nav>
         <div class="menu-category">
-            <ul>
-                <div class="logo">
-                    <img src="{{ asset('images/cubelogo.png') }}" alt="CUBE Logo">
-                </div>
-                <li><a id="velo" href="{{ url('/Velo') }}">Vélos</a></li>
-                <li><a id="velo_electrique" href="{{ url('/bikes') }}">Vélos electriques</a></li>
-                <li><a id="accessoire" href="{{ url('/contact') }}">Accessoires</a></li>
-            </ul>
+            <nav>
+                <ul>
+                    <li><a id="btn-velo" href="#">Vélos</a></li>
+                    <li><a id="btn-elec" href="#">Vélos électriques</a></li>
+                    <li><a id="btn-accessoire" href="#">Accessoires</a></li>
+                </ul>
+            </nav>
         </div>
-
         <div class="menu-user">
             
                 <a id="magasin" href="{{ url('/login') }}">Choisir un magasin</a></li>
@@ -64,6 +62,11 @@
                 </div>
         </div>
         </nav>
+        <div id="mega-menu">
+            <div class="contenu-centre">
+                <ul id="liste-categories"></ul>
+            </div>
+        </div>
     </header>
 
 

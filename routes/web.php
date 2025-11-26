@@ -5,7 +5,6 @@ use App\Http\Controllers\CategorieAccessoireController;
 
 
 
-
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -22,3 +21,5 @@ Route::get('/', function () {
 });
 
 Route::get('/api/categories-accessoires/{id}/subCategories', [CategorieAccessoireController::class, 'getSubCategories']);
+
+Route::get('/api/categories/parents', [CategorieAccessoireController::class, 'getParents']);
