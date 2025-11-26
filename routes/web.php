@@ -1,6 +1,10 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\CategorieAccessoireController;
+
+
+
 
 /*
 |--------------------------------------------------------------------------
@@ -16,3 +20,5 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', function () {
     return view('accueil');
 });
+
+Route::get('/api/categories-accessoires/{id}/subCategories', [CategorieAccessoireController::class, 'getSubCategories']);

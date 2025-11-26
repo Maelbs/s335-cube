@@ -110,4 +110,5 @@
 
 </body>
     <script src="{{ asset('js/caroussel.js') }}" defer></script>
+    <script src="{{ asset('js/header.js') }}" defer></script>
 </html>
