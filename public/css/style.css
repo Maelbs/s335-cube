@@ -31,7 +31,7 @@ nav {
 }
 
 .logo img:hover {
-  transform: scale(1.1);
+  transform: scale(1.5);
 }
 
 /* Menu category styles */
@@ -44,6 +44,7 @@ nav {
 
 .menu-category ul li {
   margin: 0 20px;
+  margin-top: 25px;
 }
 
 .menu-category ul li a {
@@ -67,7 +68,7 @@ nav {
   width: 0;
   height: 2px;
   background: #2fb5d2;
-  transition: width 1s;
+  transition: width 0.5s;
   position: absolute;
   bottom: -5px;
   left: 0;
@@ -80,10 +81,16 @@ nav {
 }
 
 /* Menu user styles */
+
+.menu-user {
+  margin-right: 20px;
+}
+
 .menu-user ul {
-  list-style: none;
+  list-style:inherit;
   display: flex;
   margin: 0;
+  margin-bottom: 26px;
   padding: 0;
 }
 
