@@ -32,18 +32,17 @@ ul {
    2. HEADER TRANSPARENT (Style CUBE)
    ========================================= */
 header {
-    position: absolute; /* Superposition sur l'image */
+    position: absolute; /* Ou 'fixed' si tu veux un header qui reste tout le temps */
     top: 0;
     left: 0;
     width: 100%;
-    height: 80px;
-    z-index: 1000;
-    background-color: transparent;
+    height: 100px;
+    z-index: 10000; /* Ton Z-index est bon */
+    background-color: rgba(0, 0, 0, 0.3);
     border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+    backdrop-filter: blur(1px);
     transition: all 0.5s ease;
     color: #fff;
-    background-color: rgba(0, 0, 0, 0.3);
-    backdrop-filter: blur(1px);
 }
 
 /* Le header devient blanc au survol ou si un menu est ouvert */
@@ -60,7 +59,7 @@ nav {
     justify-content: space-between;
     align-items: center;
     height: 100%;
-    padding: 0 40px;
+    padding: 0 30px;
     max-width: 1800px;
     margin: 0 auto;
 }
@@ -102,7 +101,7 @@ header:hover .logo img {
     height: 100%;
     display: flex;
     align-items: center;
-    position: static; /* CRUCIAL pour le Mega Menu */
+    position: static; /* TRES IMPORTANT : Permet au menu absolute de se référer au Header, pas au bouton */
 }
 
 .link_category {
@@ -170,39 +169,41 @@ header:hover .icone {
     stroke-width: 2;
 }
 
-/* --- MEGA MENU : TRANSITION FLUIDE ET CORRIGÉE --- */
 .mega-menu-dropdown {
-  /* Mise en page de base */
+  /* 1. POSITIONNEMENT */
   display: block; 
-  position: fixed;
-  top: 80px; /* Départ un peu plus bas pour l'effet de montée */
+  position: absolute; /* CORRECTION : Absolute pour scroller avec le header */
+  top: 100px; /* Pile sous le header (100% de la hauteur du header) */
   left: 0;
   width: 100%;
+  
+  /* 2. STYLE */
   background: #fff;
   border-top: 1px solid #e5e5e5;
   box-shadow: 0 15px 40px rgba(0,0,0,0.1);
-  z-index: 9999;
+  z-index: 999; /* En dessous du header (10000) */
   color: #333;
 
-  /* ÉTAT INVISIBLE (Par défaut) */
+  /* 3. ÉTAT INVISIBLE (DÉPART) */
   opacity: 0;
-  visibility: hidden; /* Cache visuellement */
-  pointer-events: none; /* IMPORTANT : La souris passe au travers, pas de détection */
+  visibility: hidden;
+  pointer-events: none;
   
-  /* GESTION DE LA TRANSITION */
-  /* Quand on quitte : on attend que l'opacité finisse (0.3s) avant de cacher la visibility */
-  transition: opacity 0.3s ease, top 0.3s ease, visibility 0.3s linear;
+  /* On décale le menu légèrement vers le HAUT (-10px) pour qu'il descende à l'apparition */
+  transform: translateY(-2px); 
+  
+  /* 4. TRANSITION */
+  transition: opacity 0.3s ease, transform 0.3s ease, visibility 0.3s linear;
 }
 
-/* ÉTAT VISIBLE (Au survol) */
+/* ÉTAT VISIBLE (AU SURVOL) */
 .nav-item:hover .mega-menu-dropdown {
   opacity: 1;
   visibility: visible;
-  pointer-events: auto; /* IMPORTANT : On réactive la souris */
-  top: 80px; /* Revient à sa place normale */
+  pointer-events: auto;
   
-  /* Quand on entre : visibility change tout de suite (0s delay) */
-  transition: opacity 0.3s ease, top 0.3s ease, visibility 0s linear;
+  /* Le menu revient à sa place normale (top: 100px + 0 translation) */
+  transform: translateY(0); 
 }
 
 /* Applique ceci aux 3 colonnes pour être sûr */

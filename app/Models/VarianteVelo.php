@@ -8,7 +8,7 @@ class VarianteVelo extends Article
 {
     use HasFactory;
 
-    protected $table = 'Variante_velo';
+    protected $table = 'variante_velo';
     protected $primaryKey = 'reference';
     public $timestamps = false;
     public $incrementing = false;
@@ -35,7 +35,6 @@ class VarianteVelo extends Article
         'poids' => 'float',
         'dispo_magasin' => 'boolean',
     ];
-
 
     public function batterie()
     {

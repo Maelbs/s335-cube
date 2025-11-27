@@ -3,6 +3,7 @@
 use App\Http\Controllers\CategorieVeloController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\CategorieAccessoireController;
+use App\Http\Controllers\VarianteVeloController;
 
 
 
@@ -24,3 +25,6 @@ Route::get('/api/categories-velos/{id}/subCategories', [CategorieVeloController:
 
 Route::get('/api/categories-accessoires/parents', [CategorieAccessoireController::class, 'getParents']);
 Route::get('/api/categories-velos/parents', [CategorieVeloController::class, 'getParents']);
+
+// routes/web.php
+Route::get('/velo/{reference}', [VarianteVeloController::class, 'show']);
