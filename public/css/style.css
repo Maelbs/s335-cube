@@ -15,7 +15,7 @@ html {
 body {
     background-color: #fff;
     color: #333;
-    overflow-x: hidden; /* Évite le scroll horizontal accidentel */
+    overflow-x: hidden;
 }
 
 a {
@@ -32,20 +32,19 @@ ul {
    2. HEADER TRANSPARENT (Style CUBE)
    ========================================= */
 header {
-    /* CORRECTION MAJEURE ICI : Absolute pour passer au-dessus de l'image */
-    position: absolute; 
+    position: absolute; /* Superposition sur l'image */
     top: 0;
     left: 0;
     width: 100%;
     height: 80px;
     z-index: 1000;
-    background-color: transparent; /* Transparent par défaut */
-    border-bottom: 1px solid rgba(255, 255, 255, 0.2); /* Ligne subtile blanche */
+    background-color: transparent;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.2);
     transition: all 0.5s ease;
-    color: #fff; /* Texte blanc par défaut sur l'image */
+    color: #fff;
 }
 
-/* Au survol du header (ou quand le menu est ouvert), il devient blanc */
+/* Le header devient blanc au survol ou si un menu est ouvert */
 header:hover, 
 header.menu-open {
     background-color: #fff;
@@ -60,7 +59,7 @@ nav {
     align-items: center;
     height: 100%;
     padding: 0 40px;
-    max-width: 1800px; /* Limite la largeur sur les écrans géants */
+    max-width: 1800px;
     margin: 0 auto;
 }
 
@@ -82,27 +81,26 @@ nav {
 .logo img {
     height: 100%;
     width: auto;
-    /* Astuce : Le logo devient noir ou blanc selon le fond */
     filter: brightness(0) invert(1); /* Blanc par défaut */
     transition: filter 0.3s;
 }
 
 header:hover .logo img {
-    filter: brightness(0); /* Devient noir au survol du header */
+    filter: brightness(0); /* Noir au survol */
 }
 
-/* --- LIENS DE NAVIGATION --- */
+/* --- NAVIGATION --- */
 .nav-list {
     display: flex;
     height: 100%;
     align-items: center;
-    gap: 0; /* On gère l'espace avec le padding des liens */
 }
 
 .nav-item {
     height: 100%;
     display: flex;
     align-items: center;
+    position: static; /* CRUCIAL pour le Mega Menu */
 }
 
 .link_category {
@@ -110,13 +108,13 @@ header:hover .logo img {
     height: 100%;
     display: flex;
     align-items: center;
-    font-size: 1.05rem;
-    font-weight: 700;
-    font-style: italic;
+    font-size: 15px;
+    font-weight: 800;
     text-transform: uppercase;
     letter-spacing: 0.5px;
     position: relative;
     color: inherit;
+    cursor: pointer;
 }
 
 /* Ligne bleue au survol */
@@ -127,7 +125,7 @@ header:hover .logo img {
     left: 0;
     width: 0;
     height: 4px;
-    background-color: #00b0f0; /* Bleu CUBE */
+    background-color: #00b0f0;
     transition: width 0.3s ease;
 }
 
@@ -135,7 +133,7 @@ header:hover .logo img {
     width: 100%;
 }
 
-/* --- ICONES UTILISATEUR (Droite) --- */
+/* --- USER & ICONES --- */
 .menu-user {
     display: flex;
     align-items: center;
@@ -155,38 +153,35 @@ header:hover .logo img {
     gap: 20px;
     align-items: center;
     padding-left: 20px;
+    border-left: 1px solid rgba(255,255,255,0.3);
 }
 
 header:hover .icone {
-    
+    border-left: 1px solid #eee;
 }
 
-/* Gestion SVG couleur */
 .menu-user svg {
     fill: none;
-    stroke: currentColor; /* Prend la couleur du texte (blanc ou noir) */
+    stroke: currentColor;
     stroke-width: 2;
-    transition: stroke 0.3s;
 }
 
 /* =========================================
-   3. MEGA MENU (Layout 3 colonnes)
+   3. MEGA MENU (VERSION 3 COLONNES)
    ========================================= */
 .mega-menu-dropdown {
     display: none;
-    position: fixed; /* Fixe pour prendre tout l'écran */
-    top: 80px; /* Hauteur du header */
+    position: fixed;
+    top: 80px;
     left: 0;
     width: 100%;
     background: #fff;
     border-top: 1px solid #e5e5e5;
     box-shadow: 0 15px 40px rgba(0,0,0,0.1);
     z-index: 9999;
-    color: #333; /* Force le texte en noir dans le menu */
-    transition: all ease 0.5s;
+    color: #333;
 }
 
-/* Afficher le menu au survol */
 .nav-item:hover .mega-menu-dropdown {
     display: block;
 }
@@ -195,11 +190,11 @@ header:hover .icone {
     display: flex;
     max-width: 1400px;
     margin: 0 auto;
-    height: 550px; /* Hauteur confortable */
+    height: 550px;
     background: #fff;
 }
 
-/* COLONNE 1 : Racines (Fond Gris) */
+/* COLONNE 1 : Racines */
 .col-roots {
     width: 260px;
     background-color: #f7f7f7;
@@ -208,7 +203,7 @@ header:hover .icone {
     overflow-y: auto;
 }
 
-/* COLONNE 2 : Sous-Catégories (Fond Blanc) */
+/* COLONNE 2 : Sous-Catégories */
 .col-subs-wrapper {
     width: 260px;
     background-color: #fff;
@@ -221,7 +216,7 @@ header:hover .icone {
     height: 100%;
 }
 
-/* COLONNE 3 : Modèles (Fond Blanc, Large) */
+/* COLONNE 3 : Modèles */
 .col-models-wrapper {
     flex: 1;
     background-color: #fff;
@@ -229,7 +224,7 @@ header:hover .icone {
     overflow-y: auto;
 }
 
-/* ITEMS DES MENUS */
+/* ITEMS DU MENU */
 .menu-item {
     padding: 12px 30px;
     cursor: pointer;
@@ -249,7 +244,6 @@ header:hover .icone {
     color: #ccc;
 }
 
-/* Hover & Active états */
 .menu-item:hover, 
 .menu-item.active {
     color: #00b0f0;
@@ -257,11 +251,11 @@ header:hover .icone {
 }
 
 .menu-item.active {
-    border-left: 4px solid #00b0f0; /* Marqueur bleu */
-    padding-left: 26px; /* Compense la bordure */
+    border-left: 4px solid #00b0f0;
+    padding-left: 26px;
 }
 
-/* Style spécifique pour les sous-catégories (Italique comme CUBE) */
+/* Style Sous-Catégories (Italique) */
 .col-subs-wrapper .menu-item {
     font-weight: 700;
     font-style: italic;
@@ -272,7 +266,7 @@ header:hover .icone {
     color: #00b0f0;
 }
 
-/* Titre dans la zone Modèles */
+/* Modèles Grid */
 .col-models-wrapper h3 {
     font-size: 24px;
     font-weight: 900;
@@ -283,7 +277,6 @@ header:hover .icone {
     display: inline-block;
 }
 
-/* GRILLE DES MODÈLES */
 .model-grid {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
@@ -309,12 +302,12 @@ header:hover .icone {
 .d-block { display: block !important; }
 
 /* =========================================
-   4. CAROUSEL & HERO (Derrière le header)
+   4. CAROUSEL & HERO
    ========================================= */
 .intro-carousel {
     position: relative;
     width: 100%;
-    height: 100vh; /* Plein écran */
+    height: 100vh;
     overflow: hidden;
 }
 
@@ -324,7 +317,7 @@ header:hover .icone {
     left: 0;
     width: 100%;
     height: 100%;
-    z-index: 0; /* Derrière tout le reste */
+    z-index: 0;
 }
 
 .carousel-image {
@@ -341,7 +334,7 @@ header:hover .icone {
 }
 
 /* =========================================
-   5. CONTENU PRINCIPAL (Cartes, etc.)
+   5. CONTENU PRINCIPAL & CARTES
    ========================================= */
 .intro-text {
     position: relative;
@@ -375,11 +368,10 @@ header:hover .icone {
 .card {
     background: #fff;
     flex: 1;
-    border-radius: 0; /* CUBE est très carré */
-    box-shadow: 0 5px 15px rgba(0,0,0,0.05);
-    transition: transform 0.3s;
     display: flex;
     flex-direction: column;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+    transition: transform 0.3s;
 }
 
 .card:hover {
@@ -404,23 +396,31 @@ header:hover .icone {
     margin-bottom: 15px;
 }
 
-.btn {
+/* =========================================
+   6. BOUTONS
+   ========================================= */
+button, .btn {
     display: inline-block;
-    margin-top: 20px;
-    padding: 12px 30px;
     background-color: #00b0f0;
     color: #fff;
+    border: none;
+    border-radius: 2px;
+    padding: 12px 30px;
+    font-size: 14px;
     font-weight: 700;
     text-transform: uppercase;
-    font-size: 14px;
-    border-radius: 2px;
+    cursor: pointer;
+    transition: all 0.3s ease;
 }
 
-.btn:hover {
+button:hover, .btn:hover {
     background-color: #008cb0;
+    transform: translateY(-2px);
 }
 
-/* Footer simple */
+/* =========================================
+   7. FOOTER
+   ========================================= */
 footer {
     background: #111;
     color: #fff;
@@ -430,3 +430,98 @@ footer {
     text-transform: uppercase;
     letter-spacing: 1px;
 }
+
+/* =========================================
+   8. ACCESSOIRES
+   ========================================= */
+.accessoires {
+    padding: 60px 20px;
+    background-color: #fff;
+    text-align: center;
+}
+
+.accessoires h2 {
+    margin-bottom: 40px;
+    font-size: 32px;
+    text-transform: uppercase;
+}
+
+/* =========================================
+   9. COOKIE BANNER
+   ========================================= */
+.cookie-banner {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(3px);
+    z-index: 10000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+}
+
+.cookie-banner.hidden {
+    opacity: 0;
+    pointer-events: none;
+}
+
+.cookie-content {
+    background: white;
+    border-radius: 8px;
+    max-width: 1000px;
+    width: 90%;
+    display: inline-flex;
+    overflow: hidden;
+    box-shadow: 0 10px 60px rgba(0, 0, 0, 0.3);
+    border: 1px solid #006dd4;
+}
+
+.cookie-text-section {
+    padding: 50px 45px;
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+}
+
+.cookie-buttons {
+    margin-top: 20px;
+    display: flex;
+    gap: 15px;
+}
+
+.btn-learn-more {
+    background: transparent;
+    color: #333;
+    padding: 0;
+    text-decoration: underline;
+    font-style: italic;
+}
+
+.btn-accept {
+    background: #00BCD4;
+    color: white;
+    margin-left: auto;
+}
+
+/* Code Modal Cookies réduit pour la lisibilité, mais fonctionnel */
+.cookie-modal {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 10001;
+    display: none;
+    align-items: center;
+    justify-content: center;
+}
+.cookie-modal.active { display: flex; }
+.cookie-modal-content {
+    background: white;
+    max-width: 900px;
+    width: 90%;
+    max-height: 85vh;
+    overflow-y: auto;
+    padding: 20px;
+}
+.cookie-modal-header { display: flex; justify-content: space-between; margin-bottom: 20px;}
+.cookie-modal-footer { display: flex; gap: 10px; justify-content: flex-end; margin-top: 20px;}

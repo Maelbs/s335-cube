@@ -19,6 +19,11 @@ class Caracteristique extends Model
         'nom_caracteristique',
     ];
 
+    public function articles()
+    {
+        return $this->belongsToMany(Article::class, 'a_caracteristique', 'id_caracteristique', 'reference')
+                    ->withPivot('valeur_caracteritique');
+    }
    
     public function typeCaracteristique(): BelongsTo
     {

@@ -15,15 +15,77 @@ class Article extends Model
     public $incrementing = false;
     protected $keyType = 'string';
 
-    protected $fillable = ['reference', 'nom_article', 'prix', 'qte_stock', 'dispo_en_ligne', 'poids'];
+    protected $fillable = [
+        'reference', 
+        'nom_article', 
+        'prix', 
+        'qte_stock', 
+        'dispo_en_ligne', 
+        'poids'
+    ];
 
-    public function categorie()
+    protected $casts = [
+        'dispo_en_ligne' => 'boolean',
+        'prix' => 'decimal:2', 
+        'poids' => 'decimal:1',
+    ];
+
+    public function photos()
     {
-        return $this->belongsTo(CategorieAccessoire::class, 'id_categorie_accessoire', 'id_categorie_accessoire');
+        return $this->hasMany(PhotoArticle::class, 'reference', 'reference');
     }
 
-    public function parent()
+    public function accessoire()
     {
-        return $this->belongsTo(Article::class, 'reference', 'reference');
+        return $this->hasOne(Accessoire::class, 'reference', 'reference');
+    }
+
+    public function varianteVelo()
+    {
+        return $this->hasOne(VarianteVelo::class, 'reference', 'reference');
+    }
+    
+    public function similaires()
+    {
+        return $this->hasMany(ArticleSimilaire::class, 'article_reference', 'reference');
+    }
+
+    public function getPhotoPrincipaleAttribute()
+    {
+        if ($this->photos->isEmpty()) {
+            return 'https://placehold.co/300x200?text=Pas+d+image';
+        }
+
+        $photoPrincipale = null;
+        foreach ($this->photos as $photo) {
+            if ($photo->est_principale) {
+                $photoPrincipale = $photo;
+                break;
+            }
+        }
+
+        if ($photoPrincipale !== null) {
+            return $photoPrincipale->url_photo;
+        } else {
+            return $this->photos->first()->url_photo;
+        }
+    }
+
+    public function __toString()
+    {
+        $dispo = 'Non';
+
+        if ($this->dispo_en_ligne) {
+            $dispo = 'Oui';
+        }
+
+        return sprintf(
+            "Article [Ref: %s] : %s | Prix: %s € | Stock: %s | Dispo: %s",
+            $this->reference,
+            $this->nom_article,
+            $this->prix,
+            $this->qte_stock,
+            $dispo
+        );
     }
 }
