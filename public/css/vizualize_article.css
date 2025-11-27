@@ -297,3 +297,89 @@
     .sidebar-column { width: 100%; position: static; }
     .left-column-wrapper { min-width: auto; }
 }
+
+/* --- SECTION GÉOMÉTRIE --- */
+.geo-section {
+    margin-top: 40px;
+    margin-bottom: 40px;
+    font-family: "Fira Sans", sans-serif; /* Ta police actuelle */
+    color: #333;
+}
+
+/* Le Titre + Bouton */
+.geo-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    padding-bottom: 10px;
+}
+
+.geo-header h2 {
+    font-size: 24px;
+    font-weight: 800; /* Très gras */
+    font-style: italic; /* Italique comme sur l'image */
+    text-transform: uppercase;
+    margin: 0;
+}
+
+/* Le Tableau */
+.table-responsive {
+    overflow-x: auto; /* Scroll sur mobile */
+}
+
+.geo-table {
+    width: 100%;
+    border-collapse: collapse;
+    border-spacing: 0;
+    font-size: 14px;
+}
+
+/* Ligne d'en-tête (Tailles) */
+.geo-table thead tr {
+    /* Pas de fond sur la tr elle-même, on le met sur les cellules */
+}
+
+.geo-table thead th {
+    padding: 15px 10px;
+    background-color: #f7f7f7; /* Le fond GRIS CLAIR */
+    font-weight: 800;
+    font-style: italic;
+    text-align: center;
+    min-width: 100px;
+}
+
+/* La première case en haut à gauche doit être transparente/blanche */
+.geo-table thead th:first-child {
+    background-color: transparent; 
+    min-width: 200px;
+}
+
+/* Corps du tableau */
+.geo-table tbody td {
+    padding: 12px 10px;
+    border: none; /* Pas de bordures visibles */
+}
+
+/* Première colonne (Noms des caractéristiques) */
+.geo-table tbody td:first-child {
+    text-align: left;
+    font-weight: 800; /* Gras */
+    text-transform: uppercase; /* Majuscules */
+    padding-left: 0;
+}
+
+/* Les autres colonnes (Chiffres) */
+.geo-table tbody td:not(:first-child) {
+    text-align: center;
+    color: #333;
+}
+
+.geo-table tbody tr td {
+    transition: all 0.1s ease;
+}
+
+/* Petit effet au survol de la ligne */
+.geo-table tbody tr:hover td {
+    background-color: #fafafa;
+}

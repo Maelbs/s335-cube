@@ -40,21 +40,55 @@
                         </div>
                     @endforeach
                 </div>
-                <div class="specs-column mt-10">
-                    <div class="specs-header-row">
+                <div class="geo-section">
+                    <div class="geo-header">
                         <h2>GÉOMÉTRIE</h2>
-                        </div>
+                    </div>
 
-                    <div class="specs-content">
-                        <table>
+                    <div class="table-responsive">
+                        <table class="geo-table">
                             <thead>
                                 <tr>
                                     <th></th>
-                                    @foreach ($velo->varianteVelo->modele->geometries as $geometrie)
-                                        <th>{{ $geometrie->nom_geometrie }}</th>
+                                    @php 
+                                        $tailles = $velo->varianteVelo->modele->tailles; 
+                                    @endphp
+
+                                    @foreach ($tailles as $taille)
+                                        <th>
+                                            {{ $taille->taille }} 
+                                            <span style="font-size: 0.9em; font-weight: 600;">
+                                                ({{ $taille->taille_min }}-{{ $taille->taille_max }})
+                                            </span>
+                                        </th>
                                     @endforeach
                                 </tr>
                             </thead>
+
+                            <tbody>
+                                @php
+                                    $geometrieNonTriee = $velo->varianteVelo->modele->geometries;
+                                    $geometrieTRiee = $geometrieNonTriee->groupBy('nom_geometrie');
+                                @endphp
+
+                                @foreach ($geometrieTRiee as $nomGeometrie => $listeDeValeurs)
+                                    <tr>
+                                        <td>{{ $nomGeometrie }}</td>
+
+                                        @foreach ($tailles as $taille)
+                                            @php
+                                                $geoMatch = $listeDeValeurs->first(function($geo) use ($taille) {
+                                                    return $geo->pivot->id_taille == $taille->id_taille;
+                                                });
+                                            @endphp
+
+                                            <td>
+                                                {{ $geoMatch ? $geoMatch->pivot->valeur_geometrie : '-' }}
+                                            </td>
+                                        @endforeach
+                                    </tr>
+                                @endforeach
+                            </tbody>
                         </table>
                     </div>
                 </div>
@@ -63,7 +97,7 @@
         <div class="sidebar-column">
             <div class="badges">
                 <span class="badge-new">NOUVEAU</span>
-                <span class="badge-season">2025</span>
+                <span class="badge-season">{{ $velo->varianteVelo->modele->millesime_modele}}</span>
             </div>
 
             <h1 class="product-title">{{ $velo->nom_article }}</h1>
@@ -81,7 +115,7 @@
             </div>
 
             <div class="price-section">
-                <span class="price">899,00 € TTC</span>
+                <span class="price">{{ $velo->varianteVelo->prix }} € TTC</span>
             </div>
 
             <button class="btn-add-cart">AJOUTER AU PANIER</button>
