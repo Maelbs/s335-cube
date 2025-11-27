@@ -138,7 +138,27 @@
 
         <section class="accessoires" id="accessoires">
             <h2>Accessoires indispensables pour votre vélo</h2>
-           
+             
+            <div class="accessoires-cards">
+                <div class="accessoire-card">
+                    <div class="accessoire-image" style="background-image: url('{{ asset('images/selle.jpg') }}');">
+                        <h3>Selle</h3>
+                    </div>
+                    <a href="{{ url('/accessoires') }}" class="btn">Voir les selles</a>
+                </div>
+                <div class="accessoire-card">
+                    <div class="accessoire-image" style="background-image: url('{{ asset('images/roue.jpg') }}');">
+                        <h3>Roue</h3>
+                    </div>
+                    <a href="{{ url('/accessoires') }}" class="btn">Voir les roues</a>
+                </div>
+                <div class="accessoire-card">
+                    <div class="accessoire-image" style="background-image: url('{{ asset('images/eclairage.jpg') }}');">
+                        <h3>Éclairages</h3>
+                    </div>
+                    <a href="{{ url('/accessoires') }}" class="btn">Voir les éclairages</a>
+                </div>
+            </div>
 
         </section>
     
