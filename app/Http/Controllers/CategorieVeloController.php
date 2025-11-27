@@ -7,15 +7,28 @@ use App\Models\CategorieVelo;
 
 class CategorieVeloController extends Controller
 {
-    public function getParents()
+    public function index()
     {
-        $parents = CategorieVelo::whereNull('cat_id_categorie')->get();
-        return response()->json($parents);
+        $menuVelo = $this->getCategoriesByBikeType('musculaire');
+        $menuElec = $this->getCategoriesByBikeType('electrique');
+
+        return view('accueil', compact('menuVelo', 'menuElec'));
     }
 
-    public function getSubCategories($parentId)
+    private function getCategoriesByBikeType($type)
     {
-        $enfants = CategorieVelo::where('cat_id_categorie', $parentId)->get();
-        return response()->json($enfants);
+        return CategorieVelo::whereNull('cat_id_categorie')
+            ->whereHas('enfants.modeles', function ($query) use ($type) {
+                $query->where('type_velo', $type);
+            })
+            ->with(['enfants' => function ($query) use ($type) {
+                $query->whereHas('modeles', function ($q) use ($type) {
+                    $q->where('type_velo', $type);
+                })
+                ->with(['modeles' => function ($q) use ($type) {
+                    $q->where('type_velo', $type);
+                }]);
+            }])
+            ->get();
     }
 }

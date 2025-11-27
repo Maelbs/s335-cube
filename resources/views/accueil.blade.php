@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="fr">
 <head>
     <meta charset="UTF-8">
     <link rel="stylesheet" href="{{ asset('css/style.css') }}">
@@ -8,19 +8,134 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Fira+Sans:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
     <title>CUBE Bikes France</title>
-    
 </head>
 <body>
     <header>
         <nav>
             <div class="menu-category">
                 <a href="{{ url('/') }}" class="logo">
-                    <img src="{{ asset('images/cubelogo.png') }}" alt="Logo CUBE Bikes">
+                    <img src="{{ asset('images/cubelogo.png') }}" alt="Logo CUBE Bikes" style="max-height: 100px;">
                 </a>
-                <ul>
-                    <li><a id="btn-velo" href="#" class="link_category">VÉLOS</a></li>
-                    <li><a id="btn-elec" href="#" class="link_category">VÉLOS ÉLECRIQUES</a></li>
-                    <li><a id="btn-accessoire" href="#" class="link_category">ACCESSOIRES</a></li>
+                
+                <ul class="nav-list">
+                    
+                    <li class="nav-item">
+                        <a id="btn-velo" href="#" class="link_category">VÉLOS</a>
+                        
+                        <div class="mega-menu-dropdown">
+                            <div class="mega-menu-wrapper" id="wrapper-velo">
+                                
+                                <div class="col-roots">
+                                    @if(isset($menuVelo))
+                                        @foreach($menuVelo as $root)
+                                            <div class="menu-item root-trigger" data-target="subs-velo-{{ $root->id_categorie }}">
+                                                {{ strtoupper($root->nom_categorie) }}
+                                                <span>&rsaquo;</span>
+                                            </div>
+                                        @endforeach
+                                    @endif
+                                </div>
+
+                                <div class="col-subs-wrapper">
+                                    @if(isset($menuVelo))
+                                        @foreach($menuVelo as $root)
+                                            <div id="subs-velo-{{ $root->id_categorie }}" class="subs-container d-none">
+                                                @foreach($root->enfants as $enfant)
+                                                    <div class="menu-item sub-trigger" data-target="models-velo-{{ $enfant->id_categorie }}">
+                                                        {{ strtoupper($enfant->nom_categorie) }}
+                                                        <span>&rsaquo;</span>
+                                                    </div>
+                                                @endforeach
+                                            </div>
+                                        @endforeach
+                                    @endif
+                                </div>
+
+                                <div class="col-models-wrapper">
+                                    @if(isset($menuVelo))
+                                        @foreach($menuVelo as $root)
+                                            @foreach($root->enfants as $enfant)
+                                                <div id="models-velo-{{ $enfant->id_categorie }}" class="models-container d-none">
+                                                    <h3 style="margin-bottom: 20px; font-family:'Fira Sans'; font-weight:800;">{{ strtoupper($enfant->nom_categorie) }}</h3>
+                                                    @if($enfant->modeles->isNotEmpty())
+                                                        <div class="model-grid">
+                                                            @foreach($enfant->modeles as $modele)
+                                                                <a href="#" class="model-link">{{ $modele->nom_modele }}</a>
+                                                            @endforeach
+                                                        </div>
+                                                    @else
+                                                        <p style="color:#999; font-style:italic;">Aucun modèle disponible.</p>
+                                                    @endif
+                                                </div>
+                                            @endforeach
+                                        @endforeach
+                                    @endif
+                                </div>
+
+                            </div>
+                        </div>
+                    </li>
+
+                    <li class="nav-item">
+                        <a id="btn-elec" href="#" class="link_category">VÉLOS ÉLECTRIQUES</a>
+
+                        <div class="mega-menu-dropdown">
+                            <div class="mega-menu-wrapper" id="wrapper-elec">
+                                
+                                <div class="col-roots">
+                                    @if(isset($menuElec))
+                                        @foreach($menuElec as $root)
+                                            <div class="menu-item root-trigger" data-target="subs-elec-{{ $root->id_categorie }}">
+                                                {{ strtoupper($root->nom_categorie) }}
+                                                <span>&rsaquo;</span>
+                                            </div>
+                                        @endforeach
+                                    @endif
+                                </div>
+
+                                <div class="col-subs-wrapper">
+                                    @if(isset($menuElec))
+                                        @foreach($menuElec as $root)
+                                            <div id="subs-elec-{{ $root->id_categorie }}" class="subs-container d-none">
+                                                @foreach($root->enfants as $enfant)
+                                                    <div class="menu-item sub-trigger" data-target="models-elec-{{ $enfant->id_categorie }}">
+                                                        {{ strtoupper($enfant->nom_categorie) }}
+                                                        <span>&rsaquo;</span>
+                                                    </div>
+                                                @endforeach
+                                            </div>
+                                        @endforeach
+                                    @endif
+                                </div>
+
+                                <div class="col-models-wrapper">
+                                    @if(isset($menuElec))
+                                        @foreach($menuElec as $root)
+                                            @foreach($root->enfants as $enfant)
+                                                <div id="models-elec-{{ $enfant->id_categorie }}" class="models-container d-none">
+                                                    <h3 style="margin-bottom: 20px; font-family:'Fira Sans'; font-weight:800;">{{ strtoupper($enfant->nom_categorie) }}</h3>
+                                                    @if($enfant->modeles->isNotEmpty())
+                                                        <div class="model-grid">
+                                                            @foreach($enfant->modeles as $modele)
+                                                                <a href="#" class="model-link">{{ $modele->nom_modele }}</a>
+                                                            @endforeach
+                                                        </div>
+                                                    @else
+                                                        <p style="color:#999; font-style:italic;">Aucun modèle disponible.</p>
+                                                    @endif
+                                                </div>
+                                            @endforeach
+                                        @endforeach
+                                    @endif
+                                </div>
+
+                            </div>
+                        </div>
+                    </li>
+
+                    <li class="nav-item">
+                        <a id="btn-accessoire" href="#" class="link_category">ACCESSOIRES</a>
+                    </li>
                 </ul>
             </div>
 
@@ -70,10 +185,7 @@
                 </div>
             </div>
         </nav> 
-
-        <div id="menu-categories-container" class="mega-menu-container"></div>
     </header>
-
 
     <main>
         <section class="intro-carousel" id="intro-carousel">
@@ -91,7 +203,6 @@
         </section>
 
         <section class="Univers" id="Univers">
-            
             <div class="univers-cards">
                 <div class="card">
                     <div class="card-content">
@@ -135,26 +246,23 @@
             </div>
         </section>
 
-
         <section class="accessoires" id="accessoires">
             <h2>Accessoires indispensables pour votre vélo</h2>
-           
-
         </section>
     
-        <div id="image-carousel" class="carousel">
+        <div id="image-carousel-bottom" class="carousel">
           <img src="{{ asset('images/1.png') }}" alt="Image 1" class="carousel-image active">
           <img src="{{ asset('images/2.jpg') }}" alt="Image 2" class="carousel-image">
           <img src="{{ asset('images/3.jpg') }}" alt="Image 3" class="carousel-image">
         </div>
     </main>
 
-
     <footer>
         <p>&copy; 2025 CUBE Bikes France</p>
     </footer>
 
-</body>
     <script src="{{ asset('js/caroussel.js') }}" defer></script>
     <script src="{{ asset('js/header.js') }}" defer></script>
+    
+</body>
 </html>

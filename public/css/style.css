@@ -1,451 +1,432 @@
 /* =========================================
-   1. RESET & GLOBAL
+   1. RESET & CONFIGURATION GLOBALE
    ========================================= */
    * {
-    box-sizing: border-box; /* Appliqué partout pour éviter les soucis de taille */
-  }
-  
-  html {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+html {
     scroll-behavior: smooth;
     font-family: "Fira Sans", sans-serif;
-  }
-  
-  body {
-    margin: 0;
-    font-family: "Fira Sans", Arial, sans-serif; /* Une seule décla suffit */
-    transition: all ease 0.3s;
-    background-repeat: no-repeat;
-  }
-  
-  /* =========================================
-     2. TYPOGRAPHYÉ
-     ========================================= */
-  h1 {
-    font-weight: 900;
-    font-size: 60px;
-    margin-top: -50px;
-    text-align: center;
-  }
-  
-  h2 {
-    font-weight: 800;
-    font-size: 40px;
-    text-align: center;
-  }
-  
-  a {
+}
+
+body {
+    background-color: #fff;
+    color: #333;
+    overflow-x: hidden; /* Évite le scroll horizontal accidentel */
+}
+
+a {
     text-decoration: none;
     color: inherit;
-    transition: color 0.3s ease;
-    font-style: italic;
+    transition: color 0.2s ease;
+}
 
-  }
-  
-  /* =========================================
-     3. HEADER & NAVIGATION
-     ========================================= */
-  header {
-    position: relative;
+ul {
+    list-style: none;
+}
+
+/* =========================================
+   2. HEADER TRANSPARENT (Style CUBE)
+   ========================================= */
+header {
+    /* CORRECTION MAJEURE ICI : Absolute pour passer au-dessus de l'image */
+    position: absolute; 
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 80px;
     z-index: 1000;
-    background-color: transparent;
-    color: #ffffff;
-    font-weight: bold;
-    padding: 15px 0;
-    border-bottom: 1px solid rgba(221, 221, 221, 0.5);
+    background-color: transparent; /* Transparent par défaut */
+    border-bottom: 1px solid rgba(255, 255, 255, 0.2); /* Ligne subtile blanche */
     transition: all 0.5s ease;
-  }
-  
+    color: #fff; /* Texte blanc par défaut sur l'image */
+}
 
-  header:hover {
-    background-color: #ffffff;
-    color: #000000;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    filter: invert(0);
-  }
-  
-  nav {
+/* Au survol du header (ou quand le menu est ouvert), il devient blanc */
+header:hover, 
+header.menu-open {
+    background-color: #fff;
+    color: #000;
+    border-bottom: 1px solid #eee;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+}
+
+nav {
     display: flex;
     justify-content: space-between;
     align-items: center;
+    height: 100%;
     padding: 0 40px;
-  }
- 
-  header a {
-    color: #ffffff;
-   
-  }
-  
-  header:hover a {
-    color: #000000;
-  }
-  
-  header a:hover {
-    font-weight: 800;
-  }
-  
+    max-width: 1800px; /* Limite la largeur sur les écrans géants */
+    margin: 0 auto;
+}
 
-  .logo {
-    display: flex; 
-    
-    height: 110px;
-    filter: brightness(0) invert(1); 
-    transition: transform 0.3s, filter 0.3s;
-  }
-  
-  .logo img {
-    height: 120px;
-    margin-right: 40px;
-  }
-  
-  .logo img:hover {
-    transform: scale(1.1);
-    cursor: pointer;
-  }
-  
-  /* Inversement de couleur du logo au survol du header */
-  header:hover .logo {
-    filter: brightness(0); /* Devient noir */
-  }
-  
-  /* Menu Catégories */
-
-  /* --- Mise à jour de la section Logo & Menu --- */
-
+/* --- LOGO --- */
 .menu-category {
-  display: flex;
-  align-items: center; /* C'est ça qui centre verticalement le logo et le texte */
-  height: 100%;        /* Prend toute la hauteur du header */
+    display: flex;
+    align-items: center;
+    height: 100%;
 }
 
-/* Le conteneur du logo (le lien <a>) */
 .logo {
-  display: flex;
-  align-items: center;
-  height: 80px; /* On réduit un peu pour que ça rentre mieux */
-  margin-right: 20px; /* Espace propre entre logo et menu */
-  transition: transform 0.3s ease;
+    display: flex;
+    align-items: center;
+    height: 50px;
+    margin-right: 40px;
+    transition: transform 0.3s;
 }
 
-/* L'image elle-même */
 .logo img {
-  height: 100%;       /* S'adapte au conteneur */
-  width: auto;        /* Garde les proportions */
-  object-fit: contain;
-  filter: brightness(0) invert(1); /* Blanc par défaut */
-  transition: filter 0.3s ease;
+    height: 100%;
+    width: auto;
+    /* Astuce : Le logo devient noir ou blanc selon le fond */
+    filter: brightness(0) invert(1); /* Blanc par défaut */
+    transition: filter 0.3s;
 }
 
-.logo:hover {
-  transform: scale(1.05); /* Petit zoom sympa au survol */
-}
-
-/* Changement de couleur au survol du Header */
 header:hover .logo img {
-  filter: brightness(0); /* Devient noir */
+    filter: brightness(0); /* Devient noir au survol du header */
 }
 
-/* Le menu liste (ul) */
-.menu-category ul {
-  list-style: none;
-  display: flex;
-  margin: 0;         /* On reset les marges pour éviter les décalages */
-  padding: 0;
-  align-items: center;
-  font-weight: bolder;
+/* --- LIENS DE NAVIGATION --- */
+.nav-list {
+    display: flex;
+    height: 100%;
+    align-items: center;
+    gap: 0; /* On gère l'espace avec le padding des liens */
 }
-  .menu-category ul {
-    list-style: none;
-    display: flex;
-    margin: 0 0 0 0px;
-    padding: 0;
-    align-items: center;
-    font-weight: bolder;
-  }
-  
-  .menu-category ul li {
-    margin: 0 20px;
-  }
-  
-  .menu-category ul li a {
-    font-size: 18px; /* Increased font size for categories */
-    font-weight: 700; /* Made the font bolder */
-    position: relative;
-  }
 
-  
-  /* Soulignement animé */
-  .menu-category ul li a::after {
-    content: '';
-    display: block;
-    width: 0;
-    height: 2px;
-    background: #2fb5d2;
-    transition: width 0.3s;
-    position: absolute;
-    bottom: -5px;
-    left: 0;
-  }
-  
-  .menu-category ul li a:hover::after {
-    width: 100%;
-  }
-  
-  /* User & Icônes */
-  .menu-user, .icone {
+.nav-item {
+    height: 100%;
     display: flex;
     align-items: center;
-  }
-  
-  .icone {
-    gap: 15px;
-    margin-left: 20px;
-  }
-  
-  #magasin {
-    margin-right: 15px;
-    text-decoration: underline;
-  }
-  
-  header svg {
-    fill: transparent;
-    stroke: #ffffff;
-    transition: stroke 0.3s ease;
-  }
-  
-  header:hover svg {
-    stroke: #000000;
-  }
-  
-  /* =========================================
-     4. MEGA MENU // SOUS MENU 
-     ========================================= */
-  .mega-menu-container {
+}
+
+.link_category {
+    padding: 0 25px;
+    height: 100%;
     display: flex;
-    position: absolute;
-    top: 100%;
-    left: 0;
-    width: 100%;
-    height: auto;
-    background-color: #fff;
-    border-top: 1px solid #e5e5e5;
-    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
-    z-index: 999;
-    
-    /* Animation */
-    opacity: 0;
-    visibility: hidden;
-    transition: all 0.3s ease;
-  }
-  
-  .mega-menu-container.active {
-    opacity: 1;
-    visibility: visible;
-  }
-  
-  .menu-col li {
+    align-items: center;
+    font-size: 1.05rem;
+    font-weight: 700;
+    font-style: italic;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
     position: relative;
-    padding: 10px 20px;
-    cursor: pointer;
-    font-size: 14px;
-    color: #444;
-    display: block;
-    transition: color 0.3s ease;
-    border-bottom: 1px solid #f5f5f5;
-  }
-  
-  /* Barre animée menu */
-  .menu-col li::after {
+    color: inherit;
+}
+
+/* Ligne bleue au survol */
+.link_category::after {
     content: '';
     position: absolute;
     bottom: 0;
     left: 0;
     width: 0;
-    height: 3px;
-    background-color: #2fb5d2;
-    transition: width 0.3s ease-in-out;
-  }
-  
-  .menu-col li:hover, 
-  .menu-col li.active {
-    color: #2fb5d2;
-    background-color: #fcfcfc;
-    font-weight: 700;
-  }
-  
-  .menu-col li:hover::after, 
-  .menu-col li.active::after {
+    height: 4px;
+    background-color: #00b0f0; /* Bleu CUBE */
+    transition: width 0.3s ease;
+}
+
+.nav-item:hover .link_category::after {
     width: 100%;
-  }
-  
-  .menu-col li a {
-    display: block;
-    width: 100%;
-    height: 100%;
-  }
-  
-  .has-children::after {
-    content: none !important;
-  }
-  
-  .empty-msg {
-    padding: 20px;
-    color: #999;
-    font-style: italic;
-    font-size: 13px;
-  }
-  
-  /* =========================================
-     5. HERO / CAROUSEL
-     ========================================= */
-  .carousel {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100vh; 
-    z-index: -1; 
-    transition: all ease 0.3s;
-  }
-  
-  .carousel-image {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    opacity: 0;
-    transition: opacity 1s ease-in-out;
-    z-index: 0;
-  }
-  
-  .carousel-image.active {
-    opacity: 1;
-    z-index: 1;
-  }
-  
-  .carousel-buttons {
-    position: absolute;
-    top: 50%;
-    width: 100%;
-    display: flex;
-    justify-content: space-between;
-    transform: translateY(-50%);
-    z-index: 2; /* Assure que les boutons sont au-dessus */
-  }
-  
-  .carousel-button {
-    background-color: rgba(0, 0, 0, 0.5);
-    color: white;
-    border: none;
-    padding: 10px;
-    cursor: pointer;
-  }
-  
-  .intro-text {
-    position: relative;
-    z-index: 2;
-    margin-top: 850px; 
-    background-color: white;
-    padding: 20px;
-    text-align: center;
-  }
-  
-  /* =========================================
-     6. SECTION UNIVERS (Cartes)
-     ========================================= */
-  .Univers {
-    padding: 60px 20px;
-    text-align: center;
-    background-color: #f9f9f9;
-    margin-bottom: 40px;
-  }
-  
-  .univers-cards {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 20px;
-    justify-content: center;
-  }
-  
-  .card {
-    display: flex;
-    flex: 1 1 calc(50% - 20px);
-    max-width: 600px;
-    border: 1px solid #ddd;
-    border-radius: 8px;
-    overflow: hidden;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    transition: all 0.3s ease;
-  }
-  
-  .card:hover {
-    box-shadow: 0 8px 12px rgba(0, 0, 0, 0.2);
-    transform: translateY(-5px);
-  }
-  
-  .card-content {
-    display: flex;
-    width: 100%;
-  }
-  
-  .card-text {
-    flex: 1;
-    padding: 20px;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    border: 10px solid #f9f9f9;
-  }
-  
-  .card-text p {
-    padding: 20px;
-  }
-  
-  .card-image {
-    flex: 1;
+}
+
+/* --- ICONES UTILISATEUR (Droite) --- */
+.menu-user {
     display: flex;
     align-items: center;
-    justify-content: center;
-    background-color: #f9f9f9;
-  }
-  
-  .card-image img {
-    max-width: 100%;
-    height: auto;
-    object-fit: cover;
-  }
-  
-  /* =========================================
-     7. BOUTONS
-     ========================================= */
-  button, .btn {
-    background-color: #2fb5d2;
-    width: fit-content;
-    color: #ffffff;
-    border: none;
-    border-radius: 5px;
-    padding: 10px 20px;
-    font-size: 16px;
-    font-weight: bold;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  }
-  
-  button:hover, .btn:hover {
-    background-color: #1a8ca8;
-    transform: translateY(-2px);
-    box-shadow: 0 6px 8px rgba(0, 0, 0, 0.15);
-  }
-  
-  /* =========================================
-     8. FOOTER
-     ========================================= */
-  footer {
-    background-color: #333;
-    color: #fff;
-    text-align: center;
-    padding: 10px 0;
+    font-weight: 700;
+    font-size: 13px;
+    text-transform: uppercase;
+}
+
+#magasin {
+    margin-right: 25px;
+    text-decoration: underline;
+    text-underline-offset: 4px;
+}
+
+.icone {
+    display: flex;
+    gap: 20px;
+    align-items: center;
+    padding-left: 20px;
+}
+
+header:hover .icone {
+    
+}
+
+/* Gestion SVG couleur */
+.menu-user svg {
+    fill: none;
+    stroke: currentColor; /* Prend la couleur du texte (blanc ou noir) */
+    stroke-width: 2;
+    transition: stroke 0.3s;
+}
+
+/* =========================================
+   3. MEGA MENU (Layout 3 colonnes)
+   ========================================= */
+.mega-menu-dropdown {
+    display: none;
+    position: fixed; /* Fixe pour prendre tout l'écran */
+    top: 80px; /* Hauteur du header */
+    left: 0;
     width: 100%;
-  }
+    background: #fff;
+    border-top: 1px solid #e5e5e5;
+    box-shadow: 0 15px 40px rgba(0,0,0,0.1);
+    z-index: 9999;
+    color: #333; /* Force le texte en noir dans le menu */
+    transition: all ease 0.5s;
+}
+
+/* Afficher le menu au survol */
+.nav-item:hover .mega-menu-dropdown {
+    display: block;
+}
+
+.mega-menu-wrapper {
+    display: flex;
+    max-width: 1400px;
+    margin: 0 auto;
+    height: 550px; /* Hauteur confortable */
+    background: #fff;
+}
+
+/* COLONNE 1 : Racines (Fond Gris) */
+.col-roots {
+    width: 260px;
+    background-color: #f7f7f7;
+    border-right: 1px solid #eee;
+    padding: 30px 0;
+    overflow-y: auto;
+}
+
+/* COLONNE 2 : Sous-Catégories (Fond Blanc) */
+.col-subs-wrapper {
+    width: 260px;
+    background-color: #fff;
+    border-right: 1px solid #eee;
+    overflow-y: auto;
+}
+
+.subs-container {
+    padding: 30px 0;
+    height: 100%;
+}
+
+/* COLONNE 3 : Modèles (Fond Blanc, Large) */
+.col-models-wrapper {
+    flex: 1;
+    background-color: #fff;
+    padding: 40px 50px;
+    overflow-y: auto;
+}
+
+/* ITEMS DES MENUS */
+.menu-item {
+    padding: 12px 30px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 800;
+    text-transform: uppercase;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    transition: all 0.2s;
+    color: #000;
+}
+
+.menu-item span {
+    font-size: 18px;
+    font-weight: 300;
+    color: #ccc;
+}
+
+/* Hover & Active états */
+.menu-item:hover, 
+.menu-item.active {
+    color: #00b0f0;
+    background-color: #fff;
+}
+
+.menu-item.active {
+    border-left: 4px solid #00b0f0; /* Marqueur bleu */
+    padding-left: 26px; /* Compense la bordure */
+}
+
+/* Style spécifique pour les sous-catégories (Italique comme CUBE) */
+.col-subs-wrapper .menu-item {
+    font-weight: 700;
+    font-style: italic;
+    color: #444;
+}
+
+.col-subs-wrapper .menu-item.active {
+    color: #00b0f0;
+}
+
+/* Titre dans la zone Modèles */
+.col-models-wrapper h3 {
+    font-size: 24px;
+    font-weight: 900;
+    text-transform: uppercase;
+    margin-bottom: 30px;
+    padding-bottom: 10px;
+    border-bottom: 2px solid #00b0f0;
+    display: inline-block;
+}
+
+/* GRILLE DES MODÈLES */
+.model-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 15px 40px;
+}
+
+.model-link {
+    font-size: 14px;
+    color: #555;
+    font-weight: 500;
+    padding: 5px 0;
+    display: block;
+    transition: transform 0.2s, color 0.2s;
+}
+
+.model-link:hover {
+    color: #00b0f0;
+    transform: translateX(5px);
+}
+
+/* Utilitaires JS */
+.d-none { display: none !important; }
+.d-block { display: block !important; }
+
+/* =========================================
+   4. CAROUSEL & HERO (Derrière le header)
+   ========================================= */
+.intro-carousel {
+    position: relative;
+    width: 100%;
+    height: 100vh; /* Plein écran */
+    overflow: hidden;
+}
+
+.carousel {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 0; /* Derrière tout le reste */
+}
+
+.carousel-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    position: absolute;
+    opacity: 0;
+    transition: opacity 1s ease-in-out;
+}
+
+.carousel-image.active {
+    opacity: 1;
+}
+
+/* =========================================
+   5. CONTENU PRINCIPAL (Cartes, etc.)
+   ========================================= */
+.intro-text {
+    position: relative;
+    z-index: 2;
+    background: #fff;
+    padding: 80px 20px;
+    text-align: center;
+}
+
+.intro-text h1 {
+    font-size: 48px;
+    font-weight: 900;
+    text-transform: uppercase;
+    margin-bottom: 10px;
+}
+
+.Univers {
+    background-color: #f4f4f4;
+    padding: 60px 0;
+}
+
+.univers-cards {
+    display: flex;
+    justify-content: center;
+    gap: 30px;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
+}
+
+.card {
+    background: #fff;
+    flex: 1;
+    border-radius: 0; /* CUBE est très carré */
+    box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+    transition: transform 0.3s;
+    display: flex;
+    flex-direction: column;
+}
+
+.card:hover {
+    transform: translateY(-10px);
+}
+
+.card-image img {
+    width: 100%;
+    height: 250px;
+    object-fit: cover;
+}
+
+.card-text {
+    padding: 30px;
+    text-align: center;
+}
+
+.card-text h3 {
+    font-size: 20px;
+    font-weight: 800;
+    text-transform: uppercase;
+    margin-bottom: 15px;
+}
+
+.btn {
+    display: inline-block;
+    margin-top: 20px;
+    padding: 12px 30px;
+    background-color: #00b0f0;
+    color: #fff;
+    font-weight: 700;
+    text-transform: uppercase;
+    font-size: 14px;
+    border-radius: 2px;
+}
+
+.btn:hover {
+    background-color: #008cb0;
+}
+
+/* Footer simple */
+footer {
+    background: #111;
+    color: #fff;
+    padding: 40px;
+    text-align: center;
+    font-size: 14px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}

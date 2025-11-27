@@ -17,9 +17,7 @@ use App\Http\Controllers\CategorieAccessoireController;
 |
 */
 
-Route::get('/', function () {
-    return view('accueil');
-});
+Route::get('/', [CategorieVeloController::class, 'index'])->name('home');
 
 Route::get('/api/categories-accessoires/{id}/subCategories', [CategorieAccessoireController::class, 'getSubCategories']);
 Route::get('/api/categories-velos/{id}/subCategories', [CategorieVeloController::class, 'getSubCategories']);
