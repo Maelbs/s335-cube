@@ -104,7 +104,7 @@
         <nav>
             <div class="menu-category">
                 <a href="{{ url('/') }}" class="logo">
-                    <img src="{{ asset('images/cubelogo.png') }}" alt="Logo CUBE Bikes" style="max-height: 100px;">
+                    <img src="{{ asset('images/logo-cube.png') }}" alt="Logo CUBE Bikes" style="max-height: 150px;">
                 </a>
                 
                 <ul class="nav-list">
