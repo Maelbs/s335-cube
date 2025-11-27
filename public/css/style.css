@@ -42,6 +42,8 @@ header {
     border-bottom: 1px solid rgba(255, 255, 255, 0.2);
     transition: all 0.5s ease;
     color: #fff;
+    background-color: rgba(0, 0, 0, 0.3);
+    backdrop-filter: blur(1px);
 }
 
 /* Le header devient blanc au survol ou si un menu est ouvert */
@@ -130,6 +132,8 @@ header:hover .logo img {
     transition: width 0.3s ease;
 }
 
+/* */
+
 .nav-item:hover .link_category::after {
     width: 100%;
 }
@@ -157,6 +161,7 @@ header:hover .logo img {
 }
 
 header:hover .icone {
+  
 }
 
 .menu-user svg {
