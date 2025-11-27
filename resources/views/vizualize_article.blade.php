@@ -106,11 +106,9 @@
             <div class="size-selector">
                 <p class="size-label">TAILLE</p>
                 <div class="sizes-grid">
-                    <button class="size-btn">XS</button>
-                    <button class="size-btn">S</button>
-                    <button class="size-btn selected">M</button>
-                    <button class="size-btn">L</button>
-                    <button class="size-btn">XL</button>
+                    @foreach ($tailles as $taille)
+                        <button class="size-btn">{{ $taille->taille }}</button>  
+                    @endforeach
                 </div>
             </div>
 
