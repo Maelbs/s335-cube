@@ -1,17 +1,89 @@
-html {
-  scroll-behavior: smooth;
-}
-
-body {
-  font-family: Arial, sans-serif;
-  margin: 0;
-  box-sizing: border-box;
-
- 
-  transition: all ease 0.3s;
-  background-repeat: no-repeat;
+/* =========================================
+   1. RESET & GLOBAL
+   ========================================= */
+   * {
+    box-sizing: border-box; /* Appliqué partout pour éviter les soucis de taille */
+  }
   
-}
+  html {
+    scroll-behavior: smooth;
+    font-family: "Fira Sans", sans-serif;
+  }
+  
+  body {
+    margin: 0;
+    font-family: "Fira Sans", Arial, sans-serif; /* Une seule décla suffit */
+    transition: all ease 0.3s;
+    background-repeat: no-repeat;
+  }
+  
+  /* =========================================
+     2. TYPOGRAPHYÉ
+     ========================================= */
+  h1 {
+    font-weight: 900;
+    font-size: 60px;
+    margin-top: -50px;
+    text-align: center;
+  }
+  
+  h2 {
+    font-weight: 800;
+    font-size: 40px;
+    text-align: center;
+  }
+  
+  a {
+    text-decoration: none;
+    color: inherit;
+    transition: color 0.3s ease;
+    font-style: italic;
+
+  }
+  
+  /* =========================================
+     3. HEADER & NAVIGATION
+     ========================================= */
+  header {
+    position: relative;
+    z-index: 1000;
+    background-color: transparent;
+    color: #ffffff;
+    font-weight: bold;
+    padding: 15px 0;
+    border-bottom: 1px solid rgba(221, 221, 221, 0.5);
+    transition: all 0.5s ease;
+  }
+  
+
+  header:hover {
+    background-color: #ffffff;
+    color: #000000;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    filter: invert(0);
+  }
+  
+  nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 40px;
+  }
+ 
+  header a {
+    color: #ffffff;
+   
+  }
+  
+  header:hover a {
+    color: #000000;
+  }
+  
+  header a:hover {
+    font-weight: 800;
+  }
+  
+
 
 /* Cookie Banner - Style CUBE Bikes */
 .cookie-banner {
@@ -420,179 +492,369 @@ header {
   transition: all 0.5s ease;
 }
 
-header:hover {
-  background-color: #ffffff;
-  color: #000000;
-  box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-}
+  .logo {
+    display: flex; 
+    
+    height: 110px;
+    filter: brightness(0) invert(1); 
+    transition: transform 0.3s, filter 0.3s;
+  }
+  
+  .logo img {
+    height: 120px;
+    margin-right: 40px;
+  }
+  
+  .logo img:hover {
+    transform: scale(1.1);
+    cursor: pointer;
+  }
+  
+  /* Inversement de couleur du logo au survol du header */
+  header:hover .logo {
+    filter: brightness(0); /* Devient noir */
+  }
+  
+  /* Menu Catégories */
 
-nav {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 0 40px;
-}
 
-header a {
-  color: #ffffff;
-  text-decoration: none;
-  transition: color 0.3s ease;
-}
-
-header:hover a {
-  color: #000000;
-
-}
-
-header a:hover {
-  font-weight: 800;
-}
-
-.logo img {
-  height: 100px;
-  margin-right: 40px;
-  transition: transform 0.3s, filter 0.3s;
-  filter: brightness(0) invert(1);
-}
-
-.logo img:hover {
-  transform: scale(1.1);
-}
-
-header:hover .logo img {
-  filter: brightness(0); 
-}
+  /* --- Mise à jour de la section Logo & Menu --- */
 
 .menu-category {
   display: flex;
-  align-items: center;
+  align-items: center; /* C'est ça qui centre verticalement le logo et le texte */
+  height: 100%;        /* Prend toute la hauteur du header */
 }
 
+/* Le conteneur du logo (le lien <a>) */
+.logo {
+  display: flex;
+  align-items: center;
+  height: 80px; /* On réduit un peu pour que ça rentre mieux */
+  margin-right: 20px; /* Espace propre entre logo et menu */
+  transition: transform 0.3s ease;
+}
+
+/* L'image elle-même */
+.logo img {
+  height: 100%;       /* S'adapte au conteneur */
+  width: auto;        /* Garde les proportions */
+  object-fit: contain;
+  filter: brightness(0) invert(1); /* Blanc par défaut */
+  transition: filter 0.3s ease;
+}
+
+.logo:hover {
+  transform: scale(1.05); /* Petit zoom sympa au survol */
+}
+
+/* Changement de couleur au survol du Header */
+header:hover .logo img {
+  filter: brightness(0); /* Devient noir */
+}
+
+/* Le menu liste (ul) */
 .menu-category ul {
   list-style: none;
   display: flex;
-  margin: 0 0 0 50px;
+  margin: 0;         /* On reset les marges pour éviter les décalages */
   padding: 0;
   align-items: center;
   font-weight: bolder;
 }
+  .menu-category ul {
+    list-style: none;
+    display: flex;
+    margin: 0 0 0 0px;
+    padding: 0;
+    align-items: center;
+    font-weight: bolder;
+  }
+  
+  .menu-category ul li {
+    margin: 0 20px;
+  }
+  
+  .menu-category ul li a {
+    font-size: 18px; /* Increased font size for categories */
+    font-weight: 700; /* Made the font bolder */
+    position: relative;
+  }
 
-.menu-category ul li {
-  margin: 0 20px;
-  font-weight: bolder;
-}
-
-.menu-category ul li a {
-  font-size: 16px;
-  position: relative;
-  font-weight: 600;
-}
-
-.menu-category ul li a::after {
-  content: '';
-  display: block;
-  width: 0;
-  height: 2px;
-  background: #2fb5d2;
-  transition: width 0.3s;
-  position: absolute;
-  bottom: -5px;
-  left: 0;
-  font-weight: 900;
-}
-
-.menu-category ul li a:hover::after {
-  width: 100%;
-}
-
-.menu-user {
-  display: flex;
-  align-items: center;
-}
-
-.icone {
-  display: flex;
-  align-items: center;
-  gap: 15px;
-  margin-left: 20px;
-}
-
-header svg {
-  fill: transparent;
-  stroke: #ffffff;
-  transition: stroke 0.3s ease;
-}
-
-header:hover svg {
-  stroke: #000000;
-}
-
-#magasin {
-  margin-right: 15px;
-}
-
-footer {
-  background-color: #333;
-  color: #fff;
-  text-align: center;
-  padding: 10px 0;
-  position: relative;
-  bottom: 0;
-  width: 100%;
-}
-
-
-.carousel {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100vh; 
-  z-index: -1; 
-  transition: all ease 0.3s;
-}
-
-/* Adjust fade effect for carousel transitions */
-.carousel-image {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  opacity: 0;
-  transition: opacity 1s ease-in-out;
-  z-index: 0;
-}
-
-.carousel-image.active {
-  opacity: 1;
-  z-index: 1;
-}
-
-.carousel-buttons {
-  position: absolute;
-  top: 50%;
-  width: 100%;
-  display: flex;
-  justify-content: space-between;
-  transform: translateY(-50%);
-}
-
-.carousel-button {
-  background-color: rgba(0, 0, 0, 0.5);
-  color: white;
-  border: none;
-  padding: 10px;
-  cursor: pointer;
-}
-
-
-
-.intro-text {
-  position: relative;
-  z-index: 2;
-  margin-top: 1050px; /* Adjust this value to create space below the carousel */
-  background-color: white; /* Optional: Add a background to separate it visually */
-  padding: 20px;
-}
+  
+  /* Soulignement animé */
+  .menu-category ul li a::after {
+    content: '';
+    display: block;
+    width: 0;
+    height: 2px;
+    background: #2fb5d2;
+    transition: width 0.3s;
+    position: absolute;
+    bottom: -5px;
+    left: 0;
+  }
+  
+  .menu-category ul li a:hover::after {
+    width: 100%;
+  }
+  
+  /* User & Icônes */
+  .menu-user, .icone {
+    display: flex;
+    align-items: center;
+  }
+  
+  .icone {
+    gap: 15px;
+    margin-left: 20px;
+  }
+  
+  #magasin {
+    margin-right: 15px;
+    text-decoration: underline;
+  }
+  
+  header svg {
+    fill: transparent;
+    stroke: #ffffff;
+    transition: stroke 0.3s ease;
+  }
+  
+  header:hover svg {
+    stroke: #000000;
+  }
+  
+  /* =========================================
+     4. MEGA MENU // SOUS MENU 
+     ========================================= */
+  .mega-menu-container {
+    display: flex;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    width: 100%;
+    height: auto;
+    background-color: #fff;
+    border-top: 1px solid #e5e5e5;
+    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+    z-index: 999;
+    
+    /* Animation */
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.3s ease;
+  }
+  
+  .mega-menu-container.active {
+    opacity: 1;
+    visibility: visible;
+  }
+  
+  .menu-col li {
+    position: relative;
+    padding: 10px 20px;
+    cursor: pointer;
+    font-size: 14px;
+    color: #444;
+    display: block;
+    transition: color 0.3s ease;
+    border-bottom: 1px solid #f5f5f5;
+  }
+  
+  /* Barre animée menu */
+  .menu-col li::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 0;
+    height: 3px;
+    background-color: #2fb5d2;
+    transition: width 0.3s ease-in-out;
+  }
+  
+  .menu-col li:hover, 
+  .menu-col li.active {
+    color: #2fb5d2;
+    background-color: #fcfcfc;
+    font-weight: 700;
+  }
+  
+  .menu-col li:hover::after, 
+  .menu-col li.active::after {
+    width: 100%;
+  }
+  
+  .menu-col li a {
+    display: block;
+    width: 100%;
+    height: 100%;
+  }
+  
+  .has-children::after {
+    content: none !important;
+  }
+  
+  .empty-msg {
+    padding: 20px;
+    color: #999;
+    font-style: italic;
+    font-size: 13px;
+  }
+  
+  /* =========================================
+     5. HERO / CAROUSEL
+     ========================================= */
+  .carousel {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100vh; 
+    z-index: -1; 
+    transition: all ease 0.3s;
+  }
+  
+  .carousel-image {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    opacity: 0;
+    transition: opacity 1s ease-in-out;
+    z-index: 0;
+  }
+  
+  .carousel-image.active {
+    opacity: 1;
+    z-index: 1;
+  }
+  
+  .carousel-buttons {
+    position: absolute;
+    top: 50%;
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    transform: translateY(-50%);
+    z-index: 2; /* Assure que les boutons sont au-dessus */
+  }
+  
+  .carousel-button {
+    background-color: rgba(0, 0, 0, 0.5);
+    color: white;
+    border: none;
+    padding: 10px;
+    cursor: pointer;
+  }
+  
+  .intro-text {
+    position: relative;
+    z-index: 2;
+    margin-top: 850px; 
+    background-color: white;
+    padding: 20px;
+    text-align: center;
+  }
+  
+  /* =========================================
+     6. SECTION UNIVERS (Cartes)
+     ========================================= */
+  .Univers {
+    padding: 60px 20px;
+    text-align: center;
+    background-color: #f9f9f9;
+    margin-bottom: 40px;
+  }
+  
+  .univers-cards {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    justify-content: center;
+  }
+  
+  .card {
+    display: flex;
+    flex: 1 1 calc(50% - 20px);
+    max-width: 600px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+  }
+  
+  .card:hover {
+    box-shadow: 0 8px 12px rgba(0, 0, 0, 0.2);
+    transform: translateY(-5px);
+  }
+  
+  .card-content {
+    display: flex;
+    width: 100%;
+  }
+  
+  .card-text {
+    flex: 1;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    border: 10px solid #f9f9f9;
+  }
+  
+  .card-text p {
+    padding: 20px;
+  }
+  
+  .card-image {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #f9f9f9;
+  }
+  
+  .card-image img {
+    max-width: 100%;
+    height: auto;
+    object-fit: cover;
+  }
+  
+  /* =========================================
+     7. BOUTONS
+     ========================================= */
+  button, .btn {
+    background-color: #2fb5d2;
+    width: fit-content;
+    color: #ffffff;
+    border: none;
+    border-radius: 5px;
+    padding: 10px 20px;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  }
+  
+  button:hover, .btn:hover {
+    background-color: #1a8ca8;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 8px rgba(0, 0, 0, 0.15);
+  }
+  
+  /* =========================================
+     8. FOOTER
+     ========================================= */
+  footer {
+    background-color: #333;
+    color: #fff;
+    text-align: center;
+    padding: 10px 0;
+    width: 100%;
+  }
