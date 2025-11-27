@@ -14,15 +14,18 @@
     <header>
         <nav>
             <div class="menu-category">
+                <a href="{{ url('/') }}" class="logo">
+                    <img src="{{ asset('images/cubelogo.png') }}" alt="Logo CUBE Bikes">
+                </a>
                 <ul>
-                    <li><a id="btn-velo" href="#" class="link_category">Vélos</a></li>
-                    <li><a id="btn-elec" href="#" class="link_category">Vélos électriques</a></li>
-                    <li><a id="btn-accessoire" href="#" class="link_category">Accessoires</a></li>
+                    <li><a id="btn-velo" href="#" class="link_category">VÉLOS</a></li>
+                    <li><a id="btn-elec" href="#" class="link_category">VÉLOS ÉLECRIQUES</a></li>
+                    <li><a id="btn-accessoire" href="#" class="link_category">ACCESSOIRES</a></li>
                 </ul>
             </div>
 
             <div class="menu-user">
-                <a id="magasin" href="{{ url('/login') }}">Choisir un magasin</a>
+                <a id="magasin" href="{{ url('/login') }}">CHOISIR UN MAGASIN</a>
                 
                 <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" viewBox="0 0 24 24">
                     <g>
