@@ -28,6 +28,12 @@ class Accessoire extends Article
 
     public function __toString()
     {
+        $dispo = 'Non';
+
+        if ($this->dispo_en_ligne) {
+            $dispo = 'Oui';
+        }
+
         return sprintf(
             "Accessoire [Ref: %s] : %s | Prix: %s € | Stock: %s | Poids: %s kg | Dispo: %s | Cat ID: %s",
             $this->reference,
@@ -35,8 +41,9 @@ class Accessoire extends Article
             $this->prix,
             $this->qte_stock,
             $this->poids,
-            $this->dispo_en_ligne ? 'Oui' : 'Non',
+            $dispo,
             $this->id_categorie_accessoire
         );
     }
+
 }
