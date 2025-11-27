@@ -4,6 +4,8 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use App\Models\Adresse;
+use App\Models\TypeLivraison;
 
 class MagasinPartenaire extends Model
 {
