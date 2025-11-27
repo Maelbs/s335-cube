@@ -165,24 +165,63 @@ header:hover .icone {
     stroke-width: 2;
 }
 
-/* =========================================
-   3. MEGA MENU (VERSION 3 COLONNES)
-   ========================================= */
+/* --- MEGA MENU : TRANSITION FLUIDE ET CORRIGÉE --- */
 .mega-menu-dropdown {
-    display: none;
-    position: fixed;
-    top: 80px;
-    left: 0;
-    width: 100%;
-    background: #fff;
-    border-top: 1px solid #e5e5e5;
-    box-shadow: 0 15px 40px rgba(0,0,0,0.1);
-    z-index: 9999;
-    color: #333;
+  /* Mise en page de base */
+  display: block; 
+  position: fixed;
+  top: 80px; /* Départ un peu plus bas pour l'effet de montée */
+  left: 0;
+  width: 100%;
+  background: #fff;
+  border-top: 1px solid #e5e5e5;
+  box-shadow: 0 15px 40px rgba(0,0,0,0.1);
+  z-index: 9999;
+  color: #333;
+
+  /* ÉTAT INVISIBLE (Par défaut) */
+  opacity: 0;
+  visibility: hidden; /* Cache visuellement */
+  pointer-events: none; /* IMPORTANT : La souris passe au travers, pas de détection */
+  
+  /* GESTION DE LA TRANSITION */
+  /* Quand on quitte : on attend que l'opacité finisse (0.3s) avant de cacher la visibility */
+  transition: opacity 0.3s ease, top 0.3s ease, visibility 0.3s linear;
 }
 
+/* ÉTAT VISIBLE (Au survol) */
 .nav-item:hover .mega-menu-dropdown {
-    display: block;
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto; /* IMPORTANT : On réactive la souris */
+  top: 80px; /* Revient à sa place normale */
+  
+  /* Quand on entre : visibility change tout de suite (0s delay) */
+  transition: opacity 0.3s ease, top 0.3s ease, visibility 0s linear;
+}
+
+/* Applique ceci aux 3 colonnes pour être sûr */
+.col-roots, 
+.col-subs-wrapper, 
+.col-models-wrapper {
+    /* On garde le scroll si nécessaire */
+    overflow-y: auto;
+    
+    /* On empêche le scroll horizontal (qui apparait à cause de l'animation translateX) */
+    overflow-x: hidden; 
+
+    /* Cacher la scrollbar (Firefox) */
+    scrollbar-width: none; 
+    
+    /* Pour éviter les saccades lors du scroll */
+    -webkit-overflow-scrolling: touch;
+}
+
+/* Cacher la scrollbar (Chrome, Safari, Edge, Opera) */
+.col-roots::-webkit-scrollbar, 
+.col-subs-wrapper::-webkit-scrollbar, 
+.col-models-wrapper::-webkit-scrollbar {
+    display: none; /* La barre disparait totalement */
 }
 
 .mega-menu-wrapper {
@@ -191,6 +230,7 @@ header:hover .icone {
     margin: 0 auto;
     height: 550px;
     background: #fff;
+    transition: all 0.5s ease;
 }
 
 /* COLONNE 1 : Racines */
@@ -791,4 +831,35 @@ input:checked + .slider:before {
 .toggle-switch.disabled {
   opacity: 0.6;
   cursor: not-allowed;
+}
+
+/* --- ANIMATION DES COLONNES INTÉRIEURES --- */
+
+/* On crée une animation de "Fade In" vers la droite */
+@keyframes fadeInSlide {
+  from {
+      opacity: 0;
+      transform: translateX(10px); /* Part un peu de la droite */
+  }
+  to {
+      opacity: 1;
+      transform: translateX(0); /* Arrive à sa place */
+  }
+}
+
+/* Appliquer l'animation quand l'élément N'EST PAS caché */
+/* Cela cible tes containers subs-container et models-container */
+.subs-container:not(.d-none), 
+.models-container:not(.d-none) {
+  animation: fadeInSlide 0.4s ease-out forwards;
+}
+
+/* Optionnel : Une animation différente pour la liste des items pour un effet cascade */
+.menu-item {
+  transition: background-color 0.2s, color 0.2s, padding-left 0.2s;
+}
+
+/* Petit effet de glissement quand on survole un lien */
+.menu-item:hover, .menu-item.active {
+  padding-left: 35px; /* Le texte se décale légèrement à droite */
 }

@@ -122,54 +122,88 @@
 //     });
 // });
 
-document.addEventListener('DOMContentLoaded', function() {
 
+document.addEventListener('DOMContentLoaded', function() {
+    
+    // --- 1. INITIALISATION DES TRIGGERS (SURVOL) ---
     function initMegaMenu(wrapperId) {
-        const wrapper = document.querySelector(`#${wrapperId}`);
+        const wrapper = document.getElementById(wrapperId);
         if (!wrapper) return;
 
         const rootTriggers = wrapper.querySelectorAll('.root-trigger');
         const subWrappers = wrapper.querySelectorAll('.subs-container');
         const modelWrappers = wrapper.querySelectorAll('.models-container');
 
+        // NIVEAU 1 : RACINES -> SOUS-CATÉGORIES
         rootTriggers.forEach(trigger => {
             trigger.addEventListener('mouseenter', function() {
+                // Reset visuel colonne 1
                 rootTriggers.forEach(el => el.classList.remove('active'));
                 this.classList.add('active');
 
+                // Cacher tout le reste
                 subWrappers.forEach(el => el.classList.add('d-none'));
                 modelWrappers.forEach(el => el.classList.add('d-none'));
 
+                // Afficher la colonne 2 correspondante
                 const targetId = this.getAttribute('data-target');
-                const targetSub = document.querySelector(`#${targetId}`);
+                const targetSub = document.getElementById(targetId);
                 if (targetSub) {
                     targetSub.classList.remove('d-none');
+                    // Ré-attacher les écouteurs sur les nouveaux éléments visibles
                     initSubTriggers(targetSub, wrapper);
                 }
             });
         });
     }
 
+    // NIVEAU 2 : SOUS-CATÉGORIES -> MODÈLES
     function initSubTriggers(subContainer, mainWrapper) {
         const subTriggers = subContainer.querySelectorAll('.sub-trigger');
         const modelWrappers = mainWrapper.querySelectorAll('.models-container');
 
         subTriggers.forEach(trigger => {
             trigger.addEventListener('mouseenter', function() {
+                // Reset visuel colonne 2
                 subTriggers.forEach(el => el.classList.remove('active'));
                 this.classList.add('active');
 
+                // Cacher colonne 3
                 modelWrappers.forEach(el => el.classList.add('d-none'));
 
+                // Afficher la colonne 3 correspondante
                 const targetId = this.getAttribute('data-target');
-                const targetModel = document.querySelector(`#${targetId}`);
+                const targetModel = document.getElementById(targetId);
                 if (targetModel) {
                     targetModel.classList.remove('d-none');
                 }
             });
         });
     }
-    
+
+    // Initialisation
     initMegaMenu('wrapper-velo');
     initMegaMenu('wrapper-elec');
+
+
+    // --- 2. FONCTION DE RESET (QUAND ON QUITTE LE MENU) ---
+    const navItems = document.querySelectorAll('.nav-item');
+
+    navItems.forEach(navItem => {
+        navItem.addEventListener('mouseleave', function() {
+            
+            // On attend la fin de l'animation CSS (0.3s) pour que le reset ne se voie pas pendant le fondu
+            setTimeout(() => {
+                // 1. Enlever la classe .active de tous les items survolés
+                const activeItems = navItem.querySelectorAll('.menu-item.active');
+                activeItems.forEach(item => item.classList.remove('active'));
+
+                // 2. Recacher toutes les colonnes 2 et 3
+                const openContainers = navItem.querySelectorAll('.subs-container, .models-container');
+                openContainers.forEach(container => container.classList.add('d-none'));
+
+            }, 300); // 300ms correspond à ton 'transition: all 0.3s' dans le CSS
+        });
+    });
+
 });
