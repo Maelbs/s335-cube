@@ -1,11 +1,13 @@
 /* =========================================
-   1. RESET & GLOBAL
+   1. RESET & CONFIGURATION GLOBALE
    ========================================= */
-   * {
-    box-sizing: border-box; /* Appliqué partout pour éviter les soucis de taille */
-  }
-  
-  html {
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+html {
     scroll-behavior: smooth;
     font-family: "Fira Sans", sans-serif;
   }
@@ -23,7 +25,7 @@
   h1 {
     font-weight: 900;
     font-size: 60px;
-    margin-top: 40px;
+    margin-top: -50px;
     text-align: center;
   }
   
@@ -36,818 +38,771 @@
   a {
     text-decoration: none;
     color: inherit;
-    transition: color 0.3s ease;
-    font-style: italic;
+    transition: color 0.2s ease;
+}
 
-  }
-  
-  /* =========================================
-     3. HEADER & NAVIGATION
-     ========================================= */
-  header {
-    position: relative;
-    z-index: 1000;
-    background-color: transparent;
-    color: #ffffff;
-    font-weight: bold;
-    padding: 15px 0;
-    border-bottom: 1px solid rgba(221, 221, 221, 0.5);
+ul {
+    list-style: none;
+}
+
+/* =========================================
+   2. HEADER TRANSPARENT (Style CUBE)
+   ========================================= */
+header {
+    position: absolute; /* Ou 'fixed' si tu veux un header qui reste tout le temps */
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100px;
+    z-index: 10000; /* Ton Z-index est bon */
+    background-color: rgba(0, 0, 0, 0.3);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+    backdrop-filter: blur(1px);
     transition: all 0.5s ease;
-  }
-  
+    color: #fff;
+}
 
-  header:hover {
-    background-color: #ffffff;
-    color: #000000;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    filter: invert(0);
-  }
-  
-  nav {
+/* Le header devient blanc au survol ou si un menu est ouvert */
+header:hover, 
+header.menu-open {
+    background-color: #fff;
+    color: #000;
+    border-bottom: 1px solid #eee;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+}
+
+nav {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 0 40px;
-  }
- 
-  header a {
-    color: #ffffff;
-   
-  }
+    height: 100%;
+    padding: 0 30px;
+    max-width: 1800px;
+    margin: 0 auto;
+}
+
+/* --- LOGO --- */
+.menu-category {
+    display: flex;
+    align-items: center;
+    height: 100%;
+}
+
+.logo {
+    display: flex;
+    align-items: center;
+    height: 50px;
+    margin-right: 40px;
+    transition: transform 0.3s;
+}
+
+.logo img {
+    height: 100%;
+    width: auto;
+    filter: brightness(0) invert(1); /* Blanc par défaut */
+    transition: filter 0.3s;
+}
+
+header:hover .logo img {
+    filter: brightness(0); /* Noir au survol */
+}
+
+/* --- NAVIGATION --- */
+.nav-list {
+    display: flex;
+    height: 100%;
+    align-items: center;
+}
+
+.nav-item {
+    height: 100%;
+    display: flex;
+    align-items: center;
+    position: static; /* TRES IMPORTANT : Permet au menu absolute de se référer au Header, pas au bouton */
+}
+
+.link_category {
+    padding: 0 25px;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    font-size: 1.05rem;
+    font-style: italic;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    position: relative;
+    color: inherit;
+    cursor: pointer;
+}
+
+/* Ligne bleue au survol */
+.link_category::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 0;
+    height: 4px;
+    background-color: #00b0f0;
+    transition: width 0.3s ease;
+}
+
+/* */
+
+.nav-item:hover .link_category::after {
+    width: 100%;
+}
+
+/* --- USER & ICONES --- */
+.menu-user {
+    display: flex;
+    align-items: center;
+    font-weight: 700;
+    font-size: 13px;
+    text-transform: uppercase;
+}
+
+#magasin {
+    margin-right: 25px;
+    text-decoration: underline;
+    text-underline-offset: 4px;
+}
+
+.icone {
+    display: flex;
+    gap: 20px;
+    align-items: center;
+    padding-left: 20px;
+}
+
+.menu-user svg {
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 2;
+}
+
+.mega-menu-dropdown {
+  /* 1. POSITIONNEMENT */
+  display: block; 
+  position: absolute; /* CORRECTION : Absolute pour scroller avec le header */
+  top: 100px; /* Pile sous le header (100% de la hauteur du header) */
+  left: 0;
+  width: 100%;
   
-  header:hover a {
-    color: #000000;
-  }
+  /* 2. STYLE */
+  background: #fff;
+  border-top: 1px solid #e5e5e5;
+  box-shadow: 0 15px 40px rgba(0,0,0,0.1);
+  z-index: 999; /* En dessous du header (10000) */
+  color: #333;
+
+  /* 3. ÉTAT INVISIBLE (DÉPART) */
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
   
-  header a:hover {
+  /* On décale le menu légèrement vers le HAUT (-10px) pour qu'il descende à l'apparition */
+  transform: translateY(-2px); 
+  
+  /* 4. TRANSITION */
+  transition: opacity 0.3s ease, transform 0.3s ease, visibility 0.3s linear;
+}
+
+/* ÉTAT VISIBLE (AU SURVOL) */
+.nav-item:hover .mega-menu-dropdown {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+  
+  /* Le menu revient à sa place normale (top: 100px + 0 translation) */
+  transform: translateY(0); 
+}
+
+/* Applique ceci aux 3 colonnes pour être sûr */
+.col-roots, 
+.col-subs-wrapper, 
+.col-models-wrapper {
+    /* On garde le scroll si nécessaire */
+    overflow-y: auto;
+    
+    /* On empêche le scroll horizontal (qui apparait à cause de l'animation translateX) */
+    overflow-x: hidden; 
+
+    /* Cacher la scrollbar (Firefox) */
+    scrollbar-width: none; 
+    
+    /* Pour éviter les saccades lors du scroll */
+    -webkit-overflow-scrolling: touch;
+}
+
+/* Cacher la scrollbar (Chrome, Safari, Edge, Opera) */
+.col-roots::-webkit-scrollbar, 
+.col-subs-wrapper::-webkit-scrollbar, 
+.col-models-wrapper::-webkit-scrollbar {
+    display: none; /* La barre disparait totalement */
+}
+
+.mega-menu-wrapper {
+    display: flex;
+    max-width: 1400px;
+    margin: 0 auto;
+    height: 550px;
+    background: #fff;
+    transition: all 0.5s ease;
+}
+
+/* COLONNE 1 : Racines */
+.col-roots {
+    width: 260px;
+    background-color: #f7f7f7;
+    border-right: 1px solid #eee;
+    padding: 30px 0;
+    overflow-y: auto;
+}
+
+/* COLONNE 2 : Sous-Catégories */
+.col-subs-wrapper {
+    width: 260px;
+    background-color: #fff;
+    border-right: 1px solid #eee;
+    overflow-y: auto;
+}
+
+.subs-container {
+    padding: 30px 0;
+    height: 100%;
+}
+
+/* COLONNE 3 : Modèles */
+.col-models-wrapper {
+    flex: 1;
+    background-color: #fff;
+    padding: 40px 50px;
+    overflow-y: auto;
+}
+
+/* ITEMS DU MENU */
+.menu-item {
+    padding: 12px 30px;
+    cursor: pointer;
+    font-size: 14px;
     font-weight: 800;
-  }
-  
+    text-transform: uppercase;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    transition: all 0.2s;
+    color: #000;
+}
 
+.menu-item span {
+    font-size: 18px;
+    font-weight: 300;
+    color: #ccc;
+}
 
-/* Cookie Banner - Style CUBE Bikes */
+.menu-item:hover, 
+.menu-item.active {
+    color: #00b0f0;
+    background-color: #fff;
+}
+
+.menu-item.active {
+    border-left: 4px solid #00b0f0;
+    padding-left: 26px;
+}
+
+/* Style Sous-Catégories (Italique) */
+.col-subs-wrapper .menu-item {
+    font-weight: 700;
+    font-style: italic;
+    color: #444;
+}
+
+.col-subs-wrapper .menu-item.active {
+    color: #00b0f0;
+}
+
+/* Modèles Grid */
+.col-models-wrapper h3 {
+    font-size: 24px;
+    font-weight: 900;
+    text-transform: uppercase;
+    margin-bottom: 30px;
+    padding-bottom: 10px;
+    border-bottom: 2px solid #00b0f0;
+    display: inline-block;
+}
+
+.model-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 15px 40px;
+}
+
+.model-link {
+    font-size: 14px;
+    color: #555;
+    font-weight: 500;
+    padding: 5px 0;
+    display: block;
+    transition: transform 0.2s, color 0.2s;
+}
+
+.model-link:hover {
+    color: #00b0f0;
+    transform: translateX(5px);
+}
+
+/* Utilitaires JS */
+.d-none { display: none !important; }
+.d-block { display: block !important; }
+
+/* =========================================
+   4. CAROUSEL & HERO
+   ========================================= */
+.intro-carousel {
+    position: relative;
+    width: 100%;
+    height: 100vh;
+    overflow: hidden;
+}
+
+.carousel {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 0;
+}
+
+.carousel-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    position: absolute;
+    opacity: 0;
+    transition: opacity 1s ease-in-out;
+}
+
+.carousel-image.active {
+    opacity: 1;
+}
+
+/* =========================================
+   5. CONTENU PRINCIPAL & CARTES
+   ========================================= */
+.intro-text {
+    position: relative;
+    z-index: 2;
+    background: #fff;
+    padding: 80px 20px;
+    text-align: center;
+}
+
+.intro-text h1 {
+    font-size: 48px;
+    font-weight: 900;
+    text-transform: uppercase;
+    margin-bottom: 10px;
+}
+
+.Univers {
+    background-color: #f4f4f4;
+    padding: 60px 0;
+}
+
+.univers-cards {
+    display: flex;
+    justify-content: center;
+    gap: 30px;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
+}
+
+.card {
+    background: #fff;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+    transition: transform 0.3s;
+}
+
+.card:hover {
+    transform: translateY(-10px);
+}
+
+.card-image img {
+    width: 100%;
+    height: 250px;
+    object-fit: cover;
+}
+
+.card-text {
+    padding: 30px;
+    text-align: center;
+}
+
+.card-text h3 {
+    font-size: 20px;
+    font-weight: 800;
+    text-transform: uppercase;
+    margin-bottom: 15px;
+}
+
+/* =========================================
+   6. BOUTONS
+   ========================================= */
+button, .btn {
+    display: inline-block;
+    background-color: #00b0f0;
+    color: #fff;
+    border: none;
+    border-radius: 2px;
+    padding: 12px 30px;
+    font-size: 14px;
+    font-weight: 700;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+button:hover, .btn:hover {
+    background-color: #008cb0;
+    transform: translateY(-2px);
+}
+
+/* =========================================
+   7. FOOTER
+   ========================================= */
+footer {
+    background: #111;
+    color: #fff;
+    padding: 40px;
+    text-align: center;
+    font-size: 14px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+/* =========================================
+   8. ACCESSOIRES
+   ========================================= */
+.accessoires {
+    padding: 60px 20px;
+    background-color: #fff;
+    text-align: center;
+}
+
+.accessoires h2 {
+    margin-bottom: 40px;
+    font-size: 32px;
+    text-transform: uppercase;
+}
+
+/* =========================================
+   10. COOKIE BANNER (Style CUBE Premium)
+   ========================================= */
+
+/* L'arrière-plan flouté */
 .cookie-banner {
   position: fixed;
-  inset: 0;
-  background: rgba(0, 0, 0, 0.5);
-  backdrop-filter: blur(3px);
-  z-index: 10000;
+  inset: 0; /* Prend tout l'écran */
+  background: rgba(0, 0, 0, 0.6); /* Fond sombre */
+  backdrop-filter: blur(5px); /* Effet de flou moderne */
+  z-index: 99999; /* Au-dessus de TOUT (même du header) */
   display: flex;
   align-items: center;
   justify-content: center;
-  opacity: 1;
-  transition: opacity 0.3s ease;
-  width: 100%;
-}
-
-.cookie-banner.hidden {
   opacity: 0;
   pointer-events: none;
+  transition: opacity 0.3s ease;
 }
 
-.cookie-img-container
-{
-  width: 500%;
+/* Classe pour afficher la bannière via JS */
+.cookie-banner.show {
+  opacity: 1;
+  pointer-events: auto;
 }
 
-.cookie-img
-{
+/* La carte principale */
+.cookie-content {
+  background: #fff;
+  width: 90%;
+  max-width: 800px;
+  display: flex;
+  box-shadow: 0 20px 50px rgba(0,0,0,0.2);
+  overflow: hidden;
+  position: relative;
+  /* Pas de border-radius ou très léger pour le style Cube "carré" */
+  border-radius: 2px; 
+}
+
+/* Partie Image (Gauche) */
+.cookie-img-container {
+  width: 40%;
+  background-color: #f4f4f4;
+  position: relative;
+  overflow: hidden;
+  display: none; /* Caché sur mobile par défaut */
+}
+
+/* Afficher l'image sur écran large */
+@media (min-width: 768px) {
+  .cookie-img-container {
+      display: block;
+  }
+}
+
+.cookie-img {
   width: 100%;
   height: 100%;
-
-  background-size: contain;
-  background-repeat: no-repeat;
-  background-position: center;
+  object-fit: cover;
+  filter: grayscale(100%); /* Style noir et blanc chic */
 }
 
-.cookie-icon-container
-{
-  background-size: cover;
-  background-repeat: repeat;
-  width: 50%;
+/* Logo superposé sur l'image */
+.cookie-icon-container {
+  position: absolute;
+  top: 20px;
+  left: 20px;
+  width: 50px;
+  z-index: 10;
 }
 
-.cookie-icon
-{
- 
-  position: relative;
-  height: 170px;
-  top: 00px;
-  left: 90px;
-  width: 200%;
-
-  margin-left: 8em;
-  display: flex;
+.cookie-icon {
+  width: 100%;
+  height: auto;
 }
 
-.cookie-content {
-  background: white;
-  border-radius: 8px;
-  max-width: 1000px;
-  margin-top: 0px;
-  width: 90%;
-  height: 70%;
-  display: inline-flex;
-  overflow: hidden;
-  box-shadow: 0 10px 60px rgba(0, 0, 0, 0.3);
-  border: 1px solid #006dd4;
-}
-
-.cookie-text-section {
-  position: relative;
-  flex: 1;
-  padding: 50px 45px;
+/* Partie Texte (Droite) */
+.cookie-text {
+  padding: 40px;
+  width: 100%;
   display: flex;
   flex-direction: column;
- 
+  justify-content: center;
 }
 
-.cookie-text-section h3 {
-  font-size: 13px;
-  color: #666;
-  margin-bottom: 20px;
-  font-weight: 500;
-  text-decoration: underline;
+@media (min-width: 768px) {
+  .cookie-text {
+      width: 60%;
+  }
 }
 
-.cookie-text-section p {
-
-  font-size: 13px;
-  line-height: 1.7;
-  color: #333;
-  margin-bottom: 15px;
+.cookie-text p {
+  font-size: 14px;
+  line-height: 1.6;
+  color: #555;
+  margin: 20px 0;
 }
 
-.cookie-text-section p.highlight {
-  font-weight: 600;
-  margin-top: 20px;
-  margin-bottom: 10px;
-}
-
-.cookie-link {
-  color: #00BCD4;
-  text-decoration: underline;
-  cursor: pointer;
-  font-weight: 500;
-}
-
+/* Boutons */
 .cookie-buttons {
-  margin-top: auto;
   display: flex;
   gap: 15px;
-  padding-top: 30px;
+  flex-wrap: wrap;
+  margin-top: 10px;
 }
 
-.btn-learn-more {
-  background: transparent;
-  color: #333;
-  border: none;
-  padding: 0;
-  font-size: 14px;
-  font-weight: 500;
-  cursor: pointer;
-  text-decoration: underline;
-  transition: all 0.2s;
-  font-style: italic;
-}
-
-.btn-learn-more:hover {
-  color: #00BCD4;
-}
-
-.btn-accept {
-  background: #00BCD4;
-  color: white;
-  border: none;
-  padding: 14px 40px;
-  border-radius: 4px;
+.btn-accept, .btn-customize, .btn-decline {
+  padding: 12px 25px;
   font-size: 13px;
-  font-weight: 600;
-  cursor: pointer;
+  font-weight: 800;
   text-transform: uppercase;
-  letter-spacing: 0.8px;
-  transition: all 0.2s;
-  margin-left: auto;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  border: 1px solid transparent;
+}
+
+/* Bouton Accepter (Bleu Cube) */
+.btn-accept {
+  background-color: #00b0f0;
+  color: #fff;
+  border-color: #00b0f0;
+  flex: 1;
 }
 
 .btn-accept:hover {
-  background: #00ACC1;
-  transform: translateY(-1px);
-  box-shadow: 0 4px 15px rgba(0, 188, 212, 0.4);
+  background-color: #008cb0;
 }
 
-/* Modal détaillé */
+/* Bouton Personnaliser (Contour Noir) */
+.btn-customize {
+  background-color: transparent;
+  color: #333;
+  border-color: #ddd;
+}
+
+.btn-customize:hover {
+  border-color: #333;
+  background-color: #fff;
+}
+
+/* Lien "Continuer sans accepter" discret */
+.btn-decline {
+  background: none;
+  border: none;
+  padding: 0;
+  color: #999;
+  font-size: 12px;
+  text-decoration: underline;
+  align-self: flex-start;
+  margin-bottom: 10px;
+}
+
+.btn-decline:hover {
+  color: #333;
+}
+
+/* =========================================
+ 11. MODAL DE PRÉFÉRENCES (Le détail)
+ ========================================= */
 .cookie-modal {
   position: fixed;
   inset: 0;
-  background: rgba(0, 0, 0, 0.5);
-  backdrop-filter: blur(3px);
-  z-index: 10001;
-  display: none;
+  background: rgba(0,0,0,0.7);
+  z-index: 100000;
+  display: none; /* Caché via JS */
   align-items: center;
   justify-content: center;
-  opacity: 0;
-  transition: opacity 0.3s ease;
+  padding: 20px;
 }
 
 .cookie-modal.active {
   display: flex;
-  opacity: 1;
 }
 
 .cookie-modal-content {
-  background: white;
-  border-radius: 8px;
-  max-width: 900px;
-  width: 90%;
-  max-height: 85vh;
-  overflow: hidden;
+  background: #fff;
+  width: 100%;
+  max-width: 700px;
+  max-height: 90vh;
   display: flex;
   flex-direction: column;
-  box-shadow: 0 10px 60px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 10px 40px rgba(0,0,0,0.3);
 }
 
+/* Header du Modal */
 .cookie-modal-header {
-  padding: 25px 35px;
-  border-bottom: 1px solid #e0e0e0;
+  padding: 20px 30px;
+  border-bottom: 1px solid #eee;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  background: #f8f8f8;
+  background: #f9f9f9;
 }
 
 .cookie-modal-header h2 {
+  margin: 0;
   font-size: 18px;
-  font-weight: 600;
-  color: #333;
+  font-weight: 800;
+  text-transform: uppercase;
 }
 
 .close-modal {
   background: none;
   border: none;
-  font-size: 32px;
-  color: #999;
+  font-size: 28px;
   cursor: pointer;
-  width: 36px;
-  height: 36px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: all 0.2s;
   line-height: 1;
-}
-
-.close-modal:hover {
   color: #333;
-  transform: rotate(90deg);
 }
 
+/* Corps du Modal (Scrollable) */
 .cookie-modal-body {
- 
-  padding: 30px 35px;
- 
-  flex: 1;
+  padding: 30px;
+  overflow-y: auto;
 }
 
 .modal-intro {
-  margin-top: 1000px;
   font-size: 13px;
-  line-height: 1.7;
-  color: #555;
-  margin-bottom: 18px;
-}
-
-
-.use-title {
-  font-weight: 600;
-  color: #333;
-  margin-top: 20px;
-}
-
-.use-detail {
   color: #666;
-  font-style: italic;
+  margin-bottom: 20px;
 }
 
+/* Catégories de cookies */
 .cookie-category {
-  margin: 20px 0;
-  padding: 20px;
-  background: #f9f9f9;
-  border-radius: 6px;
-  border: 1px solid #e8e8e8;
+  border: 1px solid #eee;
+  padding: 15px;
+  margin-bottom: 15px;
+  background: #fff;
+  transition: background 0.2s;
+}
+
+.cookie-category:hover {
+  background: #fcfcfc;
 }
 
 .cookie-category-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 12px;
-}
-
-.cookie-category-title {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  flex: 1;
+  margin-bottom: 10px;
 }
 
 .cookie-category-title h3 {
-  font-size: 15px;
-  font-weight: 600;
-  color: #333;
   margin: 0;
+  font-size: 15px;
+  font-weight: 700;
+  text-transform: uppercase;
 }
 
 .required-badge {
-  background: #00BCD4;
-  color: white;
-  padding: 3px 10px;
-  border-radius: 12px;
-  font-size: 11px;
-  font-weight: 600;
+  font-size: 10px;
+  background: #eee;
+  padding: 2px 6px;
+  border-radius: 2px;
+  margin-left: 10px;
   text-transform: uppercase;
-  letter-spacing: 0.3px;
+  font-weight: bold;
+  color: #555;
 }
 
 .cookie-description {
-  font-size: 12px;
-  line-height: 1.6;
-  color: #666;
+  font-size: 13px;
+  color: #777;
   margin: 0;
 }
 
-/* Toggle Switch */
-.toggle-switch {
-  position: relative;
-  display: inline-block;
-  width: 50px;
-  height: 26px;
-}
-
-.toggle-switch input {
-  opacity: 0;
-  width: 0;
-  height: 0;
-}
-
-.slider {
-  position: absolute;
-  cursor: pointer;
-  inset: 0;
-  background-color: #ccc;
-  transition: 0.3s;
-  border-radius: 26px;
-}
-
-.slider:before {
-  position: absolute;
-  content: "";
-  height: 20px;
-  width: 20px;
-  left: 3px;
-  bottom: 3px;
-  background-color: white;
-  transition: 0.3s;
-  border-radius: 50%;
-}
-
-input:checked + .slider {
-  background-color: #00BCD4;
-}
-
-input:checked + .slider:before {
-  transform: translateX(24px);
-}
-
-input:disabled + .slider {
-  opacity: 0.5;
-  cursor: not-allowed;
-}
-
-.toggle-switch.disabled {
-  cursor: not-allowed;
-}
-
-/* Modal Footer */
+/* Footer du Modal */
 .cookie-modal-footer {
-  padding: 25px 35px;
-  border-top: 1px solid #e0e0e0;
+  padding: 20px 30px;
+  border-top: 1px solid #eee;
+  background: #f9f9f9;
   display: flex;
-  gap: 12px;
   justify-content: flex-end;
-  background: #f8f8f8;
+  gap: 10px;
 }
 
 .btn-modal {
-  padding: 12px 28px;
-  font-size: 13px;
-  font-weight: 600;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-  transition: all 0.2s;
+  padding: 12px 20px;
+  font-size: 12px;
+  font-weight: 800;
   text-transform: uppercase;
-  letter-spacing: 0.5px;
+  cursor: pointer;
+  border: 1px solid transparent;
 }
 
 .btn-accept-all {
-  background: #00BCD4;
-  color: white;
-}
-
-.btn-accept-all:hover {
-  background: #00ACC1;
-  transform: translateY(-1px);
-  box-shadow: 0 4px 12px rgba(0, 188, 212, 0.3);
+  background-color: #00b0f0;
+  color: #fff;
 }
 
 .btn-save {
-  background: #4CAF50;
-  color: white;
-}
-
-.btn-save:hover {
-  background: #45a049;
-  transform: translateY(-1px);
-  box-shadow: 0 4px 12px rgba(76, 175, 80, 0.3);
+  background-color: #333;
+  color: #fff;
 }
 
 .btn-reject-all {
-  background: transparent;
-  color: #666;
-  border: 2px solid #ddd;
-}
-
-.btn-reject-all:hover {
-  background: #f5f5f5;
-  border-color: #999;
-}
-
-header {
   background-color: transparent;
-  color: #ffffff;
-  font-weight: bold;
-  padding: 15px 0;
-  border-bottom: 1px solid rgba(221, 221, 221, 0.5);
-  transition: all 0.5s ease;
+  border-color: #ddd;
+  color: #555;
 }
-
-  .logo {
-    display: flex; 
-    
-    height: 110px;
-    filter: brightness(0) invert(1); 
-    transition: transform 0.3s, filter 0.3s;
-  }
-  
-  .logo img {
-    height: 120px;
-    margin-right: 40px;
-  }
-  
-  .logo img:hover {
-    transform: scale(1.1);
-    cursor: pointer;
-  }
-  
-  /* Inversement de couleur du logo au survol du header */
-  header:hover .logo {
-    filter: brightness(0); /* Devient noir */
-  }
-  
-  /* Menu Catégories */
-
-
-  /* --- Mise à jour de la section Logo & Menu --- */
-
-.menu-category {
-  display: flex;
-  align-items: center; /* C'est ça qui centre verticalement le logo et le texte */
-  height: 100%;        /* Prend toute la hauteur du header */
-}
-
-/* Le conteneur du logo (le lien <a>) */
-.logo {
-  display: flex;
-  align-items: center;
-  height: 80px; /* On réduit un peu pour que ça rentre mieux */
-  margin-right: 20px; /* Espace propre entre logo et menu */
-  transition: transform 0.3s ease;
-}
-
-/* L'image elle-même */
-.logo img {
-  height: 100%;       /* S'adapte au conteneur */
-  width: auto;        /* Garde les proportions */
-  object-fit: contain;
-  filter: brightness(0) invert(1); /* Blanc par défaut */
-  transition: filter 0.3s ease;
-}
-
-.logo:hover {
-  transform: scale(1.05); /* Petit zoom sympa au survol */
-}
-
-/* Changement de couleur au survol du Header */
-header:hover .logo img {
-  filter: brightness(0); /* Devient noir */
-}
-
-/* Le menu liste (ul) */
-.menu-category ul {
-  list-style: none;
-  display: flex;
-  margin: 0;         /* On reset les marges pour éviter les décalages */
-  padding: 0;
-  align-items: center;
-  font-weight: bolder;
-}
-  .menu-category ul {
-    list-style: none;
-    display: flex;
-    margin: 0 0 0 0px;
-    padding: 0;
-    align-items: center;
-    font-weight: bolder;
-  }
-  
-  .menu-category ul li {
-    margin: 0 20px;
-  }
-  
-  .menu-category ul li a {
-    font-size: 18px; /* Increased font size for categories */
-    font-weight: 700; /* Made the font bolder */
-    position: relative;
-  }
-
-  
-  /* Soulignement animé */
-  .menu-category ul li a::after {
-    content: '';
-    display: block;
-    width: 0;
-    height: 2px;
-    background: #2fb5d2;
-    transition: width 0.3s;
-    position: absolute;
-    bottom: -5px;
-    left: 0;
-  }
-  
-  .menu-category ul li a:hover::after {
-    width: 100%;
-  }
-  
-  /* User & Icônes */
-  .menu-user, .icone {
-    display: flex;
-    align-items: center;
-  }
-  
-  .icone {
-    gap: 15px;
-    margin-left: 20px;
-  }
-  
-  #magasin {
-    margin-right: 15px;
-    text-decoration: underline;
-  }
-  
-  header svg {
-    fill: transparent;
-    stroke: #ffffff;
-    transition: stroke 0.3s ease;
-  }
-  
-  header:hover svg {
-    stroke: #000000;
-  }
-  
-  /* =========================================
-     4. MEGA MENU // SOUS MENU 
-     ========================================= */
-  .mega-menu-container {
-    display: flex;
-    position: absolute;
-    top: 100%;
-    left: 0;
-    width: 100%;
-    height: auto;
-    background-color: #fff;
-    border-top: 1px solid #e5e5e5;
-    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
-    z-index: 999;
-    
-    /* Animation */
-    opacity: 0;
-    visibility: hidden;
-    transition: all 0.3s ease;
-  }
-  
-  .mega-menu-container.active {
-    opacity: 1;
-    visibility: visible;
-  }
-  
-  .menu-col li {
-    position: relative;
-    padding: 10px 20px;
-    cursor: pointer;
-    font-size: 14px;
-    color: #444;
-    display: block;
-    transition: color 0.3s ease;
-    border-bottom: 1px solid #f5f5f5;
-  }
-  
-  /* Barre animée menu */
-  .menu-col li::after {
-    content: '';
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    width: 0;
-    height: 3px;
-    background-color: #2fb5d2;
-    transition: width 0.3s ease-in-out;
-  }
-  
-  .menu-col li:hover, 
-  .menu-col li.active {
-    color: #2fb5d2;
-    background-color: #fcfcfc;
-    font-weight: 700;
-  }
-  
-  .menu-col li:hover::after, 
-  .menu-col li.active::after {
-    width: 100%;
-  }
-  
-  .menu-col li a {
-    display: block;
-    width: 100%;
-    height: 100%;
-  }
-  
-  .has-children::after {
-    content: none !important;
-  }
-  
-  .empty-msg {
-    padding: 20px;
-    color: #999;
-    font-style: italic;
-    font-size: 13px;
-  }
-  
-  /* =========================================
-     5. HERO / CAROUSEL
-     ========================================= */
-  .carousel {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100vh; 
-    z-index: -1; 
-    transition: all ease 0.3s;
-  }
-  
-  .carousel-image {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    filter: drop-shadow(0 4px 6px rgba(0, 0, 0, 0.3));
-    opacity: 0;
-    transition: opacity 1s ease-in-out;
-    z-index: 0;
-  }
-  
-  .carousel-image.active {
-    opacity: 1;
-    z-index: 1;
-  }
-  
-  .carousel-buttons {
-    position: absolute;
-    top: 50%;
-    width: 100%;
-    display: flex;
-    justify-content: space-between;
-    transform: translateY(-50%);
-    z-index: 2; /* Assure que les boutons sont au-dessus */
-  }
-  
-  .carousel-button {
-    background-color: rgba(0, 0, 0, 0.5);
-    color: white;
-    border: none;
-    padding: 10px;
-    cursor: pointer;
-  }
-  
-  .intro-text {
-    position: relative;
-    z-index: 2;
-    margin-top: 850px; 
-    background-color: white;
-    padding: 20px;
-    text-align: center;
-  }
-  
-  /* =========================================
-     6. SECTION UNIVERS (Cartes)
-     ========================================= */
-  .Univers {
-    padding: 60px 20px;
-    text-align: center;
-    background-color: #f9f9f9;
-    margin-bottom: 40px;
-  }
-  
-  .univers-cards {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 20px;
-    justify-content: center;
-  }
-  
-  .card {
-    display: flex;
-    flex: 1 1 calc(50% - 20px);
-    max-width: 600px;
-    border: 1px solid #ddd;
-    border-radius: 8px;
-    overflow: hidden;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    transition: all 0.3s ease;
-  }
-  
-  .card:hover {
-    box-shadow: 0 8px 12px rgba(0, 0, 0, 0.2);
-    transform: translateY(-5px);
-  }
-  
-  .card-content {
-    display: flex;
-    width: 100%;
-  }
-  
-  .card-text {
-    flex: 1;
-    padding: 20px;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    border: 10px solid #f9f9f9;
-  }
-  
-  .card-text p {
-    padding: 20px;
-  }
-  
-  .card-image {
-    flex: 1;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background-color: #f9f9f9;
-  }
-  
-  .card-image img {
-    max-width: 100%;
-    height: auto;
-    object-fit: cover;
-  }
-  
-  /* =========================================
-     7. BOUTONS
-     ========================================= */
-  button, .btn {
-    background-color: #2fb5d2;
-    width: fit-content;
-    color: #ffffff;
-    border: none;
-    border-radius: 5px;
-    padding: 10px 20px;
-    font-size: 16px;
-    font-weight: bold;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  }
-  
-  button:hover, .btn:hover {
-    background-color: #1a8ca8;
-    transform: translateY(-2px);
-    box-shadow: 0 6px 8px rgba(0, 0, 0, 0.15);
-  }
 
 /* =========================================
    SECTION ACCESSOIRES
@@ -911,7 +866,6 @@ header:hover .logo img {
   /* Petit effet au survol */
   .accessoire-card:hover .accessoire-image {
     transform: translateY(-5px); /* Le carré remonte un peu */
-    
     box-shadow: inset 0 0 0 1000px rgba(0, 0, 0, 0.1); /* L'image s'éclaircit un peu */
   }
   

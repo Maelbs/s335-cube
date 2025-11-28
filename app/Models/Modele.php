@@ -29,6 +29,34 @@ class Modele extends Model
         'materiau_cadre' => 'string',
         'type_velo' => 'string',
     ];
+    public function tailles()
+    {
+        return $this->hasManyThrough(
+            Taille::class,          // Le modèle final qu'on veut (Taille)
+            AGeometrie::class,    // Le modèle intermédiaire (Géo)
+            'id_modele',            // Clé étrangère sur Velo
+            'id_taille',            // Clé étrangère sur Taille
+            'id_modele',            // Clé locale sur Modele
+            'id_taille'             // Clé locale sur Velo
+        )->distinct(); // distinct() pour éviter d'avoir 10 fois "M" si tu as 10 vélos M en stock
+    }
+    // public function tailles () {
+    //     return $this->belongsToMany(
+    //         Taille::class, 
+    //         'a_geometrie',      // Nom de la table pivot
+    //         'id_modele',             // Clé étrangère modèle courant
+    //         'id_taille'      // Clé étrangère modèle lié
+    //     )->withPivot('taille'); // IMPORTANT : On récupère la valeur spécifique ici
+    // }
+
+    public function geometries() {
+        return $this->belongsToMany(
+            Geometrie::class, 
+            'a_geometrie',      // Nom de la table pivot
+            'id_modele',             // Clé étrangère modèle courant
+            'id_geometrie'      // Clé étrangère modèle lié
+        )->withPivot('valeur_geometrie', 'id_taille'); // IMPORTANT : On récupère la valeur spécifique ici
+    }
 
     public function categorie()
     {

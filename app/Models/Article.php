@@ -30,6 +30,16 @@ class Article extends Model
         'poids' => 'decimal:1',
     ];
 
+    public function caracteristiques()
+    {
+        return $this->belongsToMany(
+            Caracteristique::class, 
+            'a_caracteristique',      // Nom de la table pivot
+            'reference',             // Clé étrangère modèle courant
+            'id_caracteristique'      // Clé étrangère modèle lié
+        )->withPivot('valeur_caracteristique'); // IMPORTANT : On récupère la valeur spécifique ici
+    }
+
     public function photos()
     {
         return $this->hasMany(PhotoArticle::class, 'reference', 'reference');
