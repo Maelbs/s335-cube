@@ -22,9 +22,30 @@ body {
     background-color: #fff;
     color: #333;
     overflow-x: hidden;
+    margin: 0;
+    transition: all ease 0.3s;
+    background-repeat: no-repeat;
 }
+  
+  
+  /* =========================================
+     2. TYPOGRAPHYÉ
+     ========================================= */
+  h1 {
 
-a {
+    font-weight: 900;
+    font-size: 60px;
+    margin-top: 20px;
+    text-align: center;
+  }
+  
+  h2 {
+    font-weight: 800;
+    font-size: 40px;
+    text-align: center;
+  }
+  
+  a {
     text-decoration: none;
     color: inherit;
     transition: color 0.2s ease;
@@ -410,37 +431,64 @@ header:hover .logo img {
     max-width: 1200px;
     margin: 0 auto;
     padding: 0 20px;
+    flex-wrap: wrap; /* Allow wrapping for better responsiveness */
 }
 
 .card {
     background: #fff;
+    height: 500px;
+    width: 600px;
     flex: 1;
     display: flex;
     flex-direction: column;
-    box-shadow: 0 5px 15px rgba(0,0,0,0.05);
-    transition: transform 0.3s;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    transition: transform 0.3s, box-shadow 0.3s;
+    border-radius: 15px; /* Rounded corners for a modern look */
+    overflow: hidden; /* Ensure content stays within the card */
+    max-width: 1000px; /* Limit card width for better alignment */
 }
+
+
 
 .card:hover {
     transform: translateY(-10px);
+    box-shadow: 0 10px 20px rgba(0,0,0,0.2);
 }
 
 .card-image img {
     width: 100%;
-    height: 250px;
-    object-fit: cover;
+    height: 100%; /* Adjusted height for consistency */
+
+
 }
 
 .card-text {
-    padding: 30px;
+    padding: 20px;
     text-align: center;
 }
 
 .card-text h3 {
-    font-size: 20px;
+    font-size: 22px;
     font-weight: 800;
     text-transform: uppercase;
     margin-bottom: 15px;
+}
+
+.card-text p {
+    font-size: 14px;
+    color: #666;
+    margin-bottom: 20px;
+}
+
+/* Button placement adjustment */
+.card .btn {
+    align-self: center; /* Center the button horizontally */
+    margin-top: 10px; /* Add spacing above the button */
+    margin-bottom: 20px; /* Add spacing below the button */
+}
+
+#first-p {
+    margin-bottom: 35px; /* Increased spacing below the first paragraph */
 }
 
 /* =========================================
@@ -451,13 +499,14 @@ button, .btn {
     background-color: #00b0f0;
     color: #fff;
     border: none;
-    border-radius: 2px;
+    border-radius: 40px;
     padding: 12px 30px;
     font-size: 14px;
     font-weight: 700;
     text-transform: uppercase;
     cursor: pointer;
     transition: all 0.3s ease;
+
 }
 
 button:hover, .btn:hover {
@@ -793,81 +842,84 @@ footer {
   color: #555;
 }
 
-/* SWITCH IOS STYLE */
-.toggle-switch {
-  position: relative;
-  display: inline-block;
-  width: 40px;
-  height: 22px;
-}
+/* =========================================
+   SECTION ACCESSOIRES
+   ========================================= */
 
-.toggle-switch input {
-  opacity: 0;
-  width: 0;
-  height: 0;
-}
-
-.slider {
-  position: absolute;
-  cursor: pointer;
-  top: 0; left: 0; right: 0; bottom: 0;
-  background-color: #ccc;
-  transition: .4s;
-  border-radius: 22px;
-}
-
-.slider:before {
-  position: absolute;
-  content: "";
-  height: 16px;
-  width: 16px;
-  left: 3px;
-  bottom: 3px;
-  background-color: white;
-  transition: .4s;
-  border-radius: 50%;
-}
-
-input:checked + .slider {
-  background-color: #00b0f0;
-}
-
-input:checked + .slider:before {
-  transform: translateX(18px);
-}
-
-.toggle-switch.disabled {
-  opacity: 0.6;
-  cursor: not-allowed;
-}
-
-/* --- ANIMATION DES COLONNES INTÉRIEURES --- */
-
-/* On crée une animation de "Fade In" vers la droite */
-@keyframes fadeInSlide {
-  from {
-      opacity: 0;
-      transform: translateX(10px); /* Part un peu de la droite */
+   .accessoires {
+    padding: 60px 20px;
+    background-color: #fff; /* Fond blanc pour détacher du gris d'avant */
+    text-align: center;
   }
-  to {
-      opacity: 1;
-      transform: translateX(0); /* Arrive à sa place */
+  
+  .accessoires h2 {
+    margin-bottom: 40px;
   }
-}
+  
+  /* Le conteneur Flex pour aligner les 3 blocs */
+  .accessoires-cards {
+    display: flex;
+    justify-content: center;
+    gap: 30px; /* Espace entre les cartes */
+    flex-wrap: wrap; /* Passe à la ligne sur mobile */
+  }
+  
+  /* La carte individuelle */
+  .accessoire-card {
+    flex: 1; /* Les cartes prennent la même largeur */
+    min-width: 250px; /* Pas trop petit sur mobile */
+    max-width: 350px; /* Pas trop large sur grand écran */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  /* La boîte carrée avec l'image */
+  .accessoire-image {
+    width: 100%;
+    aspect-ratio: 1 / 1; /* LA formule magique pour faire un carré */
+    background-size: cover;
+    background-position: center;
+    border-radius: 15px; /* Coins arrondis sympas */
+    
+    /* Flexbox pour centrer le titre H3 au milieu du carré */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    
+    margin-bottom: 20px; /* Espace avant le bouton */
+    box-shadow: inset 0 0 0 1000px rgba(0, 0, 0, 0.3); /* Un filtre sombre pour lire le texte */
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+  }
+  
+  /* Le titre dans l'image */
+  .accessoire-image h3 {
+    color: #fff;
+    font-size: 28px;
+    text-transform: uppercase;
+    text-shadow: 0 2px 4px rgba(0,0,0,0.6); /* Ombre portée pour lisibilité max */
+    margin: 0;
+  }
+  
+  /* Petit effet au survol */
+  .accessoire-card:hover .accessoire-image {
+    transform: translateY(-5px); /* Le carré remonte un peu */
+    box-shadow: inset 0 0 0 1000px rgba(0, 0, 0, 0.1); /* L'image s'éclaircit un peu */
+  }
+  
+  /* Ajustement du bouton pour qu'il ne soit pas trop collé */
+  .accessoire-card .btn {
+    margin-top: auto;
+  }
 
-/* Appliquer l'animation quand l'élément N'EST PAS caché */
-/* Cela cible tes containers subs-container et models-container */
-.subs-container:not(.d-none), 
-.models-container:not(.d-none) {
-  animation: fadeInSlide 0.4s ease-out forwards;
-}
 
-/* Optionnel : Une animation différente pour la liste des items pour un effet cascade */
-.menu-item {
-  transition: background-color 0.2s, color 0.2s, padding-left 0.2s;
-}
-
-/* Petit effet de glissement quand on survole un lien */
-.menu-item:hover, .menu-item.active {
-  padding-left: 35px; /* Le texte se décale légèrement à droite */
-}
+  /* =========================================
+     9. FOOTER
+     ========================================= */
+  footer {
+    background-color: #333;
+    color: #fff;
+    text-align: center;
+    padding: 10px 0;
+    width: 100%;
+  }
