@@ -23,7 +23,7 @@
   h1 {
     font-weight: 900;
     font-size: 60px;
-    margin-top: -50px;
+    margin-top: 40px;
     text-align: center;
   }
   
@@ -911,6 +911,7 @@ header:hover .logo img {
   /* Petit effet au survol */
   .accessoire-card:hover .accessoire-image {
     transform: translateY(-5px); /* Le carré remonte un peu */
+    
     box-shadow: inset 0 0 0 1000px rgba(0, 0, 0, 0.1); /* L'image s'éclaircit un peu */
   }
   
