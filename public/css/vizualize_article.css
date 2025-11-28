@@ -1,6 +1,16 @@
 /* =========================================
    IMAGE PRODUIT (HERO)
    ========================================= */
+
+@font-face {
+    font-family: 'Damas Font';
+    src: url('../font/font.woff2');
+}
+
+html {
+    font-family: 'Damas Font';
+}
+
 .product-hero-section {
     /* Force l'image à prendre toute la largeur et casser la ligne flex */
     display: flex;
@@ -45,7 +55,6 @@
     margin: 0 auto;
     padding: 40px 20px;
     gap: 40px; /* Espace entre gauche et droite */
-    font-family: 'Fira Sans', sans-serif;
 }
 
 /* Colonne GAUCHE (Spécifications) */
@@ -131,7 +140,7 @@
 .spec-label {
     width: 25%; /* Largeur fixe pour aligner le texte de droite */
     min-width: 150px;
-    font-weight: 600; /* Gras */
+    font-weight: 650; /* Gras */
     font-size: 13px;
     color: #000;
     padding-right: 20px;
@@ -302,7 +311,6 @@
 .geo-section {
     margin-top: 40px;
     margin-bottom: 40px;
-    font-family: "Fira Sans", sans-serif; /* Ta police actuelle */
     color: #333;
 }
 
@@ -364,7 +372,8 @@
 /* Première colonne (Noms des caractéristiques) */
 .geo-table tbody td:first-child {
     text-align: left;
-    font-weight: 800; /* Gras */
+    font-size: 0.9em;
+    font-weight: 750; /* Gras */
     text-transform: uppercase; /* Majuscules */
     padding-left: 0;
 }
@@ -373,6 +382,7 @@
 .geo-table tbody td:not(:first-child) {
     text-align: center;
     color: #333;
+    font-size: 0.85em;
 }
 
 .geo-table tbody tr td {
