@@ -373,6 +373,31 @@ header:hover .logo img {
 .d-none { display: none !important; }
 .d-block { display: block !important; }
 
+
+
+/* 1. On définit l'animation de glissement */
+@keyframes slideInRight {
+    from {
+        opacity: 0;
+        transform: translateX(5px); /* Part de 20px vers la gauche */
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0); /* Arrive à sa place normale */
+    }
+}
+
+/* 2. On applique l'animation aux conteneurs de Sous-catégories */
+.subs-container {
+    /* L'animation se lance dès que la classe d-none est retirée par le JS */
+    animation: slideInRight 0.4s ease-out forwards;
+}
+
+/* 3. On applique la MÊME animation aux conteneurs de Modèles */
+.models-container {
+    animation: slideInRight 0.4s ease-out forwards;
+}
+
 /* =========================================
    4. CAROUSEL & HERO
    ========================================= */

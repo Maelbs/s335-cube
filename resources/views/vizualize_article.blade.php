@@ -21,27 +21,30 @@
             </div>
 
             <div class="specs-column">
-                <div class="specs-header-row">
-                    <h2>FICHE TECHNIQUE</h2>
-                    <button class="toggle-specs-btn">-</button>
-                </div>
+                <div class="each-specs-column">
+                    <div class="specs-header-row">
+                        <h2>FICHE TECHNIQUE</h2>
+                        <button class="toggle-specs-btn"></button>
+                    </div>
 
-                <div class="specs-content">
-                    @foreach($specifications as $typeNom => $caracteristiques)
-                        <div class="spec-group-title">{{ $typeNom }}</div>
-                        <div class="spec-group-list">
-                            @foreach($caracteristiques as $carac)
-                                <div class="spec-row">
-                                    <div class="spec-label">{{ $carac->nom_caracteristique }}</div>
-                                    <div class="spec-value">{{ $carac->pivot->valeur_caracteristique }}</div>
-                                </div>
-                            @endforeach
-                        </div>
-                    @endforeach
+                    <div class="specs-content">
+                        @foreach($specifications as $typeNom => $caracteristiques)
+                            <div class="spec-group-title">{{ $typeNom }}</div>
+                            <div class="spec-group-list">
+                                @foreach($caracteristiques as $carac)
+                                    <div class="spec-row">
+                                        <div class="spec-label">{{ $carac->nom_caracteristique }}</div>
+                                        <div class="spec-value">{{ $carac->pivot->valeur_caracteristique }}</div>
+                                    </div>
+                                @endforeach
+                            </div>
+                        @endforeach
+                    </div>
                 </div>
-                <div class="geo-section">
-                    <div class="geo-header">
+                <div class="geo-section each-specs-column">
+                    <div class="specs-header-row">
                         <h2>GÉOMÉTRIE</h2>
+                        <button class="toggle-specs-btn"></button>
                     </div>
 
                     <div class="table-responsive">
@@ -91,16 +94,30 @@
                         </table>
                     </div>
                 </div>
+                <div class="each-specs-column">
+                    <div class="specs-header-row">
+                        <h2>Description</h2>
+                        <button class="toggle-specs-btn"></button>
+                    </div>
+                    <p>{{ $velo->varianteVelo->modele->description->texte_description }}</p>
+                </div>
+                <div class="each-specs-column" id="resume_container">
+                    <div class="specs-header-row">
+                        <h2>Résumé</h2>
+                        <button class="toggle-specs-btn"></button>
+                    </div>
+                    <p>{{ $velo->varianteVelo->resume->contenu_resume}}</p>
+                </div>
             </div>
         </div> 
         <div class="sidebar-column">
             <div class="badges">
-                <span class="badge-new">NOUVEAU</span>
                 <span class="badge-season">{{ $velo->varianteVelo->modele->millesime_modele}}</span>
             </div>
 
             <h1 class="product-title">{{ $velo->nom_article }}</h1>
-            <div class="product-ref">Réf: {{ $velo->reference ?? 'N/A' }}</div>
+            <div class="product-ref">Réf: {{ $velo->reference}}</div>
+            <div class="couleur" style="color: {{ $velo->varianteVelo->couleur->nom_couleur }} ">test</div>
 
             <div class="size-selector">
                 <p class="size-label">TAILLE</p>
@@ -119,5 +136,6 @@
         </div>
 
     </div>
+    <script src="{{ asset('js/vizualize_article.js') }}" defer></script>
 </body>
 </html>

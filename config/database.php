@@ -70,7 +70,7 @@ return [
             'port' => env('DB_PORT', '5432'),
             'database' => env('DB_DATABASE', 'sae_cube_bdd'),
             'username' => env('DB_USERNAME', 's335-cube'),
-            'password' => env('DB_PASSWORD', 's335-cube'),
+            'password' => env('DB_PASSWORD', 'vbawpfcube67'),
             'charset' => 'utf8',
             'prefix' => '',
             'prefix_indexes' => true,

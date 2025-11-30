@@ -6,6 +6,7 @@ use App\Models\VarianteVelo;
 use Illuminate\Http\Request;
 use App\Models\Article;
 
+
 class VarianteVeloController extends Controller
 {
     public function index()
@@ -15,6 +16,8 @@ class VarianteVeloController extends Controller
             'fourche',
             'modele.categorie',
             'batterie',
+            'modele.description',
+            'resume'
         ])->get();
 
 
@@ -26,7 +29,7 @@ class VarianteVeloController extends Controller
         // 1. Récupérer l'article grâce à la référence
         // On charge 'caracteristiques' ET le 'typeCaracteristique' de chaque caractéristique
         $velo = Article::where('reference', $reference)
-            ->with(['caracteristiques.typeCaracteristique', 'photos', 'varianteVelo.modele.geometries', 'varianteVelo.modele.tailles'])
+            ->with(['caracteristiques.typeCaracteristique', 'photos', 'varianteVelo.modele.geometries', 'varianteVelo.modele.tailles', 'varianteVelo.modele.description', 'varianteVelo.resume'])
             ->firstOrFail(); // Renvoie une 404 si la réf n'existe pas
 
         // 2. Grouper les caractéristiques par leur Type

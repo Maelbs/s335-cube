@@ -16,6 +16,7 @@ class Modele extends Model
     protected $fillable = [
         'id_categorie',
         'nom_modele',
+        'id_description',
         'millesime_modele',
         'materiau_cadre',
         'type_velo',
@@ -66,6 +67,9 @@ class Modele extends Model
     public function varianteVelos()
     {
         return $this->hasMany(VarianteVelo::class, 'id_modele');
+    }
+    public function description() {
+        return $this->belongsTo(Description::class, 'id_description', 'id_description');
     }
 
     public function __toString()

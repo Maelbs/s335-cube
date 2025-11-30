@@ -1,8 +1,10 @@
 /* =========================================
    CUBE BIKES STYLE - LISTING PAGE (AIRY)
    ========================================= */
-@import url('https://fonts.googleapis.com/css2?family=Fira+Sans:wght@300;400;500;700;800;900&display=swap');
-
+@font-face {
+  font-family: 'Damas Font';
+  src: url('../font/font.woff2');
+}
 :root {
     --c-black: #000000;
     --c-dark: #333333;
@@ -15,7 +17,7 @@
 }
 
 body {
-    font-family: 'Fira Sans', sans-serif;
+    font-family: 'Damas Font', sans-serif;
     color: var(--c-black);
     background-color: #fff;
     margin: 0;

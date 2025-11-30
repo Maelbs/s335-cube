@@ -383,7 +383,6 @@
     </footer>
 
     <script src="{{ asset('js/caroussel.js') }}" defer></script>
-    <script src="{{ asset('js/header.js') }}" defer></script>
     <script src="{{ asset('js/cookies.js') }}" defer></script>
     
 </body>

@@ -1,183 +1,29 @@
 /* =========================================
-   IMAGE PRODUIT (HERO)
+   FONTS & GLOBAL
    ========================================= */
-
 @font-face {
     font-family: 'Damas Font';
     src: url('../font/font.woff2');
 }
 
 html {
-    font-family: 'Damas Font';
+    font-family: 'Damas Font', sans-serif;
+    box-sizing: border-box;
 }
 
-.product-hero-section {
-    /* Force l'image à prendre toute la largeur et casser la ligne flex */
-    display: flex;
-    justify-content: center; /* Centre l'image horizontalement */
-    align-items: center;
-    padding: 20px 0 60px 0; /* Espace en bas pour respirer avant les specs */
-    background-color: #fff; /* Fond blanc propre */
+*, *:before, *:after {
+    box-sizing: inherit;
 }
 
-.product-hero-section img {
-    max-width: 90%; /* Laisse une petite marge sur les côtés */
-    height: auto;
-    max-height: 650px; /* Limite la hauteur sur les écrans géants */
-    object-fit: contain; /* Assure que le vélo entier est visible */
-    
-    /* Optionnel : Une ombre portée subtile pour donner du volume comme sur les catalogues */
-    filter: drop-shadow(0 15px 25px rgba(0,0,0,0.1));
-    
-    transition: transform 0.3s ease;
-}
-
-/* Petit effet de zoom au survol pour le dynamisme */
-.product-hero-section img:hover {
-    transform: scale(1.02);
-}
-
-/* Ajustement Mobile */
-@media (max-width: 768px) {
-    .product-hero-section {
-        padding-bottom: 30px;
-    }
-    
-    .product-hero-section img {
-        max-height: 350px;
-    }
-}
-
-.page-product-container {
-    display: flex;
-    flex-wrap: wrap; /* Pour le mobile */
-    max-width: 1400px;
-    margin: 0 auto;
-    padding: 40px 20px;
-    gap: 40px; /* Espace entre gauche et droite */
-}
-
-/* Colonne GAUCHE (Spécifications) */
-.specs-column {
-    /* Calcul : 100% - 30vw (espace droite) - gap */
-    width: calc(70vw - 60px); 
-    min-width: 600px; /* Pour ne pas être trop écrasé */
-    flex: 1;
-}
-
-/* Colonne DROITE (Réservée) */
-.sidebar-column {
-    width: 30vw;
-    min-width: 300px;
-    /* Juste pour visualiser la zone réservée temporairement */
-    border: 1px dashed #ddd; 
-    height: fit-content;
-    min-height: 500px;
-}
-
-/* =========================================
-   STYLE FICHE TECHNIQUE (Look CUBE)
-   ========================================= */
-
-/* Titre Principal "FICHE TECHNIQUE" */
-.specs-header-row {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 30px;
-    border-bottom: none;
-}
-
-.specs-header-row h2 {
-    font-size: 24px;
-    font-weight: 800; /* Très gras */
-    font-style: italic; /* Italique */
-    text-transform: uppercase;
-    color: #000;
+p {
+    font-size: 0.95em;
+    line-height: 1.6; /* Meilleure lisibilité pour les descriptions */
+    color: #333;
     margin: 0;
-    letter-spacing: 0.5px;
-}
-
-/* Le petit bouton rond "-" à droite */
-.toggle-specs-btn {
-    width: 30px;
-    height: 30px;
-    border-radius: 50%;
-    border: 1px solid #333;
-    background: transparent;
-    color: #333;
-    font-size: 20px;
-    line-height: 1;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding-bottom: 4px; /* Ajustement visuel du "-" */
-}
-
-/* Bandeau de Catégorie (CADRE, SUSPENSIONS...) */
-.spec-group-title {
-    background-color: #f7f7f7; /* Gris très clair CUBE */
-    padding: 5px;
-    text-align: center;
-    font-weight: 700;
-    font-style: italic;
-    text-transform: uppercase;
-    font-size: 15px;
-    color: #000;
-    margin-top: 30px;
-    margin-bottom: 20px;
-}
-
-/* Lignes de caractéristiques */
-.spec-row {
-    display: flex;
-    margin-bottom: 15px; /* Espace entre les lignes */
-    align-items: flex-start; /* Alignement en haut */
-}
-
-/* Colonne : Nom (ex: Cadre) */
-.spec-label {
-    width: 25%; /* Largeur fixe pour aligner le texte de droite */
-    min-width: 150px;
-    font-weight: 650; /* Gras */
-    font-size: 13px;
-    color: #000;
-    padding-right: 20px;
-}
-
-/* Colonne : Valeur (ex: Aluminum Superlite...) */
-.spec-value {
-    flex: 1; /* Prend tout le reste de la place */
-    font-size: 13px;
-    color: #333;
-    line-height: 1.5; /* Meilleure lecture pour les longs textes */
-}
-
-/* RESPONSIVE : Sur mobile, on passe tout en 1 colonne */
-@media (max-width: 900px) {
-    .page-product-container {
-        flex-direction: column;
-    }
-    
-    .specs-column, .sidebar-column {
-        width: 100%;
-        min-width: auto;
-    }
-
-    .spec-row {
-        flex-direction: column;
-        margin-bottom: 20px;
-    }
-
-    .spec-label {
-        width: 100%;
-        margin-bottom: 5px;
-    }
 }
 
 /* =========================================
-   MISE EN PAGE GLOBALE (GAUCHE / DROITE)
+   LAYOUT PRINCIPAL
    ========================================= */
 .page-product-container {
     display: flex;
@@ -185,20 +31,25 @@ html {
     max-width: 1400px;
     margin: 0 auto;
     padding: 40px 20px;
-    gap: 50px; /* Espace entre la gauche et la droite */
-    align-items: flex-start; /* Important pour que la sidebar ne s'étire pas */
+    gap: 60px; /* Espace généreux entre colonne gauche et droite */
+    align-items: flex-start;
 }
 
-/* --- WRAPPER GAUCHE (Image + Specs) --- */
 .left-column-wrapper {
-    flex: 1; /* Prend tout l'espace disponible */
-    min-width: 600px; /* Largeur mini pour ne pas écraser l'image */
+    flex: 1;
+    min-width: 0; /* Empêche les débordements flex */
 }
 
+/* =========================================
+   HERO IMAGE (Centrage parfait)
+   ========================================= */
 .product-hero-section {
+    display: flex;
+    justify-content: center; /* Centre horizontalement */
+    align-items: center;     /* Centre verticalement */
+    padding: 20px 0 60px 0;
     width: 100%;
-    margin-bottom: 60px; /* Espace entre Image et Fiche Technique */
-    text-align: center;
+    min-height: 400px; /* Hauteur min pour garder l'équilibre si image petite */
 }
 
 .product-hero-section img {
@@ -206,190 +57,342 @@ html {
     height: auto;
     max-height: 600px;
     object-fit: contain;
+    filter: drop-shadow(0 15px 25px rgba(0,0,0,0.1));
+    transition: transform 0.3s ease;
 }
 
-/* La fiche technique prend toute la largeur du wrapper gauche */
+.product-hero-section img:hover {
+    transform: scale(1.02);
+}
+
+/* =========================================
+   COLONNE SPECIFICATIONS (Gauche)
+   ========================================= */
 .specs-column {
-    width: 100%; 
+    width: 100%;
 }
 
-/* --- WRAPPER DROITE (Sidebar) --- */
+/* Conteneur de chaque section (Specs, Geo, Desc, Resume) */
+.each-specs-column {
+    /* REMPLACEMENT DU GRID PAR UN DISPLAY BLOCK AVEC PADDING */
+    display: block; 
+    padding: 30px 0; /* Espace en haut et en bas pour centrer visuellement le contenu */
+    border-bottom: 1px solid #e0e0e0;
+}
+
+/* En-têtes (Titre + Bouton -) */
+.specs-header-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center; /* Centre verticalement le titre et le bouton */
+    margin-bottom: 25px; /* Espace sous le titre */
+}
+
+.specs-header-row h2 {
+    font-size: 24px;
+    font-weight: 800;
+    font-style: italic;
+    text-transform: uppercase;
+    color: #000;
+    letter-spacing: 0.5px;
+    margin: 0;
+}
+
+/* Cette classe sera ajoutée à tes éléments de contenu (specs-content, table, p) */
+.toggle-content {
+    max-height: 0;
+    opacity: 0;
+    overflow: hidden;
+    /* On anime la hauteur et l'opacité */
+    transition: max-height 0.4s ease-out, opacity 0.4s ease-out;
+}
+
+
+.toggle-content.is-visible {
+    opacity: 1;
+}
+
+.toggle-specs-btn {
+    cursor: pointer;
+    width: 32px;
+    height: 32px;
+    border: 1px solid #ddd;
+    border-radius: 50%;
+    background: #fff;
+    
+    /* Pour centrer la flèche */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    
+    transition: all 0.3s ease;
+}
+
+.toggle-specs-btn::after {
+    content: ''; 
+    width: 8px;
+    height: 8px;
+    border-right: 2px solid #000; 
+    border-bottom: 2px solid #000;
+    transform: rotate(45deg); 
+    margin-bottom: 3px; 
+    
+    transition: transform 0.3s ease, border-color 0.3s ease;
+}
+
+.toggle-specs-btn.is-active {
+    background: #000;
+    border-color: #000;
+}
+
+.toggle-specs-btn.is-active::after {
+    border-color: #fff;
+    transform: rotate(225deg); 
+    margin-bottom: -3px; 
+}
+
+.spec-group-title {
+    background-color: #f7f7f7;
+    padding: 8px;
+    text-align: center;
+    font-weight: 700;
+    font-style: italic;
+    text-transform: uppercase;
+    font-size: 14px;
+    color: #000;
+    margin: 25px 0 15px 0;
+}
+
+.spec-row {
+    display: flex;
+    align-items: baseline; 
+    padding: 6px 0;
+}
+
+.spec-label {
+    width: 30%;
+    min-width: 140px;
+    font-weight: 700;
+    font-size: 13px;
+    color: #111;
+    padding-right: 15px;
+}
+
+.spec-value {
+    flex: 1;
+    font-size: 13px;
+    color: #444;
+    line-height: 1.4;
+}
+
+/* --- Section Géométrie --- */
+.geo-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 25px;
+}
+
+.table-responsive {
+    overflow-x: auto;
+    padding-bottom: 10px;
+}
+
+.geo-table {
+    width: 100%;
+    border-collapse: separate; /* Permet un meilleur rendu des bordures */
+    border-spacing: 0;
+    font-size: 14px;
+}
+
+.geo-table th {
+    padding: 15px;
+    background-color: #f7f7f7;
+    font-weight: 800;
+    font-style: italic;
+    text-align: center;
+    vertical-align: middle; /* Centre verticalement le texte dans l'en-tête */
+}
+
+.geo-table td {
+    padding: 12px 10px;
+    border-bottom: 1px solid #f0f0f0;
+    vertical-align: middle; /* Centre verticalement le contenu des cellules */
+}
+
+/* Première colonne (Nom géométrie) */
+.geo-table td:first-child {
+    text-align: left;
+    font-weight: 700;
+    text-transform: uppercase;
+    font-size: 0.85em;
+    padding-left: 5px;
+}
+
+/* Les autres colonnes (Valeurs) */
+.geo-table td:not(:first-child) {
+    text-align: center;
+    color: #555;
+    font-size: 0.9em;
+}
+
+.geo-table tr:hover td {
+    background-color: #fafafa;
+}
+
+#resume_container {
+    border: none;
+}
+
+.couleur {
+    width: 50px;
+    height: 50px;
+}
+
+/* =========================================
+   SIDEBAR (Droite)
+   ========================================= */
 .sidebar-column {
-    width: 350px; /* Largeur fixe comme souvent en e-commerce */
-    position: sticky; /* La sidebar reste visible quand on scrolle */
-    top: 100px; /* Décalage par rapport au haut */
-    background: #f9f9f9; /* Fond gris clair léger */
-    padding: 30px;
-    border-radius: 4px;
+    width: 380px; /* Largeur fixe standard */
+    position: sticky;
+    top: 40px; /* Décalage du haut de l'écran */
+    background: #f9f9f9;
+    padding: 40px; /* Padding interne généreux pour centrer le contenu */
+    border-radius: 2px;
+    height: fit-content; /* S'adapte au contenu */
 }
 
-/* --- STYLE DES ÉLÉMENTS SIDEBAR (Comme ton image) --- */
 .badges {
     display: flex;
     gap: 10px;
-    margin-bottom: 15px;
+    margin-bottom: 20px;
 }
 
-.badge-new, .badge-season {
-    background: #000;
-    color: #fff;
-    font-size: 10px;
-    font-weight: bold;
-    padding: 4px 8px;
+.badge-season { 
+    background: #fff; 
+    color: #000; 
+    border: 1px solid #000; 
+    padding: 5px 10px;
+    font-size: 11px;
+    font-weight: 700;
     text-transform: uppercase;
 }
-.badge-season { background: #fff; color: #000; border: 1px solid #ccc; }
 
 .product-title {
-    font-size: 32px;
-    font-weight: 900; /* Police très grasse style Cube */
+    font-size: 36px; /* Titre imposant */
+    font-weight: 900;
     font-style: italic;
-    margin: 10px 0 5px 0;
-    line-height: 1.1;
+    margin: 0 0 10px 0;
+    line-height: 1;
     text-transform: uppercase;
 }
 
 .product-ref {
-    color: #666;
+    color: #888;
     font-size: 12px;
-    margin-bottom: 30px;
+    margin-bottom: 35px;
+    font-weight: 500;
 }
 
-/* Grille des tailles */
-.size-label { font-weight: bold; font-size: 12px; margin-bottom: 10px; text-transform: uppercase; }
+.size-selector {
+    margin-bottom: 35px;
+}
+
+.size-label { 
+    font-weight: 800; 
+    font-size: 12px; 
+    margin-bottom: 12px; 
+    text-transform: uppercase;
+    display: block; 
+}
+
 .sizes-grid {
     display: grid;
-    grid-template-columns: repeat(2, 1fr); /* 2 par ligne */
-    gap: 10px;
-    margin-bottom: 30px;
+    grid-template-columns: repeat(2, 1fr); /* Grille équilibrée */
+    gap: 12px;
 }
 
 .size-btn {
     background: #fff;
-    border: 1px solid #ddd;
-    padding: 10px;
-    font-weight: bold;
+    border: 1px solid #ccc;
+    padding: 12px;
+    font-weight: 700;
     cursor: pointer;
-    border-radius: 4px; /* Arrondi léger */
+    text-align: center; /* Texte centré dans le bouton */
     transition: all 0.2s;
 }
 
-.size-btn:hover { border-color: #000; }
-.size-btn.selected { background: #000; color: #fff; border-color: #000; }
+.size-btn:hover { border-color: #000; background: #fafafa; }
 
-/* Prix et Bouton */
+.price-section {
+    margin-bottom: 25px;
+    padding-top: 20px;
+    border-top: 1px solid #e5e5e5;
+}
+
 .price {
-    font-size: 24px;
+    font-size: 28px;
     font-weight: 800;
+    color: #000;
     display: block;
-    margin-bottom: 20px;
 }
 
 .btn-add-cart {
     width: 100%;
-    background: #000; /* Bouton noir */
+    background: #000;
     color: #fff;
-    padding: 15px;
+    padding: 18px; /* Bouton haut */
+    font-size: 16px;
     font-weight: 800;
     text-transform: uppercase;
     border: none;
     cursor: pointer;
     font-style: italic;
     transition: background 0.3s;
-}
-
-.btn-add-cart:hover { background: #333; }
-
-/* Responsive Mobile */
-@media (max-width: 1000px) {
-    .page-product-container { flex-direction: column; }
-    .sidebar-column { width: 100%; position: static; }
-    .left-column-wrapper { min-width: auto; }
-}
-
-/* --- SECTION GÉOMÉTRIE --- */
-.geo-section {
-    margin-top: 40px;
-    margin-bottom: 40px;
-    color: #333;
-}
-
-/* Le Titre + Bouton */
-.geo-header {
     display: flex;
-    justify-content: space-between;
+    justify-content: center;
     align-items: center;
-    margin-bottom: 20px;
-    padding-bottom: 10px;
 }
 
-.geo-header h2 {
-    font-size: 24px;
-    font-weight: 800; /* Très gras */
-    font-style: italic; /* Italique comme sur l'image */
-    text-transform: uppercase;
-    margin: 0;
+.btn-add-cart:hover {
+    background: #333;
 }
 
-/* Le Tableau */
-.table-responsive {
-    overflow-x: auto; /* Scroll sur mobile */
+/* =========================================
+   RESPONSIVE
+   ========================================= */
+@media (max-width: 1024px) {
+    .page-product-container {
+        flex-direction: column;
+        gap: 40px;
+    }
+
+    .sidebar-column {
+        width: 100%;
+        position: static;
+        padding: 30px;
+    }
+    
+    .product-hero-section img {
+        max-height: 400px;
+    }
 }
 
-.geo-table {
-    width: 100%;
-    border-collapse: collapse;
-    border-spacing: 0;
-    font-size: 14px;
-}
-
-/* Ligne d'en-tête (Tailles) */
-.geo-table thead tr {
-    /* Pas de fond sur la tr elle-même, on le met sur les cellules */
-}
-
-.geo-table thead th {
-    padding: 15px 10px;
-    background-color: #f7f7f7; /* Le fond GRIS CLAIR */
-    font-weight: 800;
-    font-style: italic;
-    text-align: center;
-    min-width: 100px;
-}
-
-/* La première case en haut à gauche doit être transparente/blanche */
-.geo-table thead th:first-child {
-    background-color: transparent; 
-    min-width: 200px;
-}
-
-/* Corps du tableau */
-.geo-table tbody td {
-    padding: 12px 10px;
-    border: none; /* Pas de bordures visibles */
-}
-
-/* Première colonne (Noms des caractéristiques) */
-.geo-table tbody td:first-child {
-    text-align: left;
-    font-size: 0.9em;
-    font-weight: 750; /* Gras */
-    text-transform: uppercase; /* Majuscules */
-    padding-left: 0;
-}
-
-/* Les autres colonnes (Chiffres) */
-.geo-table tbody td:not(:first-child) {
-    text-align: center;
-    color: #333;
-    font-size: 0.85em;
-}
-
-.geo-table tbody tr td {
-    transition: all 0.1s ease;
-}
-
-/* Petit effet au survol de la ligne */
-.geo-table tbody tr:hover td {
-    background-color: #fafafa;
+@media (max-width: 600px) {
+    .spec-row {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+    
+    .spec-label {
+        width: 100%;
+        margin-bottom: 4px;
+        color: #888;
+        font-size: 11px;
+        text-transform: uppercase;
+    }
+    
+    .product-title {
+        font-size: 28px;
+    }
 }

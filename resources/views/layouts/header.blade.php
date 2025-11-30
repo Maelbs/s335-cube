@@ -43,7 +43,7 @@
                                     @foreach($menuVelo as $root)
                                         @foreach($root->enfants as $enfant)
                                             <div id="models-velo-{{ $enfant->id_categorie }}" class="models-container d-none">
-                                                <h3 style="margin-bottom: 20px; font-family:'Fira Sans'; font-weight:800;">
+                                                <h3 style="margin-bottom: 20px; font-weight:800;">
                                                     {{ strtoupper($enfant->nom_categorie) }}
                                                 </h3>
                                                 @if($enfant->modeles->isNotEmpty())
@@ -103,7 +103,7 @@
                                     @foreach($menuElec as $root)
                                         @foreach($root->enfants as $enfant)
                                             <div id="models-elec-{{ $enfant->id_categorie }}" class="models-container d-none">
-                                                <h3 style="margin-bottom: 20px; font-family:'Fira Sans'; font-weight:800;">{{ strtoupper($enfant->nom_categorie) }}</h3>
+                                                <h3 style="margin-bottom: 20px; font-weight:800;">{{ strtoupper($enfant->nom_categorie) }}</h3>
                                                 @if($enfant->modeles->isNotEmpty())
                                                     <div class="model-grid">
                                                         @foreach($enfant->modeles as $modele)
@@ -280,6 +280,8 @@
         color: #666;
     }
 </style>
+
+<script src="{{ asset('js/header.js') }}" defer></script>
 
 <script>
     function openSearch(e) {
