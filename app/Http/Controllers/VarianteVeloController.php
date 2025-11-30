@@ -38,8 +38,6 @@ class VarianteVeloController extends Controller
             return $item->typeCaracteristique->nom_type_caracteristique;
         });
 
-        
-
         // 3. Envoyer à la vue
         return view('vizualize_article', compact('velo', 'specifications'));
     }

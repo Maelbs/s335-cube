@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Velo 1</title>
+    <title>{{ $velo->varianteVelo->modele->nom_modele }}</title>
     <link rel="stylesheet" href="{{ asset('css/vizualize_article.css') }}">
 </head>
 <body>
