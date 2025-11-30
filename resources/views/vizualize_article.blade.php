@@ -112,24 +112,33 @@
         </div> 
         <div class="sidebar-column">
             <div class="badges">
-                <span class="badge-season">{{ $velo->varianteVelo->modele->millesime_modele}}</span>
+                <span class="badge-season">Saison : {{ $velo->varianteVelo->modele->millesime_modele}}</span>
             </div>
 
             <h1 class="product-title">{{ $velo->nom_article }}</h1>
-            <div class="product-ref">Réf: {{ $velo->reference}}</div>
-            <div class="couleur" style="color: {{ $velo->varianteVelo->couleur->nom_couleur }} ">test</div>
+            <div class="product-ref">Référence : {{ $velo->reference}} | Poids : {{ $velo->poids }} kg | Matériau du cadre : {{ $velo->varianteVelo->modele->materiau_cadre }}</div>
 
             <div class="size-selector">
                 <p class="size-label">TAILLE</p>
                 <div class="sizes-grid">
                     @foreach ($tailles as $taille)
-                        <button class="size-btn">{{ $taille->taille }}</button>  
+                        <button class="size-btn">{{ $taille->taille }} ({{ $taille->taille_min }}-{{ $taille->taille_max }})</button>  
                     @endforeach
                 </div>
             </div>
 
             <div class="price-section">
                 <span class="price">{{ $velo->varianteVelo->prix }} € TTC</span>
+            </div>
+            <div class="availability">
+                <div class="status-line">
+                    <span class="dot {{ $velo->dispo_en_ligne ? 'green' : 'red' }}"></span>
+                    <span class="text">Disponible en ligne</span>
+                </div>
+                <div class="status-line">
+                    <span class="dot {{ $velo->dispo_magasin ? 'green' : 'orange' }}"></span>
+                    <span class="text">Disponible en magasins <i class="far fa-question-circle info-icon"></i></span>
+                </div>
             </div>
 
             <button class="btn-add-cart">AJOUTER AU PANIER</button>

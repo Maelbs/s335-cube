@@ -253,7 +253,7 @@ p {
    SIDEBAR (Droite)
    ========================================= */
 .sidebar-column {
-    width: 380px; /* Largeur fixe standard */
+    width: 30vw;
     position: sticky;
     top: 40px; /* Décalage du haut de l'écran */
     background: #f9f9f9;
@@ -289,7 +289,7 @@ p {
 
 .product-ref {
     color: #888;
-    font-size: 12px;
+    font-size: 0.7em;
     margin-bottom: 35px;
     font-weight: 500;
 }
@@ -300,7 +300,8 @@ p {
 
 .size-label { 
     font-weight: 800; 
-    font-size: 12px; 
+    font-size: 16px; 
+    font-style: italic;
     margin-bottom: 12px; 
     text-transform: uppercase;
     display: block; 
@@ -314,12 +315,15 @@ p {
 
 .size-btn {
     background: #fff;
-    border: 1px solid #ccc;
+    border-radius: 20px;
+    border: none;
+    font-size: 0.9em;
     padding: 12px;
-    font-weight: 700;
+    color: #181616;
+    font-weight: 550;
     cursor: pointer;
     text-align: center; /* Texte centré dans le bouton */
-    transition: all 0.2s;
+    transition: all 0.4s;
 }
 
 .size-btn:hover { border-color: #000; background: #fafafa; }
@@ -331,8 +335,9 @@ p {
 }
 
 .price {
-    font-size: 28px;
-    font-weight: 800;
+    font-size: 1.4em;
+    font-weight: 700;
+    font-style: italic;
     color: #000;
     display: block;
 }
@@ -395,4 +400,63 @@ p {
     .product-title {
         font-size: 28px;
     }
+}
+
+/* Conteneur principal : On enlève tout le "bruit" (bordures, fond) */
+.availability {
+    margin: 20px 0;
+    /* Pas de padding ni de background pour le style sobre */
+}
+
+/* La ligne : Flexbox pour l'alignement parfait */
+.status-line {
+    display: flex;
+    align-items: center; /* Centre le point verticalement par rapport au texte */
+    margin-bottom: 8px;  /* Petit espace entre les lignes */
+    
+    /* Typographie sobre comme sur l'image */
+    font-size: 14px;
+    color: #555; /* Gris foncé, pas noir pur pour être plus doux */
+    font-weight: 400; /* Normal, pas de gras */
+    line-height: 1.2;
+}
+
+/* Le point (Pastille) */
+.dot {
+    width: 10px;       /* Taille modérée */
+    height: 10px;
+    border-radius: 50%;
+    margin-right: 10px; /* Espace entre le point et le texte */
+    flex-shrink: 0;     /* Empêche le point de s'écraser */
+}
+
+/* Couleurs "Flat" (mates) */
+/* Ce vert (#7ab51d) ressemble beaucoup à celui de ton image (style Cube/Nature) */
+.dot.green {
+    background-color: #7ab51d; 
+}
+
+.dot.red {
+    background-color: #d63031; /* Rouge mat */
+}
+
+.dot.orange {
+    background-color: #e17055; /* Orange mat */
+}
+
+/* L'icône point d'interrogation */
+.info-icon {
+    color: #888; /* Gris discret */
+    font-size: 14px;
+    margin-left: 5px;
+    cursor: help;
+    vertical-align: middle;
+}
+
+/* Petit effet au survol de l'icône uniquement */
+.info-icon:hover {
+    color: #333;
+}
+.text {
+    font-size: 0.82em;
 }
