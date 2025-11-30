@@ -100,7 +100,8 @@
             </div>
         </div>
     </div>
-    <header>
+    @include('layouts.header')
+    <!-- <header>
 
     
         <nav>
@@ -277,7 +278,7 @@
                 </div>
             </div>
         </nav> 
-    </header>
+    </header> -->
 
     <main>
         <section class="intro-carousel" id="intro-carousel">

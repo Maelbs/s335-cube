@@ -4,7 +4,7 @@ use App\Http\Controllers\CategorieVeloController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\CategorieAccessoireController;
 use App\Http\Controllers\VarianteVeloController;
-
+use App\Http\Controllers\BoutiqueController;
 
 
 /*
@@ -28,3 +28,9 @@ Route::get('/api/categories-velos/parents', [CategorieVeloController::class, 'ge
 
 // routes/web.php
 Route::get('/velo/{reference}', [VarianteVeloController::class, 'show']);
+
+
+// Route pour afficher la liste des vélos par catégorie
+Route::get('/boutique/{type}/{cat_id?}/{sub_id?}/{model_id?}', [BoutiqueController::class, 'index'])
+    ->name('boutique.index')
+    ->where('type', 'Musculaire|Electrique');

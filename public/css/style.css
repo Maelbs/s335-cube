@@ -59,7 +59,10 @@ ul {
    2. HEADER TRANSPARENT (Style CUBE)
    ========================================= */
 header {
+    display: flex ;
+    justify-content: space-between;
     position: absolute; /* Ou 'fixed' si tu veux un header qui reste tout le temps */
+    padding:  0px 40px 0px 40px;
     top: 0;
     left: 0;
     width: 100%;
@@ -101,7 +104,7 @@ nav {
 .logo {
     display: flex;
     align-items: center;
-    height: 50px;
+    height: 70px;
     margin-right: 40px;
     transition: transform 0.3s;
 }
@@ -168,6 +171,7 @@ header:hover .logo img {
 .menu-user {
     display: flex;
     align-items: center;
+    white-space: nowrap;
     font-weight: 700;
     font-size: 13px;
     text-transform: uppercase;
@@ -923,3 +927,8 @@ footer {
     padding: 10px 0;
     width: 100%;
   }
+
+
+
+
+  
