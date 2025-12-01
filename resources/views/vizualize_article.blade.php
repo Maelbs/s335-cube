@@ -145,6 +145,36 @@
         </div>
 
     </div>
+    
+    @if($velosSimilaires->isNotEmpty())
+        <section class="similar-carousel-section">
+            <h2 class="similar-title">VÉLOS SIMILAIRES</h2>
+            <div class="carousel-wrapper">
+                <button class="carousel-btn left-btn">❮</button>
+                <div class="carousel-track">
+                    @foreach($velosSimilaires as $similaire)
+                        <div class="similar-card">
+                            <a href="{{ route('velo.show', $similaire->reference) }}" class="similar-link">
+                            <div class="similar-image-container">
+                                <img src="{{ $similaire->photo_principale }}" alt="{{ $similaire->nom_article }}">
+                            </div>
+                            <div class="similar-info">
+                                <h3 class="similar-name">{{ $similaire->nom_article }}</h3>
+                                @if(optional($similaire->varianteVelo)->modele)
+                                    <span class="similar-year">{{ optional($similaire->varianteVelo)->modele->millesime_modele }}</span>
+                                @endif
+                                <div class="similar-price">{{ $similaire->prix }} €</div>
+                            </div>
+                            </a>
+                        </div>
+                    @endforeach
+                </div>
+                <button class="carousel-btn right-btn">❯</button>
+            </div>
+        </section>
+    @endif
+
     <script src="{{ asset('js/vizualize_article.js') }}" defer></script>
+
 </body>
 </html>

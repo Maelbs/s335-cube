@@ -9,23 +9,23 @@ class ArticleSimilaire extends Model
 {
     use HasFactory;
 
-    protected $table = "Article_Similaire"; 
+    protected $table = "article_similaire"; 
     public $timestamps = false;
     public $incrementing = false;
     protected $primaryKey = null; 
 
     protected $fillable = [
-        'article_reference',
-        'similaire_reference'
+        'art_reference',
+        'reference'
     ];
 
     public function article()
     {
-        return $this->belongsTo(Article::class, 'article_reference', 'reference');
+        return $this->belongsTo(Article::class, 'art_reference', 'reference');
     }
 
     public function similaire()
     {
-        return $this->belongsTo(Article::class, 'similaire_reference', 'reference');
+        return $this->belongsTo(Article::class, 'reference');
     }
 }

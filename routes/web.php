@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\ArticleSimilaireController;
 use App\Http\Controllers\CategorieVeloController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\CategorieAccessoireController;
@@ -27,7 +28,9 @@ Route::get('/api/categories-accessoires/parents', [CategorieAccessoireController
 Route::get('/api/categories-velos/parents', [CategorieVeloController::class, 'getParents']);
 
 // routes/web.php
-Route::get('/velo/{reference}', [VarianteVeloController::class, 'show']);
+Route::get('/velo/{reference}', [VarianteVeloController::class, 'show'])->name('velo.show');
+
+
 
 
 // Route pour afficher la liste des vélos par catégorie

@@ -57,7 +57,7 @@ class Article extends Model
     
     public function similaires()
     {
-        return $this->hasMany(ArticleSimilaire::class, 'article_reference', 'reference');
+        return $this->hasMany(ArticleSimilaire::class, 'art_reference', 'reference');
     }
 
     public function getPhotoPrincipaleAttribute()

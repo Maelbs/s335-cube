@@ -38,7 +38,14 @@ class VarianteVeloController extends Controller
             return $item->typeCaracteristique->nom_type_caracteristique;
         });
 
+        $velosSimilaires = Article::whereIn(
+            'reference',
+            $velo->similaires()->pluck('reference') 
+        )
+        ->with(['photos', 'varianteVelo.modele'])
+        ->get();
+
         // 3. Envoyer à la vue
-        return view('vizualize_article', compact('velo', 'specifications'));
+        return view('vizualize_article', compact('velo', 'specifications', 'velosSimilaires'));
     }
 }

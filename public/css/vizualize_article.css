@@ -460,3 +460,109 @@ p {
 .text {
     font-size: 0.82em;
 }
+
+/* =========================================
+   ARTICLE SIMILAIRE
+   ========================================= */
+
+.similar-carousel-section {
+
+    margin-top: 80px;
+
+    padding: 20px;
+
+}
+ 
+.similar-title {
+
+    text-align: center;
+
+    font-size: 2rem;
+
+    margin-bottom: 25px;
+
+    font-weight: 800;
+
+}
+ 
+.carousel-wrapper {
+
+    position: relative;
+
+    width: 100%;
+
+    overflow: hidden;
+
+}
+ 
+.carousel-track {
+
+    display: flex;
+
+    gap: 20px;
+
+    transition: transform 0.4s ease;
+
+}
+ 
+.similar-card {
+
+    min-width: 25%; /* 4 cards per page */
+
+    background: #fff;
+
+    border-radius: 8px;
+
+    box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+
+    border: 1px solid #eee;
+
+    overflow: hidden;
+
+}
+ 
+.carousel-btn {
+
+    position: absolute;
+
+    top: 45%;
+
+    transform: translateY(-50%);
+
+    background: #fff;
+
+    border: none;
+
+    font-size: 2rem;
+
+    padding: 10px 15px;
+
+    cursor: pointer;
+
+    z-index: 10;
+
+    border-radius: 50%;
+
+    box-shadow: 0 4px 15px rgba(0,0,0,0.15);
+
+}
+ 
+.left-btn {
+
+    left: 10px;
+
+}
+ 
+.right-btn {
+
+    right: 10px;
+
+}
+ 
+.carousel-btn:hover {
+
+    background: #f0f0f0;
+
+}
+
+ 
