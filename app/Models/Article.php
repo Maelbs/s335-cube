@@ -19,13 +19,10 @@ class Article extends Model
         'reference', 
         'nom_article', 
         'prix', 
-        'qte_stock', 
-        'dispo_en_ligne', 
-        'poids'
+        'poids',
     ];
 
     protected $casts = [
-        'dispo_en_ligne' => 'boolean',
         'prix' => 'decimal:2', 
         'poids' => 'decimal:1',
     ];
@@ -34,10 +31,10 @@ class Article extends Model
     {
         return $this->belongsToMany(
             Caracteristique::class, 
-            'a_caracteristique',      // Nom de la table pivot
-            'reference',             // Clé étrangère modèle courant
-            'id_caracteristique'      // Clé étrangère modèle lié
-        )->withPivot('valeur_caracteristique'); // IMPORTANT : On récupère la valeur spécifique ici
+            'a_caracteristique',     
+            'reference',             
+            'id_caracteristique'      
+        )->withPivot('valeur_caracteristique'); 
     }
 
     public function photos()
@@ -83,19 +80,12 @@ class Article extends Model
 
     public function __toString()
     {
-        $dispo = 'Non';
-
-        if ($this->dispo_en_ligne) {
-            $dispo = 'Oui';
-        }
-
         return sprintf(
-            "Article [Ref: %s] : %s | Prix: %s € | Stock: %s | Dispo: %s",
+            "Article [Ref: %s] : %s | Prix: %s € | Poids: %s kg",
             $this->reference,
             $this->nom_article,
             $this->prix,
-            $this->qte_stock,
-            $dispo
+            $this->poids
         );
     }
 }

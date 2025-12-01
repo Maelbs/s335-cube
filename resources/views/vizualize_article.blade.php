@@ -5,9 +5,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>{{ $velo->varianteVelo->modele->nom_modele }}</title>
+        {{-- <link rel="stylesheet" href="{{ asset('css/style.css') }}"> --}}
     <link rel="stylesheet" href="{{ asset('css/vizualize_article.css') }}">
+
 </head>
 <body>
+
+    @include('layouts.header') 
+
     <div class="page-product-container">
     
         <div class="left-column-wrapper">

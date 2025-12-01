@@ -23,18 +23,12 @@ class VarianteVelo extends Article
         'id_resume',
         'nom_article',
         'prix',
-        'qte_stock',
-        'dispo_en_ligne',
         'poids',
-        'dispo_magasin',
     ];
 
     protected $casts = [
         'prix' => 'float',
-        'qte_stock' => 'integer',
-        'dispo_en_ligne' => 'boolean',
         'poids' => 'float',
-        'dispo_magasin' => 'boolean',
     ];
 
     public function resume() {
@@ -61,6 +55,10 @@ class VarianteVelo extends Article
         return $this->belongsTo(Couleur::class, 'id_couleur');
     }
 
+    public function inventaires()
+    {
+        return $this->hasMany(VarianteVeloInventaire::class, 'reference', 'reference');
+    }
     
     public function parent()
     {

@@ -14,7 +14,24 @@ class Accessoire extends Article
     public $incrementing = false;
     protected $keyType = 'string';
 
-    protected $fillable = ['reference', 'id_categorie_accessoire', 'nom_article', 'prix', 'qte_stock', 'dispo_en_ligne', 'poids'];
+    protected $fillable = [
+        'reference', 
+        'id_categorie_accessoire', 
+        'nom_article', 
+        'prix', 
+        'poids', 
+        'quantite_stock_accessoire', 
+        'dispo_en_ligne', 
+        'dispo_magasin',
+    ];
+
+    protected $casts = [
+        'prix' => 'decimal:2',
+        'poids' => 'decimal:1',
+        'quantite_stock_accessoire' => 'integer',
+        'dispo_en_ligne' => 'boolean',
+        'dispo_magasin' => 'boolean',
+    ];
 
     public function categorie()
     {
@@ -28,20 +45,26 @@ class Accessoire extends Article
 
     public function __toString()
     {
-        $dispo = 'Non';
+        $dispoenligne = 'Non';
+        $dispomagasin = 'Non';
 
         if ($this->dispo_en_ligne) {
-            $dispo = 'Oui';
+            $dispoenligne = 'Oui';
+        }
+
+        if ($this->dispo_magasin) {
+            $dispomagasin = 'Oui';
         }
 
         return sprintf(
-            "Accessoire [Ref: %s] : %s | Prix: %s € | Stock: %s | Poids: %s kg | Dispo: %s | Cat ID: %s",
+            "Accessoire [Ref: %s] : %s | Prix: %s € | Poids: %s kg | Stock: %s | Dispo en ligne: %s | Dispo en magasin: %s | Cat ID: %s",
             $this->reference,
             $this->nom_article,
             $this->prix,
-            $this->qte_stock,
             $this->poids,
-            $dispo,
+            $this->quantite_stock_accessoire,
+            $dispoenligne,
+            $dispomagasin,
             $this->id_categorie_accessoire
         );
     }

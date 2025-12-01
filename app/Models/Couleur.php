@@ -15,11 +15,13 @@ class Couleur extends Model
 
     protected $fillable = [
         'nom_couleur',
+        'hexa_couleur',
     ];
 
     protected $casts = [
         'id_couleur' => 'integer',
         'nom_couleur' => 'string',
+        'hexa_couleur' => 'string',
     ];
 
     public function varianteVelos()
@@ -30,9 +32,10 @@ class Couleur extends Model
     public function __toString()
     {
         return sprintf(
-            "Couleur [ID: %s] : Nom: %s",
+            "Couleur [ID: %s] : %s (%s)",
             $this->id_couleur,
-            $this->nom_couleur
+            $this->nom_couleur,
+            $this->hexa_couleur
         );
     }
 }

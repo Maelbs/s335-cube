@@ -30,3 +30,42 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
 });
+
+
+
+document.addEventListener("DOMContentLoaded", () => {
+    const track = document.querySelector(".carousel-track");
+    const cards = document.querySelectorAll(".similar-card");
+    const btnLeft = document.querySelector(".left-btn");
+    const btnRight = document.querySelector(".right-btn");
+ 
+    if (!track || cards.length === 0) return;
+ 
+    let index = 0;
+    const cardWidth = cards[0].offsetWidth + 20; // largeur + gap
+    const maxIndex = cards.length - 4; // car tu affiches 4 cartes
+ 
+    function updateCarousel() {
+        track.style.transform = `translateX(-${index * cardWidth}px)`;
+    }
+ 
+    btnRight.addEventListener("click", () => {
+        if (index < maxIndex) {
+            index++;
+            updateCarousel();
+        }
+    });
+ 
+    btnLeft.addEventListener("click", () => {
+        if (index > 0) {
+            index--;
+            updateCarousel();
+        }
+    });
+ 
+    // Ajustement au redimensionnement (responsive)
+    window.addEventListener("resize", () => {
+        const newWidth = cards[0].offsetWidth + 20;
+        track.style.transform = `translateX(-${index * newWidth}px)`;
+    });
+});
