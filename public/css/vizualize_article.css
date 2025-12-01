@@ -1,7 +1,7 @@
 /* =========================================
    FONTS & GLOBAL
    ========================================= */
-   @font-face {
+@font-face {
     font-family: 'Damas Font';
     src: url('../font/font.woff2');
 }
@@ -313,15 +313,10 @@ nav {
     max-width: 1400px;
     margin: 0 auto;
     padding: 5px 20px;
-    gap: 60px; /* Espace généreux entre colonne gauche et droite */
+    gap: 60px; 
     align-items: flex-start;
     top: 100px;
     position: relative;
-}
-
-.indisponible-en-ligne {
-    background-color: #f6f6f6 !important;
-    color: #cbcbcb !important;
 }
 
 .left-column-wrapper {
@@ -560,6 +555,22 @@ nav {
     font-weight: 500;
 }
 
+/* --- SELECTEUR DE COULEURS --- */
+.couleur-velo {
+    display: inline-block; /* OBLIGATOIRE */
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    border: 1px solid #ccc;
+    margin-right: 8px;
+    vertical-align: middle;
+    cursor: pointer;
+    transition: transform 0.2s;
+}
+.couleur-velo:hover { transform: scale(1.1); }
+.couleur-velo.active-color { box-shadow: 0 0 0 2px #000; pointer-events: none; }
+
+/* --- SELECTEUR DE TAILLE --- */
 .size-selector {
     margin-bottom: 35px;
 }
@@ -579,10 +590,8 @@ nav {
     gap: 12px;
 }
 
-/* --- STYLE GÉNÉRAL DU BOUTON --- */
 .size-btn {
     background: #fff;
-    /* On garde une bordure très légère par défaut pour les boutons normaux */
     border: 1px solid #e5e7eb; 
     border-radius: 12px;
     padding: 12px 16px;
@@ -591,62 +600,39 @@ nav {
     cursor: pointer;
     text-align: center;
     position: relative;
-    
-    /* Animation fluide pour toutes les propriétés */
     transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+    min-height: 50px;
 }
 
-/* --- ANIMATION AU SURVOL (Stock OK) --- */
-.size-btn:hover {
+/* Animation au survol (quand dispo) */
+.size-btn:not(.out-of-stock):hover {
     border-color: #000;
-    transform: translateY(-3px); /* Effet de lévitation */
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08); /* Ombre douce */
+    transform: translateY(-3px);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
 }
 
-/* --- FOCUS / SÉLECTIONNÉ --- */
 .size-btn:focus, .size-btn:active {
     border-color: #000;
     background-color: #fafafa;
     outline: none;
 }
 
-/* --- LE CHANGEMENT : STOCK ÉPUISÉ (CLASSE .out-of-stock) --- */
-.indisponible-en-ligne {
-    /* 1. Le fond gris demandé */
+/* Stock Épuisé (Grisé) */
+.size-btn.out-of-stock {
     background-color: #f3f4f6; 
-    
-    /* 2. On "enlève" la bordure en la mettant de la même couleur que le fond 
-       (C'est mieux que 'border: none' pour garder exactement la même taille que les autres boutons) */
     border-color: #f3f4f6;
-    
-    /* 3. Texte grisé */
     color: #9ca3af; 
 }
 
-/* --- ANIMATION SURVOL STOCK ÉPUISÉ --- */
-.indisponible-en-ligne:hover {
-    /* On assombrit un peu le fond pour l'effet "bouton" */
+.size-btn.out-of-stock:hover {
     background-color: #e5e7eb; 
     border-color: #e5e7eb;
-    
-    /* On garde le texte gris */
     color: #6b7280; 
-    
-    /* Petite lévitation plus subtile que les boutons normaux */
     transform: translateY(-1px); 
-    box-shadow: none; /* Pas d'ombre pour garder un aspect "plat" */
+    box-shadow: none;
 }
 
-.couleur-velo {
-    display: inline-block; /* OBLIGATOIRE pour accepter width/height */
-    width: 30px;           /* Taille fixe */
-    height: 30px;          /* Taille fixe */
-    border-radius: 50%;    /* Pour faire un rond */
-    border: 1px solid #ccc; /* Petite bordure pour voir la pastille même si la couleur est blanche */
-    margin-right: 5px;      /* Espacement */
-    vertical-align: middle;
-}
-
+/* --- PRIX --- */
 .price-section {
     margin-bottom: 25px;
     padding-top: 20px;
@@ -661,79 +647,128 @@ nav {
     display: block;
 }
 
-.availability {
-    margin: 20px 0;
+/* --- INDICATEURS DISPONIBILITÉ (RONDS) --- */
+.dispo-info-container {
+    margin-bottom: 25px;
 }
 
-.status-line {
+.dispo-row {
     display: flex;
     align-items: center;
-    margin-bottom: 8px;
-    font-size: 14px;
-    color: #555;
-    font-weight: 400;
-    line-height: 1.2;
+    gap: 10px;
+    margin-bottom: 5px;
+    font-size: 0.9em;
+    color: #333;
+    font-weight: 500;
 }
 
-.dot {
-    width: 10px;
-    height: 10px;
+.status-dot {
+    display: inline-block;
+    width: 12px;
+    height: 12px;
     border-radius: 50%;
-    margin-right: 10px;
-    flex-shrink: 0;
+    background-color: #d1d5db; /* Gris par défaut */
+    transition: background-color 0.3s ease;
 }
 
-.dot.green { background-color: #7ab51d; }
-.dot.red { background-color: #d63031; }
-.dot.orange { background-color: #e17055; }
-
-.info-icon {
-    color: #888;
-    font-size: 14px;
-    margin-left: 5px;
-    cursor: help;
-    vertical-align: middle;
+.status-dot.active-green {
+    background-color: #018632;
 }
 
-.info-icon:hover { color: #333; }
-.text { font-size: 0.82em; }
+.status-dot.inactive-gray {
+    background-color: #d1d5db;
+}
 
-.btn-add-cart {
+/* =========================================
+   BOUTONS D'ACTION (NOUVEAU DESIGN BISEAUTÉ)
+   ========================================= */
+
+.action-buttons-container {
+    display: flex;
+    flex-direction: column;
+    gap: 0; 
+    margin-top: 20px;
+}
+
+/* Le style général "penche" pour le conteneur du bouton */
+.btn-skew {
+    display: block;
     width: 100%;
-    background: #000;
-    color: #fff;
-    padding: 18px;
-    font-size: 16px;
-    font-weight: 800;
-    text-transform: uppercase;
+    height: 55px; /* Hauteur fixe pour look propre */
     border: none;
     cursor: pointer;
-    font-style: italic;
-    transition: background 0.3s;
-    display: flex;
-    justify-content: center;
-    align-items: center;
+    margin-bottom: 15px; /* Espace entre les boutons */
+    transform: skewX(-20deg); /* L'effet incliné global */
+    transition: all 0.3s ease;
+    text-decoration: none;
+    padding: 0;
 }
 
-.btn-add-cart:hover {
-    background: #333;
+/* On redresse le contenu texte à l'intérieur */
+.btn-content-unskew {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+    transform: skewX(20deg); /* Annule l'inclinaison pour le texte */
+    
+    font-family: inherit;
+    font-weight: 800;
+    font-style: italic;
+    font-size: 0.9rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+/* La petite double flèche avant le texte (>>) */
+.btn-content-unskew::before {
+    content: '»'; 
+    font-size: 1.4em;
+    margin-right: 10px;
+    margin-bottom: 4px; /* Petit alignement optique */
+    display: inline-block;
+}
+
+/* --- BOUTON PANIER (NOIR) --- */
+#btn-panier {
+    background-color: #000;
+    color: #fff;
+}
+#btn-panier:hover {
+    background-color: #333;
+}
+/* Soulignement spécifique du texte panier */
+#btn-panier .text-label {
+    text-decoration: underline;
+    text-underline-offset: 4px;
+    text-decoration-thickness: 1px;
+}
+
+/* --- BOUTON MAGASIN (BLANC) --- */
+#btn-contact-magasin {
+    background-color: #fff;
+    color: #000;
+    border: 1px solid #000; /* Bordure noire */
+}
+#btn-contact-magasin:hover {
+    background-color: #000;
+    color: #fff;
 }
 
 /* =========================================
    NOUVEAU CARROUSEL (ARTICLES SIMILAIRES)
-   Classes préfixées par "st-" pour éviter collision
    ========================================= */
-
 .st-similar-section {
     margin-top: 80px;
     padding: 20px 0;
-    max-width: 1400px; /* Aligné avec le contenu */
+    max-width: 1400px;
     margin-left: auto;
     margin-right: auto;
 }
 
 .st-section-title {
-    text-align: left; /* Aligné gauche comme demandé */
+    text-align: left;
     font-size: 2rem;
     margin-bottom: 30px;
     margin-top: 70px;
@@ -757,11 +792,10 @@ nav {
     padding: 10px 20px;
     overflow-x: auto;
     scroll-behavior: smooth;
-    scrollbar-width: none; /* Cache scrollbar Firefox */
+    scrollbar-width: none;
 }
 .st-carousel-track::-webkit-scrollbar { display: none; }
 
-/* La Carte Produit */
 .st-card-item {
     min-width: 300px;
     width: 300px;
@@ -788,7 +822,6 @@ nav {
     height: 100%;
 }
 
-/* Image */
 .st-img-box {
     width: 100%;
     height: 220px;
@@ -805,7 +838,6 @@ nav {
     object-fit: contain;
 }
 
-/* Info Text */
 .st-info-box {
     padding: 15px 20px;
     flex-grow: 1;
@@ -836,11 +868,10 @@ nav {
     margin-top: 5px;
 }
 
-/* Bouton Noir en bas à droite */
 .st-action-row {
     display: flex;
     justify-content: flex-end;
-    margin-top: auto; /* Pousse le bouton vers le bas */
+    margin-top: auto;
 }
 
 .st-view-btn {
@@ -854,7 +885,7 @@ nav {
     display: inline-flex;
     align-items: center;
     gap: 8px;
-    clip-path: polygon(10% 0, 100% 0, 100% 100%, 0% 100%); /* Le petit effet biseauté à gauche */
+    clip-path: polygon(10% 0, 100% 0, 100% 100%, 0% 100%);
     transition: background 0.3s ease;
 }
 
@@ -862,12 +893,6 @@ nav {
     background-color: #333;
 }
 
-.arrow-icon {
-    font-style: normal;
-    font-size: 0.8em;
-}
-
-/* Boutons Navigation Carrousel */
 .st-nav-btn {
     position: absolute;
     top: 50%;
@@ -920,6 +945,10 @@ nav {
     .product-title { font-size: 28px; }
     
     .st-card-item {
-        min-width: 85%; /* Presque plein écran sur mobile */
+        min-width: 85%;
     }
+}
+
+.dispo-text {
+    font-size: 0.7em;
 }

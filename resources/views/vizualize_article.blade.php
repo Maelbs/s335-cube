@@ -38,16 +38,34 @@
                         <h2>FICHE TECHNIQUE</h2>
                         <button class="toggle-specs-btn"></button>
                     </div>
-
+                    
                     <div class="specs-content">
                         @foreach($specifications as $typeNom => $caracteristiques)
                             <div class="spec-group-title">{{ $typeNom }}</div>
                             <div class="spec-group-list">
+                                @if($loop->first)
+                                    <div class="spec-row">
+                                        <div class="spec-label">Tailles</div>
+                                        <div class="spec-value">
+                                            {{-- On trie par ID pour avoir l'ordre croissant (XS, S, M, L...) --}}
+                                            @foreach($stockParIdTaille->sortBy('id_taille') as $inventaire)
+                                                
+                                                {{-- Affiche le nom de la taille --}}
+                                                {{ $inventaire->taille->taille }}
+
+                                                {{-- Ajoute un séparateur sauf à la fin --}}
+                                                @if(!$loop->last) / @endif
+                                                
+                                            @endforeach
+                                        </div>
+                                    </div>
+                                @endif
                                 @foreach($caracteristiques as $carac)
                                     <div class="spec-row">
                                         <div class="spec-label">{{ $carac->nom_caracteristique }}</div>
                                         <div class="spec-value">{{ $carac->pivot->valeur_caracteristique }}</div>
                                     </div>
+                                    
                                 @endforeach
                             </div>
                         @endforeach
@@ -136,23 +154,30 @@
                 <div class="sizes-grid">
                     @foreach ($stockParIdTaille as $inventaire)   
                         @php
-                            $classBtn = "";
-                            if($inventaire->quantite_stock_en_ligne == 0) {
-                                $classBtn = "indisponible-en-ligne";
-                            }
-                        
+                            // 1. Récupération des stocks
+                            $stockWeb = $inventaire->quantite_stock_en_ligne;
+                            // Calcul de la somme des stocks de tous les magasins liés (via la table pivot)
+                            $stockMag = $inventaire->magasins->sum('pivot.quantite_stock_magasin');
+
+                            // 2. Gestion de la classe CSS (si vide en ligne => grisé)
+                            $classeCss = ($stockWeb <= 0) ? 'out-of-stock' : '';
                         @endphp
+
                         <button 
-                            class="size-btn {{ $classBtn }}"
-                            onclick="selectionnerTaille('{{ $inventaire->taille->taille }}')"
+                            class="size-btn {{ $classeCss }}"
+                            {{-- 3. C'EST ICI LE PLUS IMPORTANT : On passe les stocks au JS --}}
+                            onclick="selectionnerTaille(
+                                '{{ $inventaire->taille->taille }}', 
+                                {{ $stockWeb }}, 
+                                {{ $stockMag }}
+                            )"
                         >
                             {{ $inventaire->taille->taille }} 
                             
-                            <span>
+                            <span style="font-size: 0.8em; display:block; font-weight: normal;">
                                 ({{ $inventaire->taille->taille_min }}-{{ $inventaire->taille->taille_max }})
                             </span>
                         </button> 
-                        
                     @endforeach
                 </div>
             </div>
@@ -160,18 +185,41 @@
             <div class="price-section">
                 <span class="price">{{ $velo->varianteVelo->prix }} € TTC</span>
             </div>
-            <div class="availability">
-                <div class="status-line">
-                    <span class="dot {{ $velo->dispo_en_ligne ? 'green' : 'red' }}"></span>
-                    <span class="text">Disponible en ligne</span>
+
+            {{-- INDICATEURS DE DISPONIBILITÉ (Les ronds) --}}
+            <div class="dispo-info-container" style="margin-bottom: 15px;">
+                
+                <div class="dispo-row">
+                    <span id="dot-web" class="status-dot"></span> 
+                    <span id="text-web" class="dispo-text">Sélectionnez une taille</span>
                 </div>
-                <div class="status-line">
-                    <span class="dot {{ $velo->dispo_magasin ? 'green' : 'orange' }}"></span>
-                    <span class="text">Disponible en magasins <i class="far fa-question-circle info-icon"></i></span>
+
+                <div class="dispo-row">
+                    <span id="dot-magasin" class="status-dot"></span>
+                    <span id="text-magasin" class="dispo-text">Sélectionnez une taille</span>
                 </div>
+
             </div>
 
-            <button class="btn-add-cart">AJOUTER AU PANIER</button>
+            <div class="action-buttons-container">
+                {{-- BOUTON 1 : PANIER (Noir, biseauté) --}}
+                <button id="btn-panier" class="btn-skew" style="display: none;">
+                    <span class="btn-content-unskew">
+                        <span class="text-label">Ajouter au panier</span>
+                    </span>
+                </button>
+
+                {{-- BOUTON 2 : MAGASIN (Blanc, biseauté) --}}
+                <button id="btn-contact-magasin" class="btn-skew" style="display: none;">
+                    <span class="btn-content-unskew">
+                        <span class="text-label">Contacter mon magasin</span>
+                    </span>
+                </button>
+
+                <p id="msg-indisponible" style="display: none; color: red; font-weight: bold; margin-top:10px;">
+                    Indisponible
+                </p>
+            </div>
 
             <div>
                 <p class="size-label">Également disponible en</p>
@@ -257,6 +305,54 @@
     </section>
 @endif
     <script src="{{ asset('js/vizualize_article.js') }}" defer></script>
+    <script>
+        function selectionnerTaille(tailleNom, qtyWeb, qtyMagasin) {
+            console.log("Taille:", tailleNom, "| Web:", qtyWeb, "| Magasin:", qtyMagasin);
+
+            // 1. Éléments DOM
+            const btnPanier = document.getElementById('btn-panier');
+            const btnMagasin = document.getElementById('btn-contact-magasin');
+            const msgIndispo = document.getElementById('msg-indisponible');
+
+            const dotWeb = document.getElementById('dot-web');
+            const textWeb = document.getElementById('text-web');
+            const dotMagasin = document.getElementById('dot-magasin');
+            const textMagasin = document.getElementById('text-magasin');
+
+            // 2. LOGIQUE WEB
+            if (qtyWeb > 0) {
+                btnPanier.style.display = 'inline-block';
+                dotWeb.className = 'status-dot active-green';
+                textWeb.textContent = "Disponible en ligne";
+                textWeb.style.color = '#15803d'; // Vert foncé
+            } else {
+                btnPanier.style.display = 'none';
+                dotWeb.className = 'status-dot inactive-gray';
+                textWeb.textContent = "Indisponible en ligne";
+                textWeb.style.color = '#6b7280'; // Gris
+            }
+
+            // 3. LOGIQUE MAGASIN
+            if (qtyMagasin > 0) {
+                btnMagasin.style.display = 'inline-block';
+                dotMagasin.className = 'status-dot active-green';
+                textMagasin.textContent = "Disponible en magasin";
+                textMagasin.style.color = '#15803d';
+            } else {
+                btnMagasin.style.display = 'none';
+                dotMagasin.className = 'status-dot inactive-gray';
+                textMagasin.textContent = "Indisponible en magasin";
+                textMagasin.style.color = '#6b7280';
+            }
+
+            // 4. RUPTURE TOTALE
+            if (qtyWeb <= 0 && qtyMagasin <= 0) {
+                msgIndispo.style.display = 'block';
+            } else {
+                msgIndispo.style.display = 'none';
+            }
+        }
+    </script>
 
 </body>
 </html>
