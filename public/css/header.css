@@ -1,0 +1,410 @@
+/* =========================================
+   1. FONTS & RESET HEADER
+   ========================================= */
+@font-face {
+    font-family: 'Damas Font';
+    src: url('../font/font.woff2');
+}
+
+/* Ces resets de base sont nécessaires pour que le header s'affiche bien 
+   même s'il est isolé, mais n'affectent pas agressivement le reste */
+header * {
+    box-sizing: border-box;
+}
+
+header ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+header a {
+    text-decoration: none;
+    color: inherit;
+    transition: color 0.2s ease;
+}
+
+/* =========================================
+   2. HEADER PRINCIPAL
+   ========================================= */
+header {
+    display: flex;
+    justify-content: space-between;
+    position: absolute; /* Attention: Sur une page sans carrousel, mettre 'relative' */
+    padding: 0 40px;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100px;
+    z-index: 10000;
+    background-color: rgba(0, 0, 0, 0.3);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+    backdrop-filter: blur(1px);
+    transition: all 0.5s ease;
+    color: #fff;
+    font-family: "Damas Font", sans-serif;
+}
+
+/* État Hover / Menu Ouvert */
+header:hover, 
+header.menu-open {
+    background-color: #fff;
+    color: #000;
+    border-bottom: 1px solid #eee;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+}
+
+header nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    height: 100%;
+    padding: 0 30px;
+    max-width: 1800px;
+    margin: 0 auto;
+    width: 100%;
+}
+
+/* --- LOGO --- */
+.menu-category {
+    display: flex;
+    align-items: center;
+    height: 100%;
+}
+
+.logo {
+    display: flex;
+    align-items: center;
+    height: 70px;
+    margin-right: 40px;
+    transition: transform 0.3s;
+}
+
+.logo img {
+    height: 100%;
+    width: auto;
+    filter: brightness(0) invert(1); /* Blanc par défaut */
+    transition: filter 0.3s;
+}
+
+header:hover .logo img {
+    filter: brightness(0); /* Noir au survol */
+}
+
+/* --- NAVIGATION ITEMS --- */
+.nav-list {
+    display: flex;
+    height: 100%;
+    align-items: center;
+}
+
+.nav-item {
+    height: 100%;
+    display: flex;
+    align-items: center;
+    position: static; /* Vital pour le mega menu full width */
+}
+
+.link_category {
+    padding: 0 25px;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    font-size: 1.05rem;
+    font-style: italic;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    position: relative;
+    color: inherit;
+    cursor: pointer;
+}
+
+.link_category::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 0;
+    height: 4px;
+    background-color: #00b0f0;
+    transition: width 0.3s ease;
+}
+
+.nav-item:hover .link_category::after {
+    width: 100%;
+}
+
+.menu-link-reset {
+    text-decoration: none; 
+    color: inherit; 
+    display: block; 
+    width: 100%; 
+    height: 100%;
+}
+
+/* --- USER & ICONES --- */
+.menu-user {
+    display: flex;
+    align-items: center;
+    white-space: nowrap;
+    font-weight: 700;
+    font-size: 13px;
+    text-transform: uppercase;
+}
+
+#magasin {
+    margin-right: 25px;
+    text-decoration: underline;
+    text-underline-offset: 4px;
+}
+
+.icone {
+    display: flex;
+    gap: 20px;
+    align-items: center;
+    padding-left: 20px;
+}
+
+.menu-user svg {
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 2;
+}
+
+/* =========================================
+   3. MEGA MENU DROPDOWN
+   ========================================= */
+.mega-menu-dropdown {
+    display: block; 
+    position: absolute;
+    top: 100px;
+    left: 0;
+    width: 100%;
+    background: #fff;
+    border-top: 1px solid #e5e5e5;
+    box-shadow: 0 15px 40px rgba(0,0,0,0.1);
+    z-index: 999;
+    color: #333;
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+    transform: translateY(-2px); 
+    transition: opacity 0.3s ease, transform 0.3s ease, visibility 0.3s linear;
+}
+
+.nav-item:hover .mega-menu-dropdown {
+    opacity: 1;
+    visibility: visible;
+    pointer-events: auto;
+    transform: translateY(0); 
+}
+
+/* Structure des colonnes */
+.mega-menu-wrapper {
+    display: flex;
+    max-width: 1400px;
+    margin: 0 auto;
+    height: 550px;
+    background: #fff;
+    transition: all 0.5s ease;
+}
+
+.col-roots, 
+.col-subs-wrapper, 
+.col-models-wrapper {
+    overflow-y: auto;
+    overflow-x: hidden; 
+    scrollbar-width: none; 
+    -webkit-overflow-scrolling: touch;
+}
+
+.col-roots::-webkit-scrollbar, 
+.col-subs-wrapper::-webkit-scrollbar, 
+.col-models-wrapper::-webkit-scrollbar {
+    display: none;
+}
+
+.col-roots {
+    width: 260px;
+    background-color: #f7f7f7;
+    border-right: 1px solid #eee;
+    padding: 30px 0;
+}
+
+.col-subs-wrapper {
+    width: 260px;
+    background-color: #fff;
+    border-right: 1px solid #eee;
+}
+
+.subs-container {
+    padding: 30px 0;
+    height: 100%;
+}
+
+.col-models-wrapper {
+    flex: 1;
+    background-color: #fff;
+    padding: 40px 50px;
+}
+
+/* Items du Menu */
+.menu-item {
+    padding: 12px 30px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 800;
+    text-transform: uppercase;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    transition: all 0.2s;
+    color: #000;
+}
+
+.menu-item span {
+    font-size: 18px;
+    font-weight: 300;
+    color: #ccc;
+}
+
+.menu-item:hover, 
+.menu-item.active {
+    color: #00b0f0;
+    background-color: #fff;
+}
+
+.menu-item.active {
+    border-left: 4px solid #00b0f0;
+    padding-left: 26px;
+}
+
+/* Style Sous-Catégories */
+.col-subs-wrapper .menu-item {
+    font-weight: 700;
+    font-style: italic;
+    color: #444;
+}
+
+.col-subs-wrapper .menu-item.active {
+    color: #00b0f0;
+}
+
+/* Modèles Grid */
+.col-models-wrapper h3 {
+    font-size: 24px;
+    font-weight: 900;
+    text-transform: uppercase;
+    margin-bottom: 30px;
+    padding-bottom: 10px;
+    border-bottom: 2px solid #00b0f0;
+    display: inline-block;
+}
+
+.model-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 15px 40px;
+}
+
+.model-link {
+    font-size: 14px;
+    color: #555;
+    font-weight: 500;
+    padding: 5px 0;
+    display: block;
+    transition: transform 0.2s, color 0.2s;
+}
+
+.model-link:hover {
+    color: #00b0f0;
+    transform: translateX(5px);
+}
+
+/* Utilitaires Menu */
+.d-none { display: none !important; }
+.d-block { display: block !important; }
+
+/* Animations */
+@keyframes slideInRight {
+    from { opacity: 0; transform: translateX(5px); }
+    to { opacity: 1; transform: translateX(0); }
+}
+
+.subs-container, .models-container {
+    animation: slideInRight 0.4s ease-out forwards;
+}
+
+/* =========================================
+   4. SEARCH OVERLAY
+   ========================================= */
+.search-overlay-full {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 120px;
+    background-color: #fff;
+    z-index: 99999;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    padding: 0 40px;
+    box-sizing: border-box;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+}
+
+.search-overlay-full.active {
+    display: flex;
+    animation: slideInTop 0.3s ease-out;
+}
+
+@keyframes slideInTop {
+    from { transform: translateY(-100%); }
+    to { transform: translateY(0); }
+}
+
+.search-wrapper {
+    flex-grow: 1;
+    max-width: 800px;
+}
+
+.search-wrapper form {
+    display: flex;
+    align-items: center;
+    border-bottom: 2px solid #000;
+    padding-bottom: 5px;
+}
+
+.search-wrapper input {
+    width: 100%;
+    border: none;
+    font-size: 16px;
+    font-weight: 800;
+    text-transform: uppercase;
+    font-style: italic;
+    outline: none;
+    background: transparent;
+}
+
+.search-wrapper button {
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0 10px;
+}
+
+.close-btn {
+    font-size: 40px;
+    color: #000;
+    cursor: pointer;
+    margin-left: 40px;
+    line-height: 1;
+    transition: transform 0.3s;
+}
+
+.close-btn:hover {
+    transform: rotate(90deg);
+    color: #666;
+}

@@ -6,8 +6,10 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>{{ $velo->varianteVelo->modele->nom_modele }}</title>
     <link rel="stylesheet" href="{{ asset('css/vizualize_article.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/header.css') }}">
 </head>
 <body>
+    @include('layouts.header')
     <div class="page-product-container">
     
         <div class="left-column-wrapper">

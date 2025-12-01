@@ -33,9 +33,12 @@ p {
     padding: 40px 20px;
     gap: 60px; /* Espace généreux entre colonne gauche et droite */
     align-items: flex-start;
+    top: 100px;
+    position: relative;
 }
 
 .left-column-wrapper {
+    top: 130px;
     flex: 1;
     min-width: 0; /* Empêche les débordements flex */
 }
@@ -255,7 +258,6 @@ p {
 .sidebar-column {
     width: 30vw;
     position: sticky;
-    top: 40px; /* Décalage du haut de l'écran */
     background: #f9f9f9;
     padding: 40px; /* Padding interne généreux pour centrer le contenu */
     border-radius: 2px;
