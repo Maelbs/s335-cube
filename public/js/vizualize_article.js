@@ -1,8 +1,10 @@
 document.addEventListener('DOMContentLoaded', function() {
     
+    // --- PARTIE 1 : TOGGLE DES SPÉCIFICATIONS (inchangé) ---
     const toggles = document.querySelectorAll('.toggle-specs-btn');
 
     toggles.forEach(btn => {
+        // On vide le texte si besoin, comme dans ton script original
         btn.textContent = ''; 
 
         const headerRow = btn.closest('.specs-header-row');
@@ -20,7 +22,6 @@ document.addEventListener('DOMContentLoaded', function() {
                     content.style.maxHeight = null; 
                     content.classList.remove('is-visible');
                     this.classList.remove('is-active');
-
                 } else {
                     content.classList.add('is-visible');
                     content.style.maxHeight = content.scrollHeight + "px";
@@ -29,43 +30,29 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         });
     });
-});
 
+    // --- PARTIE 2 : LE NOUVEAU CARROUSEL ---
+    const track = document.querySelector(".st-carousel-track");
+    const btnLeft = document.querySelector(".st-btn-left");
+    const btnRight = document.querySelector(".st-btn-right");
 
+    // Sécurité : si les éléments n'existent pas sur la page, on arrête là
+    if (!track || !btnLeft || !btnRight) return;
 
-document.addEventListener("DOMContentLoaded", () => {
-    const track = document.querySelector(".carousel-track");
-    const cards = document.querySelectorAll(".similar-card");
-    const btnLeft = document.querySelector(".left-btn");
-    const btnRight = document.querySelector(".right-btn");
- 
-    if (!track || cards.length === 0) return;
- 
-    let index = 0;
-    const cardWidth = cards[0].offsetWidth + 20; // largeur + gap
-    const maxIndex = cards.length - 4; // car tu affiches 4 cartes
- 
-    function updateCarousel() {
-        track.style.transform = `translateX(-${index * cardWidth}px)`;
+    // Fonction pour scroller
+    function scrollCarousel(direction) {
+        // On récupère la largeur d'une carte + l'espace (gap)
+        // Le gap dans ton CSS est de 25px
+        const card = track.querySelector(".st-card-item");
+        const scrollAmount = card ? (card.offsetWidth + 25) : 300; 
+
+        if (direction === 'left') {
+            track.scrollBy({ left: -scrollAmount, behavior: 'smooth' });
+        } else {
+            track.scrollBy({ left: scrollAmount, behavior: 'smooth' });
+        }
     }
- 
-    btnRight.addEventListener("click", () => {
-        if (index < maxIndex) {
-            index++;
-            updateCarousel();
-        }
-    });
- 
-    btnLeft.addEventListener("click", () => {
-        if (index > 0) {
-            index--;
-            updateCarousel();
-        }
-    });
- 
-    // Ajustement au redimensionnement (responsive)
-    window.addEventListener("resize", () => {
-        const newWidth = cards[0].offsetWidth + 20;
-        track.style.transform = `translateX(-${index * newWidth}px)`;
-    });
+
+    btnLeft.addEventListener("click", () => scrollCarousel('left'));
+    btnRight.addEventListener("click", () => scrollCarousel('right'));
 });

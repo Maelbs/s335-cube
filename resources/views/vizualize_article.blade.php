@@ -7,19 +7,19 @@
     <title>{{ $velo->varianteVelo->modele->nom_modele }}</title>
         {{-- <link rel="stylesheet" href="{{ asset('css/style.css') }}"> --}}
     <link rel="stylesheet" href="{{ asset('css/vizualize_article.css') }}">
-<<<<<<< HEAD
+
 
 </head>
 <body>
 
     @include('layouts.header') 
 
-=======
+
     <link rel="stylesheet" href="{{ asset('css/header.css') }}">
 </head>
 <body>
     @include('layouts.header')
->>>>>>> c2f679015dc5ddf581879c91eb14ecfeac88df2e
+
     <div class="page-product-container">
     
         <div class="left-column-wrapper">
@@ -159,33 +159,48 @@
     </div>
     
     @if($velosSimilaires->isNotEmpty())
-        <section class="similar-carousel-section">
-            <h2 class="similar-title">VÉLOS SIMILAIRES</h2>
-            <div class="carousel-wrapper">
-                <button class="carousel-btn left-btn">❮</button>
-                <div class="carousel-track">
-                    @foreach($velosSimilaires as $similaire)
-                        <div class="similar-card">
-                            <a href="{{ route('velo.show', $similaire->reference) }}" class="similar-link">
-                            <div class="similar-image-container">
+    <section class="st-similar-section">
+        <h2 class="st-section-title">ARTICLES SIMILAIRES</h2>
+        
+        <div class="st-carousel-wrapper">
+            <button class="st-nav-btn st-btn-left">❮</button>
+            
+            <div class="st-carousel-track">
+                @foreach($velosSimilaires as $similaire)
+                    <div class="st-card-item">
+                        <a href="{{ route('velo.show', $similaire->reference) }}" class="st-card-link">
+                            
+                            {{-- Image --}}
+                            <div class="st-img-box">
                                 <img src="{{ $similaire->photo_principale }}" alt="{{ $similaire->nom_article }}">
                             </div>
-                            <div class="similar-info">
-                                <h3 class="similar-name">{{ $similaire->nom_article }}</h3>
-                                @if(optional($similaire->varianteVelo)->modele)
-                                    <span class="similar-year">{{ optional($similaire->varianteVelo)->modele->millesime_modele }}</span>
-                                @endif
-                                <div class="similar-price">{{ $similaire->prix }} €</div>
-                            </div>
-                            </a>
-                        </div>
-                    @endforeach
-                </div>
-                <button class="carousel-btn right-btn">❯</button>
-            </div>
-        </section>
-    @endif
 
+                            {{-- Infos --}}
+                            <div class="st-info-box">
+                                <h3 class="st-prod-name">{{ $similaire->nom_article }}</h3>
+                                
+                                @if(optional($similaire->varianteVelo)->modele)
+                                    <span class="st-prod-year">{{ optional($similaire->varianteVelo)->modele->millesime_modele }}</span>
+                                @endif
+                                
+                                <div class="st-prod-price">{{ number_format($similaire->prix, 2, ',', ' ') }} €</div>
+                            </div>
+
+                            {{-- Bouton --}}
+                            <div class="st-action-row">
+                                <span class="st-view-btn">
+                                    <i class="arrow-icon">▶</i> VOIR LE PRODUIT
+                                </span>
+                            </div>
+                        </a>
+                    </div>
+                @endforeach
+            </div>
+
+            <button class="st-nav-btn st-btn-right">❯</button>
+        </div>
+    </section>
+@endif
     <script src="{{ asset('js/vizualize_article.js') }}" defer></script>
 
 </body>

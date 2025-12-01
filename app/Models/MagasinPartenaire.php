@@ -19,18 +19,26 @@ class MagasinPartenaire extends Model
 
     public function adresses(): BelongsToMany
     {
-        // Table pivot : adresse_magasin | Clés étrangères : id_magasin, id_adresse
         return $this->belongsToMany(Adresse::class, 'adresse_magasin', 'id_magasin', 'id_adresse');
     }
 
     public function typesLivraison(): BelongsToMany
     {
-        // Table pivot : type_livraison_magasin | Clés étrangères : id_magasin, id_type_livraison
         return $this->belongsToMany(TypeLivraison::class, 'type_livraison_magasin', 'id_magasin', 'id_type_livraison');
+    }
+
+    public function stocksVelo()
+    {
+        return $this->belongsToMany(
+            VarianteVeloInventaire::class, 
+            'inventaire_magasin',          
+            'id_magasin',                  
+            'id_velo_inventaire'           
+        )->withPivot('quantite_stock_magasin'); 
     }
 
     public function __toString(): string
     {
-        return $this->nom_magasin ?? '';
+        return (string) $this->nom_magasin;
     }
 }

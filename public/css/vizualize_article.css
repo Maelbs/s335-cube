@@ -1,7 +1,7 @@
 /* =========================================
    FONTS & GLOBAL
    ========================================= */
-@font-face {
+   @font-face {
     font-family: 'Damas Font';
     src: url('../font/font.woff2');
 }
@@ -18,7 +18,6 @@ html {
 body {
     margin: 0;
     padding: 0;
-    /* On s'assure que le fond est bien blanc ou gris très clair globalement si besoin */
     background-color: #fff; 
 }
 
@@ -30,23 +29,20 @@ p {
 }
 
 /* =========================================
-   HEADER BLANC (MODIFIÉ)
+   HEADER BLANC
    ========================================= */
 header {
     display: flex;
     justify-content: space-between;
-    /* Position relative : le header prend de la place et pousse le contenu vers le bas */
     position: relative; 
     padding: 0 40px;
     width: 100%;
     height: 100px;
-    z-index: 1000; /* Z-index suffisant pour passer au-dessus du reste au besoin */
-    
-    background-color: #ffffff; /* Fond Blanc */
-    border-bottom: 1px solid #e5e5e5; /* Petite ligne de séparation */
-    
-    color: #000000; /* Texte en noir */
-    box-shadow: 0 2px 10px rgba(0,0,0,0.03); /* Ombre très légère */
+    z-index: 1000;
+    background-color: #ffffff;
+    border-bottom: 1px solid #e5e5e5;
+    color: #000000;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.03);
 }
 
 nav {
@@ -60,7 +56,6 @@ nav {
     width: 100%;
 }
 
-/* --- LOGO --- */
 .menu-category {
     display: flex;
     align-items: center;
@@ -77,11 +72,9 @@ nav {
 .logo img {
     height: 100%;
     width: auto;
-    /* Force le logo en noir */
     filter: brightness(0); 
 }
 
-/* --- NAVIGATION --- */
 .nav-list {
     display: flex;
     height: 100%;
@@ -107,10 +100,9 @@ nav {
     letter-spacing: 0.5px;
     position: relative;
     cursor: pointer;
-    color: #000; /* Liens en noir */
+    color: #000;
 }
 
-/* Ligne bleue au survol */
 .link_category::after {
     content: '';
     position: absolute;
@@ -126,7 +118,6 @@ nav {
     width: 100%;
 }
 
-/* --- USER & ICONES --- */
 .menu-user {
     display: flex;
     align-items: center;
@@ -134,7 +125,7 @@ nav {
     font-weight: 700;
     font-size: 13px;
     text-transform: uppercase;
-    color: #000; /* Texte User en noir */
+    color: #000;
 }
 
 #magasin {
@@ -150,10 +141,9 @@ nav {
     padding-left: 20px;
 }
 
-/* Icones SVG en noir */
 .menu-user svg {
     fill: none;
-    stroke: currentColor; /* Prend la couleur du parent (#000) */
+    stroke: currentColor;
     stroke-width: 2;
     transition: stroke 0.3s ease;
 }
@@ -162,20 +152,20 @@ nav {
     stroke: #00b0f0;
 }
 
-/* --- MEGA MENU --- */
+/* =========================================
+   MEGA MENU
+   ========================================= */
 .mega-menu-dropdown {
     display: block; 
     position: absolute; 
-    top: 100px; /* Juste en dessous du header de 100px */
+    top: 100px;
     left: 0;
     width: 100%;
-    
     background: #fff;
     border-top: 1px solid #e5e5e5;
     box-shadow: 0 15px 40px rgba(0,0,0,0.1);
     z-index: 999;
     color: #333;
-
     opacity: 0;
     visibility: hidden;
     pointer-events: none;
@@ -190,7 +180,6 @@ nav {
     transform: translateY(0); 
 }
 
-/* Scrollbars Mega Menu */
 .col-roots, .col-subs-wrapper, .col-models-wrapper {
     overflow-y: auto;
     overflow-x: hidden; 
@@ -210,7 +199,6 @@ nav {
     transition: all 0.5s ease;
 }
 
-/* Colonnes Mega Menu */
 .col-roots {
     width: 260px;
     background-color: #f7f7f7;
@@ -307,7 +295,6 @@ nav {
 .d-none { display: none !important; }
 .d-block { display: block !important; }
 
-/* Animations Mega Menu */
 @keyframes slideInRight {
     from { opacity: 0; transform: translateX(5px); }
     to { opacity: 1; transform: translateX(0); }
@@ -364,7 +351,7 @@ nav {
 }
 
 /* =========================================
-   COLONNE SPECIFICATIONS
+   SPECIFICATIONS
    ========================================= */
 .specs-column {
     width: 100%;
@@ -390,6 +377,7 @@ nav {
     text-transform: uppercase;
     color: #000;
     letter-spacing: 0.5px;
+    margin-top: 40px;
     margin: 0;
 }
 
@@ -473,7 +461,6 @@ nav {
     line-height: 1.4;
 }
 
-/* --- Section Géométrie --- */
 .table-responsive {
     overflow-x: auto;
     padding-bottom: 10px;
@@ -529,10 +516,7 @@ nav {
 .sidebar-column {
     width: 30vw;
     position: sticky;
-<<<<<<< HEAD
-    top: 40px; /* Colle à 40px du haut quand on scrolle */
-=======
->>>>>>> c2f679015dc5ddf581879c91eb14ecfeac88df2e
+    top: 40px;
     background: #f9f9f9;
     padding: 40px;
     border-radius: 2px;
@@ -678,154 +662,206 @@ nav {
 }
 
 /* =========================================
-   ARTICLE SIMILAIRE
+   NOUVEAU CARROUSEL (ARTICLES SIMILAIRES)
+   Classes préfixées par "st-" pour éviter collision
    ========================================= */
-.similar-carousel-section {
+
+.st-similar-section {
     margin-top: 80px;
-    padding: 20px;
+    padding: 20px 0;
+    max-width: 1400px; /* Aligné avec le contenu */
+    margin-left: auto;
+    margin-right: auto;
 }
 
-.similar-title {
-    text-align: center;
+.st-section-title {
+    text-align: left; /* Aligné gauche comme demandé */
     font-size: 2rem;
-    margin-bottom: 25px;
-    font-weight: 800;
+    margin-bottom: 30px;
+    margin-top: 70px;
+    font-weight: 900;
+    font-style: italic;
+    text-transform: uppercase;
+    color: #000;
+    padding-left: 20px;
 }
 
-.carousel-wrapper {
+.st-carousel-wrapper {
     position: relative;
     width: 100%;
     overflow: hidden;
+    padding: 10px 0;
 }
 
-.carousel-track {
+.st-carousel-track {
     display: flex;
-    gap: 20px;
-    transition: transform 0.4s ease;
+    gap: 25px;
+    padding: 10px 20px;
+    overflow-x: auto;
+    scroll-behavior: smooth;
+    scrollbar-width: none; /* Cache scrollbar Firefox */
 }
+.st-carousel-track::-webkit-scrollbar { display: none; }
 
-.similar-card {
-    min-width: 25%;
+/* La Carte Produit */
+.st-card-item {
+    min-width: 300px;
+    width: 300px;
     background: #fff;
-    border-radius: 8px;
-    box-shadow: 0 4px 15px rgba(0,0,0,0.05);
     border: 1px solid #eee;
-    overflow: hidden;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.03);
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
-.similar-image-container {
+.st-card-item:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 25px rgba(0,0,0,0.08);
+}
+
+.st-card-link {
+    text-decoration: none;
+    color: inherit;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
+/* Image */
+.st-img-box {
     width: 100%;
-    height: 200px; /* Ajuste la hauteur selon besoin */
+    height: 220px;
+    padding: 20px;
     display: flex;
     align-items: center;
     justify-content: center;
-    overflow: hidden;
+    background: #fff;
 }
 
-.similar-image-container img {
+.st-img-box img {
     max-width: 100%;
     max-height: 100%;
     object-fit: contain;
 }
 
-.similar-info {
-    padding: 15px;
-    text-align: center;
+/* Info Text */
+.st-info-box {
+    padding: 15px 20px;
+    flex-grow: 1;
 }
 
-.similar-name {
+.st-prod-name {
     font-size: 1.1rem;
-    font-weight: 700;
-    margin: 5px 0;
+    font-weight: 800;
+    font-style: italic;
+    margin: 0 0 5px 0;
     color: #000;
+    text-transform: uppercase;
+    line-height: 1.2;
 }
 
-.similar-year {
+.st-prod-year {
     display: block;
-    color: #888;
+    color: #999;
+    font-size: 0.85rem;
+    margin-bottom: 12px;
+}
+
+.st-prod-price {
+    font-size: 1.2rem;
+    font-weight: 800;
+    font-style: italic;
+    color: #000;
+    margin-top: 5px;
+}
+
+/* Bouton Noir en bas à droite */
+.st-action-row {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: auto; /* Pousse le bouton vers le bas */
+}
+
+.st-view-btn {
+    background-color: #000;
+    color: #fff;
+    font-weight: 800;
+    font-style: italic;
     font-size: 0.9rem;
-    margin-bottom: 5px;
+    text-transform: uppercase;
+    padding: 12px 25px;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    clip-path: polygon(10% 0, 100% 0, 100% 100%, 0% 100%); /* Le petit effet biseauté à gauche */
+    transition: background 0.3s ease;
 }
 
-.similar-price {
-    font-weight: 700;
-    color: #333;
+.st-card-item:hover .st-view-btn {
+    background-color: #333;
 }
 
-.similar-link {
-    text-decoration: none;
-    color: inherit;
+.arrow-icon {
+    font-style: normal;
+    font-size: 0.8em;
 }
 
-.carousel-btn {
+/* Boutons Navigation Carrousel */
+.st-nav-btn {
     position: absolute;
     top: 50%;
     transform: translateY(-50%);
     background: #fff;
-    border: none;
-    font-size: 2rem;
-    padding: 10px 15px;
+    border: 1px solid #eee;
+    width: 45px;
+    height: 45px;
+    border-radius: 50%;
     cursor: pointer;
     z-index: 10;
-    border-radius: 50%;
-    box-shadow: 0 4px 15px rgba(0,0,0,0.15);
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    font-size: 1.2rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s;
 }
 
-.left-btn { left: 10px; }
-.right-btn { right: 10px; }
-.carousel-btn:hover { background: #f0f0f0; }
+.st-nav-btn:hover {
+    background: #000;
+    color: #fff;
+    border-color: #000;
+}
 
-/* =========================================
-   RESPONSIVE
-   ========================================= */
+.st-btn-left { left: 10px; }
+.st-btn-right { right: 10px; }
+
+/* Responsive Carrousel */
 @media (max-width: 1024px) {
     .page-product-container {
         flex-direction: column;
         gap: 40px;
     }
-
     .sidebar-column {
         width: 100%;
         position: static;
         padding: 30px;
     }
-    
     .product-hero-section img {
         max-height: 400px;
-    }
-
-    .similar-card {
-        min-width: 50%; /* 2 cartes sur tablette */
     }
 }
 
 @media (max-width: 600px) {
-    header {
-        padding: 0 15px; /* Moins de padding sur mobile */
-    }
-
-    .logo {
-        margin-right: 15px;
-    }
-
-    .spec-row {
-        flex-direction: column;
-        align-items: flex-start;
-    }
+    header { padding: 0 15px; }
+    .logo { margin-right: 15px; }
+    .spec-row { flex-direction: column; }
+    .spec-label { width: 100%; margin-bottom: 4px; }
+    .product-title { font-size: 28px; }
     
-    .spec-label {
-        width: 100%;
-        margin-bottom: 4px;
-        color: #888;
-        font-size: 11px;
-        text-transform: uppercase;
-    }
-    
-    .product-title {
-        font-size: 28px;
-    }
-
-    .similar-card {
-        min-width: 100%; /* 1 carte sur mobile */
+    .st-card-item {
+        min-width: 85%; /* Presque plein écran sur mobile */
     }
 }
