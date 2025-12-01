@@ -328,9 +328,12 @@ nav {
     padding: 40px 20px;
     gap: 60px;
     align-items: flex-start;
+    top: 100px;
+    position: relative;
 }
 
 .left-column-wrapper {
+    top: 130px;
     flex: 1;
     min-width: 0;
 }
@@ -526,7 +529,10 @@ nav {
 .sidebar-column {
     width: 30vw;
     position: sticky;
+<<<<<<< HEAD
     top: 40px; /* Colle à 40px du haut quand on scrolle */
+=======
+>>>>>>> c2f679015dc5ddf581879c91eb14ecfeac88df2e
     background: #f9f9f9;
     padding: 40px;
     border-radius: 2px;

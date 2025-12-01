@@ -7,12 +7,19 @@
     <title>{{ $velo->varianteVelo->modele->nom_modele }}</title>
         {{-- <link rel="stylesheet" href="{{ asset('css/style.css') }}"> --}}
     <link rel="stylesheet" href="{{ asset('css/vizualize_article.css') }}">
+<<<<<<< HEAD
 
 </head>
 <body>
 
     @include('layouts.header') 
 
+=======
+    <link rel="stylesheet" href="{{ asset('css/header.css') }}">
+</head>
+<body>
+    @include('layouts.header')
+>>>>>>> c2f679015dc5ddf581879c91eb14ecfeac88df2e
     <div class="page-product-container">
     
         <div class="left-column-wrapper">
