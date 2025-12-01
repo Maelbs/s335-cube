@@ -303,7 +303,7 @@
                             <h3>Vélos de Route</h3>
                             <p id="first-p">Performance et légèreté pour les passionnés de vitesse. 
                                 Dévorer du bitume, repousser vos limites, passer des cols en tête ou performer sur les routes pavées et sortir des sentiers battus sur votre gravel? Tout est possible!</p>
-                          <a href="{{ url('/Velo') }}" class="btn">Voir les vélos de route</a>
+                          <a href="{{ url('/boutique/Musculaire/2') }}" class="btn">Voir les vélos de route</a>
                         </div>
                         <div class="card-image">
                             <img src="{{ asset('images/velo_route.jpg') }}" alt="Vélo de route">
@@ -321,7 +321,7 @@
                             <p>Robustesse et maniabilité pour les terrains accidentés. S'évader dans la Nature, explorer les montagnes qui vous entourent,
                                 vous dépenser en montée, prendre un maximum de plaisir en descente... Il y a forcément un VTT CUBE paré à vous accompagner dans vos
                                 aventures.</p>
-                                  <a href="{{ url('/Velo') }}" class="btn">Voir les VTT</a>
+                                  <a href="{{ url('/boutique/Musculaire/1') }}" class="btn">Voir les VTT</a>
                         </div>
                         <div class="card-image">
                             <img src="{{ asset('images/velo_vtt.jpg') }}" alt="VTT">
@@ -336,7 +336,7 @@
                         <div class="card-text">
                             <h3>Vélos Électriques</h3>
                             <p>Assistance électrique pour des trajets sans effort. Nos VTT électriques ont des points communs qui font toute la différence. Au programme : géométrie optimale et équipement parfaitement étudié. Objectif : partir à l'aventure le week-end ou à l'assaut du quotidien, en toute sérénité.</p>
-                                   <a href="{{ url('/velo_electrique') }}" class="btn">Voir les vélos électriques</a>
+                                   <a href="{{ url('/boutique/Electrique') }}" class="btn">Voir les vélos électriques</a>
                         </div>
                         <div class="card-image">
                             <img src="{{ asset('images/velo_electrique.jpg') }}" alt="Vélos Électriques">
