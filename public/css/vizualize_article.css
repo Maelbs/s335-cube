@@ -312,11 +312,16 @@ nav {
     flex-wrap: wrap;
     max-width: 1400px;
     margin: 0 auto;
-    padding: 40px 20px;
-    gap: 60px;
+    padding: 5px 20px;
+    gap: 60px; /* Espace généreux entre colonne gauche et droite */
     align-items: flex-start;
     top: 100px;
     position: relative;
+}
+
+.indisponible-en-ligne {
+    background-color: #f6f6f6 !important;
+    color: #cbcbcb !important;
 }
 
 .left-column-wrapper {
@@ -517,7 +522,7 @@ nav {
     width: 30vw;
     position: sticky;
     top: 40px;
-    background: #f9f9f9;
+    background: #efefef;
     padding: 40px;
     border-radius: 2px;
     height: fit-content;
@@ -574,20 +579,73 @@ nav {
     gap: 12px;
 }
 
+/* --- STYLE GÉNÉRAL DU BOUTON --- */
 .size-btn {
     background: #fff;
-    border-radius: 20px;
-    border: none;
-    font-size: 0.9em;
-    padding: 12px;
+    /* On garde une bordure très légère par défaut pour les boutons normaux */
+    border: 1px solid #e5e7eb; 
+    border-radius: 12px;
+    padding: 12px 16px;
     color: #181616;
-    font-weight: 550;
+    font-weight: 600;
     cursor: pointer;
     text-align: center;
-    transition: all 0.4s;
+    position: relative;
+    
+    /* Animation fluide pour toutes les propriétés */
+    transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
 }
 
-.size-btn:hover { border-color: #000; background: #fafafa; }
+/* --- ANIMATION AU SURVOL (Stock OK) --- */
+.size-btn:hover {
+    border-color: #000;
+    transform: translateY(-3px); /* Effet de lévitation */
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08); /* Ombre douce */
+}
+
+/* --- FOCUS / SÉLECTIONNÉ --- */
+.size-btn:focus, .size-btn:active {
+    border-color: #000;
+    background-color: #fafafa;
+    outline: none;
+}
+
+/* --- LE CHANGEMENT : STOCK ÉPUISÉ (CLASSE .out-of-stock) --- */
+.indisponible-en-ligne {
+    /* 1. Le fond gris demandé */
+    background-color: #f3f4f6; 
+    
+    /* 2. On "enlève" la bordure en la mettant de la même couleur que le fond 
+       (C'est mieux que 'border: none' pour garder exactement la même taille que les autres boutons) */
+    border-color: #f3f4f6;
+    
+    /* 3. Texte grisé */
+    color: #9ca3af; 
+}
+
+/* --- ANIMATION SURVOL STOCK ÉPUISÉ --- */
+.indisponible-en-ligne:hover {
+    /* On assombrit un peu le fond pour l'effet "bouton" */
+    background-color: #e5e7eb; 
+    border-color: #e5e7eb;
+    
+    /* On garde le texte gris */
+    color: #6b7280; 
+    
+    /* Petite lévitation plus subtile que les boutons normaux */
+    transform: translateY(-1px); 
+    box-shadow: none; /* Pas d'ombre pour garder un aspect "plat" */
+}
+
+.couleur-velo {
+    display: inline-block; /* OBLIGATOIRE pour accepter width/height */
+    width: 30px;           /* Taille fixe */
+    height: 30px;          /* Taille fixe */
+    border-radius: 50%;    /* Pour faire un rond */
+    border: 1px solid #ccc; /* Petite bordure pour voir la pastille même si la couleur est blanche */
+    margin-right: 5px;      /* Espacement */
+    vertical-align: middle;
+}
 
 .price-section {
     margin-bottom: 25px;

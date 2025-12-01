@@ -151,6 +151,8 @@ header:hover .logo img {
     font-weight: 700;
     font-size: 13px;
     text-transform: uppercase;
+    z-index: 10000;
+    color: inherit;
 }
 
 #magasin {

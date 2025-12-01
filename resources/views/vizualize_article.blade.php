@@ -68,7 +68,7 @@
                                         $tailles = $velo->varianteVelo->modele->tailles; 
                                     @endphp
 
-                                    @foreach ($tailles as $taille)
+                                    @foreach ($tailles->sortBy('id_taille') as $taille)
                                         <th>
                                             {{ $taille->taille }} 
                                             <span style="font-size: 0.9em; font-weight: 600;">
@@ -132,9 +132,27 @@
 
             <div class="size-selector">
                 <p class="size-label">TAILLE</p>
+                
                 <div class="sizes-grid">
-                    @foreach ($tailles as $taille)
-                        <button class="size-btn">{{ $taille->taille }} ({{ $taille->taille_min }}-{{ $taille->taille_max }})</button>  
+                    @foreach ($stockParIdTaille as $inventaire)   
+                        @php
+                            $classBtn = "";
+                            if($inventaire->quantite_stock_en_ligne == 0) {
+                                $classBtn = "indisponible-en-ligne";
+                            }
+                        
+                        @endphp
+                        <button 
+                            class="size-btn {{ $classBtn }}"
+                            onclick="selectionnerTaille('{{ $inventaire->taille->taille }}')"
+                        >
+                            {{ $inventaire->taille->taille }} 
+                            
+                            <span>
+                                ({{ $inventaire->taille->taille_min }}-{{ $inventaire->taille->taille_max }})
+                            </span>
+                        </button> 
+                        
                     @endforeach
                 </div>
             </div>
@@ -154,6 +172,43 @@
             </div>
 
             <button class="btn-add-cart">AJOUTER AU PANIER</button>
+
+            <div>
+                <p class="size-label">Également disponible en</p>
+
+                <div class="flex gap-2"> 
+                    @php
+                        $autresVariantes = $velo->varianteVelo->modele->varianteVelos;
+                        $couleursUniques = $autresVariantes->unique('id_couleur');
+                    @endphp
+
+                    @foreach ($couleursUniques as $variante)
+                        @php
+                            // Si c'est la même couleur que le vélo actuel, on passe au suivant
+                            if($variante->id_couleur == $velo->varianteVelo->id_couleur) {
+                                continue; 
+                            }
+
+                            $lienArticle = route('velo.show', ['reference' => $variante->reference]); 
+                        @endphp
+
+                        <a 
+                            href="{{ $lienArticle }}" 
+                            title="{{ $variante->couleur->nom_couleur ?? '' }}"
+                            class="couleur-velo" 
+                            style="
+                                display: inline-block; 
+                                width: 30px; 
+                                height: 30px; 
+                                border-radius: 50%; 
+                                border: 1px solid #ddd;
+                                background-color: {{ str_starts_with($variante->couleur->hexa_couleur, '#') ? '' : '#' }}{{ $variante->couleur->hexa_couleur }};
+                            "
+                        >
+                        </a>
+                    @endforeach
+                </div>
+            </div>
         </div>
 
     </div>
