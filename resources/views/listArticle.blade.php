@@ -160,6 +160,32 @@
                     </a>
                 @endif
 
+
+                <div class="filter-section">
+                    <div class="filter-header" onclick="toggleSection(this)">
+                        <h3>DISPONIBILITÉ</h3>
+                        <i class="fas fa-chevron-up"></i>
+                    </div>
+                    <div class="filter-content">
+                        
+                        <label class="cube-checkbox">
+                            <input type="checkbox" name="dispo_ligne" value="1" class="auto-submit"
+                                {{ request('dispo_ligne') ? 'checked' : '' }}>
+                            <span class="box"></span>
+                            Disponible en ligne ({{ $countOnline }})
+                        </label>
+
+                        <label class="cube-checkbox">
+                            <input type="checkbox" name="dispo_magasin" value="1" class="auto-submit"
+                                {{ request('dispo_magasin') ? 'checked' : '' }}>
+                            <span class="box"></span>
+                            Disponible en magasin ({{ $countStore }})
+                        </label>
+
+                    </div>
+                </div>
+
+
                 <div class="filter-section">
                     <div class="filter-header" onclick="toggleSection(this)">
                         <h3>PRIX</h3><i class="fas fa-chevron-up"></i>
@@ -317,31 +343,61 @@
                     @foreach($velos as $velo)
                         <div class="product-card">
                             <div class="badge-new">NOUVEAU</div>
+                            
                             <div class="product-image">
                                 <a href="{{ url('/velo/' . $velo->reference) }}">
                                     <img src="{{ $velo->parent->photo_principale }}" alt="{{ $velo->nom_article }}">
                                 </a>
                             </div>
+                            
                             <div class="product-details">
                                 <h2 class="product-title">
                                     <a href="{{ url('/velo/' . $velo->reference) }}">
                                         {{ strtoupper($velo->modele->nom_modele) }} - {{ strtoupper(str_replace($velo->modele->nom_modele, '', $velo->nom_article)) }}
                                     </a>
                                 </h2>
+
+                                @php
+                                    // 1. On récupère les tailles demandées dans le filtre (ex: ['M', 'L'])
+                                    $filtreTailles = request('tailles');
+
+                                    // 2. On prend l'inventaire complet du vélo
+                                    $inventairesConcenes = $velo->inventaires;
+
+                                    // 3. SI un filtre taille est actif, on ne garde que les lignes d'inventaire correspondantes
+                                    if ($filtreTailles && is_array($filtreTailles)) {
+                                        $inventairesConcenes = $inventairesConcenes->filter(function($inv) use ($filtreTailles) {
+                                            // On trim pour gérer le type CHAR de la BDD
+                                            return in_array(trim($inv->taille->taille), $filtreTailles);
+                                        });
+                                    }
+
+                                    // 4. On fait la somme sur les inventaires RESTANTS (soit tout, soit juste la taille M)
+                                    $stockLigne = $inventairesConcenes->sum('quantite_stock_en_ligne');
+                                    
+                                    $stockMagasin = 0;
+                                    foreach($inventairesConcenes as $inv) {
+                                        $stockMagasin += $inv->magasins->sum('pivot.quantite_stock_magasin');
+                                    }
+                                @endphp
+
                                 <div class="availability">
                                     <div class="status-line">
-                                        <span class="dot {{ $velo->dispo_en_ligne ? 'green' : 'red' }}"></span>
+                                        <span class="dot {{ $stockLigne > 0 ? 'green' : 'red' }}"></span>
                                         <span class="text">Disponible en ligne</span>
                                     </div>
+                                    
                                     <div class="status-line">
-                                        <span class="dot {{ $velo->dispo_magasin ? 'green' : 'orange' }}"></span>
+                                        <span class="dot {{ $stockMagasin > 0 ? 'green' : 'orange' }}"></span>
                                         <span class="text">Disponible en magasins <i class="far fa-question-circle info-icon"></i></span>
                                     </div>
                                 </div>
+
                                 <div class="product-footer">
                                     <div class="price">{{ number_format($velo->prix, 0, ',', ' ') }} €</div>
                                 </div>
                             </div>
+
                             <a href="{{ url('/velo/' . $velo->reference) }}" class="btn-skew">
                                 <span>VOIR LE PRODUIT</span> <i class="fas fa-caret-right"></i>
                             </a>
