@@ -218,38 +218,114 @@
 
                 <div class="flex gap-2"> 
                     @php
-                        $autresVariantes = $velo->varianteVelo->modele->varianteVelos;
-                        $couleursUniques = $autresVariantes->unique('id_couleur');
+                        // 1. Variante actuelle
+                        $varianteActuelle = $velo->varianteVelo;
+                        
+                        // 2. CORRECTION ICI : On ajoute le 's' pour correspondre à votre Modèle
+                        $tousLesCousins = $varianteActuelle->modele->varianteVelos ?? collect([]);
+
+                        // 3. Filtrage par nom (pour ne garder que les "Attention SL" et virer les "Attention Pro")
+                        $nomRef = trim($varianteActuelle->nom_article);
+                        
+                        $variantesFiltrees = $tousLesCousins->filter(function ($item) use ($nomRef) {
+                            // On compare les noms pour être sûr qu'on reste dans la même sous-famille
+                            return trim($item->nom_article) === $nomRef;
+                        });
+
+                        // 4. Une seule pastille par couleur
+                        $couleursUniques = $variantesFiltrees->unique('id_couleur');
                     @endphp
 
                     @foreach ($couleursUniques as $variante)
                         @php
-                            // Si c'est la même couleur que le vélo actuel, on passe au suivant
-                            if($variante->id_couleur == $velo->varianteVelo->id_couleur) {
-                                continue; 
-                            }
-
-                            $lienArticle = route('velo.show', ['reference' => $variante->reference]); 
+                            // Vérification active
+                            $estActif = ($variante->id_couleur == $varianteActuelle->id_couleur);
+                            
+                            // Lien vers la référence de cette variante
+                            $lien = route('velo.show', ['reference' => $variante->reference]); 
+                            
+                            // Gestion couleur + Securité si pas de couleur
+                            $hex = $variante->couleur->hexa_couleur ?? '000000'; 
+                            $bg = str_starts_with($hex, '#') ? $hex : '#' . $hex;
+                            $nom = $variante->couleur->nom_couleur ?? '';
                         @endphp
 
                         <a 
-                            href="{{ $lienArticle }}" 
-                            title="{{ $variante->couleur->nom_couleur ?? '' }}"
+                            href="{{ $lien }}" 
+                            title="{{ $nom }}"
                             class="couleur-velo" 
                             style="
                                 display: inline-block; 
                                 width: 30px; 
                                 height: 30px; 
                                 border-radius: 50%; 
-                                border: 1px solid #ddd;
-                                background-color: {{ str_starts_with($variante->couleur->hexa_couleur, '#') ? '' : '#' }}{{ $variante->couleur->hexa_couleur }};
+                                margin-right: 5px;
+                                border: {{ $estActif ? '5px solid #cbcbcb' : '1px solid #ddd' }};
+                                background-color: {{ $bg }};
                             "
                         >
                         </a>
                     @endforeach
                 </div>
             </div>
-        </div>
+
+
+            {{-- On vérifie d'abord si le vélo actuel a une batterie (si c'est un vélo musculaire, on n'affiche rien) --}}
+            @if($velo->varianteVelo->id_batterie)
+
+            <div style="margin-top: 15px;">
+                <p class="size-label">Batterie :</p>
+
+                <div class="flex gap-2"> 
+                    @php
+                        $varianteActuelle = $velo->varianteVelo;
+                        
+                        // 1. On récupère tous les cousins via le Modèle
+                        $tousLesCousins = $varianteActuelle->modele->varianteVelos ?? collect([]);
+
+                        // 2. Filtrage par NOM (Exactement comme pour les couleurs)
+                        // On veut comparer "Cube Stereo Hybrid 140" avec "Cube Stereo Hybrid 140"
+                        $nomRef = trim($varianteActuelle->nom_article);
+                        
+                        $variantesFiltrees = $tousLesCousins->filter(function ($item) use ($nomRef) {
+                            return trim($item->nom_article) === $nomRef;
+                        });
+
+                        // 3. Unique par BATTERIE
+                        // On retire aussi ceux qui n'ont pas de batterie (id_batterie null)
+                        $batteriesUniques = $variantesFiltrees
+                            ->whereNotNull('id_batterie')
+                            ->unique('id_batterie')
+                            ->sortBy(function($v) {
+                                // Optionnel : Trier par puissance (suppose que vous avez un champ puissance ou nom)
+                                return $v->batterie->puissance ?? $v->batterie->nom ?? 0;
+                            });
+                    @endphp
+
+                    @foreach ($batteriesUniques as $variante)
+                        @php
+                            $estActif = ($variante->id_batterie == $varianteActuelle->id_batterie);
+                            $lien = route('velo.show', ['reference' => $variante->reference]); 
+                            
+                            // Récupération du nom de la batterie (adaptez 'puissance' selon votre table Batterie)
+                            // Ex: '500 Wh', '625 Wh' ou 'PowerTube 750'
+                            $nomBatterie = $variante->batterie->puissance ?? $variante->batterie->capacite_batterie ?? 'Batterie';
+                            
+                            // Ajout du suffixe "Wh" si ce n'est qu'un chiffre (optionnel, pour le style)
+                            if(is_numeric($nomBatterie)) { $nomBatterie .= ' Wh'; }
+                        @endphp
+
+                        <a 
+                            href="{{ $lien }}" 
+                            class="choix-batterie {{ $estActif ? 'active' : '' }}" 
+                        >
+                            {{ $nomBatterie }}
+                        </a>
+                    @endforeach
+                </div>
+            </div>
+
+            @endif
 
     </div>
     
@@ -274,8 +350,8 @@
                             <div class="st-info-box">
                                 <h3 class="st-prod-name">{{ $similaire->nom_article }}</h3>
                                 
-                                @if(optional($similaire->varianteVelo)->modele)
-                                    <span class="st-prod-year">{{ optional($similaire->varianteVelo)->modele->millesime_modele }}</span>
+                                @if(optional($similaire->varianteVeloss)->modele)
+                                    <span class="st-prod-year">{{ optional($similaire->varianteVeloss)->modele->millesime_modele }}</span>
                                 @endif
                                 
                                 <div class="st-prod-price">{{ number_format($similaire->prix, 2, ',', ' ') }} €</div>

@@ -36,6 +36,7 @@ class VarianteVeloController extends Controller
             'varianteVelo.modele.description', 
             'varianteVelo.resume',
             'varianteVelo.inventaires.taille',
+            'varianteVelo.couleur',
             'varianteVelo.modele.varianteVelos.couleur'])
             ->firstOrFail(); // Renvoie une 404 si la réf n'existe pas
 

@@ -410,6 +410,10 @@ nav {
     transition: all 0.3s ease;
 }
 
+.toggle-specs-btn:hover {
+    background: #857e7e;
+}
+
 .toggle-specs-btn::after {
     content: ''; 
     width: 8px;
@@ -956,4 +960,66 @@ nav {
 
 .dispo-text {
     font-size: 0.7em;
+}
+
+/* =========================================
+   SELECTEUR DE BATTERIE (Nouveau)
+   ========================================= */
+
+/* Conteneur pour aligner les batteries */
+.batterie-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px; /* Espace entre les boutons */
+    margin-bottom: 25px; /* Espace avant la section suivante */
+}
+
+/* Le bouton individuel de batterie */
+.choix-batterie {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    
+    /* Dimensions et espacement */
+    min-width: 90px;
+    height: 42px;
+    padding: 0 15px;
+    
+    /* Bordures et Fond */
+    background-color: #fff;
+    border: 1px solid #e5e5e5; /* Gris clair par défaut */
+    border-radius: 4px; /* Légèrement arrondi pour un look "technique" */
+    
+    /* Typographie (En accord avec le reste du site) */
+    color: #666;
+    font-family: 'Damas Font', sans-serif;
+    font-size: 13px;
+    font-weight: 700;       /* Gras */
+    font-style: italic;     /* Italique (Signature du site) */
+    text-transform: uppercase;
+    text-decoration: none;
+    letter-spacing: 0.5px;
+    
+    /* Transitions fluides */
+    transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+    cursor: pointer;
+}
+
+/* État au survol (Hover) - Comme vos boutons de taille */
+.choix-batterie:hover {
+    border-color: #000;
+    color: #000;
+    transform: translateY(-2px); /* Petit effet de soulèvement */
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+}
+
+/* État Actif (Sélectionné) */
+/* Ajoutez la classe .active dans votre PHP si possible, sinon le style inline fonctionnera par dessus */
+.choix-batterie.active {
+    border: 2px solid #000;
+    color: #000;
+    background-color: #fff;
+    pointer-events: none; /* On ne reclique pas sur ce qui est déjà sélectionné */
+    box-shadow: none;
+    transform: none;
 }
