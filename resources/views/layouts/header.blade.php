@@ -55,7 +55,7 @@
                                                         @endforeach
                                                     </div>
                                                 @else
-                                                    <p style="color:#999; font-style:italic;">Aucun modèle disponible.</p>
+                                                    <p style="color:#999; font-style:italic;">Voir tous</p>
                                                 @endif
                                             </div>
                                         @endforeach
@@ -126,6 +126,68 @@
 
                 <li class="nav-item">
                     <a id="btn-accessoire" href="#" class="link_category">ACCESSOIRES</a>
+
+                    <div class="mega-menu-dropdown">
+                        <div class="mega-menu-wrapper" id="wrapper-accessoire">
+
+                            <div class="col-roots">
+                                @foreach($categorieAccessoires as $root)
+                                    <div class="menu-item root-trigger" data-target="sub-acc-{{ $root->id_categorie_accessoire }}">
+                                        <a href="#" class="menu-link-reset">
+                                            {{ strtoupper($root->nom_categorie_accessoire) }}
+                                        </a>
+                                        <span>&rsaquo;</span>
+                                    </div>
+                                @endforeach
+                            </div>
+
+                            <div class="col-subs-wrapper">
+                                @foreach($categorieAccessoires as $root)
+                                    <div id="sub-acc-{{ $root->id_categorie_accessoire }}" class="subs-container d-none">
+                                        
+                                        @if($root->enfants->isNotEmpty())
+                                            @foreach($root->enfants as $enfant)
+                                                <div class="menu-item sub-trigger" data-target="grandchild-acc-{{ $enfant->id_categorie_accessoire }}">
+                                                    <a href="#" class="menu-link-reset">
+                                                        {{ strtoupper($enfant->nom_categorie_accessoire) }}
+                                                    </a>
+                                                    <span>&rsaquo;</span>
+                                                </div>
+                                            @endforeach
+                                        @else
+                                            <p class="p-3 text-muted">Aucune sous-catégorie</p>
+                                        @endif
+
+                                    </div>
+                                @endforeach
+                            </div>
+
+                            <div class="col-models-wrapper">
+                                @foreach($categorieAccessoires as $root)
+                                    @foreach($root->enfants as $enfant)
+                                        
+                                        <div id="grandchild-acc-{{ $enfant->id_categorie_accessoire }}" class="models-container d-none">
+                                            <h3>{{ $enfant->nom_categorie_accessoire }}</h3>
+                                            
+                                            <div class="model-grid">
+                                                @if($enfant->enfants && $enfant->enfants->isNotEmpty())
+                                                    @foreach($enfant->enfants as $petitEnfant)
+                                                        <a href="#" class="model-link">
+                                                            {{ $petitEnfant->nom_categorie_accessoire }}
+                                                        </a>
+                                                    @endforeach
+                                                @else
+                                                    <p class="text-muted">Voir tous</p>
+                                                @endif
+                                            </div>
+                                        </div>
+
+                                    @endforeach
+                                @endforeach
+                            </div>
+
+                        </div>
+                    </div>
                 </li>
             </ul>
         </div>
