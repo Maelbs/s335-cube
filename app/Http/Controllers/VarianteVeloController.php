@@ -51,14 +51,20 @@ class VarianteVeloController extends Controller
 
 
 
-        $velosSimilaires = Article::whereIn(
-            'reference',
-            $velo->similaires()->pluck('reference') 
-        )
-        ->with(['photos', 'varianteVelo.modele'])
+        $velosSimilaires = Article::whereIn('reference', function($query) use ($reference) {
+            $query->select('art_reference')
+                  ->from('article_similaire')
+                  ->where('reference', $reference);
+        })
+        ->orWhereIn('reference', function($query) use ($reference) {
+            $query->select('reference')
+                  ->from('article_similaire')
+                  ->where('art_reference', $reference);
+        })
+        ->distinct()
         ->get();
 
-        // 3. Envoyer à la vue
+        
         return view('vizualize_article', compact('velo', 'stockParIdTaille', 'tailleGeometrie', 'specifications', 'velosSimilaires'));
     }
 }

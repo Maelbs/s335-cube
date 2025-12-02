@@ -328,7 +328,7 @@
             @endif
 
     </div>
-    
+
     @if($velosSimilaires->isNotEmpty())
     <section class="st-similar-section">
         <h2 class="st-section-title">ARTICLES SIMILAIRES</h2>
@@ -341,23 +341,24 @@
                     <div class="st-card-item">
                         <a href="{{ route('velo.show', $similaire->reference) }}" class="st-card-link">
                             
-                            {{-- Image --}}
                             <div class="st-img-box">
                                 <img src="{{ $similaire->photo_principale }}" alt="{{ $similaire->nom_article }}">
                             </div>
 
-                            {{-- Infos --}}
                             <div class="st-info-box">
                                 <h3 class="st-prod-name">{{ $similaire->nom_article }}</h3>
                                 
-                                @if(optional($similaire->varianteVeloss)->modele)
-                                    <span class="st-prod-year">{{ optional($similaire->varianteVeloss)->modele->millesime_modele }}</span>
+                                @if(optional($similaire->varianteVelo)->modele)
+                                    <span class="st-prod-year">
+                                        {{ optional($similaire->varianteVelo)->modele->millesime_modele }}
+                                    </span>
                                 @endif
                                 
-                                <div class="st-prod-price">{{ number_format($similaire->prix, 2, ',', ' ') }} €</div>
+                                <div class="st-prod-price">
+                                    {{ number_format($similaire->prix, 2, ',', ' ') }} €
+                                </div>
                             </div>
 
-                            {{-- Bouton --}}
                             <div class="st-action-row">
                                 <span class="st-view-btn">
                                     <i class="arrow-icon">▶</i> VOIR LE PRODUIT
@@ -371,7 +372,9 @@
             <button class="st-nav-btn st-btn-right">❯</button>
         </div>
     </section>
-@endif
+    @endif
+
+
     <script src="{{ asset('js/vizualize_article.js') }}" defer></script>
     <script>
         function selectionnerTaille(tailleNom, qtyWeb, qtyMagasin) {
