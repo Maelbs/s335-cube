@@ -184,6 +184,7 @@ document.addEventListener('DOMContentLoaded', function() {
     // Initialisation
     initMegaMenu('wrapper-velo');
     initMegaMenu('wrapper-elec');
+    initMegaMenu('wrapper-accessoire');
 
 
     // --- 2. FONCTION DE RESET (QUAND ON QUITTE LE MENU) ---

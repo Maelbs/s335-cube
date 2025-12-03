@@ -228,14 +228,14 @@ header:hover .logo img {
 }
 
 .col-roots {
-    width: 260px;
+    width: 280px;
     background-color: #f7f7f7;
     border-right: 1px solid #eee;
     padding: 30px 0;
 }
 
 .col-subs-wrapper {
-    width: 260px;
+    width: 300px;
     background-color: #fff;
     border-right: 1px solid #eee;
 }
@@ -253,10 +253,10 @@ header:hover .logo img {
 
 /* Items du Menu */
 .menu-item {
-    padding: 12px 30px;
+    padding: 10px 30px;
     cursor: pointer;
     font-size: 14px;
-    font-weight: 800;
+    font-weight: 700;
     text-transform: uppercase;
     display: flex;
     justify-content: space-between;
