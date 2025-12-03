@@ -5,12 +5,20 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>{{ $velo->varianteVelo->modele->nom_modele }}</title>
-        {{-- <link rel="stylesheet" href="{{ asset('css/style.css') }}"> --}}
+    {{-- <link rel="stylesheet" href="{{ asset('css/style.css') }}"> --}}
     <link rel="stylesheet" href="{{ asset('css/vizualize_article.css') }}">
     <link rel="stylesheet" href="{{ asset('css/header.css') }}">
 </head>
 <body>
     @include('layouts.header')
+
+    {{-- Message de succès ajouté ici pour confirmation visuelle --}}
+    @if(session('success'))
+        <div style="background-color: #d4edda; color: #155724; padding: 15px; text-align: center; font-weight: bold; margin-bottom: 20px;">
+            {{ session('success') }}
+            <a href="{{ route('cart.index') }}" style="text-decoration: underline; margin-left: 10px;">Voir le panier</a>
+        </div>
+    @endif
 
     <div class="page-product-container">
     
@@ -157,7 +165,7 @@
 
                         <button 
                             class="size-btn {{ $classeCss }}"
-                            {{-- 3. C'EST ICI LE PLUS IMPORTANT : On passe les stocks au JS --}}
+                            {{-- 3. On passe les stocks au JS --}}
                             onclick="selectionnerTaille(
                                 '{{ $inventaire->taille->taille }}', 
                                 {{ $stockWeb }}, 
@@ -194,12 +202,19 @@
             </div>
 
             <div class="action-buttons-container">
-                {{-- BOUTON 1 : PANIER (Noir, biseauté) --}}
-                <button id="btn-panier" class="btn-skew" style="display: none;">
-                    <span class="btn-content-unskew">
-                        <span class="text-label">Ajouter au panier</span>
-                    </span>
-                </button>
+                {{-- MODIFICATION : FORMULAIRE D'AJOUT AU PANIER --}}
+                <form id="form-ajout-panier" action="{{ route('cart.add', $velo->reference) }}" method="POST" style="display: none;">
+                    @csrf
+                    {{-- Input caché pour stocker la taille sélectionnée par le JS --}}
+                    <input type="hidden" name="taille" id="input-taille-selected" value="">
+                    <input type="hidden" name="quantity" value="1">
+
+                    <button type="submit" id="btn-panier" class="btn-skew">
+                        <span class="btn-content-unskew">
+                            <span class="text-label">Ajouter au panier</span>
+                        </span>
+                    </button>
+                </form>
 
                 {{-- BOUTON 2 : MAGASIN (Blanc, biseauté) --}}
                 <button id="btn-contact-magasin" class="btn-skew" style="display: none;">
@@ -221,14 +236,13 @@
                         // 1. Variante actuelle
                         $varianteActuelle = $velo->varianteVelo;
                         
-                        // 2. CORRECTION ICI : On ajoute le 's' pour correspondre à votre Modèle
+                        // 2. Tous les cousins
                         $tousLesCousins = $varianteActuelle->modele->varianteVelos ?? collect([]);
 
-                        // 3. Filtrage par nom (pour ne garder que les "Attention SL" et virer les "Attention Pro")
+                        // 3. Filtrage par nom 
                         $nomRef = trim($varianteActuelle->nom_article);
                         
                         $variantesFiltrees = $tousLesCousins->filter(function ($item) use ($nomRef) {
-                            // On compare les noms pour être sûr qu'on reste dans la même sous-famille
                             return trim($item->nom_article) === $nomRef;
                         });
 
@@ -270,7 +284,7 @@
             </div>
 
 
-            {{-- On vérifie d'abord si le vélo actuel a une batterie (si c'est un vélo musculaire, on n'affiche rien) --}}
+            {{-- On vérifie d'abord si le vélo actuel a une batterie --}}
             @if($velo->varianteVelo->id_batterie)
 
             <div style="margin-top: 15px;">
@@ -283,8 +297,7 @@
                         // 1. On récupère tous les cousins via le Modèle
                         $tousLesCousins = $varianteActuelle->modele->varianteVelos ?? collect([]);
 
-                        // 2. Filtrage par NOM (Exactement comme pour les couleurs)
-                        // On veut comparer "Cube Stereo Hybrid 140" avec "Cube Stereo Hybrid 140"
+                        // 2. Filtrage par NOM
                         $nomRef = trim($varianteActuelle->nom_article);
                         
                         $variantesFiltrees = $tousLesCousins->filter(function ($item) use ($nomRef) {
@@ -292,12 +305,10 @@
                         });
 
                         // 3. Unique par BATTERIE
-                        // On retire aussi ceux qui n'ont pas de batterie (id_batterie null)
                         $batteriesUniques = $variantesFiltrees
                             ->whereNotNull('id_batterie')
                             ->unique('id_batterie')
                             ->sortBy(function($v) {
-                                // Optionnel : Trier par puissance (suppose que vous avez un champ puissance ou nom)
                                 return $v->batterie->puissance ?? $v->batterie->nom ?? 0;
                             });
                     @endphp
@@ -307,11 +318,8 @@
                             $estActif = ($variante->id_batterie == $varianteActuelle->id_batterie);
                             $lien = route('velo.show', ['reference' => $variante->reference]); 
                             
-                            // Récupération du nom de la batterie (adaptez 'puissance' selon votre table Batterie)
-                            // Ex: '500 Wh', '625 Wh' ou 'PowerTube 750'
                             $nomBatterie = $variante->batterie->puissance ?? $variante->batterie->capacite_batterie ?? 'Batterie';
                             
-                            // Ajout du suffixe "Wh" si ce n'est qu'un chiffre (optionnel, pour le style)
                             if(is_numeric($nomBatterie)) { $nomBatterie .= ' Wh'; }
                         @endphp
 
@@ -377,8 +385,11 @@
         function selectionnerTaille(tailleNom, qtyWeb, qtyMagasin) {
             console.log("Taille:", tailleNom, "| Web:", qtyWeb, "| Magasin:", qtyMagasin);
 
-            // 1. Éléments DOM
-            const btnPanier = document.getElementById('btn-panier');
+            // 1. Mise à jour de l'input caché pour le formulaire Laravel
+            document.getElementById('input-taille-selected').value = tailleNom;
+
+            // 2. Éléments DOM
+            const formPanier = document.getElementById('form-ajout-panier'); // On cible le formulaire
             const btnMagasin = document.getElementById('btn-contact-magasin');
             const msgIndispo = document.getElementById('msg-indisponible');
 
@@ -387,20 +398,20 @@
             const dotMagasin = document.getElementById('dot-magasin');
             const textMagasin = document.getElementById('text-magasin');
 
-            // 2. LOGIQUE WEB
+            // 3. LOGIQUE WEB
             if (qtyWeb > 0) {
-                btnPanier.style.display = 'inline-block';
+                formPanier.style.display = 'inline-block'; // Affiche le formulaire (qui contient le bouton)
                 dotWeb.className = 'status-dot active-green';
                 textWeb.textContent = "Disponible en ligne";
                 textWeb.style.color = '#15803d'; // Vert foncé
             } else {
-                btnPanier.style.display = 'none';
+                formPanier.style.display = 'none';
                 dotWeb.className = 'status-dot inactive-gray';
                 textWeb.textContent = "Indisponible en ligne";
                 textWeb.style.color = '#6b7280'; // Gris
             }
 
-            // 3. LOGIQUE MAGASIN
+            // 4. LOGIQUE MAGASIN
             if (qtyMagasin > 0) {
                 btnMagasin.style.display = 'inline-block';
                 dotMagasin.className = 'status-dot active-green';
@@ -413,7 +424,7 @@
                 textMagasin.style.color = '#6b7280';
             }
 
-            // 4. RUPTURE TOTALE
+            // 5. RUPTURE TOTALE
             if (qtyWeb <= 0 && qtyMagasin <= 0) {
                 msgIndispo.style.display = 'block';
             } else {

@@ -6,7 +6,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\CategorieAccessoireController;
 use App\Http\Controllers\VarianteVeloController;
 use App\Http\Controllers\BoutiqueController;
-
+use App\Http\Controllers\CartController;
 
 /*
 |--------------------------------------------------------------------------
@@ -31,6 +31,9 @@ Route::get('/api/categories-velos/parents', [CategorieVeloController::class, 'ge
 Route::get('/velo/{reference}', [VarianteVeloController::class, 'show'])->name('velo.show');
 
 
+Route::get('/panier', [CartController::class, 'index'])->name('cart.index');
+Route::post('/panier/ajouter/{reference}', [CartController::class, 'add'])->name('cart.add');
+Route::delete('/panier/supprimer/{key}', [CartController::class, 'remove'])->name('cart.remove');
 
 
 // Route pour afficher la liste des vélos par catégorie
