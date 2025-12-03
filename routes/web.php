@@ -34,7 +34,7 @@ Route::get('/velo/{reference}', [VarianteVeloController::class, 'show'])->name('
 Route::get('/panier', [CartController::class, 'index'])->name('cart.index');
 Route::post('/panier/ajouter/{reference}', [CartController::class, 'add'])->name('cart.add');
 Route::delete('/panier/supprimer/{key}', [CartController::class, 'remove'])->name('cart.remove');
-
+Route::post('/panier/update', [CartController::class, 'updateQuantity'])->name('cart.update');
 
 // Route pour afficher la liste des vélos par catégorie
 Route::get('/boutique/{type}/{cat_id?}/{sub_id?}/{model_id?}', [BoutiqueController::class, 'index'])
