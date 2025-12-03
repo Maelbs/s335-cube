@@ -196,17 +196,16 @@
                 @endif 
 
                 {{-- 4. DESCRIPTION & RESUME --}}
+                @if($typeVue === 'velo')
                 <div class="each-specs-column">
                     <div class="specs-header-row">
-                    @if($typeVue === 'velo')
                         <h2>Description</h2>
                         <button class="toggle-specs-btn"></button>
                     </div> {{-- Fin header row --}}
                         <p>{{ $article->varianteVelo->modele->description->texte_description ?? 'Aucune description disponible.' }}</p>
-                    @else
                     </div> {{-- Fin header row (si pas vélo) --}}
-                    @endif
                 </div>
+                @endif
 
                 <div class="each-specs-column" id="resume_container">
                     <div class="specs-header-row">
