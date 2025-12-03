@@ -257,8 +257,53 @@
                     </a>
                 @endguest
 
-                <a id="panier" href="{{ url('/panier') }}">
-        </ul>
+            <div class="cart-dropdown-wrapper">
+                <a id="panier" href="{{ route('cart.index') }}">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" viewBox="0 0 48 48">
+                        <g><path d="M39 32H13L8 12h36l-5 20Z" /><path stroke-linecap="round" stroke-linejoin="round" stroke-width="4" d="M3 6h3.5L8 12m0 0l5 20h26l5-20H8Z" /><circle cx="13" cy="39" r="3" stroke-linecap="round" stroke-linejoin="round" stroke-width="4" /><circle cx="39" cy="39" r="3" stroke-linecap="round" stroke-linejoin="round" stroke-width="4" /></g>
+                    </svg>
+                    @if(isset($cartItems) && count($cartItems) > 0)
+                        <span style="position:absolute; top:-5px; right:-5px; background:red; color:white; border-radius:50%; width:16px; height:16px; font-size:10px; display:flex; justify-content:center; align-items:center;">{{ count($cartItems) }}</span>
+                    @endif
+                </a>
+
+                <div class="cart-preview-box">
+                    <div class="cart-items-list">
+                        @if(isset($cartItems) && count($cartItems) > 0)
+                            @foreach($cartItems as $item)
+                                <div class="cart-item">
+                                    <div class="cart-item-img">
+                                        <img src="{{ isset($item['image']) ? asset('storage/' . $item['image']) : 'https://via.placeholder.com/80' }}" alt="{{ $item['name'] ?? 'Produit' }}">
+                                    </div>
+                                    <div class="cart-item-details">
+                                        <span class="item-name">
+                                            {{ $item['name'] }}
+                                            @if(($item['quantity'] ?? 1) > 1)
+                                                <small class="text-muted">x{{ $item['quantity'] }}</small>
+                                            @endif
+                                        </span>
+                                        <span class="item-price">{{ number_format($item['price'], 2, ',', ' ') }} €</span>
+                                    </div>
+                                </div>
+                            @endforeach
+                        @else
+                            <div style="padding: 30px 20px; text-align: center; color: #999;">
+                                <p style="margin:0; font-style: italic;">Votre panier est vide.</p>
+                            </div>
+                        @endif
+                    </div>
+                    <div class="cart-footer">
+                        <div class="cart-total-row">
+                            <span class="label">TOTAL <small>(Hors livraison)</small></span>
+                            <span class="price">{{ isset($cartTotal) ? number_format($cartTotal, 2, ',', ' ') : '0,00' }} € TTC</span>
+                        </div>
+                        <a href="{{ route('cart.index') }}" class="btn-view-cart">
+                            <span style="margin-right:5px;">&#9658;</span> Voir le panier
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 </header>
 
