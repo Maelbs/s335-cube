@@ -163,14 +163,29 @@
                         </g>
                     </svg>
                 </a>
-                <a id="login" href="{{ url('/login') }}">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" viewBox="0 0 24 24">
-                        <g stroke-width="2">
-                            <path stroke-linejoin="round" d="M4 18a4 4 0 0 1 4-4h8a4 4 0 0 1 4 4a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2Z"/>
-                            <circle cx="12" cy="7" r="3"/>
-                        </g>
-                    </svg>
-                </a>
+                
+                @auth
+                    <a href="{{ url('/profil') }}">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" viewBox="0 0 24 24">
+                            <g stroke-width="2">
+                                <path stroke-linejoin="round" d="M4 18a4 4 0 0 1 4-4h8a4 4 0 0 1 4 4a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2Z"/>
+                                <circle cx="12" cy="7" r="3"/>
+                            </g>
+                        </svg>
+                    </a>
+                @endauth
+
+                @guest
+                    <a href="{{ url('/connexion') }}">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" viewBox="0 0 24 24">
+                            <g stroke-width="2">
+                                <path stroke-linejoin="round" d="M4 18a4 4 0 0 1 4-4h8a4 4 0 0 1 4 4a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2Z"/>
+                                <circle cx="12" cy="7" r="3"/>
+                            </g>
+                        </svg>
+                    </a>
+                @endguest
+
                 <a id="panier" href="{{ url('/panier') }}">
                     <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" viewBox="0 0 48 48">
                         <g>

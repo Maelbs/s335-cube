@@ -1,0 +1,152 @@
+/* =========================================
+   RESET LOCAL (n'affecte pas ton header)
+   ========================================= */
+   #wrapper * {
+    box-sizing: border-box;
+    font-family: Arial, sans-serif;
+}
+
+/* =========================================
+   CONTAINER
+   ========================================= */
+#wrapper {
+    max-width: 900px;
+    margin: 12rem auto 5rem auto; /* pour ne pas coller au header ABSOLU */
+    padding: 20px;
+}
+
+/* =========================================
+   TITRES
+   ========================================= */
+.register-form h1 {
+    font-size: 2rem;
+    font-weight: 700;
+    margin-bottom: 15px;
+}
+
+.register-form p {
+    font-size: 0.95rem;
+    color: #555;
+}
+
+/* Lien connexion */
+.register-form a.text-underline {
+    color: #0066cc;
+    text-decoration: underline;
+}
+
+/* =========================================
+   CARTE FORMULAIRE
+   ========================================= */
+.customer-form {
+    background: #fff;
+    padding: 30px 35px;
+    border-radius: 10px;
+    box-shadow: 0 3px 10px rgba(0,0,0,0.08);
+    border: 1px solid #eee;
+}
+
+/* =========================================
+   LABELS & INPUTS
+   ========================================= */
+.form-group {
+    margin-bottom: 18px;
+}
+
+label.required:after {
+    content: " *";
+    color: #d00;
+    font-weight: bold;
+}
+
+input.form-control {
+    width: 100%;
+    padding: 10px 14px;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+    font-size: 1rem;
+    transition: border-color 0.2s ease;
+}
+
+input.form-control:focus {
+    border-color: #00b0f0;
+    outline: none;
+}
+
+/* Texte d'aide */
+small.form-text {
+    color: #777;
+}
+
+/* =========================================
+   RADIO BUTTONS
+   ========================================= */
+
+.custom-control-inline {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+/* =========================================
+   NEWSLETTER CHECKBOX
+   ========================================= */
+.custom-checkbox {
+    display: flex;
+    align-items: start;
+}
+
+.custom-checkbox label {
+    margin-left: 8px;
+    font-size: 0.9rem;
+}
+
+/* =========================================
+   BOUTON SUBMIT
+   ========================================= */
+button[type="submit"] {
+    margin-top: 20px;
+    padding: 12px 20px;
+    background: #e60023;
+    border: none;
+    width: 100%;
+    color: white;
+    font-size: 1.1rem;
+    font-weight: 700;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background 0.2s ease;
+}
+
+button[type="submit"]:hover {
+    background: #c7001d;
+}
+
+/* =========================================
+   ALERTES ERREURS
+   ========================================= */
+.alert-danger {
+    background: #ffe5e5;
+    padding: 12px 15px;
+    border-left: 4px solid #d8000c;
+    border-radius: 4px;
+    margin-bottom: 20px;
+}
+
+.alert-danger li {
+    color: #a00000;
+    font-size: 0.9rem;
+}
+
+/* =========================================
+   RESPONSIVE
+   ========================================= */
+@media (max-width: 600px) {
+    #wrapper {
+        margin-top: 13rem;
+    }
+
+    .customer-form {
+        padding: 20px;
+    }
+}

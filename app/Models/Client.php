@@ -18,7 +18,7 @@ class Client extends Authenticatable
     protected $fillable = [
         'id_adresse_facturation',
         'nom_client',
-        'prenom',
+        'prenom_client',
         'email_client',
         'mdp',
         'tel',
@@ -33,7 +33,7 @@ class Client extends Authenticatable
     protected $casts = [
         'date_inscription' => 'date',
         'date_naissance' => 'date',
-        'mdp' => 'hashed',
+
     ];
 
     public function getAuthPassword()
@@ -71,7 +71,7 @@ class Client extends Authenticatable
         return sprintf(
             "Client [%d] : %s %s (%s)",
             $this->id_client,
-            $this->prenom,
+            $this->prenom_client,
             $this->nom_client,
             $this->email_client
         );
