@@ -6,8 +6,9 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>{{ $velo->varianteVelo->modele->nom_modele }}</title>
         {{-- <link rel="stylesheet" href="{{ asset('css/style.css') }}"> --}}
-    <link rel="stylesheet" href="{{ asset('css/vizualize_article.css') }}">
+        
     <link rel="stylesheet" href="{{ asset('css/header.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/vizualize_article.css') }}">
 </head>
 <body>
     @include('layouts.header')
@@ -424,6 +425,7 @@
             }
         }
     </script>
+    
 
 </body>
 </html>

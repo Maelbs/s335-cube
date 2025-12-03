@@ -192,15 +192,6 @@
             </ul>
         </div>
         
-        <style>
-            .menu-link-reset {
-                text-decoration: none; 
-                color: inherit; 
-                display: block; 
-                width: 100%; 
-                height: 100%;
-            }
-        </style>
         
         <div class="menu-user">
             <a id="magasin" href="{{ url('/login') }}">CHOISIR UN MAGASIN</a>
@@ -268,96 +259,4 @@
 
 </header>
 
-<style>
-    /* STYLE OVERLAY PLEIN ÉCRAN (HEADER UNIQUEMENT) */
-    .search-overlay-full {
-        position: fixed; /* Reste bien en fixed */
-        top: 0;
-        left: 0;
-        width: 100vw;
-        height: 120px;
-        background-color: #fff;
-        z-index: 99999; /* Très haut pour passer au-dessus de tout */
-        display: none;
-        align-items: center;
-        justify-content: center;
-        padding: 0 40px;
-        box-sizing: border-box;
-        box-shadow: 0 10px 30px rgba(0,0,0,0.1); /* Jolie ombre */
-    }
-
-    /* Le reste du CSS reste identique */
-    .search-overlay-full.active {
-        display: flex;
-        animation: slideInTop 0.3s ease-out;
-    }
-
-    @keyframes slideInTop {
-        from { transform: translateY(-100%); }
-        to { transform: translateY(0); }
-    }
-
-    .search-wrapper {
-        flex-grow: 1;
-        max-width: 800px;
-    }
-
-    .search-wrapper form {
-        display: flex;
-        align-items: center;
-        border-bottom: 2px solid #000;
-        padding-bottom: 5px;
-    }
-
-    .search-wrapper input {
-        width: 100%;
-        border: none;
-        font-size: 16px;
-        font-weight: 800;
-        text-transform: uppercase;
-        font-style: italic;
-        outline: none;
-        background: transparent;
-    }
-
-    .search-wrapper button {
-        background: none;
-        border: none;
-        cursor: pointer;
-        padding: 0 10px;
-    }
-
-    /* Bouton Croix */
-    .close-btn {
-        font-size: 40px;
-        color: #000;
-        cursor: pointer;
-        margin-left: 40px;
-        line-height: 1;
-        transition: transform 0.3s;
-    }
-
-    .close-btn:hover {
-        transform: rotate(90deg);
-        color: #666;
-    }
-</style>
-
 <script src="{{ asset('js/header.js') }}" defer></script>
-
-<script>
-    function openSearch(e) {
-        if(e) e.preventDefault();
-        const overlay = document.getElementById('full-search-overlay');
-        overlay.classList.add('active');
-        // Focus immédiat sur l'input
-        setTimeout(() => {
-            overlay.querySelector('input').focus();
-        }, 100);
-    }
-
-    function closeSearch() {
-        const overlay = document.getElementById('full-search-overlay');
-        overlay.classList.remove('active');
-    }
-</script>

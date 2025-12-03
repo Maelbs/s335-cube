@@ -10,6 +10,7 @@ use App\Models\Fourche;
 use App\Models\Batterie;
 use App\Models\Taille;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB; // N'oubliez pas d'importer DB
 
 class BoutiqueController extends Controller
 {
@@ -17,7 +18,7 @@ class BoutiqueController extends Controller
     {
         $dbType = ($type === 'Electrique') ? 'electrique' : 'musculaire';
 
-        // 1. INITIALISATION (Sans 'dispo_en_ligne')
+        // 1. INITIALISATION
         $query = VarianteVelo::query()
             ->with([
                 'parent', 
@@ -29,28 +30,55 @@ class BoutiqueController extends Controller
                 'inventaires.taille', 
                 'inventaires.magasins'
             ]);
-            // Suppression de ->where('dispo_en_ligne', true); car la colonne n'existe plus.
-            // On affiche tous les vélos par défaut, le stock sera indiqué par les pastilles.
 
         $isSearchMode = $request->filled('search');
         $titrePage = "TOUS LES VÉLOS " . strtoupper($type) . "S";
 
-        // --- 2. RECHERCHE vs NAVIGATION ---
+        // --- 2. RECHERCHE vs NAVIGATION (CORRIGÉ POUR TOLÉRANCE 1 CARACTÈRE) ---
         if ($isSearchMode) {
             $query->where(function($group) use ($request) {
+                // On nettoie la recherche (minuscule)
                 $search = strtolower($request->search);
-                $term = '%' . $search . '%';
-                $group->whereHas('modele', fn($q) => $q->whereRaw('LOWER(nom_modele) LIKE ?', [$term]))
-                      ->orWhereHas('parent', fn($q) => $q->whereRaw('LOWER(nom_article) LIKE ?', [$term]))
-                      ->orWhereHas('modele.categorie', function($q) use ($term) {
-                          $q->where(function($subQ) use ($term) {
-                              $subQ->whereRaw('LOWER(nom_categorie) LIKE ?', [$term])
-                                   ->orWhereHas('parent', fn($pQ) => $pQ->whereRaw('LOWER(nom_categorie) LIKE ?', [$term]));
-                          });
-                      });
+                $term = '%' . $search . '%'; // Pour le LIKE classique
+                
+                // --- Logique Modèles ---
+                $group->whereHas('modele', function($q) use ($term, $search) {
+                    $q->where(function($sub) use ($term, $search) {
+                        // 1. Recherche classique (bout de texte)
+                        $sub->whereRaw('LOWER(nom_modele) LIKE ?', [$term])
+                        // 2. OU Recherche floue (Levenshtein <= 1)
+                        // Cela trouve "Sterio" pour "Stereo" ou "Gravle" pour "Gravel"
+                           ->orWhereRaw('levenshtein(LOWER(nom_modele), ?) <= 1', [$search]);
+                    });
+                })
+                
+                // --- Logique Articles (Parents) ---
+                ->orWhereHas('parent', function($q) use ($term, $search) {
+                    $q->where(function($sub) use ($term, $search) {
+                        $sub->whereRaw('LOWER(nom_article) LIKE ?', [$term])
+                            ->orWhereRaw('levenshtein(LOWER(nom_article), ?) <= 1', [$search]);
+                    });
+                })
+                
+                // --- Logique Catégories ---
+                ->orWhereHas('modele.categorie', function($q) use ($term, $search) {
+                    $q->where(function($subQ) use ($term, $search) {
+                        // Catégorie parent
+                        $subQ->where(function($catQ) use ($term, $search) {
+                             $catQ->whereRaw('LOWER(nom_categorie) LIKE ?', [$term])
+                                  ->orWhereRaw('levenshtein(LOWER(nom_categorie), ?) <= 1', [$search]);
+                        })
+                        // Ou catégorie enfant (via parent relation)
+                        ->orWhereHas('parent', function($pQ) use ($term, $search) {
+                             $pQ->whereRaw('LOWER(nom_categorie) LIKE ?', [$term])
+                                ->orWhereRaw('levenshtein(LOWER(nom_categorie), ?) <= 1', [$search]);
+                        });
+                    });
+                });
             });
             $titrePage = "RÉSULTATS POUR : " . strtoupper($request->search);
         } else {
+            // Navigation standard (inchangée)
             $query->whereHas('modele', fn($q) => $q->where('type_velo', $dbType));
             
             if ($model_id) {
@@ -70,7 +98,7 @@ class BoutiqueController extends Controller
             }
         }
 
-        // --- 3. FILTRES SIMPLES ---
+        // --- 3. FILTRES SIMPLES (Inchangé) ---
         if ($request->filled('prix_min')) $query->where('prix', '>=', $request->prix_min);
         if ($request->filled('prix_max')) $query->where('prix', '<=', $request->prix_max);
         if ($request->filled('couleurs')) $query->whereIn('id_couleur', $request->couleurs);
@@ -79,54 +107,27 @@ class BoutiqueController extends Controller
         if ($request->filled('fourches')) $query->whereIn('id_fourche', $request->fourches);
         if ($request->filled('batteries')) $query->whereIn('id_batterie', $request->batteries);
 
-        // --- 4. FILTRES COMPLEXES (TAILLE & DISPO CROISÉS) ---
-        
+        // --- 4. FILTRES COMPLEXES (Inchangé) ---
         $hasSize = $request->filled('tailles');
         $hasOnline = $request->filled('dispo_ligne');
         $hasStore = $request->filled('dispo_magasin');
 
         if ($hasSize) {
-            // CAS A : Une taille est sélectionnée
-            // On filtre les inventaires qui correspondent à la taille ET aux conditions de stock cochées
             $query->whereHas('inventaires', function($q) use ($request, $hasOnline, $hasStore) {
-                
-                // 1. La taille doit correspondre (Table Inventaire -> Taille)
                 $q->whereHas('taille', fn($t) => $t->whereIn('taille', $request->tailles));
-
-                // 2. Si "Dispo Ligne" est coché, CETTE taille précise doit avoir du stock
-                if ($hasOnline) {
-                    $q->where('quantite_stock_en_ligne', '>', 0);
-                }
-
-                // 3. Si "Dispo Magasin" est coché, CETTE taille précise doit avoir du stock magasin
-                if ($hasStore) {
-                    $q->whereHas('magasins', fn($m) => $m->where('quantite_stock_magasin', '>', 0));
-                }
+                if ($hasOnline) $q->where('quantite_stock_en_ligne', '>', 0);
+                if ($hasStore) $q->whereHas('magasins', fn($m) => $m->where('quantite_stock_magasin', '>', 0));
             });
-
         } else {
-            // CAS B : Pas de taille sélectionnée (Filtre global sur n'importe quelle taille)
-            if ($hasOnline) {
-                $query->whereHas('inventaires', fn($q) => $q->where('quantite_stock_en_ligne', '>', 0));
-            }
-            
-            if ($hasStore) {
-                $query->whereHas('inventaires.magasins', fn($q) => $q->where('quantite_stock_magasin', '>', 0));
-            }
+            if ($hasOnline) $query->whereHas('inventaires', fn($q) => $q->where('quantite_stock_en_ligne', '>', 0));
+            if ($hasStore) $query->whereHas('inventaires.magasins', fn($q) => $q->where('quantite_stock_magasin', '>', 0));
         }
 
-        // --- 5. CALCUL DES COMPTEURS POUR LA SIDEBAR ---
-        // On clone la requête AVANT le tri pour compter les résultats
-        // Note : Ces compteurs reflètent les filtres ACTUELS (ex: si on filtre Rouge, on compte les Rouges dispo en ligne)
-        
-        // Calcul simple : combien de vélos de la liste actuelle sont dispo en ligne ?
+        // --- 5. COMPTEURS (Inchangé) ---
         $countOnline = (clone $query)->whereHas('inventaires', fn($q) => $q->where('quantite_stock_en_ligne', '>', 0))->count();
-        
-        // Combien de vélos de la liste actuelle sont dispo en magasin ?
         $countStore = (clone $query)->whereHas('inventaires.magasins', fn($q) => $q->where('quantite_stock_magasin', '>', 0))->count();
 
-
-        // --- 6. TRI & EXECUTION ---
+        // --- 6. TRI (Inchangé) ---
         if ($request->filled('sort')) {
             switch ($request->sort) {
                 case 'price_asc': $query->orderBy('prix', 'asc'); break;
@@ -141,7 +142,7 @@ class BoutiqueController extends Controller
 
         $velos = $query->paginate(15)->withQueryString();
 
-        // --- 7. DATA SIDEBAR (OPTIONS) ---
+        // --- 7. DATA SIDEBAR (Inchangé) ---
         $filterQuery = Modele::query();
         if (!$isSearchMode) $filterQuery->where('type_velo', $dbType);
 
@@ -149,7 +150,6 @@ class BoutiqueController extends Controller
         $availableMillesimes = (clone $filterQuery)->select('millesime_modele')->distinct()->orderBy('millesime_modele', 'desc')->pluck('millesime_modele');
         $availableFourches = Fourche::whereHas('varianteVelos.modele', fn($q) => !$isSearchMode ? $q->where('type_velo', $dbType) : $q)->orderBy('nom_fourche')->get();
         
-        // Tailles : On récupère les tailles qui existent dans l'inventaire (stock > 0 ou = 0, peu importe, tant que la taille existe pour ce vélo)
         $availableTailles = Taille::whereHas('varianteVeloInventaire.varianteVelo.modele', function($q) use ($isSearchMode, $dbType) {
             if (!$isSearchMode) $q->where('type_velo', $dbType);
         })->orderBy('id_taille')->distinct()->get();
