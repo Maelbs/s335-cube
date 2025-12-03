@@ -21,7 +21,7 @@ class VarianteVeloController extends Controller
         ])->get();
 
 
-        return response()->json($variantes);
+        return $variantes;
     }
 
     public function show($reference)
