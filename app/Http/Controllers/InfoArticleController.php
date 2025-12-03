@@ -30,6 +30,7 @@ class InfoArticleController extends Controller
             $stock = $article->varianteVelo->inventaires->keyBy('id_taille');
             $tailleGeometrie = $article->varianteVelo->modele->tailles->keyBy('id_taille');
             $typeVue = 'velo';
+            $isAccessoire = ($typeVue === 'accessoire');
 
         } else {
             $article->load(array_merge($relationsCommunes, [
@@ -60,7 +61,8 @@ class InfoArticleController extends Controller
             'tailleGeometrie',
             'specifications',
             'articlesSimilaires',
-            'typeVue'
+            'typeVue',
+            'isAccessoire'
         ));
     }
     private function estUnVelo($article)
