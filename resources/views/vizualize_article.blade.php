@@ -17,45 +17,41 @@
     @include('layouts.header')
 
     {{-- STRUCTURE MODALE (Reste inchangée, juste s'assurer que les ID JS sont respectés) --}}
-<div id="cartModal" class="modal-overlay">
-    <div class="modal-content">
-        <button class="modal-close" onclick="closeModal()">×</button>
-        <div class="modal-header">PRODUIT AJOUTÉ AU PANIER AVEC SUCCÈS</div>
-        <div class="modal-body">
-            {{-- Partie Gauche --}}
-            <div class="modal-product">
-                <div class="modal-img"><img id="modalImg" src="" alt="Article"></div>
-                <div class="modal-details">
-                    <h3 id="modalName">NOM DE L'ARTICLE</h3>
-                    <div class="modal-price" id="modalPrice">0,00 € TTC</div>
-                    <div class="modal-meta">TAILLE : <span id="modalSize" style="font-weight:bold; color:black;"></span></div>
-                    <div class="modal-meta">QUANTITÉ : <span id="modalQty" style="font-weight:bold; color:black;"></span></div>
+    <div id="cartModal" class="modal-overlay">
+        <div class="modal-content">
+            <button class="modal-close" onclick="closeModal()">×</button>
+            <div class="modal-header">PRODUIT AJOUTÉ AU PANIER AVEC SUCCÈS</div>
+            <div class="modal-body">
+                {{-- Partie Gauche --}}
+                <div class="modal-product">
+                    <div class="modal-img"><img id="modalImg" src="" alt="Article"></div>
+                    <div class="modal-details">
+                        <h3 id="modalName">NOM DE L'ARTICLE</h3>
+                        <div class="modal-price" id="modalPrice">0,00 € TTC</div>
+                        <div class="modal-meta">TAILLE : <span id="modalSize" style="font-weight:bold; color:black;"></span></div>
+                        <div class="modal-meta">QUANTITÉ : <span id="modalQty" style="font-weight:bold; color:black;"></span></div>
+                    </div>
                 </div>
-            </div>
-            {{-- Partie Droite (Résumé) --}}
-            <div class="modal-summary">
-                <div style="margin-bottom: 15px; font-size: 0.9rem; color:#555;">
-                    Il y a <span id="cartCount" style="font-weight:bold;"></span> articles dans votre panier.
-                </div>
-                <div class="summary-line"><span>Sous-total :</span><span id="cartSubtotal" style="font-weight: bold;">0,00 €</span></div>
-                <div class="summary-line"><span>Transport :</span><span>Gratuit</span></div>
-                <div class="summary-total"><span>Total TTC</span><span id="cartTotal">0,00 €</span></div>
-                <div class="tax-info">Taxes incluses : <span id="cartTax">0,00 €</span></div>
-                <div class="modal-actions">
-                    <button onclick="closeModal()" class="btn-continue">◀ Continuer mes achats</button>
-                    <a href="{{ route('cart.index') }}" class="btn-checkout">Commander ▶</a>
+                {{-- Partie Droite (Résumé) --}}
+                <div class="modal-summary">
+                    <div style="margin-bottom: 15px; font-size: 0.9rem; color:#555;">
+                        Il y a <span id="cartCount" style="font-weight:bold;"></span> articles dans votre panier.
+                    </div>
+                    <div class="summary-line"><span>Sous-total :</span><span id="cartSubtotal" style="font-weight: bold;">0,00 €</span></div>
+                    <div class="summary-line"><span>Transport :</span><span>Gratuit</span></div>
+                    <div class="summary-total"><span>Total TTC</span><span id="cartTotal">0,00 €</span></div>
+                    <div class="tax-info">Taxes incluses : <span id="cartTax">0,00 €</span></div>
+                    <div class="modal-actions">
+                        <button onclick="closeModal()" class="btn-continue">◀ Continuer mes achats</button>
+                        <a href="{{ route('cart.index') }}" class="btn-checkout">Commander ▶</a>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
-</div>
     <link rel="stylesheet" href="{{ asset('css/header.css') }}">
     <link rel="stylesheet" href="{{ asset('css/vizualize_article.css') }}">
 
-</head>
-
-<body>
-    @include('layouts.header')
 
 <div class="page-product-container">
     
@@ -156,18 +152,12 @@
             {{-- 4. DESCRIPTION & RESUME --}}
             <div class="each-specs-column">
                 <div class="specs-header-row">
+                @if($typeVue === 'velo')
                     <h2>Description</h2>
                     <button class="toggle-specs-btn"></button>
-                </div>
-                <p>
-                    {{-- Logique conditionnelle pour récupérer la description --}}
-                    @if($typeVue === 'velo')
-                        {{ $article->varianteVelo->modele->description->texte_description ?? 'Aucune description disponible.' }}
-                    @else
-                        {{-- Pour un accessoire, on utilise la description directe ou le résumé si pas de modèle --}}
-                        {{ $article->description ?? $article->resume ?? 'Aucune description disponible.' }}
-                    @endif
-                </p>
+                    </div>
+                    <p>{{ $article->varianteVelo->modele->description->texte_description ?? 'Aucune description disponible.' }}</p>
+                @endif
             </div>
 
             <div class="each-specs-column" id="resume_container">

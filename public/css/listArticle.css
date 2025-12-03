@@ -416,6 +416,7 @@ a { text-decoration: none; color: inherit; }
 /* BOUTON BISEAUTÉ */
 .btn-skew {
     position: absolute; bottom: 30px; right: 30px;
+    
     background: #000; color: #fff;
     padding: 12px 25px 12px 35px;
     font-size: 12px; font-weight: 800;
