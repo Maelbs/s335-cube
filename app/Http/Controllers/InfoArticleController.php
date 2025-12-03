@@ -36,7 +36,7 @@ class InfoArticleController extends Controller
                 'accessoire'
             ]));
 
-            $stock = $article->stock_global;
+            $stock = $article->accessoire->quantite_stock_accessoire;
             $tailleGeometrie = null;
             $typeVue = 'accessoire';
         }

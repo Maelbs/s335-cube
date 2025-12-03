@@ -4,8 +4,10 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\VarianteVelo;
+use App\Models\Accessoire;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\DB; // INDISPENSABLE
+
 
 class CartController extends Controller
 {
@@ -15,11 +17,11 @@ class CartController extends Controller
         $cart = Session::get('cart', []);
         $total = 0;
 
-        foreach($cart as $key => &$item) {
+        foreach ($cart as $key => &$item) {
             $total += $item['price'] * $item['quantity'];
 
             // 1. Nettoyage de la taille (ex: "XL (181-195)" -> "XL")
-            $tailleLabel = explode(' ', trim($item['taille']))[0]; 
+            $tailleLabel = explode(' ', trim($item['taille']))[0];
 
             // 2. Requête SQL : Stock Web + Somme des Stocks Magasins
             $stockInfo = DB::table('variante_velo_inventaire as vvi')
@@ -28,7 +30,7 @@ class CartController extends Controller
                 ->select(DB::raw('
                     (vvi.quantite_stock_en_ligne + COALESCE(SUM(im.quantite_stock_magasin), 0)) as total_stock
                 '))
-                ->where('vvi.reference', $item['reference']) 
+                ->where('vvi.reference', $item['reference'])
                 ->where('t.taille', $tailleLabel)
                 ->groupBy('vvi.id_velo_inventaire', 'vvi.quantite_stock_en_ligne')
                 ->first();
@@ -38,14 +40,14 @@ class CartController extends Controller
         }
         unset($item); // Sécurité PHP
 
-        return view('panier', compact('cart', 'total'));    
+        return view('panier', compact('cart', 'total'));
     }
 
     // --- AJOUT (TON CODE D'ORIGINE) ---
     public function add(Request $request, $reference)
     {
         $request->validate([
-            'taille' => 'required|string', 
+            'taille' => 'required|string',
             'quantity' => 'required|integer|min:1'
         ]);
 
@@ -56,7 +58,7 @@ class CartController extends Controller
         $photo = $velo->photos->where('est_principale', true)->first() ?? $velo->photos->first();
         $photoUrl = $photo ? $photo->url_photo : null;
 
-        if(isset($cart[$cartKey])) {
+        if (isset($cart[$cartKey])) {
             $cart[$cartKey]['quantity'] += $request->quantity;
         } else {
             $cart[$cartKey] = [
@@ -75,7 +77,7 @@ class CartController extends Controller
         // Calcul totaux pour JSON
         $cartTotal = 0;
         $cartCount = 0;
-        foreach($cart as $item) {
+        foreach ($cart as $item) {
             $cartTotal += $item['price'] * $item['quantity'];
             $cartCount += $item['quantity'];
         }
@@ -102,11 +104,79 @@ class CartController extends Controller
         return redirect()->route('cart.index')->with('success', 'Vélo ajouté au panier !');
     }
 
+    public function addAccessoire(Request $request, $reference)
+    {
+        // 1. Validation (Pas de taille requise pour un accessoire)
+        $request->validate([
+            'quantity' => 'required|integer|min:1'
+        ]);
+
+        // 2. Récupération de l'accessoire
+        // On assume que le modèle Accessoire a la relation 'photos' (comme VarianteVelo)
+        $accessoire = Accessoire::with('photos')->where('reference', $reference)->firstOrFail();
+
+        // 3. Gestion du panier (Session)
+        $cart = Session::get('cart', []);
+
+        // Clé simple car pas de taille
+        $cartKey = $reference;
+
+        // Image
+        $photo = $accessoire->photos->where('est_principale', true)->first() ?? $accessoire->photos->first();
+        $photoUrl = $photo ? $photo->url_photo : null;
+
+        if (isset($cart[$cartKey])) {
+            $cart[$cartKey]['quantity'] += $request->quantity;
+        } else {
+            $cart[$cartKey] = [
+                'reference' => $accessoire->reference,
+                'name' => $accessoire->nom_article,
+                'price' => $accessoire->prix,
+                'taille' => 'Unique', // Taille par défaut pour l'affichage
+                'quantity' => $request->quantity,
+                'image' => $photoUrl,
+                'type' => 'accessoire'
+            ];
+        }
+
+        Session::put('cart', $cart);
+
+        // Calculs totaux pour la modale AJAX
+        $cartTotal = 0;
+        $cartCount = 0;
+        foreach ($cart as $item) {
+            $cartTotal += $item['price'] * $item['quantity'];
+            $cartCount += $item['quantity'];
+        }
+
+        // Réponse JSON pour le JavaScript
+        if ($request->wantsJson()) {
+            return response()->json([
+                'success' => true,
+                'message' => 'Accessoire ajouté !',
+                'product' => [
+                    'name' => $accessoire->nom_article,
+                    'price' => $accessoire->prix,
+                    'image' => $photoUrl ? $photoUrl : 'https://placehold.co/200x150?text=No+Image', // Si l'URL est complète en BDD
+                    'taille' => 'Unique',
+                    'qty' => $request->quantity
+                ],
+                'cart' => [
+                    'count' => $cartCount,
+                    'subtotal' => $cartTotal,
+                    'total' => $cartTotal
+                ]
+            ]);
+        }
+
+        return redirect()->back()->with('success', 'Accessoire ajouté au panier !');
+    }
+
     // --- SUPPRESSION (TON CODE D'ORIGINE) ---
     public function remove($key)
     {
         $cart = Session::get('cart', []);
-        if(isset($cart[$key])) {
+        if (isset($cart[$key])) {
             unset($cart[$key]);
             Session::put('cart', $cart);
         }
@@ -116,7 +186,7 @@ class CartController extends Controller
     // --- NOUVEAU : MISE A JOUR QUANTITE (AJAX) ---
     public function updateQuantity(Request $request)
     {
-        $id = $request->input('id'); 
+        $id = $request->input('id');
         $quantity = $request->input('quantity');
 
         $cart = Session::get('cart');
@@ -125,16 +195,16 @@ class CartController extends Controller
             // Sauvegarde en session : Empêche la réinitialisation si on supprime une autre ligne
             $cart[$id]['quantity'] = $quantity;
             Session::put('cart', $cart);
-            
+
             // Recalcul du total global pour mettre à jour l'affichage
             $total = 0;
-            foreach($cart as $item) {
+            foreach ($cart as $item) {
                 $total += $item['price'] * $item['quantity'];
             }
 
             return response()->json([
-                'success' => true, 
-                'newTotal' => number_format($total, 2, ',', ' ') 
+                'success' => true,
+                'newTotal' => number_format($total, 2, ',', ' ')
             ]);
         }
 
