@@ -49,10 +49,22 @@ class VarianteVelo extends Article
     {
         return $this->belongsTo(Couleur::class, 'id_couleur');
     }
-    
+
     public function parent()
     {
         return $this->belongsTo(Article::class, 'reference', 'reference');
+    }
+
+    public function accessoires()
+    {
+        return $this->belongsToMany(
+            Accessoire::class,
+            'accessoire_velo',      // Nom de la table pivot
+            'reference_velo',       // Clé étrangère de ce modèle dans la pivot
+            'reference_accessoire', // Clé étrangère de l'autre modèle dans la pivot
+            'reference',            // Clé locale de ce modèle
+            'reference'             // Clé locale de l'autre modèle
+        );
     }
 
     public function __toString()

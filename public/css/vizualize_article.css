@@ -662,6 +662,41 @@ nav {
     height: fit-content;
 }
 
+.section-grey {
+    background-color: #efefef;
+    margin-top: 100px;
+    width: 100% !important;         /* Force la largeur à 100% */
+    max-width: none !important;
+}
+
+.text-section-grey {
+    text-align: center !important;
+}
+
+p.text-section-grey{
+    max-width: 800px;           /* Largeur maximale pour ne pas étaler le texte */
+    width: 100%;                /* Prend toute la place disponible jusqu'au max-width */
+    margin-left: auto;          /* Pousse depuis la gauche */
+    margin-right: auto;         /* Pousse depuis la droite -> Résultat : CENTRÉ */
+    
+    /* 2. Le style du TEXTE à l'intérieur */
+    text-align: center;         /* Centre le texte ligne par ligne */
+    color: #666;                /* Ta couleur grise */
+    line-height: 1.6;           /* Aération des lignes */
+    
+    /* 3. Gestion des mots longs (Word-wrap) */
+    word-wrap: break-word;      /* Pour les vieux navigateurs */
+    overflow-wrap: break-word;  /* Standard moderne : coupe les mots trop longs si besoin */
+    
+    /* 4. Petite sécurité mobile */
+    padding: 0 15px
+}
+
+.newMillesime {
+    background-color: #000 !important;
+    color: #fff !important;
+}
+
 .badges {
     display: flex;
     gap: 10px;
@@ -899,7 +934,6 @@ nav {
    NOUVEAU CARROUSEL (ARTICLES SIMILAIRES)
    ========================================= */
 .st-similar-section {
-    margin-top: 80px;
     padding: 20px 0;
     max-width: 1400px;
     margin-left: auto;
@@ -922,7 +956,7 @@ nav {
     position: relative;
     width: 100%;
     overflow: hidden;
-    padding: 10px 0;
+    padding: 10px 50px;
 }
 
 .st-carousel-track {

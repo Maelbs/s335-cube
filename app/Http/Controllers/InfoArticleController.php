@@ -14,7 +14,8 @@ class InfoArticleController extends Controller
         $relationsCommunes = [
             'caracteristiques.typeCaracteristique',
             'photos',
-            'resume'
+            'resume',
+            'inventaires.taille'
         ];
 
         if ($this->estUnVelo($article)) {
@@ -22,9 +23,10 @@ class InfoArticleController extends Controller
                 'varianteVelo.modele.geometries',
                 'varianteVelo.modele.tailles',
                 'varianteVelo.modele.description',
-                'varianteVelo.inventaires.taille',
+                'varianteVelo.modele',
                 'varianteVelo.couleur',
-                'varianteVelo.modele.varianteVelos.couleur'
+                'varianteVelo.modele.varianteVelos.couleur',
+                'varianteVelo.accessoires'
             ]));
 
             $stock = $article->inventaires->keyBy('id_taille');
@@ -40,6 +42,7 @@ class InfoArticleController extends Controller
             $stock = $article->accessoire->quantite_stock_accessoire;
             $tailleGeometrie = null;
             $typeVue = 'accessoire';
+            $isAccessoire = ($typeVue === 'accessoire');
         }
 
         $specifications = $article->caracteristiques->groupBy(function ($item) {

@@ -37,6 +37,11 @@ class Accessoire extends Article
     {
         return $this->belongsTo(CategorieAccessoire::class, 'id_categorie_accessoire', 'id_categorie_accessoire');
     }
+
+    public function accessoireVelo() 
+    {
+        return $this->hasMany(AccessoireVelo::class, 'reference_accessoire', 'reference');
+    }
      
     public function parent()
     {
