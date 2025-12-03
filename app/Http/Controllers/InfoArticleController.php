@@ -27,7 +27,7 @@ class InfoArticleController extends Controller
                 'varianteVelo.modele.varianteVelos.couleur'
             ]));
 
-            $stock = $article->varianteVelo->inventaires->keyBy('id_taille');
+            $stock = $article->inventaires->keyBy('id_taille');
             $tailleGeometrie = $article->varianteVelo->modele->tailles->keyBy('id_taille');
             $typeVue = 'velo';
 

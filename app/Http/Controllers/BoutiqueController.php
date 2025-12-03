@@ -220,7 +220,7 @@ class BoutiqueController extends Controller
             $availableMateriaux = (clone $filterQuery)->select('materiau_cadre')->distinct()->whereNotNull('materiau_cadre')->pluck('materiau_cadre');
             $availableMillesimes = (clone $filterQuery)->select('millesime_modele')->distinct()->orderBy('millesime_modele', 'desc')->pluck('millesime_modele');
             $availableFourches = Fourche::whereHas('varianteVelos.modele', fn($q) => !$isSearchMode ? $q->where('type_velo', $dbType) : $q)->orderBy('nom_fourche')->get();
-            $availableTailles = Taille::whereHas('varianteVeloInventaire.varianteVelo.modele', fn($q) => !$isSearchMode ? $q->where('type_velo', $dbType) : $q)->orderBy('id_taille')->distinct()->get();
+            $availableTailles = Taille::whereHas('ArticleInventaire.articles.varianteVelo.modele', fn($q) => !$isSearchMode ? $q->where('type_velo', $dbType) : $q)->orderBy('id_taille')->distinct()->get();
             if ($type === 'Electrique' || $isSearchMode) $availableBatteries = Batterie::orderBy('capacite_batterie', 'asc')->get();
             $maxPrice = VarianteVelo::max('prix');
             

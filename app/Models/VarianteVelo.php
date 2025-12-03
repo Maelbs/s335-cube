@@ -49,11 +49,6 @@ class VarianteVelo extends Article
     {
         return $this->belongsTo(Couleur::class, 'id_couleur');
     }
-
-    public function inventaires()
-    {
-        return $this->hasMany(VarianteVeloInventaire::class, 'reference', 'reference');
-    }
     
     public function parent()
     {

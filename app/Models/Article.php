@@ -38,6 +38,11 @@ class Article extends Model
         )->withPivot('valeur_caracteristique'); 
     }
 
+    public function inventaires()
+    {
+        return $this->hasMany(ArticleInventaire::class, 'reference', 'reference');
+    }
+
     public function resume() 
     {
         return $this->belongsTo(Resume::class, 'id_resume', 'id_resume');

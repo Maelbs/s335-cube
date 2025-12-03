@@ -24,15 +24,15 @@ class CartController extends Controller
             $tailleLabel = explode(' ', trim($item['taille']))[0];
 
             // 2. Requête SQL : Stock Web + Somme des Stocks Magasins
-            $stockInfo = DB::table('variante_velo_inventaire as vvi')
+            $stockInfo = DB::table('article_inventaire as vvi')
                 ->join('taille as t', 'vvi.id_taille', '=', 't.id_taille')
-                ->leftJoin('inventaire_magasin as im', 'vvi.id_velo_inventaire', '=', 'im.id_velo_inventaire')
+                ->leftJoin('inventaire_magasin as im', 'vvi.id_article_inventaire', '=', 'im.id_article_inventaire')
                 ->select(DB::raw('
                     (vvi.quantite_stock_en_ligne + COALESCE(SUM(im.quantite_stock_magasin), 0)) as total_stock
                 '))
                 ->where('vvi.reference', $item['reference'])
                 ->where('t.taille', $tailleLabel)
-                ->groupBy('vvi.id_velo_inventaire', 'vvi.quantite_stock_en_ligne')
+                ->groupBy('vvi.id_article_inventaire', 'vvi.quantite_stock_en_ligne')
                 ->first();
 
             // 3. Injection du stock dans l'item du panier
