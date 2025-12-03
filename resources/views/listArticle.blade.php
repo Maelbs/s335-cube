@@ -142,15 +142,27 @@
                             <input type="checkbox" name="dispo_ligne" value="1" class="auto-submit" {{ request('dispo_ligne') ? 'checked' : '' }}>
                             <span class="box"></span>Disponible en ligne ({{ $countOnline }})
                         </label>
+                        @if(!$isAccessoire)
                         <label class="cube-checkbox">
                             <input type="checkbox" name="dispo_magasin" value="1" class="auto-submit" {{ request('dispo_magasin') ? 'checked' : '' }}>
                             <span class="box"></span>Disponible en magasin ({{ $countStore }})
                         </label>
+                        @endif
                     </div>
                 </div>
 
                 <div class="filter-section">
+                    <div class="filter-header" onclick="toggleSection(this)">
+                        <h3>PRIX</h3><i class="fas fa-chevron-up"></i>
                     </div>
+                    
+                    <div class="filter-content price-filter-container">
+                        <div id="price-slider"></div>
+
+                        <input type="hidden" name="prix_min" id="input-prix-min" value="{{ request('prix_min') ?? 0 }}">
+                        <input type="hidden" name="prix_max" id="input-prix-max" value="{{ request('prix_max') ?? $maxPrice }}">
+                    </div>
+                </div>
 
                 @if(!$isAccessoire)
                     <div class="filter-section">
