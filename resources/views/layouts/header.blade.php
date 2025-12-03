@@ -125,7 +125,7 @@
                 </li>
 
                 <li class="nav-item">
-                    <a id="btn-accessoire" href="#" class="link_category">ACCESSOIRES</a>
+                    <a id="btn-accessoire" href="{{ route('boutique.index', ['type' => 'Accessoires']) }}" class="link_category">ACCESSOIRES</a>
 
                     <div class="mega-menu-dropdown">
                         <div class="mega-menu-wrapper" id="wrapper-accessoire">
@@ -133,7 +133,7 @@
                             <div class="col-roots">
                                 @foreach($categorieAccessoires as $root)
                                     <div class="menu-item root-trigger" data-target="sub-acc-{{ $root->id_categorie_accessoire }}">
-                                        <a href="#" class="menu-link-reset">
+                                        <a href="{{ route('boutique.index', ['type' => 'Accessoires', 'cat_id' => $root->id_categorie_accessoire]) }}" class="menu-link-reset">
                                             {{ strtoupper($root->nom_categorie_accessoire) }}
                                         </a>
                                         <span>&rsaquo;</span>
@@ -148,7 +148,7 @@
                                         @if($root->enfants->isNotEmpty())
                                             @foreach($root->enfants as $enfant)
                                                 <div class="menu-item sub-trigger" data-target="grandchild-acc-{{ $enfant->id_categorie_accessoire }}">
-                                                    <a href="#" class="menu-link-reset">
+                                                    <a href="{{ route('boutique.index', ['type' => 'Accessoires', 'cat_id' => $root->id_categorie_accessoire, 'sub_id' => $enfant->id_categorie_accessoire]) }}" class="menu-link-reset">
                                                         {{ strtoupper($enfant->nom_categorie_accessoire) }}
                                                     </a>
                                                     <span>&rsaquo;</span>
@@ -172,7 +172,7 @@
                                             <div class="model-grid">
                                                 @if($enfant->enfants && $enfant->enfants->isNotEmpty())
                                                     @foreach($enfant->enfants as $petitEnfant)
-                                                        <a href="#" class="model-link">
+                                                        <a href="{{ route('boutique.index', ['type' => 'Accessoires', 'cat_id' => $root->id_categorie_accessoire, 'sub_id' => $enfant->id_categorie_accessoire, 'model_id' => $modele->id_modele]) }}" class="model-link">
                                                             {{ $petitEnfant->nom_categorie_accessoire }}
                                                         </a>
                                                     @endforeach

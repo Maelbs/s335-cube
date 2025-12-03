@@ -8,13 +8,10 @@
     <meta name="csrf-token" content="{{ csrf_token() }}">
     
     <title>{{ $velo->varianteVelo->modele->nom_modele }}</title>
-<<<<<<< HEAD
         {{-- <link rel="stylesheet" href="{{ asset('css/style.css') }}"> --}}
         
-=======
     
     <link rel="stylesheet" href="{{ asset('css/vizualize_article.css') }}">
->>>>>>> 36aefff4270c360d524759b5a3045069d8f0395c
     <link rel="stylesheet" href="{{ asset('css/header.css') }}">
     <link rel="stylesheet" href="{{ asset('css/vizualize_article.css') }}">
 </head>
@@ -83,6 +80,15 @@
     </div>
     {{-- FIN STRUCTURE MODALE --}}
 
+=======
+    <link rel="stylesheet" href="{{ asset('css/header.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/vizualize_article.css') }}">
+
+</head>
+
+<body>
+    @include('layouts.header')
+>>>>>>> Stashed changes
 
     <div class="page-product-container">
     

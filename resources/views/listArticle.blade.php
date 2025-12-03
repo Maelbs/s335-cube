@@ -52,19 +52,27 @@
     
 
     @php
-        $bgImage = ($type === 'Electrique') 
-            ? asset('https://www.cubebikes.fr/img/c/4519.jpg')  // Assurez-vous d'avoir cette image
-            : asset('https://www.cubebikes.fr/img/c/4518.jpg'); // Et celle-ci
+    if ($type === 'Electrique') {
+        // Pas besoin de asset() pour un lien externe, et ajout du ; à la fin
+        $bgImage = 'https://www.cubebikes.fr/img/c/4519.jpg';
+    }
+    elseif ($type === 'Musculaire') {
+        $bgImage = 'https://www.cubebikes.fr/img/c/4518.jpg';
+    } 
+    else {
+        // Pour un fichier local, on utilise asset().
+        // Note : asset() pointe déjà vers le dossier "public", donc mettez juste 'images/...'
+        $bgImage = asset('images/accessoires-de-velo.png');
+    }
     @endphp
+    
 
     <section class="hero-section" style="background-image: url('{{ $bgImage }}');">
         <div class="hero-overlay"></div>
         <div class="hero-content">
-            <h1 class="hero-title">
-                {{ strtoupper($titrePage) }}
-            </h1>
+            <h1 class="hero-title">{{ strtoupper($titrePage) }}</h1>
             <button onclick="scrollToListing()" class="btn-scroll-down">
-                <i class="fas fa-angle-double-right"></i> VOIR TOUS LES VÉLOS
+                <i class="fas fa-angle-double-right"></i> VOIR TOUS LES {{ $isAccessoire ? 'ARTICLES' : 'VÉLOS' }}
             </button>
         </div>
     </section>
@@ -73,231 +81,102 @@
         
         <aside class='filters-sidebar'>
             <form id="filterForm" action="{{ url()->current() }}#listing-anchor" method="GET">
-                
-                @if(request('search')) 
-                    <input type="hidden" name="search" value="{{ request('search') }}"> 
-                @endif
-                
+                @if(request('search')) <input type="hidden" name="search" value="{{ request('search') }}"> @endif
                 @if(request('sort')) <input type="hidden" name="sort" value="{{ request('sort') }}"> @endif
-
 
                 @if($hierarchyItems->isNotEmpty())
                     <div class="filter-section">
                         <div class="filter-header" onclick="toggleSection(this)">
-                            <h3>{{ $hierarchyTitle }}</h3>
-                            <i class="fas fa-chevron-up"></i>
+                            <h3>{{ $hierarchyTitle }}</h3><i class="fas fa-chevron-up"></i>
                         </div>
                         <div class="filter-content">
-                            
                             @if($cat_id)
-                                <div style="margin-bottom: 10px; padding-bottom:10px; border-bottom:1px dashed #eee;">
-                                    @php
-                                        // On prépare les paramètres pour le retour en arrière
-                                        // On garde tous les filtres actuels (prix, couleur...) avec request()->query()
-                                        $backParams = request()->query();
-                                        
-                                        // On définit la cible selon le niveau actuel
-                                        $backRouteParams = ['type' => $type];
-                                        if ($sub_id) {
-                                            $backRouteParams['cat_id'] = $cat_id;
-                                        }
-                                        // Fusion des paramètres d'URL (chemin) et des filtres (query)
-                                        $backUrl = route('boutique.index', array_merge($backRouteParams, $backParams));
-                                    @endphp
-
-                                    <a href="{{ $backUrl }}#listing-anchor" 
-                                    style="font-size:12px; font-weight:700; color:#666; text-decoration:none; display:flex; align-items:center; gap:5px;">
-                                        <i class="fas fa-arrow-left"></i> RETOUR
-                                    </a>
-                                </div>
-                            @endif
-
+                                @endif
                             @foreach($hierarchyItems as $item)
                                 @php
-                                    // 1. On récupère tous les filtres actuels (prix, couleur, tri...)
                                     $currentFilters = request()->query();
-
-                                    // 2. On définit les paramètres de la route (le chemin /type/cat/sub...)
+                                    $routeParams = ['type' => $type];
+                                    $isActive = false;
+                                    if ($hierarchyLevel === 'root') { $routeParams['cat_id'] = $item->id; $isActive = ($cat_id == $item->id); } 
+                                    elseif ($hierarchyLevel === 'sub') { $routeParams['cat_id'] = $cat_id; $routeParams['sub_id'] = $item->id; $isActive = ($sub_id == $item->id); } 
+                                    elseif ($hierarchyLevel === 'model') { $routeParams['cat_id'] = $cat_id; $routeParams['sub_id'] = $sub_id; $routeParams['model_id'] = $item->id; $isActive = ($model_id == $item->id); }
+                                    $targetUrl = route('boutique.index', array_merge($routeParams, $currentFilters));
+                                    
+                                    // ... récupération filtres ...
+                                    $currentFilters = request()->query();
                                     $routeParams = ['type' => $type];
                                     $isActive = false;
 
                                     if ($hierarchyLevel === 'root') {
+                                        // Clic sur une racine (Accessoire ou Vélo) -> On va vers cat_id
                                         $routeParams['cat_id'] = $item->id;
                                         $isActive = ($cat_id == $item->id);
                                     } 
                                     elseif ($hierarchyLevel === 'sub') {
+                                        // Clic sur une sous-cat
                                         $routeParams['cat_id'] = $cat_id;
                                         $routeParams['sub_id'] = $item->id;
                                         $isActive = ($sub_id == $item->id);
                                     } 
                                     elseif ($hierarchyLevel === 'model') {
+                                        // Clic sur un modèle (Uniquement pour les vélos, mais le code est générique)
                                         $routeParams['cat_id'] = $cat_id;
                                         $routeParams['sub_id'] = $sub_id;
                                         $routeParams['model_id'] = $item->id;
                                         $isActive = ($model_id == $item->id);
                                     }
-
-                                    // 3. FUSION MAGIQUE : On combine le chemin + les filtres existants
-                                    // Cela permet de cliquer sur "VTT" sans perdre le filtre "Prix < 2000€"
-                                    $targetUrl = route('boutique.index', array_merge($routeParams, $currentFilters));
                                 @endphp
-
                                 <label class="cube-checkbox" onclick="window.location.href='{{ $targetUrl }}#listing-anchor'">
                                     <input type="checkbox" {{ $isActive ? 'checked' : '' }}>
-                                    <span class="box"></span>
-                                    {{ strtoupper($item->name) }}
+                                    <span class="box"></span>{{ strtoupper($item->name) }}
                                 </label>
                             @endforeach
                         </div>
                     </div>
                 @endif
-                
-                @if(request('q')) <input type="hidden" name="q" value="{{ request('q') }}"> @endif
-                @if(request('sort')) <input type="hidden" name="sort" value="{{ request('sort') }}"> @endif
-
-                @if(request()->except(['q', 'sort'])) <a href="{{ route('boutique.index', ['type' => $type]) }}#listing-anchor" class="btn-reset-top">
-                        <i class="fas fa-times"></i> RÉINITIALISER LES FILTRES
-                    </a>
-                @endif
-
 
                 <div class="filter-section">
-                    <div class="filter-header" onclick="toggleSection(this)">
-                        <h3>DISPONIBILITÉ</h3>
-                        <i class="fas fa-chevron-up"></i>
-                    </div>
+                    <div class="filter-header" onclick="toggleSection(this)"><h3>DISPONIBILITÉ</h3><i class="fas fa-chevron-up"></i></div>
                     <div class="filter-content">
-                        
                         <label class="cube-checkbox">
-                            <input type="checkbox" name="dispo_ligne" value="1" class="auto-submit"
-                                {{ request('dispo_ligne') ? 'checked' : '' }}>
-                            <span class="box"></span>
-                            Disponible en ligne ({{ $countOnline }})
+                            <input type="checkbox" name="dispo_ligne" value="1" class="auto-submit" {{ request('dispo_ligne') ? 'checked' : '' }}>
+                            <span class="box"></span>Disponible en ligne ({{ $countOnline }})
                         </label>
-
                         <label class="cube-checkbox">
-                            <input type="checkbox" name="dispo_magasin" value="1" class="auto-submit"
-                                {{ request('dispo_magasin') ? 'checked' : '' }}>
-                            <span class="box"></span>
-                            Disponible en magasin ({{ $countStore }})
+                            <input type="checkbox" name="dispo_magasin" value="1" class="auto-submit" {{ request('dispo_magasin') ? 'checked' : '' }}>
+                            <span class="box"></span>Disponible en magasin ({{ $countStore }})
                         </label>
-
                     </div>
                 </div>
 
-
                 <div class="filter-section">
-                    <div class="filter-header" onclick="toggleSection(this)">
-                        <h3>PRIX</h3><i class="fas fa-chevron-up"></i>
+                    </div>
+
+                @if(!$isAccessoire)
+                    <div class="filter-section">
+                        <div class="filter-header" onclick="toggleSection(this)"><h3>TAILLE</h3><i class="fas fa-chevron-up"></i></div>
+                        <div class="filter-content">
+                            @foreach($availableTailles as $taille)
+                                <label class="cube-checkbox">
+                                    <input type="checkbox" name="tailles[]" value="{{ trim($taille->taille) }}" class="auto-submit" {{ (is_array(request('tailles')) && in_array(trim($taille->taille), request('tailles'))) ? 'checked' : '' }}>
+                                    <span class="box"></span>{{ trim($taille->taille) }}
+                                </label>
+                            @endforeach
+                        </div>
                     </div>
                     
-                    <div class="filter-content price-filter-container">
-                        <div id="price-slider"></div>
-
-                        <input type="hidden" name="prix_min" id="input-prix-min" value="{{ request('prix_min') ?? 0 }}">
-                        <input type="hidden" name="prix_max" id="input-prix-max" value="{{ request('prix_max') ?? $maxPrice }}">
-                    </div>
-                </div>
-
-                <div class="filter-section">
-                    <div class="filter-header" onclick="toggleSection(this)">
-                        <h3>TAILLE</h3><i class="fas fa-chevron-up"></i>
-                    </div>
-                    <div class="filter-content">
-                        @foreach($availableTailles as $taille)
-                            @php $tailleVal = trim($taille->taille); @endphp
-                            <label class="cube-checkbox">
-                                <input type="checkbox" name="tailles[]" value="{{ $tailleVal }}" class="auto-submit"
-                                    {{ (is_array(request('tailles')) && in_array($tailleVal, request('tailles'))) ? 'checked' : '' }}>
-                                <span class="box"></span>
-                                {{ $tailleVal }}
-                            </label>
-                        @endforeach
-                    </div>
-                </div>
-
-                @if($type === 'Electrique' && $availableBatteries->isNotEmpty())
                     <div class="filter-section">
-                        <div class="filter-header" onclick="toggleSection(this)">
-                            <h3>BATTERIE</h3><i class="fas fa-chevron-up"></i>
-                        </div>
-                        <div class="filter-content">
-                            @foreach($availableBatteries as $bat)
+                        <div class="filter-header" onclick="toggleSection(this)"><h3>COULEUR</h3><i class="fas fa-chevron-up"></i></div>
+                        <div class="filter-content" style="max-height: 200px; overflow-y: auto;">
+                            @foreach($availableCouleurs as $c)
                                 <label class="cube-checkbox">
-                                    <input type="checkbox" name="batteries[]" value="{{ $bat->id_batterie }}" class="auto-submit"
-                                        {{ (is_array(request('batteries')) && in_array($bat->id_batterie, request('batteries'))) ? 'checked' : '' }}>
-                                    <span class="box"></span>
-                                    {{ $bat->capacite_batterie }} Wh
+                                    <input type="checkbox" name="couleurs[]" value="{{ $c->id_couleur }}" class="auto-submit" {{ (is_array(request('couleurs')) && in_array($c->id_couleur, request('couleurs'))) ? 'checked' : '' }}>
+                                    <span class="box"></span>{{ ucfirst(trim($c->nom_couleur)) }}
                                 </label>
                             @endforeach
                         </div>
                     </div>
                 @endif
-
-                <div class="filter-section">
-                    <div class="filter-header" onclick="toggleSection(this)">
-                        <h3>MILLÉSIME</h3><i class="fas fa-chevron-up"></i>
-                    </div>
-                    <div class="filter-content">
-                        @foreach($availableMillesimes as $annee)
-                            <label class="cube-checkbox">
-                                <input type="checkbox" name="millesimes[]" value="{{ $annee }}" class="auto-submit"
-                                    {{ (is_array(request('millesimes')) && in_array($annee, request('millesimes'))) ? 'checked' : '' }}>
-                                <span class="box"></span>
-                                {{ $annee }}
-                            </label>
-                        @endforeach
-                    </div>
-                </div>
-
-                <div class="filter-section">
-                    <div class="filter-header" onclick="toggleSection(this)">
-                        <h3>MATÉRIAU DU CADRE</h3><i class="fas fa-chevron-up"></i>
-                    </div>
-                    <div class="filter-content">
-                        @foreach($availableMateriaux as $materiau)
-                            <label class="cube-checkbox">
-                                <input type="checkbox" name="materiaux[]" value="{{ $materiau }}" class="auto-submit"
-                                    {{ (is_array(request('materiaux')) && in_array($materiau, request('materiaux'))) ? 'checked' : '' }}>
-                                <span class="box"></span>
-                                {{ ucfirst($materiau) }}
-                            </label>
-                        @endforeach
-                    </div>
-                </div>
-
-                <div class="filter-section">
-                    <div class="filter-header" onclick="toggleSection(this)">
-                        <h3>FOURCHE</h3><i class="fas fa-chevron-up"></i>
-                    </div>
-                    <div class="filter-content" style="max-height: 200px; overflow-y: auto;">
-                        @foreach($availableFourches as $fourche)
-                            <label class="cube-checkbox">
-                                <input type="checkbox" name="fourches[]" value="{{ $fourche->id_fourche }}" class="auto-submit"
-                                    {{ (is_array(request('fourches')) && in_array($fourche->id_fourche, request('fourches'))) ? 'checked' : '' }}>
-                                <span class="box"></span>
-                                {{ Str::limit($fourche->nom_fourche, 25) }}
-                            </label>
-                        @endforeach
-                    </div>
-                </div>
-
-                <div class="filter-section">
-                    <div class="filter-header" onclick="toggleSection(this)">
-                        <h3>COULEUR</h3><i class="fas fa-chevron-up"></i>
-                    </div>
-                    <div class="filter-content" style="max-height: 200px; overflow-y: auto;">
-                        @foreach($availableCouleurs as $c)
-                            @php $couleurVal = trim($c->nom_couleur); @endphp
-                            <label class="cube-checkbox">
-                                <input type="checkbox" name="couleurs[]" value="{{ $c->id_couleur }}" class="auto-submit"
-                                    {{ (is_array(request('couleurs')) && in_array($c->id_couleur, request('couleurs'))) ? 'checked' : '' }}>
-                                <span class="box"></span>
-                                {{ ucfirst($couleurVal) }}
-                            </label>
-                        @endforeach
-                    </div>
-                </div>
 
             </form>
         </aside>
@@ -343,7 +222,6 @@
                     @foreach($velos as $velo)
                         <div class="product-card">
                             <div class="badge-new">NOUVEAU</div>
-                            
                             <div class="product-image">
                                 <a href="{{ url('/velo/' . $velo->reference) }}">
                                     <img src="{{ $velo->parent->photo_principale }}" alt="{{ $velo->nom_article }}">
@@ -353,54 +231,61 @@
                             <div class="product-details">
                                 <h2 class="product-title">
                                     <a href="{{ url('/velo/' . $velo->reference) }}">
-                                        {{ strtoupper($velo->modele->nom_modele) }} - {{ strtoupper(str_replace($velo->modele->nom_modele, '', $velo->nom_article)) }}
+                                        @if($isAccessoire)
+                                            {{ strtoupper($velo->nom_article) }}
+                                        @else
+                                            {{ strtoupper($velo->modele->nom_modele) }} - {{ strtoupper(str_replace($velo->modele->nom_modele, '', $velo->nom_article)) }}
+                                        @endif
                                     </a>
                                 </h2>
 
                                 @php
-                                    // 1. On récupère les tailles demandées dans le filtre (ex: ['M', 'L'])
-                                    $filtreTailles = request('tailles');
-
-                                    // 2. On prend l'inventaire complet du vélo
-                                    $inventairesConcenes = $velo->inventaires;
-
-                                    // 3. SI un filtre taille est actif, on ne garde que les lignes d'inventaire correspondantes
-                                    if ($filtreTailles && is_array($filtreTailles)) {
-                                        $inventairesConcenes = $inventairesConcenes->filter(function($inv) use ($filtreTailles) {
-                                            // On trim pour gérer le type CHAR de la BDD
-                                            return in_array(trim($inv->taille->taille), $filtreTailles);
-                                        });
-                                    }
-
-                                    // 4. On fait la somme sur les inventaires RESTANTS (soit tout, soit juste la taille M)
-                                    $stockLigne = $inventairesConcenes->sum('quantite_stock_en_ligne');
-                                    
-                                    $stockMagasin = 0;
-                                    foreach($inventairesConcenes as $inv) {
-                                        $stockMagasin += $inv->magasins->sum('pivot.quantite_stock_magasin');
+                                    if ($isAccessoire) {
+                                        // Stock simple pour accessoires
+                                        $dispoLigne = $velo->dispo_en_ligne;
+                                        $dispoMag = $velo->dispo_magasin;
+                                    } else {
+                                        // Stock complexe pour vélos (Inventaire)
+                                        $filtreTailles = request('tailles');
+                                        $invs = $velo->inventaires;
+                                        if ($filtreTailles && is_array($filtreTailles)) {
+                                            $invs = $invs->filter(fn($i) => in_array(trim($i->taille->taille), $filtreTailles));
+                                        }
+                                        $dispoLigne = $invs->sum('quantite_stock_en_ligne') > 0;
+                                        
+                                        $stockMag = 0;
+                                        foreach($invs as $i) { $stockMag += $i->magasins->sum('pivot.quantite_stock_magasin'); }
+                                        $dispoMag = $stockMag > 0;
                                     }
                                 @endphp
 
                                 <div class="availability">
                                     <div class="status-line">
-                                        <span class="dot {{ $stockLigne > 0 ? 'green' : 'red' }}"></span>
+                                        <span class="dot {{ $dispoLigne ? 'green' : 'red' }}"></span>
                                         <span class="text">Disponible en ligne</span>
                                     </div>
-                                    
-                                    <div class="status-line">
-                                        <span class="dot {{ $stockMagasin > 0 ? 'green' : 'orange' }}"></span>
-                                        <span class="text">Disponible en magasins <i class="far fa-question-circle info-icon"></i></span>
-                                    </div>
+                                    @if (!$isAccessoire)
+                                        <div class="status-line">
+                                            <span class="dot {{ $dispoMag ? 'green' : 'orange' }}"></span>
+                                            <span class="text">Disponible en magasins <i class="far fa-question-circle info-icon"></i></span>
+                                        </div>
+                                    @endif
+
                                 </div>
 
                                 <div class="product-footer">
                                     <div class="price">{{ number_format($velo->prix, 0, ',', ' ') }} €</div>
                                 </div>
                             </div>
-
-                            <a href="{{ url('/velo/' . $velo->reference) }}" class="btn-skew">
-                                <span>VOIR LE PRODUIT</span> <i class="fas fa-caret-right"></i>
-                            </a>
+                            @if ($isAccessoire)
+                                <a href="{{ url('/accessoire/' . $velo->reference) }}" class="btn-skew">
+                                    <span>VOIR LE PRODUIT</span> <i class="fas fa-caret-right"></i>
+                                </a>
+                            @else
+                                <a href="{{ url('/velo/' . $velo->reference) }}" class="btn-skew">
+                                    <span>VOIR LE PRODUIT</span> <i class="fas fa-caret-right"></i>
+                                </a>
+                            @endif
                         </div>
                     @endforeach
                 </div>

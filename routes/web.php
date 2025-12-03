@@ -7,7 +7,6 @@ use App\Http\Controllers\CategorieArticleController;
 use App\Http\Controllers\VarianteVeloController;
 use App\Http\Controllers\BoutiqueController;
 use App\Http\Controllers\CartController;
-
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -39,4 +38,4 @@ Route::delete('/panier/supprimer/{key}', [CartController::class, 'remove'])->nam
 // Route pour afficher la liste des vélos par catégorie
 Route::get('/boutique/{type}/{cat_id?}/{sub_id?}/{model_id?}', [BoutiqueController::class, 'index'])
     ->name('boutique.index')
-    ->where('type', 'Musculaire|Electrique');
+    ->where('type', 'Musculaire|Electrique|Accessoires');
