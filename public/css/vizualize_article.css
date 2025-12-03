@@ -329,31 +329,106 @@ nav {
     flex: 1;
     min-width: 0;
 }
-
 /* =========================================
-   HERO IMAGE
+   HERO IMAGE & CONTAINER
    ========================================= */
-.product-hero-section {
+   .product-hero-section {
+    position: relative; /* INDISPENSABLE pour que les boutons restent dedans */
     display: flex;
     justify-content: center;
     align-items: center;
-    padding: 20px 0 60px 0;
     width: 100%;
-    min-height: 400px;
+    height: 500px; /* On force une hauteur fixe pour éviter que ça s'écrase */
+    background-color: #fff; /* Fond blanc au cas où */
+    overflow: hidden; /* Pour ne pas que ça dépasse */
+    margin: 20px 0 60px 0;
 }
 
-.product-hero-section img {
+.carousel-track-container {
+    width: 100%;
+    height: 100%;
+    position: relative;
+}
+
+/* La piste qui contient les images (le <ul>) */
+.carousel-track {
+    padding: 0;
+    margin: 0;
+    list-style: none; /* Supprime les puces au niveau de la liste */
+    position: relative;
+    height: 100%;
+    width: 100%;
+}
+
+/* Chaque diapositive (le <li>) */
+.carousel-slide {
+    list-style-type: none; /* Sécurité supplémentaire pour supprimer les puces */
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    opacity: 0; /* Caché par défaut */
+    transition: opacity 0.4s ease-in-out;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* La slide active devient visible */
+.carousel-slide.current-slide {
+    opacity: 1;
+    z-index: 1;
+}
+
+.carousel-slide img {
+    width: auto;
+    height: 100%;
     max-width: 100%;
-    height: auto;
-    max-height: 600px;
-    object-fit: contain;
-    filter: drop-shadow(0 15px 25px rgba(0,0,0,0.1));
-    transition: transform 0.3s ease;
+    object-fit: contain; /* Garde les proportions sans couper */
 }
 
-.product-hero-section img:hover {
-    transform: scale(1.02);
+/* =========================================
+   BOUTONS CARROUSEL
+   ========================================= */
+.carousel-button {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 50px;
+    height: 50px;
+    background: rgba(255, 255, 255, 0.9);
+    border: 1px solid #ddd;
+    border-radius: 50%;
+    color: #000;
+    font-size: 1.5rem;
+    cursor: pointer;
+    z-index: 10; /* Doit être au-dessus de l'image */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    
+    /* Si tu veux les voir tout le temps pour tester, commente la ligne opacity: 0 */
+    opacity: 0; 
 }
+
+/* Apparition au survol de la zone */
+.product-hero-section:hover .carousel-button {
+    opacity: 1;
+}
+
+.carousel-button:hover {
+    background: #000;
+    color: #fff;
+    border-color: #000;
+    transform: translateY(-50%) scale(1.1);
+}
+
+.carousel-button--left { left: 20px; }
+.carousel-button--right { right: 20px; }
+
 
 /* =========================================
    SPECIFICATIONS
