@@ -350,31 +350,42 @@ nav {
     position: relative;
 }
 
-/* La piste qui contient les images (le <ul>) */
+/* La piste (le conteneur UL) */
 .carousel-track {
-    padding: 0;
-    margin: 0;
-    list-style: none; /* Supprime les puces au niveau de la liste */
+    padding: 0 !important; /* Force le padding à 0 */
+    margin: 0 !important;
+    list-style: none !important; /* Force la suppression du style de liste */
     position: relative;
     height: 100%;
     width: 100%;
+    display: flex; /* Change le comportement d'affichage */
 }
 
-/* Chaque diapositive (le <li>) */
+/* Chaque diapositive (le LI) */
 .carousel-slide {
-    list-style-type: none; /* Sécurité supplémentaire pour supprimer les puces */
+    list-style: none !important;
+    list-style-type: none !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    
     position: absolute;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
-    opacity: 0; /* Caché par défaut */
+    opacity: 0;
     transition: opacity 0.4s ease-in-out;
     display: flex;
     justify-content: center;
     align-items: center;
 }
 
+/* LE COUP DE GRÂCE : Supprime les puces créées par des styles globaux */
+.carousel-slide::before,
+.carousel-slide::after {
+    content: none !important;
+    display: none !important;
+}
 /* La slide active devient visible */
 .carousel-slide.current-slide {
     opacity: 1;
@@ -386,6 +397,49 @@ nav {
     height: 100%;
     max-width: 100%;
     object-fit: contain; /* Garde les proportions sans couper */
+}
+
+/* =========================================
+   NAVIGATION (LES POINTS EN BAS)
+   ========================================= */
+/* 1. Le conteneur : On le colle proprement en bas de l'image */
+.carousel-nav {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: absolute;
+    bottom: 20px; /* Espace depuis le bas de l'image */
+    left: 0;
+    width: 100%;
+    z-index: 10;
+    gap: 12px; /* Espace entre les points */
+}
+
+/* 2. Les boutons : Plus faciles à cliquer et plus jolis */
+.carousel-indicator {
+    border: 0;
+    border-radius: 50%;
+    width: 12px;  /* Un peu plus gros pour l'ergonomie */
+    height: 12px;
+    background: rgba(0, 0, 0, 0.3); /* Gris transparent discret par défaut */
+    cursor: pointer;
+    padding: 0;
+    transition: all 0.3s ease; /* Transition fluide pour la couleur et la taille */
+    box-shadow: 0 1px 3px rgba(255, 255, 255, 0.3); /* Petit relief pour qu'on les voie sur du noir */
+}
+
+/* 3. L'interaction : On montre à l'utilisateur qu'il peut cliquer */
+.carousel-indicator:hover {
+    background: rgba(0, 0, 0, 0.6);
+    transform: scale(1.2); /* Grossit légèrement au survol */
+}
+
+/* 4. L'état actif : Bien visible */
+.carousel-indicator.current-slide {
+    background: #000; /* Noir profond */
+    transform: scale(1.4); /* Nettement plus gros pour indiquer la position */
+    border: 1px solid rgba(255, 254, 254, 0.952); /* Petite bordure blanche pour le contraste */
+    cursor: default;
 }
 
 /* =========================================
