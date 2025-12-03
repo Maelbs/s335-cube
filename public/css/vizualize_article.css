@@ -424,8 +424,9 @@ nav {
     background: rgba(0, 0, 0, 0.3); /* Gris transparent discret par défaut */
     cursor: pointer;
     padding: 0;
+    margin-bottom: 20px;
     transition: all 0.3s ease; /* Transition fluide pour la couleur et la taille */
-    box-shadow: 0 1px 3px rgba(255, 255, 255, 0.3); /* Petit relief pour qu'on les voie sur du noir */
+    box-shadow: 0 1px 3px rgb(255, 255, 255); /* Petit relief pour qu'on les voie sur du noir */
 }
 
 /* 3. L'interaction : On montre à l'utilisateur qu'il peut cliquer */
