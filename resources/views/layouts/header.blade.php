@@ -224,7 +224,7 @@
                         </g>
                     </svg>
                 </a>
-                <a id="panier" href="{{ url('/panier') }}">
+                <a id="panier" href="{{ route('cart.index') }}">
                     <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" viewBox="0 0 48 48">
                         <g>
                             <path d="M39 32H13L8 12h36l-5 20Z"/>
