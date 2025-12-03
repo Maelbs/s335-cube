@@ -6,8 +6,10 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     {{-- Méta nécessaire pour sécuriser les requêtes AJAX Laravel --}}
     <meta name="csrf-token" content="{{ csrf_token() }}">
-    
     <title>{{ $article->nom_article }}</title>
+        
+    
+    <link rel="stylesheet" href="{{ asset('css/vizualize_article.css') }}">
     <link rel="stylesheet" href="{{ asset('css/header.css') }}">
     <link rel="stylesheet" href="{{ asset('css/vizualize_article.css') }}">
 </head>
@@ -47,6 +49,13 @@
         </div>
     </div>
 </div>
+    <link rel="stylesheet" href="{{ asset('css/header.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/vizualize_article.css') }}">
+
+</head>
+
+<body>
+    @include('layouts.header')
 
 <div class="page-product-container">
     
@@ -143,8 +152,7 @@
                     </table>
                 </div>
             </div>
-            @endif
-
+            @endif 
             {{-- 4. DESCRIPTION & RESUME --}}
             <div class="each-specs-column">
                 <div class="specs-header-row">

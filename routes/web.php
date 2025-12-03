@@ -8,7 +8,6 @@ use App\Http\Controllers\CategorieArticleController;
 use App\Http\Controllers\VarianteVeloController;
 use App\Http\Controllers\BoutiqueController;
 use App\Http\Controllers\CartController;
-
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -36,9 +35,9 @@ Route::get('/accessoire/{reference}', [InfoArticleController::class, 'show'])->n
 Route::get('/panier', [CartController::class, 'index'])->name('cart.index');
 Route::post('/panier/ajouter/{reference}', [CartController::class, 'add'])->name('cart.add');
 Route::delete('/panier/supprimer/{key}', [CartController::class, 'remove'])->name('cart.remove');
-
+Route::post('/panier/update', [CartController::class, 'updateQuantity'])->name('cart.update');
 
 // Route pour afficher la liste des vélos par catégorie
 Route::get('/boutique/{type}/{cat_id?}/{sub_id?}/{model_id?}', [BoutiqueController::class, 'index'])
     ->name('boutique.index')
-    ->where('type', 'Musculaire|Electrique');
+    ->where('type', 'Musculaire|Electrique|Accessoires');
