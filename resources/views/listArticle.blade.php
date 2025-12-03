@@ -224,7 +224,11 @@
                             <div class="badge-new">NOUVEAU</div>
                             <div class="product-image">
                                 <a href="{{ url('/velo/' . $velo->reference) }}">
-                                    <img src="{{ $velo->parent->photo_principale }}" alt="{{ $velo->nom_article }}">
+                                    @if ($isAccessoire)
+                                        <img src="{{ asset('images/VELOS/' . substr($velo->reference,0,5) . '/image_1.jpg') }}" alt="{{ $velo->nom_article }}">
+                                    @else
+                                        <img src="{{ asset('images/VELOS/' . substr($velo->reference,0,6) . '/image_1.jpg') }}" alt="{{ $velo->nom_article }}">
+                                    @endif
                                 </a>
                             </div>
                             
