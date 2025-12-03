@@ -14,12 +14,13 @@ class Resume extends Model
     public $timestamps = false;
 
     protected $fillable = [
-        'contenu_resume',
-        'id_resume'
+        'id_resume',
+        'contenu_resume'
     ];
 
-    public function variantes()
+
+    public function article()
     {
-        return $this->hasMany(VarianteVelo::class, 'id_resume', 'id_resume');
+        return $this->hasOne(Article::class, 'id_resume', 'id_resume');
     }
 }

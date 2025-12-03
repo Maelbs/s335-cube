@@ -1,13 +1,13 @@
 <?php
 
 use App\Http\Controllers\ArticleSimilaireController;
+use App\Http\Controllers\InfoArticleController;
 use App\Http\Controllers\CategorieVeloController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\CategorieArticleController;
 use App\Http\Controllers\VarianteVeloController;
 use App\Http\Controllers\BoutiqueController;
 use App\Http\Controllers\CartController;
-
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -28,7 +28,8 @@ Route::get('/api/categories-accessoires/parents', [CategorieAccessoireController
 Route::get('/api/categories-velos/parents', [CategorieVeloController::class, 'getParents']);
 
 // routes/web.php
-Route::get('/velo/{reference}', [VarianteVeloController::class, 'show'])->name('velo.show');
+Route::get('/velo/{reference}', [InfoArticleController::class, 'show'])->name('velo.show');
+Route::get('/accessoire/{reference}', [InfoArticleController::class, 'show'])->name('velo.show');
 
 
 Route::get('/panier', [CartController::class, 'index'])->name('cart.index');
@@ -40,4 +41,4 @@ Route::post('/panier/ajouter-accessoire/{reference}', [CartController::class, 'a
 // Route pour afficher la liste des vélos par catégorie
 Route::get('/boutique/{type}/{cat_id?}/{sub_id?}/{model_id?}', [BoutiqueController::class, 'index'])
     ->name('boutique.index')
-    ->where('type', 'Musculaire|Electrique');
+    ->where('type', 'Musculaire|Electrique|Accessoires');

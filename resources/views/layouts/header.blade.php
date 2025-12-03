@@ -71,6 +71,7 @@
                 </div>
             </li>
 
+
             <li class="nav-item">
                 <a id="btn-elec" href="{{ route('boutique.index', ['type' => 'Electrique']) }}"
                     class="link_category">VÉLOS ÉLECTRIQUES</a>
@@ -83,10 +84,24 @@
                                         <a href="{{ route('boutique.index', ['type' => 'Electrique', 'cat_id' => $root->id_categorie]) }}"
                                             class="menu-link-reset">
                                             {{ strtoupper($root->nom_categorie) }}
+
+                <li class="nav-item">
+                    <a id="btn-accessoire" href="{{ route('boutique.index', ['type' => 'Accessoires']) }}" class="link_category">ACCESSOIRES</a>
+
+                    <div class="mega-menu-dropdown">
+                        <div class="mega-menu-wrapper" id="wrapper-accessoire">
+
+                            <div class="col-roots">
+                                @foreach($categorieAccessoires as $root)
+                                    <div class="menu-item root-trigger" data-target="sub-acc-{{ $root->id_categorie_accessoire }}">
+                                        <a href="{{ route('boutique.index', ['type' => 'Accessoires', 'cat_id' => $root->id_categorie_accessoire]) }}" class="menu-link-reset">
+                                            {{ strtoupper($root->nom_categorie_accessoire) }}
+
                                         </a>
                                         <span>&rsaquo;</span>
                                     </div>
                                 @endforeach
+
                             @endif
                         </div>
                         <div class="col-subs-wrapper">
@@ -103,6 +118,27 @@
                                                 <span>&rsaquo;</span>
                                             </div>
                                         @endforeach
+
+                            </div>
+
+                            <div class="col-subs-wrapper">
+                                @foreach($categorieAccessoires as $root)
+                                    <div id="sub-acc-{{ $root->id_categorie_accessoire }}" class="subs-container d-none">
+                                        
+                                        @if($root->enfants->isNotEmpty())
+                                            @foreach($root->enfants as $enfant)
+                                                <div class="menu-item sub-trigger" data-target="grandchild-acc-{{ $enfant->id_categorie_accessoire }}">
+                                                    <a href="{{ route('boutique.index', ['type' => 'Accessoires', 'cat_id' => $root->id_categorie_accessoire, 'sub_id' => $enfant->id_categorie_accessoire]) }}" class="menu-link-reset">
+                                                        {{ strtoupper($enfant->nom_categorie_accessoire) }}
+                                                    </a>
+                                                    <span>&rsaquo;</span>
+                                                </div>
+                                            @endforeach
+                                        @else
+                                            <p class="p-3 text-muted">Aucune sous-catégorie</p>
+                                        @endif
+
+
                                     </div>
                                 @endforeach
                             @endif
@@ -111,6 +147,7 @@
                             @if(isset($menuElec))
                                 @foreach($menuElec as $root)
                                     @foreach($root->enfants as $enfant)
+<<<<<<< HEAD
                                         <div id="models-elec-{{ $enfant->id_categorie }}" class="models-container d-none">
                                             <h3 style="margin-bottom: 20px; font-weight:800;">
                                                 {{ strtoupper($enfant->nom_categorie) }}</h3>
@@ -120,6 +157,17 @@
                                                         <a href="{{ route('boutique.index', ['type' => 'Electrique', 'cat_id' => $root->id_categorie, 'sub_id' => $enfant->id_categorie, 'model_id' => $modele->id_modele]) }}"
                                                             class="model-link">
                                                             {{ $modele->nom_modele }}
+
+                                        
+                                        <div id="grandchild-acc-{{ $enfant->id_categorie_accessoire }}" class="models-container d-none">
+                                            <h3>{{ $enfant->nom_categorie_accessoire }}</h3>
+                                            
+                                            <div class="model-grid">
+                                                @if($enfant->enfants && $enfant->enfants->isNotEmpty())
+                                                    @foreach($enfant->enfants as $petitEnfant)
+                                                        <a href="{{ route('boutique.index', ['type' => 'Accessoires', 'cat_id' => $root->id_categorie_accessoire, 'sub_id' => $enfant->id_categorie_accessoire, 'model_id' => $modele->id_modele]) }}" class="model-link">
+                                                            {{ $petitEnfant->nom_categorie_accessoire }}
+
                                                         </a>
                                                     @endforeach
                                                 </div>

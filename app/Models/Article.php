@@ -17,6 +17,7 @@ class Article extends Model
 
     protected $fillable = [
         'reference', 
+        'id_resume',
         'nom_article', 
         'prix', 
         'poids',
@@ -35,6 +36,11 @@ class Article extends Model
             'reference',             
             'id_caracteristique'      
         )->withPivot('valeur_caracteristique'); 
+    }
+
+    public function resume() 
+    {
+        return $this->belongsTo(Resume::class, 'id_resume', 'id_resume');
     }
 
     public function photos()

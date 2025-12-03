@@ -20,7 +20,6 @@ class VarianteVelo extends Article
         'id_modele',
         'id_fourche',
         'id_couleur',
-        'id_resume',
         'nom_article',
         'prix',
         'poids',
@@ -30,10 +29,6 @@ class VarianteVelo extends Article
         'prix' => 'float',
         'poids' => 'float',
     ];
-
-    public function resume() {
-        return $this->belongsTo(Resume::class, 'id_resume', 'id_resume');
-    }
 
     public function batterie()
     {
