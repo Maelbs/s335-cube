@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Models\Article;
 
 class InfoArticleController extends Controller
 {
@@ -13,6 +14,7 @@ class InfoArticleController extends Controller
         $relationsCommunes = [
             'caracteristiques.typeCaracteristique',
             'photos',
+            'resume'
         ];
 
         if ($this->estUnVelo($article)) {
@@ -20,7 +22,6 @@ class InfoArticleController extends Controller
                 'varianteVelo.modele.geometries',
                 'varianteVelo.modele.tailles',
                 'varianteVelo.modele.description',
-                'varianteVelo.resume',
                 'varianteVelo.inventaires.taille',
                 'varianteVelo.couleur',
                 'varianteVelo.modele.varianteVelos.couleur'
