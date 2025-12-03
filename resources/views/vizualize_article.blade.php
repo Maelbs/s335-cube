@@ -193,8 +193,8 @@
                         <h2>Résumé</h2>
                         <button class="toggle-specs-btn"></button>
                     </div>
-                    <p>{{ $velo->varianteVelo->resume->contenu_resume}}</p>
-                </div>
+                        <p>{{ optional($velo->varianteVelo->resume)->contenu_resume ?? 'Description indisponible.' }}</p>
+                    </div>
             </div>
         </div> 
 
