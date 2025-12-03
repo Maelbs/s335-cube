@@ -5,12 +5,12 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class VarianteVeloInventaire extends Model
+class ArticleInventaire extends Model
 {
     use HasFactory;
 
-    protected $table = 'variante_velo_inventaire';
-    protected $primaryKey = 'id_velo_inventaire';
+    protected $table = 'article_inventaire';
+    protected $primaryKey = 'id_article_inventaire';
     public $timestamps = false;
 
     protected $fillable = [
@@ -20,7 +20,7 @@ class VarianteVeloInventaire extends Model
     ];
 
     protected $casts = [
-        'id_velo_inventaire' => 'integer',
+        'id_article_inventaire' => 'integer',
         'id_taille' => 'integer',
         'quantite_stock_en_ligne' => 'integer',
     ];
@@ -30,14 +30,14 @@ class VarianteVeloInventaire extends Model
         return $this->belongsTo(Taille::class, 'id_taille', 'id_taille');
     }
 
-    public function varianteVelo()
+    public function articles()
     {
-        return $this->belongsTo(VarianteVelo::class, 'reference', 'reference');
+        return $this->belongsTo(Article::class, 'reference', 'reference');
     }
 
     public function magasins()
     {
-        return $this->belongsToMany(MagasinPartenaire::class, 'inventaire_magasin', 'id_velo_inventaire', 'id_magasin')
+        return $this->belongsToMany(MagasinPartenaire::class, 'inventaire_magasin', 'id_article_inventaire', 'id_magasin')
                     ->withPivot('quantite_stock_magasin');
     }
 
@@ -45,7 +45,7 @@ class VarianteVeloInventaire extends Model
     {
         return sprintf(
             "Inventaire [ID: %d] : Réf %s (Taille ID: %d) - Stock en ligne: %d",
-            $this->id_velo_inventaire,
+            $this->id_article_inventaire,
             $this->reference,
             $this->id_taille,
             $this->quantite_stock_en_ligne

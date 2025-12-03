@@ -184,6 +184,7 @@ document.addEventListener('DOMContentLoaded', function() {
     // Initialisation
     initMegaMenu('wrapper-velo');
     initMegaMenu('wrapper-elec');
+    initMegaMenu('wrapper-accessoire');
 
 
     // --- 2. FONCTION DE RESET (QUAND ON QUITTE LE MENU) ---
@@ -207,3 +208,19 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 
 });
+
+
+function openSearch(e) {
+    if(e) e.preventDefault();
+    const overlay = document.getElementById('full-search-overlay');
+    overlay.classList.add('active');
+    // Focus immédiat sur l'input
+    setTimeout(() => {
+        overlay.querySelector('input').focus();
+    }, 100);
+}
+
+function closeSearch() {
+    const overlay = document.getElementById('full-search-overlay');
+    overlay.classList.remove('active');
+}

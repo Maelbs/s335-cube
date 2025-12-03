@@ -31,9 +31,9 @@ class Taille extends Model
         return $this->hasMany(AGeometrie::class, 'id_taille', 'id_taille');
     }
 
-    public function varianteVeloInventaire()
+    public function ArticleInventaire()
     {
-        return $this->hasMany(VarianteVeloInventaire::class, 'id_taille', 'id_taille');
+        return $this->hasMany(ArticleInventaire::class, 'id_taille', 'id_taille');
     }
 
     public function __toString()

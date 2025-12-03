@@ -7,15 +7,12 @@ use App\Models\CategorieAccessoire;
 
 class CategorieAccessoireController extends Controller
 {
-    public function getParents()
+    public function index() 
     {
-        $parents = CategorieAccessoire::whereNull('cat_id_categorie_accessoire')->get();
-        return response()->json($parents);
-    }
+        $categorieAccessoires = CategorieAccessoire::whereNull('cat_id_categorie_accessoire')
+                    ->with('enfants')
+                    ->get();
 
-    public function getSubCategories($parentId)
-    {
-        $enfants = CategorieAccessoire::where('cat_id_categorie_accessoire', $parentId)->get();
-        return response()->json($enfants);
+        return view('accueil', compact($categorieAccessoires));
     }
 }
