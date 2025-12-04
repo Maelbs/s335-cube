@@ -39,7 +39,7 @@ class InfoArticleController extends Controller
                 'accessoire'
             ]));
 
-            $stock = $article->inventaires->sum('quantite_stock_en_ligne');
+            $stock = $article->inventaires;
             $tailleGeometrie = null;
             $typeVue = 'accessoire';
             $isAccessoire = ($typeVue === 'accessoire');

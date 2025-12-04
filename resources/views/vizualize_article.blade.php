@@ -141,12 +141,14 @@
                                     <div class="spec-row">
                                         <div class="spec-label">{{ $carac->nom_caracteristique }}</div>
                                         <div class="spec-value">{{ $carac->pivot->valeur_caracteristique }}</div>
-                                        @if($isAccessoire)
-                                            <div class="spec-label">{{ $carac->nom_caracteristique }}</div>
-                                            <div class="spec-value">{{ $carac->pivot->valeur_caracteristique }}</div>
-                                        @endif
                                     </div>
                                 @endforeach
+                                @if($isAccessoire)
+                                    <div class="spec-row">
+                                        <div class="spec-label">Tailles disponibles</div>
+                                        <div class="spec-value">Disponible en magasin | Disponible en ligne</div>
+                                    </div>
+                                @endif
                             </div>
                         @endforeach
                     </div>
@@ -299,19 +301,21 @@
                 {{-- CAS ACCESSOIRE --}}
                 <div style="margin-top: 20px; margin-bottom: 20px;">
                     @php
-                        $enStock = $stock > 0;
-                        $colorDot = $enStock ? '#28a745' : '#dc3545';
-                        $enLigneStatus = $enStock ? 'Disponible en ligne' : 'Indisponible en ligne';
-                        $enMagasinStatus = $enStock ? 'Commandable en magasin' : 'Indisponible en magasin';
+                        $stockWeb = $stock->sum('quantite_stock_en_ligne') > 0;
+                        $stockMag = $stock->flatMap->magasins->sum('pivot.quantite_stock_magasin') > 0;
+                        $colorDotWeb = $stockWeb ? '#28a745' : '#dc3545';
+                        $colorDotMag = $stockMag ? '#28a745' : '#dc3545';
+                        $enLigneStatus = $stockWeb ? 'Disponible en ligne' : 'Indisponible en ligne';
+                        $enMagasinStatus = $stockMag ? 'Commandable en magasin' : 'Indisponible en magasin';
                     @endphp
 
                     <div class="dispo-info-container">
                         <div class="dispo-row">
-                            <span class="status-dot" style="background-color: {{ $colorDot }};"></span>
+                            <span class="status-dot" style="background-color: {{ $colorDotWeb }};"></span>
                             <span class="dispo-text" style="font-weight: bold;">{{ $enLigneStatus }}</span>
                         </div>
                         <div class="dispo-row">
-                            <span class="status-dot" style="background-color: {{ $colorDot }};"></span>
+                            <span class="status-dot" style="background-color: {{ $colorDotMag }};"></span>
                             <span class="dispo-text" style="font-weight: bold;">{{ $enMagasinStatus }}</span>
                         </div>
                     </div>
