@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="fr">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,7 +8,7 @@
     {{-- Méta nécessaire pour sécuriser les requêtes AJAX Laravel --}}
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>{{ $article->nom_article }}</title>
-        
+
     <link rel="stylesheet" href="{{ asset('css/header.css') }}">
     <link rel="stylesheet" href="{{ asset('css/vizualize_article.css') }}">
 </head>
@@ -24,18 +25,23 @@
                 {{-- Partie Gauche --}}
                 <div class="modal-product">
                     <div class="modal-img">
-                        <div id="modalImg" >
-                                    @if ($isAccessoire)
-                                        <img src="{{ asset('images/ACCESSOIRES/' . substr($article->reference,0,5) . '/image_1.jpg') }}" alt="{{ $article->nom_article }}">
-                                    @else
-                                        <img src="{{ asset('images/VELOS/' . substr($article->reference,0,6) . '/image_1.jpg') }}" alt="{{ $article->nom_article }}">
-                                    @endif</div>
+                        <div id="modalImg">
+                            @if ($isAccessoire)
+                                <img src="{{ asset('images/ACCESSOIRES/' . substr($article->reference, 0, 5) . '/image_1.jpg') }}"
+                                    alt="{{ $article->nom_article }}">
+                            @else
+                                <img src="{{ asset('images/VELOS/' . substr($article->reference, 0, 6) . '/image_1.jpg') }}"
+                                    alt="{{ $article->nom_article }}">
+                            @endif
+                        </div>
                     </div>
                     <div class="modal-details">
                         <h3 id="modalName">NOM DE L'ARTICLE</h3>
                         <div class="modal-price" id="modalPrice">0,00 € TTC</div>
-                        <div class="modal-meta">TAILLE : <span id="modalSize" style="font-weight:bold; color:black;"></span></div>
-                        <div class="modal-meta">QUANTITÉ : <span id="modalQty" style="font-weight:bold; color:black;"></span></div>
+                        <div class="modal-meta">TAILLE : <span id="modalSize"
+                                style="font-weight:bold; color:black;"></span></div>
+                        <div class="modal-meta">QUANTITÉ : <span id="modalQty"
+                                style="font-weight:bold; color:black;"></span></div>
                     </div>
                 </div>
                 {{-- Partie Droite (Résumé) --}}
@@ -43,7 +49,8 @@
                     <div style="margin-bottom: 15px; font-size: 0.9rem; color:#555;">
                         Il y a <span id="cartCount" style="font-weight:bold;"></span> articles dans votre panier.
                     </div>
-                    <div class="summary-line"><span>Sous-total :</span><span id="cartSubtotal" style="font-weight: bold;">0,00 €</span></div>
+                    <div class="summary-line"><span>Sous-total :</span><span id="cartSubtotal"
+                            style="font-weight: bold;">0,00 €</span></div>
                     <div class="summary-line"><span>Transport :</span><span>Gratuit</span></div>
                     <div class="summary-total"><span>Total TTC</span><span id="cartTotal">0,00 €</span></div>
                     <div class="tax-info">Taxes incluses : <span id="cartTax">0,00 €</span></div>
@@ -57,15 +64,16 @@
     </div>
 
     <div class="page-product-container">
-    
+
         <div class="left-column-wrapper">
-        
+
             {{-- 1. HERO IMAGE (Carrousel Dynamique Local) --}}
             <div class="product-hero-section" id="mainCarousel">
-                
+
                 {{-- NOUVEAU : BOUTON LOUPE --}}
                 <button class="zoom-trigger-btn" onclick="openZoom()">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                         <circle cx="11" cy="11" r="8"></circle>
                         <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
                         <line x1="11" y1="8" x2="11" y2="14"></line>
@@ -77,14 +85,14 @@
                 @php
                     $prefixLength = $isAccessoire ? 5 : 6;
                     $folderName = substr($article->reference, 0, $prefixLength);
-                    
+
                     // On choisit le bon dossier racine ici
                     $dossierRacine = $isAccessoire ? 'images/ACCESSOIRES/' : 'images/VELOS/';
-                    
+
                     // Chemin Web (src) et Serveur (check file)
                     $webPath = $dossierRacine . $folderName;
                     $serverPath = public_path($webPath);
-                    
+
                     $validImages = [];
 
                     // On cherche de image_1.jpg à image_10.jpg
@@ -100,26 +108,53 @@
                 <div class="carousel-track-container">
                     <ul class="carousel-track">
                         @if(count($validImages) > 0)
-                            {{-- On boucle sur les images trouvées --}}
                             @foreach($validImages as $index => $imageUrl)
                                 <li class="carousel-slide {{ $index === 0 ? 'current-slide' : '' }}">
                                     <img src="{{ asset($imageUrl) }}" alt="{{ $article->nom_article }}">
                                 </li>
                             @endforeach
                         @else
-                            {{-- Aucune image trouvée --}}
                             <li class="carousel-slide current-slide">
                                 <img src="https://placehold.co/800x500?text=Image+Non+Disponible" alt="Pas d'image">
                             </li>
                         @endif
                     </ul>
+
+                    <button type="button" id="open-3d-btn" class="btn-3d-view">
+                        <svg class="icon-3d" xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+                            viewBox="0 0 24 24">
+                            <path fill="currentColor" width="100px" height="100px"
+                                d="M12 22q-2.075 0-3.9-.788t-3.175-2.137q-1.35-1.35-2.137-3.175T2 12h2q0 2.875 1.813 5.075t4.637 2.775L9 18.4l1.4-1.4l4.55 4.55q-.725.25-1.463.35T12 22Zm.5-7V9h3q.425 0 .713.288T16.5 10v4q0 .425-.288.713T15.5 15h-3Zm-5 0v-1.5H10v-1H8.5v-1H10v-1H7.5V9h3q.425 0 .713.288T11.5 10v4q0 .425-.288.713T10.5 15h-3Zm6.5-1.5h1v-3h-1v3Zm6-1.5q0-2.875-1.813-5.075T13.55 4.15L15 5.6L13.6 7L9.05 2.45q.725-.25 1.463-.35T12 2q2.075 0 3.9.788t3.175 2.137q1.35 1.35 2.138 3.175T22 12h-2Z" />
+                        </svg>
+                    </button>
+                </div>
+
+                <div id="lightbox-3d" class="lightbox-overlay">
+                    <div class="lightbox-content">
+                        <button type="button" id="close-3d-btn" class="lightbox-close">&times;</button>
+
+                        <div id="container-3d-viewer">
+
+                            {{-- NOUVEAU LOADER CENTRÉ --}}
+                            <div id="loader-wrapper" class="loader-wrapper">
+                                <div class="spinner"></div>
+                                <div id="loader-text" class="loading-text">Chargement 0%</div>
+                            </div>
+
+                            {{-- ZONE DE VISUALISATION --}}
+                            <div id="product-viewer" style="width: 100%; height: 100%; cursor: grab;">
+                                <img id="bike-image" src="" alt="Vue 360">
+                            </div>
+
+                        </div>
+                    </div>
                 </div>
 
                 {{-- NAVIGATION --}}
                 @if(count($validImages) > 1)
                     <button class="carousel-button carousel-button--left">❮</button>
                     <button class="carousel-button carousel-button--right">❯</button>
-                    
+
                     <div class="carousel-nav">
                         @foreach($validImages as $index => $unused)
                             <button class="carousel-indicator {{ $index === 0 ? 'current-slide' : '' }}"></button>
@@ -129,14 +164,14 @@
             </div>
 
             <div class="specs-column">
-                
+
                 {{-- 2. FICHE TECHNIQUE --}}
                 <div class="each-specs-column">
                     <div class="specs-header-row">
                         <h2>FICHE TECHNIQUE</h2>
                         <button class="toggle-specs-btn"></button>
                     </div>
-                    
+
                     <div class="specs-content">
                         @foreach($specifications as $typeNom => $caracteristiques)
                             <div class="spec-group-title">{{ $typeNom }}</div>
@@ -174,7 +209,7 @@
                                             @if($stockMag)
                                                 / Commandable en magasin
                                             @endif
-                                            @if(! $stockWeb && ! $stockMag)
+                                            @if(!$stockWeb && !$stockMag)
                                                 En rupture de stock
                                             @endif
                                         </div>
@@ -187,60 +222,61 @@
 
                 {{-- 3. GÉOMÉTRIE --}}
                 @if($typeVue === 'velo' && $tailleGeometrie)
-                <div class="geo-section each-specs-column">
-                    <div class="specs-header-row">
-                        <h2>GÉOMÉTRIE</h2>
-                        <button class="toggle-specs-btn"></button>
-                    </div>
+                    <div class="geo-section each-specs-column">
+                        <div class="specs-header-row">
+                            <h2>GÉOMÉTRIE</h2>
+                            <button class="toggle-specs-btn"></button>
+                        </div>
 
-                    <div class="table-responsive">
-                        <table class="geo-table">
-                            <thead>
-                                <tr>
-                                    <th></th>
-                                    @foreach ($tailleGeometrie->sortBy('id_taille') as $taille)
-                                        <th>
-                                            {{ $taille->taille }} 
-                                            <span style="font-size: 0.9em; font-weight: 600;">
-                                                ({{ $taille->taille_min }}-{{ $taille->taille_max }})
-                                            </span>
-                                        </th>
-                                    @endforeach
-                                </tr>
-                            </thead>
-                            <tbody>
-                                @php
-                                    $geometrieNonTriee = $article->varianteVelo->modele->geometries;
-                                    $geometrieTRiee = $geometrieNonTriee->groupBy('nom_geometrie');
-                                @endphp
-                                @foreach ($geometrieTRiee as $nomGeometrie => $listeDeValeurs)
+                        <div class="table-responsive">
+                            <table class="geo-table">
+                                <thead>
                                     <tr>
-                                        <td class="nom-geometrie">{{ $nomGeometrie }}</td>
-                                        @foreach ($tailleGeometrie as $taille)
-                                            @php
-                                                $geoMatch = $listeDeValeurs->first(function($geo) use ($taille) {
-                                                    return $geo->pivot->id_taille == $taille->id_taille;
-                                                });
-                                            @endphp
-                                            <td>{{ $geoMatch ? $geoMatch->pivot->valeur_geometrie : '-' }}</td>
+                                        <th></th>
+                                        @foreach ($tailleGeometrie->sortBy('id_taille') as $taille)
+                                            <th>
+                                                {{ $taille->taille }}
+                                                <span style="font-size: 0.9em; font-weight: 600;">
+                                                    ({{ $taille->taille_min }}-{{ $taille->taille_max }})
+                                                </span>
+                                            </th>
                                         @endforeach
                                     </tr>
-                                @endforeach
-                            </tbody>
-                        </table>
+                                </thead>
+                                <tbody>
+                                    @php
+                                        $geometrieNonTriee = $article->varianteVelo->modele->geometries;
+                                        $geometrieTRiee = $geometrieNonTriee->groupBy('nom_geometrie');
+                                    @endphp
+                                    @foreach ($geometrieTRiee as $nomGeometrie => $listeDeValeurs)
+                                        <tr>
+                                            <td class="nom-geometrie">{{ $nomGeometrie }}</td>
+                                            @foreach ($tailleGeometrie as $taille)
+                                                @php
+                                                    $geoMatch = $listeDeValeurs->first(function ($geo) use ($taille) {
+                                                        return $geo->pivot->id_taille == $taille->id_taille;
+                                                    });
+                                                @endphp
+                                                <td>{{ $geoMatch ? $geoMatch->pivot->valeur_geometrie : '-' }}</td>
+                                            @endforeach
+                                        </tr>
+                                    @endforeach
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
-                </div>
-                @endif 
+                @endif
 
                 {{-- 4. DESCRIPTION & RESUME --}}
                 @if($typeVue === 'velo')
-                <div class="each-specs-column">
-                    <div class="specs-header-row">
-                        <h2>Description</h2>
-                        <button class="toggle-specs-btn"></button>
-                    </div> 
-                    <p>{{ $article->varianteVelo->modele->description->texte_description ?? 'Aucune description disponible.' }}</p>
-                </div>
+                    <div class="each-specs-column">
+                        <div class="specs-header-row">
+                            <h2>Description</h2>
+                            <button class="toggle-specs-btn"></button>
+                        </div>
+                        <p>{{ $article->varianteVelo->modele->description->texte_description ?? 'Aucune description disponible.' }}
+                        </p>
+                    </div>
                 @endif
 
                 <div class="each-specs-column" id="resume_container">
@@ -251,22 +287,27 @@
                     <p>{{ $article->resume->contenu_resume }}</p>
                 </div>
 
-            </div> 
-        </div> 
+            </div>
+        </div>
 
         {{-- COLONNE DROITE (SIDEBAR) --}}
         <div class="sidebar-column">
-            
+
             <div class="badges">
+                @if (!$isAccessoire)
+                    @if (intval($article->varianteVelo->modele->millesime_modele) >= date("Y"))
+                        <span class="badge-season" id="badge-new">Nouveau</span>
+                    @endif
+                @endif
                 @if($typeVue === 'velo')
                     <span class="badge-season">Saison : {{ $article->varianteVelo->modele->millesime_modele }}</span>
                 @endif
             </div>
 
             <h1 class="product-title">{{ $article->nom_article }}</h1>
-            
+
             <div class="product-ref">
-                Référence : {{ $article->reference}} 
+                Référence : {{ $article->reference}}
                 @if($article->poids)| Poids : {{ $article->poids }} kg @endif
                 @if($typeVue === 'velo')
                     | Matériau : {{ $article->varianteVelo->modele->materiau_cadre }}
@@ -279,26 +320,23 @@
                     <p class="size-label">TAILLE</p>
                     <div class="sizes-grid">
                         @php $stockWebVelo = 0 @endphp
-                        @foreach ($stock as $inventaire)   
+                        @foreach ($stock as $inventaire)
                             @php
                                 $stockWeb = $inventaire->quantite_stock_en_ligne;
                                 $stockMag = $inventaire->magasins->sum('pivot.quantite_stock_magasin');
                                 $classeCss = ($stockWeb <= 0) ? 'out-of-stock' : '';
                                 $stockWebVelo += $stockWeb;
                             @endphp
-                            <button 
-                                class="size-btn {{ $classeCss }}"
-                                onclick="selectionnerTaille(
-                                    '{{ $inventaire->taille->taille }}', 
-                                    {{ $stockWeb }}, 
-                                    {{ $stockMag }}
-                                )"
-                            >
-                                {{ $inventaire->taille->taille }} 
+                            <button class="size-btn {{ $classeCss }}" onclick="selectionnerTaille(
+                                                                            '{{ $inventaire->taille->taille }}', 
+                                                                            {{ $stockWeb }}, 
+                                                                            {{ $stockMag }}
+                                                                        )">
+                                {{ $inventaire->taille->taille }}
                                 <span style="font-size: 0.8em; display:block; font-weight: normal;">
                                     ({{ $inventaire->taille->taille_min }}-{{ $inventaire->taille->taille_max }})
                                 </span>
-                            </button> 
+                            </button>
                         @endforeach
                     </div>
                 </div>
@@ -309,7 +347,7 @@
 
                 <div class="dispo-info-container" style="margin-bottom: 15px;">
                     <div class="dispo-row">
-                        <span id="dot-web" class="status-dot"></span> 
+                        <span id="dot-web" class="status-dot"></span>
                         <span id="text-web" class="dispo-text">Sélectionnez une taille</span>
                     </div>
                     <div class="dispo-row">
@@ -329,7 +367,7 @@
                         $enLigneStatus = $stockWeb ? 'Disponible en ligne' : 'Indisponible en ligne';
                         $enMagasinStatus = $stockMag ? 'Commandable en magasin' : 'Indisponible en magasin';
                     @endphp
-                    
+
                     <div class="dispo-info-container">
                         <div class="dispo-row">
                             <span class="status-dot" style="background-color: {{ $colorDotWeb }};"></span>
@@ -349,7 +387,8 @@
 
 
             <div class="action-buttons-container">
-                <form id="form-ajout-panier" data-action="{{ $isAccessoire ? route('cart.addAccessoire', $article->reference) : route('cart.add', $article->reference) }}">
+                <form id="form-ajout-panier"
+                    data-action="{{ $isAccessoire ? route('cart.addAccessoire', $article->reference) : route('cart.add', $article->reference) }}">
                     @if($typeVue === 'velo')
                         <input type="hidden" name="taille" id="input-taille-selected" value="">
                     @else
@@ -368,11 +407,11 @@
                         @endif
                     @else
                         @if($stockWebVelo)
-                        <button type="button" onclick="addToCartAjax()" id="btn-panier" class="btn-skew ">
-                            <span class="btn-content-unskew">
-                                <span class="text-label">Ajouter au panier</span>
-                            </span>
-                        </button>
+                            <button type="button" onclick="addToCartAjax()" id="btn-panier" class="btn-skew ">
+                                <span class="btn-content-unskew">
+                                    <span class="text-label">Ajouter au panier</span>
+                                </span>
+                            </button>
                         @endif
                     @endif
                 </form>
@@ -391,7 +430,7 @@
             @if($typeVue === 'velo')
                 <div style="margin-top: 20px;">
                     <p class="size-label">Également disponible en</p>
-                    <div class="flex gap-2"> 
+                    <div class="flex gap-2">
                         @php
                             $varianteActuelle = $article->varianteVelo;
                             $tousLesCousins = $varianteActuelle->modele->varianteVelos ?? collect([]);
@@ -405,52 +444,53 @@
                         @foreach ($couleursUniques as $variante)
                             @php
                                 $estActif = ($variante->id_couleur == $varianteActuelle->id_couleur);
-                                $lien = route('velo.show', ['reference' => $variante->reference]); 
-                                $hex = $variante->couleur->hexa_couleur ?? '000000'; 
+                                $lien = route('velo.show', ['reference' => $variante->reference]);
+                                $hex = $variante->couleur->hexa_couleur ?? '000000';
                                 $bg = str_starts_with($hex, '#') ? $hex : '#' . $hex;
                             @endphp
-                            <a href="{{ $lien }}" class="couleur-velo" 
-                               style="display: inline-block; width: 30px; height: 30px; border-radius: 50%; margin-right: 5px;
-                               border: {{ $estActif ? '5px solid #cbcbcb' : '1px solid #ddd' }};
-                               background-color: {{ $bg }};">
+                            <a href="{{ $lien }}" class="couleur-velo" style="display: inline-block; width: 30px; height: 30px; border-radius: 50%; margin-right: 5px;
+                                                                       border: {{ $estActif ? '5px solid #cbcbcb' : '1px solid #ddd' }};
+                                                                       background-color: {{ $bg }};">
                             </a>
                         @endforeach
                     </div>
                 </div>
 
                 @if($article->varianteVelo->id_batterie)
-                <div style="margin-top: 15px;">
-                    <p class="size-label">Batterie :</p>
-                    <div class="flex gap-2"> 
-                        @php
-                            $batteriesUniques = $variantesFiltrees
-                                ->whereNotNull('id_batterie')
-                                ->unique('id_batterie')
-                                ->sortBy(function($v) {
-                                    return $v->batterie->puissance ?? $v->batterie->nom ?? 0;
-                                });
-                        @endphp
-                        @foreach ($batteriesUniques as $variante)
+                    <div style="margin-top: 15px;">
+                        <p class="size-label">Batterie :</p>
+                        <div class="flex gap-2">
                             @php
-                                $estActif = ($variante->id_batterie == $varianteActuelle->id_batterie);
-                                $lien = route('velo.show', ['reference' => $variante->reference]); 
-                                $nomBatterie = $variante->batterie->puissance ?? $variante->batterie->capacite_batterie ?? 'Batterie';
-                                if(is_numeric($nomBatterie)) { $nomBatterie .= ' Wh'; }
+                                $batteriesUniques = $variantesFiltrees
+                                    ->whereNotNull('id_batterie')
+                                    ->unique('id_batterie')
+                                    ->sortBy(function ($v) {
+                                        return $v->batterie->puissance ?? $v->batterie->nom ?? 0;
+                                    });
                             @endphp
-                            <a href="{{ $lien }}" class="choix-batterie {{ $estActif ? 'active' : '' }}">
-                                {{ $nomBatterie }}
-                            </a>
-                        @endforeach
+                            @foreach ($batteriesUniques as $variante)
+                                @php
+                                    $estActif = ($variante->id_batterie == $varianteActuelle->id_batterie);
+                                    $lien = route('velo.show', ['reference' => $variante->reference]);
+                                    $nomBatterie = $variante->batterie->puissance ?? $variante->batterie->capacite_batterie ?? 'Batterie';
+                                    if (is_numeric($nomBatterie)) {
+                                        $nomBatterie .= ' Wh';
+                                    }
+                                @endphp
+                                <a href="{{ $lien }}" class="choix-batterie {{ $estActif ? 'active' : '' }}">
+                                    {{ $nomBatterie }}
+                                </a>
+                            @endforeach
+                        </div>
                     </div>
-                </div>
                 @endif
-            @endif 
+            @endif
 
-        </div> 
-    </div> 
-    
+        </div>
+    </div>
+
     {{-- Accessoire Vélos --}}
-    @if(! $isAccessoire)
+    @if(!$isAccessoire)
         <section class="st-similar-section section-grey">
 
             {{-- En-tête avec ton texte personnalisé --}}
@@ -514,64 +554,65 @@
 
     {{-- Produits Similaires AVEC IMAGES LOCALES --}}
     @if($articlesSimilaires->isNotEmpty())
-    <section class="st-similar-section">
-        <h2 class="st-section-title">ARTICLES SIMILAIRES</h2>
-        <div class="st-carousel-wrapper">
-            <button class="st-nav-btn st-btn-left">❮</button>
-            <div class="st-carousel-track">
-                @foreach($articlesSimilaires as $similaire)
-                    <div class="st-card-item">
-                        <a href="{{ route('velo.show', $similaire->reference) }}" class="st-card-link">
-                            <div class="st-img-box">
-                                {{-- LOGIQUE POUR TROUVER L'IMAGE LOCALE (CORRIGÉE) --}}
-                                @php
-                                    $simPrefix = $isAccessoire ? 5 : 6;
-                                    $simFolder = substr($similaire->reference, 0, $simPrefix);
-                                    
-                                    // Correction ici aussi
-                                    $dossierRacineSim = $isAccessoire ? 'images/ACCESSOIRES/' : 'images/VELOS/';
-                                    $simImgPath = $dossierRacineSim . $simFolder . '/image_1.jpg';
-                                @endphp
-                                
-                                @if(file_exists(public_path($simImgPath)))
-                                    <img src="{{ asset($simImgPath) }}" alt="{{ $similaire->nom_article }}">
-                                @else
-                                    {{-- Placeholder si pas d'image --}}
-                                    <img src="https://placehold.co/300x200?text=Pas+d+image" alt="{{ $similaire->nom_article }}">
-                                @endif
-                            </div>
-                            <div class="st-info-box">
-                                <h3 class="st-prod-name">{{ $similaire->nom_article }}</h3>
-                                <div class="st-prod-price">{{ number_format($similaire->prix, 2, ',', ' ') }} €</div>
-                            </div>
-                            <div class="st-action-row">
-                                <span class="st-view-btn"><i class="arrow-icon">▶</i> VOIR LE PRODUIT</span>
-                            </div>
-                        </a>
-                    </div>
-                @endforeach
+        <section class="st-similar-section">
+            <h2 class="st-section-title">ARTICLES SIMILAIRES</h2>
+            <div class="st-carousel-wrapper">
+                <button class="st-nav-btn st-btn-left">❮</button>
+                <div class="st-carousel-track">
+                    @foreach($articlesSimilaires as $similaire)
+                        <div class="st-card-item">
+                            <a href="{{ route('velo.show', $similaire->reference) }}" class="st-card-link">
+                                <div class="st-img-box">
+                                    {{-- LOGIQUE POUR TROUVER L'IMAGE LOCALE (CORRIGÉE) --}}
+                                    @php
+                                        $simPrefix = $isAccessoire ? 5 : 6;
+                                        $simFolder = substr($similaire->reference, 0, $simPrefix);
+
+                                        // Correction ici aussi
+                                        $dossierRacineSim = $isAccessoire ? 'images/ACCESSOIRES/' : 'images/VELOS/';
+                                        $simImgPath = $dossierRacineSim . $simFolder . '/image_1.jpg';
+                                    @endphp
+
+                                    @if(file_exists(public_path($simImgPath)))
+                                        <img src="{{ asset($simImgPath) }}" alt="{{ $similaire->nom_article }}">
+                                    @else
+                                        {{-- Placeholder si pas d'image --}}
+                                        <img src="https://placehold.co/300x200?text=Pas+d+image"
+                                            alt="{{ $similaire->nom_article }}">
+                                    @endif
+                                </div>
+                                <div class="st-info-box">
+                                    <h3 class="st-prod-name">{{ $similaire->nom_article }}</h3>
+                                    <div class="st-prod-price">{{ number_format($similaire->prix, 2, ',', ' ') }} €</div>
+                                </div>
+                                <div class="st-action-row">
+                                    <span class="st-view-btn"><i class="arrow-icon">▶</i> VOIR LE PRODUIT</span>
+                                </div>
+                            </a>
+                        </div>
+                    @endforeach
+                </div>
+                <button class="st-nav-btn st-btn-right">❯</button>
             </div>
-            <button class="st-nav-btn st-btn-right">❯</button>
-        </div>
-    </section>
+        </section>
     @endif
 
-{{-- MODALE ZOOM PLEIN ÉCRAN (AVEC NAVIGATION) --}}
-<div id="zoomModalOverlay" class="zoom-overlay">
-    <button class="zoom-close-btn" onclick="closeZoom(event)">×</button>
-    
-    {{-- NOUVEAU : Boutons Précédent / Suivant --}}
-    <button class="zoom-nav zoom-prev" onclick="changeZoomImage(-1)">❮</button>
-    <button class="zoom-nav zoom-next" onclick="changeZoomImage(1)">❯</button>
+    {{-- MODALE ZOOM PLEIN ÉCRAN (AVEC NAVIGATION) --}}
+    <div id="zoomModalOverlay" class="zoom-overlay">
+        <button class="zoom-close-btn" onclick="closeZoom(event)">×</button>
 
-    <div class="zoom-container" onclick="toggleZoomState(event)">
-        <img id="zoomImageFull" src="" alt="Zoom Produit">
+        {{-- NOUVEAU : Boutons Précédent / Suivant --}}
+        <button class="zoom-nav zoom-prev" onclick="changeZoomImage(-1)">❮</button>
+        <button class="zoom-nav zoom-next" onclick="changeZoomImage(1)">❯</button>
+
+        <div class="zoom-container" onclick="toggleZoomState(event)">
+            <img id="zoomImageFull" src="" alt="Zoom Produit">
+        </div>
     </div>
-</div>
 
     {{-- SCRIPTS JS --}}
     <script src="{{ asset('js/vizualize_article.js') }}" defer></script>
-    
+
     <script>
         document.addEventListener('DOMContentLoaded', () => {
             const track = document.querySelector('.carousel-track');
@@ -597,13 +638,13 @@
             }
 
             const updateDots = (currentDot, targetDot) => {
-                if(currentDot && targetDot) {
+                if (currentDot && targetDot) {
                     currentDot.classList.remove('current-slide');
                     targetDot.classList.add('current-slide');
                 }
             }
 
-            if(nextButton) {
+            if (nextButton) {
                 nextButton.addEventListener('click', e => {
                     const currentSlide = track.querySelector('.current-slide');
                     let nextSlide = currentSlide.nextElementSibling;
@@ -612,7 +653,7 @@
 
                     if (!nextSlide) {
                         nextSlide = slides[0];
-                        if(dots.length) nextDot = dots[0];
+                        if (dots.length) nextDot = dots[0];
                     }
 
                     moveToSlide(track, currentSlide, nextSlide);
@@ -620,7 +661,7 @@
                 });
             }
 
-            if(prevButton) {
+            if (prevButton) {
                 prevButton.addEventListener('click', e => {
                     const currentSlide = track.querySelector('.current-slide');
                     let prevSlide = currentSlide.previousElementSibling;
@@ -629,7 +670,7 @@
 
                     if (!prevSlide) {
                         prevSlide = slides[slides.length - 1];
-                        if(dots.length) prevDot = dots[dots.length - 1];
+                        if (dots.length) prevDot = dots[dots.length - 1];
                     }
 
                     moveToSlide(track, currentSlide, prevSlide);
@@ -637,7 +678,7 @@
                 });
             }
 
-            if(dotsNav) {
+            if (dotsNav) {
                 dotsNav.addEventListener('click', e => {
                     const targetDot = e.target.closest('button');
                     if (!targetDot) return;
@@ -651,7 +692,7 @@
                     updateDots(currentDot, targetDot);
                 });
             }
-            
+
             window.addEventListener('resize', () => {
                 const newSlideWidth = slides[0].getBoundingClientRect().width;
                 slides.forEach((slide, index) => {
@@ -662,116 +703,116 @@
             });
         });
 
-       // --- LOGIQUE DU ZOOM AVANCÉE ---
-    
-    function openZoom() {
-        const overlay = document.getElementById('zoomModalOverlay');
-        const zoomImg = document.getElementById('zoomImageFull');
-        
-        // 1. Trouver l'image active
-        const activeSlide = document.querySelector('.carousel-slide.current-slide img');
-        
-        if (activeSlide) {
-            // 2. Mettre la source et afficher
-            zoomImg.src = activeSlide.src;
-            overlay.style.display = 'flex';
-            
-            // Petit délai pour l'animation opacity
-            setTimeout(() => {
-                overlay.classList.add('active');
-            }, 10);
-        }
-    }
+        // --- LOGIQUE DU ZOOM AVANCÉE ---
 
-    function changeZoomImage(direction) {
-        // 1. Récupérer toutes les slides
-        const track = document.querySelector('.carousel-track');
-        const slides = Array.from(track.children);
-        
-        // 2. Trouver l'index actuel
-        const currentSlide = track.querySelector('.current-slide');
-        let currentIndex = slides.indexOf(currentSlide);
-        
-        // 3. Calculer le nouvel index (avec boucle infinie)
-        let newIndex = currentIndex + direction;
-        
-        if (newIndex < 0) {
-            newIndex = slides.length - 1; // Retour à la fin
-        } else if (newIndex >= slides.length) {
-            newIndex = 0; // Retour au début
-        }
-        
-        // 4. Mettre à jour le carrousel en arrière-plan (pour la synchro)
-        // On "simule" le mouvement du carrousel principal
-        const targetSlide = slides[newIndex];
-        const slideWidth = slides[0].getBoundingClientRect().width;
-        
-        track.style.transform = 'translateX(-' + (slideWidth * newIndex) + 'px)';
-        currentSlide.classList.remove('current-slide');
-        targetSlide.classList.add('current-slide');
-        
-        // Mise à jour des points (dots) si présents
-        const dotsNav = document.querySelector('.carousel-nav');
-        if(dotsNav) {
-            const dots = Array.from(dotsNav.children);
-            dots[currentIndex].classList.remove('current-slide');
-            dots[newIndex].classList.add('current-slide');
-        }
+        function openZoom() {
+            const overlay = document.getElementById('zoomModalOverlay');
+            const zoomImg = document.getElementById('zoomImageFull');
 
-        // 5. Mettre à jour l'image du Zoom
-        const zoomImg = document.getElementById('zoomImageFull');
-        
-        // Petit effet de fondu pour la transition (optionnel mais classe)
-        zoomImg.style.opacity = 0.5;
-        setTimeout(() => {
-            zoomImg.src = targetSlide.querySelector('img').src;
-            zoomImg.style.opacity = 1;
-        }, 150);
-    }
+            // 1. Trouver l'image active
+            const activeSlide = document.querySelector('.carousel-slide.current-slide img');
 
-    // Gestion du clic sur l'image (Zoom X2 ou Pan)
-    function toggleZoomState(e) {
-        // On ignore si le clic vient des boutons nav (propagation)
-        if(e.target.tagName === 'BUTTON') return;
+            if (activeSlide) {
+                // 2. Mettre la source et afficher
+                zoomImg.src = activeSlide.src;
+                overlay.style.display = 'flex';
 
-        const img = document.getElementById('zoomImageFull');
-        
-        if (e.target === img || e.target.classList.contains('zoom-container')) {
-            img.classList.toggle('zoomed-in');
-            
-            if (img.classList.contains('zoomed-in')) {
-                img.onmousemove = function(evt) {
-                    const { left, top, width, height } = img.getBoundingClientRect();
-                    const x = (evt.clientX - left) / width * 100;
-                    const y = (evt.clientY - top) / height * 100;
-                    img.style.transformOrigin = `${x}% ${y}%`;
-                }
-            } else {
-                img.onmousemove = null;
-                img.style.transformOrigin = 'center center';
+                // Petit délai pour l'animation opacity
+                setTimeout(() => {
+                    overlay.classList.add('active');
+                }, 10);
             }
         }
-    }
 
-    function closeZoom(e) {
-        // Si c'est un événement (clic bouton ou overlay)
-        if (e) {
-            e.stopPropagation();
-            // Si on clique sur l'image ou les boutons nav, on ne ferme pas
-            if (e.target.id === 'zoomImageFull' || e.target.classList.contains('zoom-nav')) return;
+        function changeZoomImage(direction) {
+            // 1. Récupérer toutes les slides
+            const track = document.querySelector('.carousel-track');
+            const slides = Array.from(track.children);
+
+            // 2. Trouver l'index actuel
+            const currentSlide = track.querySelector('.current-slide');
+            let currentIndex = slides.indexOf(currentSlide);
+
+            // 3. Calculer le nouvel index (avec boucle infinie)
+            let newIndex = currentIndex + direction;
+
+            if (newIndex < 0) {
+                newIndex = slides.length - 1; // Retour à la fin
+            } else if (newIndex >= slides.length) {
+                newIndex = 0; // Retour au début
+            }
+
+            // 4. Mettre à jour le carrousel en arrière-plan (pour la synchro)
+            // On "simule" le mouvement du carrousel principal
+            const targetSlide = slides[newIndex];
+            const slideWidth = slides[0].getBoundingClientRect().width;
+
+            track.style.transform = 'translateX(-' + (slideWidth * newIndex) + 'px)';
+            currentSlide.classList.remove('current-slide');
+            targetSlide.classList.add('current-slide');
+
+            // Mise à jour des points (dots) si présents
+            const dotsNav = document.querySelector('.carousel-nav');
+            if (dotsNav) {
+                const dots = Array.from(dotsNav.children);
+                dots[currentIndex].classList.remove('current-slide');
+                dots[newIndex].classList.add('current-slide');
+            }
+
+            // 5. Mettre à jour l'image du Zoom
+            const zoomImg = document.getElementById('zoomImageFull');
+
+            // Petit effet de fondu pour la transition (optionnel mais classe)
+            zoomImg.style.opacity = 0.5;
+            setTimeout(() => {
+                zoomImg.src = targetSlide.querySelector('img').src;
+                zoomImg.style.opacity = 1;
+            }, 150);
         }
 
-        const overlay = document.getElementById('zoomModalOverlay');
-        const zoomImg = document.getElementById('zoomImageFull');
-        
-        overlay.classList.remove('active');
-        zoomImg.classList.remove('zoomed-in');
-        zoomImg.style.transformOrigin = 'center center';
+        // Gestion du clic sur l'image (Zoom X2 ou Pan)
+        function toggleZoomState(e) {
+            // On ignore si le clic vient des boutons nav (propagation)
+            if (e.target.tagName === 'BUTTON') return;
 
-        setTimeout(() => {
-            overlay.style.display = 'none';
-        }, 300);
-    }
+            const img = document.getElementById('zoomImageFull');
+
+            if (e.target === img || e.target.classList.contains('zoom-container')) {
+                img.classList.toggle('zoomed-in');
+
+                if (img.classList.contains('zoomed-in')) {
+                    img.onmousemove = function (evt) {
+                        const { left, top, width, height } = img.getBoundingClientRect();
+                        const x = (evt.clientX - left) / width * 100;
+                        const y = (evt.clientY - top) / height * 100;
+                        img.style.transformOrigin = `${x}% ${y}%`;
+                    }
+                } else {
+                    img.onmousemove = null;
+                    img.style.transformOrigin = 'center center';
+                }
+            }
+        }
+
+        function closeZoom(e) {
+            // Si c'est un événement (clic bouton ou overlay)
+            if (e) {
+                e.stopPropagation();
+                // Si on clique sur l'image ou les boutons nav, on ne ferme pas
+                if (e.target.id === 'zoomImageFull' || e.target.classList.contains('zoom-nav')) return;
+            }
+
+            const overlay = document.getElementById('zoomModalOverlay');
+            const zoomImg = document.getElementById('zoomImageFull');
+
+            overlay.classList.remove('active');
+            zoomImg.classList.remove('zoomed-in');
+            zoomImg.style.transformOrigin = 'center center';
+
+            setTimeout(() => {
+                overlay.style.display = 'none';
+            }, 300);
+        }
         // --- LOGIQUE PANIER ---
         function selectionnerTaille(tailleNom, qtyWeb, qtyMagasin) {
             document.getElementById('input-taille-selected').value = tailleNom;
@@ -791,7 +832,7 @@
             if (qtyWeb > 0) {
                 // S'il y a du stock web, on affiche le bouton Panier
                 formPanier.style.display = 'inline-block';
-                
+
                 // Mise à jour visuelle (Vert)
                 dotWeb.className = 'status-dot active-green';
                 textWeb.textContent = "Disponible en ligne";
@@ -800,7 +841,7 @@
                 // S'il n'y a PAS de stock web, on CACHE le bouton Panier
                 // (Cela couvre aussi le cas où c'est indisponible partout)
                 formPanier.style.display = 'none';
-                
+
                 // Mise à jour visuelle (Gris/Rouge)
                 dotWeb.className = 'status-dot inactive-gray';
                 textWeb.textContent = "Indisponible en ligne";
@@ -841,7 +882,7 @@
             const taille = document.getElementById('input-taille-selected').value;
             const token = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
 
-            if(!taille) {
+            if (!taille) {
                 alert("Veuillez sélectionner une taille.");
                 return;
             }
@@ -858,15 +899,15 @@
                     quantity: 1
                 })
             })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    fillAndOpenModal(data);
-                } else {
-                    alert("Erreur: " + (data.message || "Une erreur est survenue"));
-                }
-            })
-            .catch(error => console.error('Erreur:', error));
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        fillAndOpenModal(data);
+                    } else {
+                        alert("Erreur: " + (data.message || "Une erreur est survenue"));
+                    }
+                })
+                .catch(error => console.error('Erreur:', error));
         }
 
         function fillAndOpenModal(data) {
@@ -878,7 +919,7 @@
 
             document.getElementById('cartCount').textContent = data.cart.count;
             const formattedTotal = new Intl.NumberFormat('fr-FR', { style: 'currency', currency: 'EUR' }).format(data.cart.total);
-            const formattedTax = new Intl.NumberFormat('fr-FR', { style: 'currency', currency: 'EUR' }).format(data.cart.total * 0.2); 
+            const formattedTax = new Intl.NumberFormat('fr-FR', { style: 'currency', currency: 'EUR' }).format(data.cart.total * 0.2);
 
             document.getElementById('cartSubtotal').textContent = formattedTotal;
             document.getElementById('cartTotal').textContent = formattedTotal;
@@ -891,12 +932,154 @@
             document.getElementById('cartModal').style.display = 'none';
         }
 
-        window.onclick = function(event) {
+        window.onclick = function (event) {
             const modal = document.getElementById('cartModal');
             if (event.target == modal) {
                 modal.style.display = "none";
             }
         }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const openBtn = document.getElementById('open-3d-btn');
+            const closeBtn = document.getElementById('close-3d-btn');
+            const lightbox = document.getElementById('lightbox-3d');
+
+            // Ouvrir la lightbox
+            openBtn.addEventListener('click', () => {
+                lightbox.classList.add('active');
+                const totalImages = 20;
+                const folderPath = "{{ asset('images/MODELE3D/091011') }}/";
+
+                // Votre nom de fichier exact sans le numéro à la fin
+                const fileNamePrefix = '140220_360V_';
+
+                // On passe en JPG
+                const extension = '.webp';
+
+                const sensitivity = 10; // Sensibilité de la rotation
+
+                // --- MOTEUR (Ne pas toucher) ---
+                const viewer = document.getElementById('product-viewer');
+                const imgElement = document.getElementById('bike-image');
+                const loader = document.getElementById('loader');
+
+                let images = [];
+                let currentFrame = 1;
+                let isDragging = false;
+                let startX = 0;
+                let loadedCount = 0;
+
+                const loaderWrapper = document.getElementById('loader-wrapper');
+                const loaderText = document.getElementById('loader-text');
+
+                function preloadImages() {
+                    for (let i = 1; i <= totalImages; i++) {
+                        const imageNumber = i.toString().padStart(2, '0');
+
+                        const img = new Image();
+                        img.src = `${folderPath}${fileNamePrefix}${imageNumber}${extension}`;
+
+                        img.onload = () => {
+                            loadedCount++;
+                            if (loaderText) {
+                                loaderText.innerText = `Chargement ${Math.floor((loadedCount / totalImages) * 100)}%`;
+                            }
+
+                            if (loadedCount === totalImages) initViewer();
+                        };
+                        img.onerror = () => {
+                            console.error("Image introuvable : " + img.src);
+                            loader.innerText = "Erreur image " + i;
+                        };
+                        images.push(img.src);
+                    }
+                }
+
+                function initViewer() {
+                    if (loaderWrapper) {
+                        loaderWrapper.style.display = 'none';
+                    }
+                    updateImage(1);
+
+                    // Souris
+                    viewer.addEventListener('mousedown', startDrag);
+                    window.addEventListener('mouseup', stopDrag);
+                    window.addEventListener('mousemove', handleMove);
+
+                    // Tactile (Mobile)
+                    viewer.addEventListener('touchstart', startDrag, { passive: false }); // passive: false permet le preventDefault
+                    window.addEventListener('touchend', stopDrag);
+                    window.addEventListener('touchmove', handleMove, { passive: false });
+                }
+
+                function startDrag(e) {
+                    // Empêche le navigateur de faire son drag-and-drop natif
+                    if (e.cancelable) e.preventDefault();
+
+                    isDragging = true;
+                    // Support hybride souris/tactile
+                    startX = e.pageX || e.touches[0].pageX;
+                    viewer.style.cursor = 'grabbing';
+                }
+
+                function stopDrag() {
+                    isDragging = false;
+                    viewer.style.cursor = 'grab';
+                }
+
+                function handleMove(e) {
+                    if (!isDragging) return;
+
+                    // Support hybride souris/tactile
+                    const x = e.pageX || e.touches[0].pageX;
+                    const change = x - startX;
+
+                    // Si on dépasse la sensibilité, on change l'image
+                    if (Math.abs(change) > sensitivity) {
+                        if (change > 0) {
+                            prevFrame(); // Inverser ici si le sens de rotation ne vous plaît pas
+                        } else {
+                            nextFrame();
+                        }
+                        // IMPORTANT : On réinitialise startX à la position ACTUELLE pour éviter les sauts
+                        startX = x;
+                    }
+                }
+
+                function nextFrame() {
+                    currentFrame++;
+                    if (currentFrame > totalImages) currentFrame = 1;
+                    updateImage(currentFrame);
+                }
+
+                function prevFrame() {
+                    currentFrame--;
+                    if (currentFrame < 1) currentFrame = totalImages;
+                    updateImage(currentFrame);
+                }
+
+                function updateImage(frameIndex) {
+                    imgElement.src = images[frameIndex - 1];
+                }
+
+                preloadImages();
+            });
+
+            // Fermer la lightbox
+            closeBtn.addEventListener('click', () => {
+                lightbox.classList.remove('active');
+            });
+
+            // Fermer en cliquant en dehors du contenu
+            lightbox.addEventListener('click', (e) => {
+                if (e.target === lightbox) {
+                    lightbox.classList.remove('active');
+                }
+            });
+        });
+
+
     </script>
 </body>
+
 </html>
