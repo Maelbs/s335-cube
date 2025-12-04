@@ -21,11 +21,7 @@ class BoutiqueController extends Controller
         $isAccessoire = ($type === 'Accessoires');
         $isSearchMode = $request->filled('search');
         $titrePage = $isAccessoire ? "TOUS LES ACCESSOIRES" : "TOUS LES VÉLOS " . strtoupper($type) . "S";
-<<<<<<< HEAD
 
-=======
- 
->>>>>>> df22b750513821a60e414ed14c48c8240eec70b1
         // Initialisation des variables de filtres
         $availableMateriaux = collect();
         $availableMillesimes = collect();
@@ -41,21 +37,11 @@ class BoutiqueController extends Controller
         $countOnline = 0;
         $countStore = 0;
         $articles = null; // Variable générique remplaçant $velos
-<<<<<<< HEAD
-
-=======
- 
->>>>>>> df22b750513821a60e414ed14c48c8240eec70b1
         // =================================================================
         // BRANCHE 1 : ACCESSOIRES (Table 'accessoire')
         // =================================================================
         if ($isAccessoire) {
             $query = Accessoire::query()->with(['parent', 'categorie', 'parent.photos']);
-<<<<<<< HEAD
-
-=======
- 
->>>>>>> df22b750513821a60e414ed14c48c8240eec70b1
             // --- 1. RECHERCHE ---
             if ($isSearchMode) {
                 $search = strtolower($request->search);
@@ -72,11 +58,8 @@ class BoutiqueController extends Controller
                     });
                 });
                 $titrePage = "RÉSULTATS ACCESSOIRES : " . strtoupper($request->search);
-<<<<<<< HEAD
             } 
-=======
-            }
->>>>>>> df22b750513821a60e414ed14c48c8240eec70b1
+
             // --- 2. NAVIGATION ---
             else {
                 if ($model_id) { // Si un ID est passé en 4ème paramètre
@@ -111,7 +94,6 @@ class BoutiqueController extends Controller
                         ->map(fn($item) => (object)['name' => $item->nom_categorie, 'id' => $item->id_categorie_accessoire]);
                 }
             }
-<<<<<<< HEAD
 
             // --- 3. FILTRES DISPO (Booléens Accessoire) ---
             if ($request->filled('dispo_ligne')) $query->where('dispo_en_ligne', true);
@@ -120,16 +102,6 @@ class BoutiqueController extends Controller
             $countOnline = (clone $query)->where('dispo_en_ligne', true)->count();
             $countStore = (clone $query)->where('dispo_magasin', true)->count();
 
-=======
- 
-            // --- 3. FILTRES DISPO (Booléens Accessoire) ---
-            if ($request->filled('dispo_ligne')) $query->where('dispo_en_ligne', true);
-            if ($request->filled('dispo_magasin')) $query->where('dispo_magasin', true);
- 
-            $countOnline = (clone $query)->where('dispo_en_ligne', true)->count();
-            $countStore = (clone $query)->where('dispo_magasin', true)->count();
- 
->>>>>>> df22b750513821a60e414ed14c48c8240eec70b1
             // Prix & Tri
             if ($request->filled('prix_min')) $query->where('prix', '>=', $request->prix_min);
             if ($request->filled('prix_max')) $query->where('prix', '<=', $request->prix_max);
@@ -155,19 +127,12 @@ class BoutiqueController extends Controller
         // =================================================================
         else {
             $dbType = ($type === 'Electrique') ? 'electrique' : 'musculaire';
-<<<<<<< HEAD
             
             // Note: VarianteVelo hérite de Article, donc il hérite de la relation 'inventaires'
             $query = VarianteVelo::query()
                 ->with(['parent', 'modele', 'couleur', 'parent.photos', 'batterie', 'fourche', 'inventaires.taille', 'inventaires.magasins']);
             
-=======
-           
-            // Note: VarianteVelo hérite de Article, donc il hérite de la relation 'inventaires'
-            $query = VarianteVelo::query()
-                ->with(['parent', 'modele', 'couleur', 'parent.photos', 'batterie', 'fourche', 'inventaires.taille', 'inventaires.magasins']);
-           
->>>>>>> df22b750513821a60e414ed14c48c8240eec70b1
+
             // --- 1. RECHERCHE FLOU VÉLOS ---
             if ($isSearchMode) {
                 $search = strtolower($request->search);
@@ -194,11 +159,9 @@ class BoutiqueController extends Controller
                     });
                 });
                 $titrePage = "RÉSULTATS VÉLOS : " . strtoupper($request->search);
-<<<<<<< HEAD
-            } 
-=======
+
             }
->>>>>>> df22b750513821a60e414ed14c48c8240eec70b1
+
             // --- 2. NAVIGATION ---
             else {
                 $query->whereHas('modele', fn($q) => $q->where('type_velo', $dbType));
@@ -227,22 +190,14 @@ class BoutiqueController extends Controller
                     $hierarchyItems = CategorieVelo::whereNull('cat_id_categorie')->whereHas('enfants.modeles', fn($q) => $q->where('type_velo', $dbType))->orderBy('nom_categorie')->get()->map(fn($item) => (object)['name' => $item->nom_categorie, 'id' => $item->id_categorie]);
                 }
             }
-<<<<<<< HEAD
 
-=======
- 
->>>>>>> df22b750513821a60e414ed14c48c8240eec70b1
             // --- FILTRES SIMPLES ---
             if ($request->filled('couleurs')) $query->whereIn('id_couleur', $request->couleurs);
             if ($request->filled('materiaux')) $query->whereHas('modele', fn($q) => $q->whereIn('materiau_cadre', $request->materiaux));
             if ($request->filled('millesimes')) $query->whereHas('modele', fn($q) => $q->whereIn('millesime_modele', $request->millesimes));
             if ($request->filled('fourches')) $query->whereIn('id_fourche', $request->fourches);
             if ($request->filled('batteries')) $query->whereIn('id_batterie', $request->batteries);
-<<<<<<< HEAD
 
-=======
- 
->>>>>>> df22b750513821a60e414ed14c48c8240eec70b1
             // --- 3. FILTRES STOCKS COMPLEXES (Via Inventaire) ---
             $hasSize = $request->filled('tailles');
             $hasOnline = $request->filled('dispo_ligne');
@@ -253,11 +208,6 @@ class BoutiqueController extends Controller
                 $query->whereHas('inventaires', function($q) use ($request, $hasOnline, $hasStore) {
                     // Jointure sur la table ArticleInventaire
                     $q->whereHas('taille', fn($t) => $t->whereIn('taille', $request->tailles));
-<<<<<<< HEAD
-
-=======
- 
->>>>>>> df22b750513821a60e414ed14c48c8240eec70b1
                     if ($hasOnline) $q->where('quantite_stock_en_ligne', '>', 0);
                     if ($hasStore) $q->whereHas('magasins', fn($m) => $m->where('quantite_stock_magasin', '>', 0));
                 });
@@ -265,19 +215,11 @@ class BoutiqueController extends Controller
                 if ($hasOnline) $query->whereHas('inventaires', fn($q) => $q->where('quantite_stock_en_ligne', '>', 0));
                 if ($hasStore) $query->whereHas('inventaires.magasins', fn($q) => $q->where('quantite_stock_magasin', '>', 0));
             }
-<<<<<<< HEAD
 
             // Compteurs
             $countOnline = (clone $query)->whereHas('inventaires', fn($q) => $q->where('quantite_stock_en_ligne', '>', 0))->count();
             $countStore = (clone $query)->whereHas('inventaires.magasins', fn($q) => $q->where('quantite_stock_magasin', '>', 0))->count();
 
-=======
- 
-            // Compteurs
-            $countOnline = (clone $query)->whereHas('inventaires', fn($q) => $q->where('quantite_stock_en_ligne', '>', 0))->count();
-            $countStore = (clone $query)->whereHas('inventaires.magasins', fn($q) => $q->where('quantite_stock_magasin', '>', 0))->count();
- 
->>>>>>> df22b750513821a60e414ed14c48c8240eec70b1
             // Prix & Tri
             if ($request->filled('prix_min')) $query->where('prix', '>=', $request->prix_min);
             if ($request->filled('prix_max')) $query->where('prix', '<=', $request->prix_max);
@@ -293,43 +235,25 @@ class BoutiqueController extends Controller
             } else {
                 $query->orderBy('prix', 'asc');
             }
-<<<<<<< HEAD
 
             // --- SIDEBAR DATA (CORRECTION DU BUG Article::modele()) ---
             $filterQuery = Modele::query();
             if (!$isSearchMode) $filterQuery->where('type_velo', $dbType);
             
-=======
- 
-            // --- SIDEBAR DATA (CORRECTION DU BUG Article::modele()) ---
-            $filterQuery = Modele::query();
-            if (!$isSearchMode) $filterQuery->where('type_velo', $dbType);
-           
->>>>>>> df22b750513821a60e414ed14c48c8240eec70b1
             $availableCouleurs = Couleur::orderBy('nom_couleur')->get();
             $availableMateriaux = (clone $filterQuery)->select('materiau_cadre')->distinct()->whereNotNull('materiau_cadre')->pluck('materiau_cadre');
             $availableMillesimes = (clone $filterQuery)->select('millesime_modele')->distinct()->orderBy('millesime_modele', 'desc')->pluck('millesime_modele');
             $availableFourches = Fourche::whereHas('varianteVelos.modele', fn($q) => !$isSearchMode ? $q->where('type_velo', $dbType) : $q)->orderBy('nom_fourche')->get();
-<<<<<<< HEAD
-            
-=======
-           
->>>>>>> df22b750513821a60e414ed14c48c8240eec70b1
+
             // ICI: On passe de ArticleInventaire -> Articles -> VarianteVelo -> Modele
             $availableTailles = Taille::whereHas('ArticleInventaire.articles.varianteVelo.modele', function($q) use ($isSearchMode, $dbType) {
                 if (!$isSearchMode) $q->where('type_velo', $dbType);
             })->orderBy('id_taille')->distinct()->get();
-<<<<<<< HEAD
             
             if ($type === 'Electrique' || $isSearchMode) $availableBatteries = Batterie::orderBy('capacite_batterie', 'asc')->get();
             $maxPrice = VarianteVelo::max('prix');
             
-=======
-           
-            if ($type === 'Electrique' || $isSearchMode) $availableBatteries = Batterie::orderBy('capacite_batterie', 'asc')->get();
-            $maxPrice = VarianteVelo::max('prix');
-           
->>>>>>> df22b750513821a60e414ed14c48c8240eec70b1
+
             $articles = $query->paginate(15)->withQueryString();
         }
  

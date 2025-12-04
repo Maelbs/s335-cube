@@ -16,30 +16,17 @@
         function scrollToListing() {
             document.getElementById('listing-anchor').scrollIntoView({ behavior: 'smooth' });
         }
-<<<<<<< HEAD
         
         function toggleSortMenu() {
             document.getElementById("sortDropdown").classList.toggle("active");
         }
-        
-=======
-       
-        function toggleSortMenu() {
-            document.getElementById("sortDropdown").classList.toggle("active");
-        }
-       
->>>>>>> df22b750513821a60e414ed14c48c8240eec70b1
+    
         function applySort(sortValue) {
             let currentUrl = new URL(window.location.href);
             currentUrl.searchParams.set('sort', sortValue);
             currentUrl.hash = "listing-anchor";
             window.location.href = currentUrl.toString();
         }
-<<<<<<< HEAD
-        
-=======
-       
->>>>>>> df22b750513821a60e414ed14c48c8240eec70b1
         window.onclick = function(event) {
             if (!event.target.matches('.dropdown-btn') && !event.target.closest('.dropdown-btn')) {
                 var dropdowns = document.getElementsByClassName("custom-dropdown");
@@ -48,26 +35,15 @@
                 }
             }
         }
-<<<<<<< HEAD
-
-=======
- 
->>>>>>> df22b750513821a60e414ed14c48c8240eec70b1
         function toggleSection(headerElement) {
             headerElement.parentElement.classList.toggle('closed');
         }
     </script>
 </head>
 <body>
-<<<<<<< HEAD
     
     @include('layouts.header') 
 
-=======
-   
-    @include('layouts.header')
- 
->>>>>>> df22b750513821a60e414ed14c48c8240eec70b1
     @php
     if ($type === 'Electrique') {
         $bgImage = 'https://www.cubebikes.fr/img/c/4519.jpg';
@@ -109,11 +85,6 @@
                                     $currentFilters = request()->query();
                                     $routeParams = ['type' => $type];
                                     $isActive = false;
-<<<<<<< HEAD
-
-=======
- 
->>>>>>> df22b750513821a60e414ed14c48c8240eec70b1
                                     if ($hierarchyLevel === 'root') {
                                         $routeParams['cat_id'] = $item->id;
                                         $isActive = ($cat_id == $item->id);
@@ -129,11 +100,6 @@
                                         $routeParams['model_id'] = $item->id;
                                         $isActive = ($model_id == $item->id);
                                     }
-<<<<<<< HEAD
-                                    
-=======
-                                   
->>>>>>> df22b750513821a60e414ed14c48c8240eec70b1
                                     $targetUrl = route('boutique.index', array_merge($routeParams, $currentFilters));
                                 @endphp
                                 <label class="cube-checkbox" onclick="window.location.href='{{ $targetUrl }}#listing-anchor'">
@@ -203,11 +169,6 @@
         <main class='products-grid-wrapper'>
             <div class="top-bar">
                 <span>{{ $articles->total() }} PRODUITS</span>
-<<<<<<< HEAD
-                
-=======
-               
->>>>>>> df22b750513821a60e414ed14c48c8240eec70b1
                 <div class="custom-dropdown" id="sortDropdown">
                     <button class="dropdown-btn" onclick="toggleSortMenu()">
                         TRIER PAR : <span id="currentSortLabel">
@@ -234,11 +195,6 @@
                     </div>
                 </div>
             </div>
-<<<<<<< HEAD
-
-=======
- 
->>>>>>> df22b750513821a60e414ed14c48c8240eec70b1
             @if($articles->isEmpty())
                 <div class="empty-state" style="padding:50px; text-align:center; color:#666;">
                     <p>Aucun article ne correspond à vos critères.</p>
@@ -273,20 +229,14 @@
                                 @php
                                     $dispoLigne = false;
                                     $dispoMag = false;
-<<<<<<< HEAD
-
-=======
- 
->>>>>>> df22b750513821a60e414ed14c48c8240eec70b1
                                     if ($isAccessoire) {
+                                        $invs = $article->inventaires;
                                         // Disponibilité Accessoires (Booléens simples)
-                                        $dispoLigne = (bool)$article->dispo_en_ligne;
-                                        $dispoMag = (bool)$article->dispo_magasin;
+                                        $dispoLigne = $invs->sum('quantite_stock_en_ligne');
+                                        $dispoMag = $invs->flatMap->magasins->sum('pivot.quantite_stock_magasin') > 0;
                                     } else {
                                         // Disponibilité Vélos (Via inventaires)
                                         $filtreTailles = request('tailles');
-<<<<<<< HEAD
-                                        
                                         // Relation 'inventaires' héritée de Article (hasMany ArticleInventaire)
                                         $invs = $article->inventaires;
                                         
@@ -300,29 +250,8 @@
                                         
                                         // Calcul Dispo Magasin (Somme Pivot via ArticleInventaire -> magasins)
                                         $stockMag = 0;
-                                        foreach($invs as $i) { 
                                             // 'magasins' est la relation belongsToMany dans ArticleInventaire
-                                            $stockMag += $i->magasins->sum('pivot.quantite_stock_magasin'); 
-=======
-                                       
-                                        // Relation 'inventaires' héritée de Article (hasMany ArticleInventaire)
-                                        $invs = $article->inventaires;
-                                       
-                                        if ($filtreTailles && is_array($filtreTailles)) {
-                                            $invs = $invs->filter(fn($i) => in_array(trim($i->taille->taille), $filtreTailles));
-                                        }
- 
-                                        // Calcul Dispo Ligne
-                                        $stockLigne = $invs->sum('quantite_stock_en_ligne');
-                                        $dispoLigne = ($stockLigne > 0);
-                                       
-                                        // Calcul Dispo Magasin (Somme Pivot via ArticleInventaire -> magasins)
-                                        $stockMag = 0;
-                                        foreach($invs as $i) {
-                                            // 'magasins' est la relation belongsToMany dans ArticleInventaire
-                                            $stockMag += $i->magasins->sum('pivot.quantite_stock_magasin');
->>>>>>> df22b750513821a60e414ed14c48c8240eec70b1
-                                        }
+                                            $stockMag = $invs->flatMap->magasins->sum('pivot.quantite_stock_magasin');
                                         $dispoMag = ($stockMag > 0);
                                     }
                                 @endphp
@@ -333,7 +262,7 @@
                                         <span class="text">Disponible en ligne</span>
                                     </div>
                                     <div class="status-line">
-                                        <span class="dot {{ $dispoMag ? 'green' : 'orange' }}"></span>
+                                        <span class="dot {{ $dispoMag ? 'green' : 'red' }}"></span>
                                         <span class="text">Disponible en magasins <i class="far fa-question-circle info-icon"></i></span>
                                     </div>
                                 </div>
@@ -342,11 +271,6 @@
                                     <div class="price">{{ number_format($article->prix, 0, ',', ' ') }} €</div>
                                 </div>
                             </div>
-<<<<<<< HEAD
-                            
-=======
-                           
->>>>>>> df22b750513821a60e414ed14c48c8240eec70b1
                             <a href="{{ url($isAccessoire ? '/accessoire' : '/velo') . '/' . $article->reference }}" class="btn-skew">
                                 <span>VOIR LE PRODUIT</span> <i class="fas fa-caret-right"></i>
                             </a>
@@ -378,11 +302,6 @@
                 });
             });
         });
-<<<<<<< HEAD
-
-=======
- 
->>>>>>> df22b750513821a60e414ed14c48c8240eec70b1
         document.addEventListener('DOMContentLoaded', function () {
             var slider = document.getElementById('price-slider');
             var minPrice = 0;
@@ -400,11 +319,6 @@
                 ],
                 step: 10,
             });
-<<<<<<< HEAD
-
-=======
- 
->>>>>>> df22b750513821a60e414ed14c48c8240eec70b1
             slider.noUiSlider.on('change', function (values, handle) {
                 document.getElementById('input-prix-min').value = Math.round(values[0]);
                 document.getElementById('input-prix-max').value = Math.round(values[1]);

@@ -11,6 +11,7 @@
     <link rel="stylesheet" href="{{ asset('css/header.css') }}">
     <link rel="stylesheet" href="{{ asset('css/vizualize_article.css') }}">
 </head>
+
 <body>
     @include('layouts.header')
 
@@ -581,6 +582,8 @@
                 msgIndispo.style.display = 'none';
             }
         }
+    </script>
+
 
         function addToCartAjax() {
             const form = document.getElementById('form-ajout-panier');
