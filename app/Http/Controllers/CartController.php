@@ -7,10 +7,6 @@ use App\Models\VarianteVelo;
 use App\Models\Accessoire;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\DB; // INDISPENSABLE
-<<<<<<< Updated upstream
-
-=======
->>>>>>> Stashed changes
 
 class CartController extends Controller
 {
@@ -19,8 +15,6 @@ class CartController extends Controller
     {
         $cart = Session::get('cart', []);
         $total = 0;
-
-<<<<<<< Updated upstream
         foreach ($cart as $key => &$item) {
             $total += $item['price'] * $item['quantity'];
 
@@ -37,24 +31,6 @@ class CartController extends Controller
                 ->where('vvi.reference', $item['reference'])
                 ->where('t.taille', $tailleLabel)
                 ->groupBy('vvi.id_article_inventaire', 'vvi.quantite_stock_en_ligne')
-=======
-        foreach($cart as $key => &$item) {
-            $total += $item['price'] * $item['quantity'];
-
-            // 1. Nettoyage de la taille (ex: "XL (181-195)" -> "XL")
-            $tailleLabel = explode(' ', trim($item['taille']))[0]; 
-
-            // 2. Requête SQL : Stock Web + Somme des Stocks Magasins
-            $stockInfo = DB::table('variante_velo_inventaire as vvi')
-                ->join('taille as t', 'vvi.id_taille', '=', 't.id_taille')
-                ->leftJoin('inventaire_magasin as im', 'vvi.id_velo_inventaire', '=', 'im.id_velo_inventaire')
-                ->select(DB::raw('
-                    (vvi.quantite_stock_en_ligne + COALESCE(SUM(im.quantite_stock_magasin), 0)) as total_stock
-                '))
-                ->where('vvi.reference', $item['reference']) 
-                ->where('t.taille', $tailleLabel)
-                ->groupBy('vvi.id_velo_inventaire', 'vvi.quantite_stock_en_ligne')
->>>>>>> Stashed changes
                 ->first();
 
             // 3. Injection du stock dans l'item du panier
@@ -62,11 +38,7 @@ class CartController extends Controller
         }
         unset($item); // Sécurité PHP
 
-<<<<<<< Updated upstream
         return view('panier', compact('cart', 'total'));
-=======
-        return view('panier', compact('cart', 'total'));    
->>>>>>> Stashed changes
     }
 
     // --- AJOUT (TON CODE D'ORIGINE) ---
@@ -130,7 +102,6 @@ class CartController extends Controller
         return redirect()->route('cart.index')->with('success', 'Vélo ajouté au panier !');
     }
 
-<<<<<<< Updated upstream
     public function addAccessoire(Request $request, $reference)
     {
         // 1. Validation (Pas de taille requise pour un accessoire)
@@ -198,9 +169,6 @@ class CartController extends Controller
 
         return redirect()->back()->with('success', 'Accessoire ajouté au panier !');
     }
-
-=======
->>>>>>> Stashed changes
     // --- SUPPRESSION (TON CODE D'ORIGINE) ---
     public function remove($key)
     {
@@ -215,11 +183,7 @@ class CartController extends Controller
     // --- NOUVEAU : MISE A JOUR QUANTITE (AJAX) ---
     public function updateQuantity(Request $request)
     {
-<<<<<<< Updated upstream
         $id = $request->input('id');
-=======
-        $id = $request->input('id'); 
->>>>>>> Stashed changes
         $quantity = $request->input('quantity');
 
         $cart = Session::get('cart');
@@ -228,28 +192,16 @@ class CartController extends Controller
             // Sauvegarde en session : Empêche la réinitialisation si on supprime une autre ligne
             $cart[$id]['quantity'] = $quantity;
             Session::put('cart', $cart);
-<<<<<<< Updated upstream
 
             // Recalcul du total global pour mettre à jour l'affichage
             $total = 0;
             foreach ($cart as $item) {
-=======
-            
-            // Recalcul du total global pour mettre à jour l'affichage
-            $total = 0;
-            foreach($cart as $item) {
->>>>>>> Stashed changes
                 $total += $item['price'] * $item['quantity'];
             }
 
             return response()->json([
-<<<<<<< Updated upstream
                 'success' => true,
                 'newTotal' => number_format($total, 2, ',', ' ')
-=======
-                'success' => true, 
-                'newTotal' => number_format($total, 2, ',', ' ') 
->>>>>>> Stashed changes
             ]);
         }
 
