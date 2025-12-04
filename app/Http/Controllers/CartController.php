@@ -6,42 +6,48 @@ use Illuminate\Http\Request;
 use App\Models\VarianteVelo;
 use App\Models\Accessoire;
 use Illuminate\Support\Facades\Session;
-use Illuminate\Support\Facades\DB; // INDISPENSABLE
+use Illuminate\Support\Facades\DB;
 
 class CartController extends Controller
 {
-    // --- AFFICHAGE AVEC CALCUL DE STOCK RÉEL ---
+    // --- 1. AFFICHAGE DU PANIER (CORRIGÉ AVEC LEFT JOIN) ---
     public function index()
     {
         $cart = Session::get('cart', []);
         $total = 0;
+
         foreach ($cart as $key => &$item) {
             $total += $item['price'] * $item['quantity'];
 
-            // 1. Nettoyage de la taille (ex: "XL (181-195)" -> "XL")
-            $tailleLabel = explode(' ', trim($item['taille']))[0];
+            // On nettoie le label de la taille (ex: "XL (185-195)" devient "XL")
+            // Si pas de taille (accessoire), on garde "Unique" ou vide
+            $tailleLabel = isset($item['taille']) ? explode(' ', trim($item['taille']))[0] : null;
 
-            // 2. Requête SQL : Stock Web + Somme des Stocks Magasins
-            $stockInfo = DB::table('article_inventaire as vvi')
-                ->join('taille as t', 'vvi.id_taille', '=', 't.id_taille')
+            // REQUÊTE STOCK : Utilisation de LEFT JOIN pour ne pas exclure les accessoires sans taille
+            $query = DB::table('article_inventaire as vvi')
                 ->leftJoin('inventaire_magasin as im', 'vvi.id_article_inventaire', '=', 'im.id_article_inventaire')
                 ->select(DB::raw('
                     (vvi.quantite_stock_en_ligne + COALESCE(SUM(im.quantite_stock_magasin), 0)) as total_stock
                 '))
-                ->where('vvi.reference', $item['reference'])
-                ->where('t.taille', $tailleLabel)
-                ->groupBy('vvi.id_article_inventaire', 'vvi.quantite_stock_en_ligne')
-                ->first();
+                ->where('vvi.reference', $item['reference']);
 
-            // 3. Injection du stock dans l'item du panier
+            // Si c'est un vélo (donc on a une taille spécifique différente de "Unique")
+            if ($tailleLabel && $tailleLabel !== 'Unique') {
+                $query->join('taille as t', 'vvi.id_taille', '=', 't.id_taille')
+                      ->where('t.taille', $tailleLabel);
+            }
+
+            $stockInfo = $query->groupBy('vvi.id_article_inventaire', 'vvi.quantite_stock_en_ligne')->first();
+
+            // Si on ne trouve pas de ligne d'inventaire, on met 0 par sécurité, sinon on met le stock trouvé
             $item['max_stock'] = $stockInfo ? $stockInfo->total_stock : 0;
         }
-        unset($item); // Sécurité PHP
+        unset($item); // Bonnes pratiques PHP après un foreach par référence
 
         return view('panier', compact('cart', 'total'));
     }
 
-    // --- AJOUT (TON CODE D'ORIGINE) ---
+    // --- 2. AJOUT VÉLO (Ton code d'origine conservé) ---
     public function add(Request $request, $reference)
     {
         $request->validate([
@@ -102,24 +108,63 @@ class CartController extends Controller
         return redirect()->route('cart.index')->with('success', 'Vélo ajouté au panier !');
     }
 
+    // --- 3. AJOUT ACCESSOIRE (VERSION CORRIGÉE ET ROBUSTE) ---
     public function addAccessoire(Request $request, $reference)
     {
-        // 1. Validation (Pas de taille requise pour un accessoire)
+        // Validation simple
         $request->validate([
             'quantity' => 'required|integer|min:1'
         ]);
 
-        // 2. Récupération de l'accessoire
-        // On assume que le modèle Accessoire a la relation 'photos' (comme VarianteVelo)
+        // Récupération Accessoire
         $accessoire = Accessoire::with('photos')->where('reference', $reference)->firstOrFail();
 
-        // 3. Gestion du panier (Session)
+        // --- CALCUL DU STOCK RÉEL (Correction) ---
+        
+        // 1. On cherche la ligne d'inventaire correspondant à la référence.
+        // On NE joint PAS la table taille ici pour éviter les erreurs si l'accessoire n'a pas d'ID taille.
+        $inventaire = DB::table('article_inventaire')
+                        ->where('reference', $reference)
+                        ->select('id_article_inventaire', 'quantite_stock_en_ligne')
+                        ->first();
+
+        // Stock par défaut à 0 si introuvable
+        $stockWeb = $inventaire ? $inventaire->quantite_stock_en_ligne : 0;
+        $stockMagasins = 0;
+
+        if ($inventaire) {
+            // 2. Si on a trouvé l'article, on somme les stocks magasins
+            $stockMagasins = DB::table('inventaire_magasin')
+                                ->where('id_article_inventaire', $inventaire->id_article_inventaire)
+                                ->sum('quantite_stock_magasin');
+        }
+
+        $stockTotal = $stockWeb + $stockMagasins;
+
+        // --- VÉRIFICATION PANIER ---
         $cart = Session::get('cart', []);
+        
+        // Pour les accessoires, la clé est simplement la référence
+        $cartKey = $reference; 
+        $currentQtyInCart = isset($cart[$cartKey]) ? $cart[$cartKey]['quantity'] : 0;
 
-        // Clé simple car pas de taille
-        $cartKey = $reference;
+        // Si la quantité demandée + ce qu'on a déjà dépasse le stock total
+        if (($currentQtyInCart + $request->quantity) > $stockTotal) {
+            
+            // Si stock est 0, message spécifique
+            if ($stockTotal <= 0) {
+                $msg = "Cet article est actuellement en rupture de stock.";
+            } else {
+                $msg = "Stock insuffisant. Il ne reste que " . $stockTotal . " exemplaire(s) disponible(s).";
+            }
 
-        // Image
+            if ($request->wantsJson()) {
+                return response()->json(['success' => false, 'message' => $msg]);
+            }
+            return redirect()->back()->with('error', $msg);
+        }
+
+        // --- AJOUT AU PANIER ---
         $photo = $accessoire->photos->where('est_principale', true)->first() ?? $accessoire->photos->first();
         $photoUrl = $photo ? $photo->url_photo : null;
 
@@ -130,16 +175,17 @@ class CartController extends Controller
                 'reference' => $accessoire->reference,
                 'name' => $accessoire->nom_article,
                 'price' => $accessoire->prix,
-                'taille' => 'Unique', // Taille par défaut pour l'affichage
+                'taille' => 'Unique',
                 'quantity' => $request->quantity,
                 'image' => $photoUrl,
-                'type' => 'accessoire'
+                'type' => 'accessoire',
+                'max_stock' => $stockTotal 
             ];
         }
 
         Session::put('cart', $cart);
 
-        // Calculs totaux pour la modale AJAX
+        // Calculs totaux JSON
         $cartTotal = 0;
         $cartCount = 0;
         foreach ($cart as $item) {
@@ -147,7 +193,6 @@ class CartController extends Controller
             $cartCount += $item['quantity'];
         }
 
-        // Réponse JSON pour le JavaScript
         if ($request->wantsJson()) {
             return response()->json([
                 'success' => true,
@@ -155,7 +200,7 @@ class CartController extends Controller
                 'product' => [
                     'name' => $accessoire->nom_article,
                     'price' => $accessoire->prix,
-                    'image' => $photoUrl ? $photoUrl : 'https://placehold.co/200x150?text=No+Image', // Si l'URL est complète en BDD
+                    'image' => $photoUrl ? (filter_var($photoUrl, FILTER_VALIDATE_URL) ? $photoUrl : asset('storage/' . $photoUrl)) : 'https://placehold.co/200x150?text=No+Image',
                     'taille' => 'Unique',
                     'qty' => $request->quantity
                 ],
@@ -169,7 +214,8 @@ class CartController extends Controller
 
         return redirect()->back()->with('success', 'Accessoire ajouté au panier !');
     }
-    // --- SUPPRESSION (TON CODE D'ORIGINE) ---
+
+    // --- 4. SUPPRESSION ---
     public function remove($key)
     {
         $cart = Session::get('cart', []);
@@ -180,7 +226,7 @@ class CartController extends Controller
         return redirect()->back()->with('success', 'Article retiré.');
     }
 
-    // --- NOUVEAU : MISE A JOUR QUANTITE (AJAX) ---
+    // --- 5. MISE À JOUR QUANTITÉ (AJAX) ---
     public function updateQuantity(Request $request)
     {
         $id = $request->input('id');
@@ -189,11 +235,18 @@ class CartController extends Controller
         $cart = Session::get('cart');
 
         if (isset($cart[$id])) {
-            // Sauvegarde en session : Empêche la réinitialisation si on supprime une autre ligne
+            // Petite sécurité supplémentaire ici aussi
+            $maxStock = $cart[$id]['max_stock'] ?? 999;
+            if($quantity > $maxStock) {
+                 return response()->json([
+                    'success' => false, 
+                    'message' => "Stock insuffisant (Max: $maxStock)"
+                ], 400);
+            }
+
             $cart[$id]['quantity'] = $quantity;
             Session::put('cart', $cart);
 
-            // Recalcul du total global pour mettre à jour l'affichage
             $total = 0;
             foreach ($cart as $item) {
                 $total += $item['price'] * $item['quantity'];
