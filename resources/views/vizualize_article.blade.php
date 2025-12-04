@@ -481,7 +481,7 @@
                                         $folder = substr($accessoire->reference, 0, $prefix);
 
                                         // ATTENTION: Vérifie si tes accessoires sont dans 'images/VELOS' ou 'images/ACCESSOIRES'
-                                        $imgPath = 'images/VELOS/' . $folder . '/image_1.jpg'; 
+                                        $imgPath = 'images/ACCESSOIRES/' . $folder . '/image_1.jpg'; 
                                     @endphp
 
                                     @if(file_exists(public_path($imgPath)))
