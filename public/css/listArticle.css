@@ -308,21 +308,47 @@ a { text-decoration: none; color: inherit; }
     font-style: italic;
     z-index: 5;
 }
+/* =========================================
+   CARTE PRODUIT (Mise à jour pour les images)
+   ========================================= */
 
 .product-image {
-    height: 260px; /* Image plus grande */
+    height: 260px; /* Hauteur fixe de la zone */
+    width: 100%;   /* Prend toute la largeur disponible */
+    
     display: flex;
     align-items: center;
     justify-content: center;
+    
     margin-bottom: 30px;
+    
+    /* MODIFICATION ICI : */
+    overflow: hidden; /* Coupe tout ce qui oserait dépasser */
+    padding: 20px;    /* Ajoute une "marge de sécurité" interne. 
+                         Ça réduit légèrement l'image pour qu'elle ne touche pas les bords. 
+                         Très utile pour les roues/cranks qui remplissent tout le carré. */
+    box-sizing: border-box; /* S'assure que le padding est inclus dans la taille */
 }
 
 .product-image img {
-    max-width: 100%; max-height: 100%;
-    object-fit: contain;
+    /* On force l'image à respecter les limites */
+    max-width: 100%; 
+    max-height: 100%;
+    
+    /* L'image garde ses proportions et ne sera jamais coupée/déformée */
+    object-fit: contain; 
+    
     transition: transform 0.5s ease;
+    
+    /* Optionnel : permet un meilleur rendu si tes images ne sont pas détourées parfaitement */
+    display: block; 
 }
-.product-card:hover .product-image img { transform: scale(1.05); }
+
+/* L'effet de zoom reste, mais à l'intérieur du cadre grâce au overflow:hidden */
+.product-card:hover .product-image img { 
+    transform: scale(1.08); 
+}
+
 
 .product-title {
     font-size: 18px; /* Titre plus gros */

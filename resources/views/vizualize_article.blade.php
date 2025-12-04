@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html lang="fr">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -8,11 +7,10 @@
     {{-- Méta nécessaire pour sécuriser les requêtes AJAX Laravel --}}
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>{{ $article->nom_article }}</title>
-
+        
     <link rel="stylesheet" href="{{ asset('css/header.css') }}">
     <link rel="stylesheet" href="{{ asset('css/vizualize_article.css') }}">
 </head>
-
 <body>
     @include('layouts.header')
 
@@ -28,10 +26,8 @@
                     <div class="modal-details">
                         <h3 id="modalName">NOM DE L'ARTICLE</h3>
                         <div class="modal-price" id="modalPrice">0,00 € TTC</div>
-                        <div class="modal-meta">TAILLE : <span id="modalSize"
-                                style="font-weight:bold; color:black;"></span></div>
-                        <div class="modal-meta">QUANTITÉ : <span id="modalQty"
-                                style="font-weight:bold; color:black;"></span></div>
+                        <div class="modal-meta">TAILLE : <span id="modalSize" style="font-weight:bold; color:black;"></span></div>
+                        <div class="modal-meta">QUANTITÉ : <span id="modalQty" style="font-weight:bold; color:black;"></span></div>
                     </div>
                 </div>
                 {{-- Partie Droite (Résumé) --}}
@@ -39,8 +35,7 @@
                     <div style="margin-bottom: 15px; font-size: 0.9rem; color:#555;">
                         Il y a <span id="cartCount" style="font-weight:bold;"></span> articles dans votre panier.
                     </div>
-                    <div class="summary-line"><span>Sous-total :</span><span id="cartSubtotal"
-                            style="font-weight: bold;">0,00 €</span></div>
+                    <div class="summary-line"><span>Sous-total :</span><span id="cartSubtotal" style="font-weight: bold;">0,00 €</span></div>
                     <div class="summary-line"><span>Transport :</span><span>Gratuit</span></div>
                     <div class="summary-total"><span>Total TTC</span><span id="cartTotal">0,00 €</span></div>
                     <div class="tax-info">Taxes incluses : <span id="cartTax">0,00 €</span></div>
@@ -54,21 +49,24 @@
     </div>
 
     <div class="page-product-container">
-
+    
         <div class="left-column-wrapper">
-
+        
             {{-- 1. HERO IMAGE (Carrousel Dynamique Local) --}}
             <div class="product-hero-section" id="mainCarousel">
-
+                
                 {{-- LOGIQUE PHP : Scan du dossier --}}
                 @php
                     $prefixLength = $isAccessoire ? 5 : 6;
                     $folderName = substr($article->reference, 0, $prefixLength);
-
+                    
+                    // On choisit le bon dossier racine ici
+                    $dossierRacine = $isAccessoire ? 'images/ACCESSOIRES/' : 'images/VELOS/';
+                    
                     // Chemin Web (src) et Serveur (check file)
-                    $webPath = 'images/VELOS/' . $folderName;
+                    $webPath = $dossierRacine . $folderName;
                     $serverPath = public_path($webPath);
-
+                    
                     $validImages = [];
 
                     // On cherche de image_1.jpg à image_10.jpg
@@ -103,7 +101,7 @@
                 @if(count($validImages) > 1)
                     <button class="carousel-button carousel-button--left">❮</button>
                     <button class="carousel-button carousel-button--right">❯</button>
-
+                    
                     <div class="carousel-nav">
                         @foreach($validImages as $index => $unused)
                             <button class="carousel-indicator {{ $index === 0 ? 'current-slide' : '' }}"></button>
@@ -113,14 +111,14 @@
             </div>
 
             <div class="specs-column">
-
+                
                 {{-- 2. FICHE TECHNIQUE --}}
                 <div class="each-specs-column">
                     <div class="specs-header-row">
                         <h2>FICHE TECHNIQUE</h2>
                         <button class="toggle-specs-btn"></button>
                     </div>
-
+                    
                     <div class="specs-content">
                         @foreach($specifications as $typeNom => $caracteristiques)
                             <div class="spec-group-title">{{ $typeNom }}</div>
@@ -156,62 +154,63 @@
 
                 {{-- 3. GÉOMÉTRIE --}}
                 @if($typeVue === 'velo' && $tailleGeometrie)
-                    <div class="geo-section each-specs-column">
-                        <div class="specs-header-row">
-                            <h2>GÉOMÉTRIE</h2>
-                            <button class="toggle-specs-btn"></button>
-                        </div>
+                <div class="geo-section each-specs-column">
+                    <div class="specs-header-row">
+                        <h2>GÉOMÉTRIE</h2>
+                        <button class="toggle-specs-btn"></button>
+                    </div>
 
-                        <div class="table-responsive">
-                            <table class="geo-table">
-                                <thead>
+                    <div class="table-responsive">
+                        <table class="geo-table">
+                            <thead>
+                                <tr>
+                                    <th></th>
+                                    @foreach ($tailleGeometrie->sortBy('id_taille') as $taille)
+                                        <th>
+                                            {{ $taille->taille }} 
+                                            <span style="font-size: 0.9em; font-weight: 600;">
+                                                ({{ $taille->taille_min }}-{{ $taille->taille_max }})
+                                            </span>
+                                        </th>
+                                    @endforeach
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @php
+                                    $geometrieNonTriee = $article->varianteVelo->modele->geometries;
+                                    $geometrieTRiee = $geometrieNonTriee->groupBy('nom_geometrie');
+                                @endphp
+                                @foreach ($geometrieTRiee as $nomGeometrie => $listeDeValeurs)
                                     <tr>
-                                        <th></th>
-                                        @foreach ($tailleGeometrie->sortBy('id_taille') as $taille)
-                                            <th>
-                                                {{ $taille->taille }}
-                                                <span style="font-size: 0.9em; font-weight: 600;">
-                                                    ({{ $taille->taille_min }}-{{ $taille->taille_max }})
-                                                </span>
-                                            </th>
+                                        <td class="nom-geometrie">{{ $nomGeometrie }}</td>
+                                        @foreach ($tailleGeometrie as $taille)
+                                            @php
+                                                $geoMatch = $listeDeValeurs->first(function($geo) use ($taille) {
+                                                    return $geo->pivot->id_taille == $taille->id_taille;
+                                                });
+                                            @endphp
+                                            <td>{{ $geoMatch ? $geoMatch->pivot->valeur_geometrie : '-' }}</td>
                                         @endforeach
                                     </tr>
-                                </thead>
-                                <tbody>
-                                    @php
-                                        $geometrieNonTriee = $article->varianteVelo->modele->geometries;
-                                        $geometrieTRiee = $geometrieNonTriee->groupBy('nom_geometrie');
-                                    @endphp
-                                    @foreach ($geometrieTRiee as $nomGeometrie => $listeDeValeurs)
-                                        <tr>
-                                            <td class="nom-geometrie">{{ $nomGeometrie }}</td>
-                                            @foreach ($tailleGeometrie as $taille)
-                                                @php
-                                                    $geoMatch = $listeDeValeurs->first(function ($geo) use ($taille) {
-                                                        return $geo->pivot->id_taille == $taille->id_taille;
-                                                    });
-                                                @endphp
-                                                <td>{{ $geoMatch ? $geoMatch->pivot->valeur_geometrie : '-' }}</td>
-                                            @endforeach
-                                        </tr>
-                                    @endforeach
-                                </tbody>
-                            </table>
-                        </div>
+                                @endforeach
+                            </tbody>
+                        </table>
                     </div>
-                @endif
+                </div>
+                @endif 
 
                 {{-- 4. DESCRIPTION & RESUME --}}
-                @if($typeVue === 'velo')
-                    <div class="each-specs-column">
-                        <div class="specs-header-row">
-                            <h2>Description</h2>
-                            <button class="toggle-specs-btn"></button>
-                        </div>
-                        <p>{{ $article->varianteVelo->modele->description->texte_description ?? 'Aucune description disponible.' }}
-                        </p>
-                    </div>
-                @endif
+                <div class="each-specs-column">
+                    <div class="specs-header-row">
+                    @if($typeVue === 'velo')
+                        <h2>Description</h2>
+                        <button class="toggle-specs-btn"></button>
+                    </div> 
+                        <p>{{ $article->varianteVelo->modele->description->texte_description ?? 'Aucune description disponible.' }}</p>
+                    @else
+                    </div> 
+                    @endif
+                </div>
 
                 <div class="each-specs-column" id="resume_container">
                     <div class="specs-header-row">
@@ -221,37 +220,23 @@
                     <p>{{ $article->resume->contenu_resume }}</p>
                 </div>
 
-            </div>
-        </div>
+            </div> 
+        </div> 
 
         {{-- COLONNE DROITE (SIDEBAR) --}}
         <div class="sidebar-column">
-
+            
             <div class="badges">
-                @if (!$isAccessoire)
-                    @if ($article->varianteVelo->modele->millesime_modele >= date("Y"))
-                        <div class="badge-season newMillesime">
-                            <span>Nouveau</span>
-                        </div>
-                    @endif
-                @endif
                 @if($typeVue === 'velo')
                     <span class="badge-season">Saison : {{ $article->varianteVelo->modele->millesime_modele }}</span>
                 @endif
             </div>
 
             <h1 class="product-title">{{ $article->nom_article }}</h1>
+            
             <div class="product-ref">
-                @php
-                    $poids = $article->poids;
-                    $unitePoids = 'kg';
-                    if ($poids < 1) {
-                        $poids *= 1000;
-                        $unitePoids = 'g';
-
-                    }
-                @endphp
-                Référence : {{ $article->reference}} | Poids : {{ $poids }} {{ $unitePoids }}
+                Référence : {{ $article->reference}} 
+                @if($article->poids)| Poids : {{ $article->poids }} kg @endif
                 @if($typeVue === 'velo')
                     | Matériau : {{ $article->varianteVelo->modele->materiau_cadre }}
                 @endif
@@ -262,22 +247,25 @@
                 <div class="size-selector">
                     <p class="size-label">TAILLE</p>
                     <div class="sizes-grid">
-                        @foreach ($stock as $inventaire)
+                        @foreach ($stock as $inventaire)   
                             @php
                                 $stockWeb = $inventaire->quantite_stock_en_ligne;
                                 $stockMag = $inventaire->magasins->sum('pivot.quantite_stock_magasin');
                                 $classeCss = ($stockWeb <= 0) ? 'out-of-stock' : '';
                             @endphp
-                            <button class="size-btn {{ $classeCss }}" onclick="selectionnerTaille(
-                                                                    '{{ $inventaire->taille->taille }}', 
-                                                                    {{ $stockWeb }}, 
-                                                                    {{ $stockMag }}
-                                                                )">
-                                {{ $inventaire->taille->taille }}
+                            <button 
+                                class="size-btn {{ $classeCss }}"
+                                onclick="selectionnerTaille(
+                                    '{{ $inventaire->taille->taille }}', 
+                                    {{ $stockWeb }}, 
+                                    {{ $stockMag }}
+                                )"
+                            >
+                                {{ $inventaire->taille->taille }} 
                                 <span style="font-size: 0.8em; display:block; font-weight: normal;">
                                     ({{ $inventaire->taille->taille_min }}-{{ $inventaire->taille->taille_max }})
                                 </span>
-                            </button>
+                            </button> 
                         @endforeach
                     </div>
                 </div>
@@ -288,7 +276,7 @@
 
                 <div class="dispo-info-container" style="margin-bottom: 15px;">
                     <div class="dispo-row">
-                        <span id="dot-web" class="status-dot"></span>
+                        <span id="dot-web" class="status-dot"></span> 
                         <span id="text-web" class="dispo-text">Sélectionnez une taille</span>
                     </div>
                     <div class="dispo-row">
@@ -308,7 +296,7 @@
                         $enLigneStatus = $stockWeb ? 'Disponible en ligne' : 'Indisponible en ligne';
                         $enMagasinStatus = $stockMag ? 'Commandable en magasin' : 'Indisponible en magasin';
                     @endphp
-
+                    
                     <div class="dispo-info-container">
                         <div class="dispo-row">
                             <span class="status-dot" style="background-color: {{ $colorDotWeb }};"></span>
@@ -317,6 +305,8 @@
                         <div class="dispo-row">
                             <span class="status-dot" style="background-color: {{ $colorDotMag }};"></span>
                             <span class="dispo-text" style="font-weight: bold;">{{ $enMagasinStatus }}</span>
+                            <span class="status-dot" style="background-color: {{ $colorDot }};"></span> 
+                            <span class="dispo-text" style="font-weight: bold;">{{ $textStatus }}</span>
                         </div>
                     </div>
                 </div>
@@ -357,7 +347,7 @@
             @if($typeVue === 'velo')
                 <div style="margin-top: 20px;">
                     <p class="size-label">Également disponible en</p>
-                    <div class="flex gap-2">
+                    <div class="flex gap-2"> 
                         @php
                             $varianteActuelle = $article->varianteVelo;
                             $tousLesCousins = $varianteActuelle->modele->varianteVelos ?? collect([]);
@@ -371,165 +361,97 @@
                         @foreach ($couleursUniques as $variante)
                             @php
                                 $estActif = ($variante->id_couleur == $varianteActuelle->id_couleur);
-                                $lien = route('velo.show', ['reference' => $variante->reference]);
-                                $hex = $variante->couleur->hexa_couleur ?? '000000';
+                                $lien = route('velo.show', ['reference' => $variante->reference]); 
+                                $hex = $variante->couleur->hexa_couleur ?? '000000'; 
                                 $bg = str_starts_with($hex, '#') ? $hex : '#' . $hex;
                             @endphp
-                            <a href="{{ $lien }}" class="couleur-velo" style="display: inline-block; width: 30px; height: 30px; border-radius: 50%; margin-right: 5px;
-                                                               border: {{ $estActif ? '5px solid #cbcbcb' : '1px solid #ddd' }};
-                                                               background-color: {{ $bg }};">
+                            <a href="{{ $lien }}" class="couleur-velo" 
+                               style="display: inline-block; width: 30px; height: 30px; border-radius: 50%; margin-right: 5px;
+                               border: {{ $estActif ? '5px solid #cbcbcb' : '1px solid #ddd' }};
+                               background-color: {{ $bg }};">
                             </a>
                         @endforeach
                     </div>
                 </div>
 
                 @if($article->varianteVelo->id_batterie)
-                    <div style="margin-top: 15px;">
-                        <p class="size-label">Batterie :</p>
-                        <div class="flex gap-2">
+                <div style="margin-top: 15px;">
+                    <p class="size-label">Batterie :</p>
+                    <div class="flex gap-2"> 
+                        @php
+                            $batteriesUniques = $variantesFiltrees
+                                ->whereNotNull('id_batterie')
+                                ->unique('id_batterie')
+                                ->sortBy(function($v) {
+                                    return $v->batterie->puissance ?? $v->batterie->nom ?? 0;
+                                });
+                        @endphp
+                        @foreach ($batteriesUniques as $variante)
                             @php
-                                $batteriesUniques = $variantesFiltrees
-                                    ->whereNotNull('id_batterie')
-                                    ->unique('id_batterie')
-                                    ->sortBy(function ($v) {
-                                        return $v->batterie->puissance ?? $v->batterie->nom ?? 0;
-                                    });
+                                $estActif = ($variante->id_batterie == $varianteActuelle->id_batterie);
+                                $lien = route('velo.show', ['reference' => $variante->reference]); 
+                                $nomBatterie = $variante->batterie->puissance ?? $variante->batterie->capacite_batterie ?? 'Batterie';
+                                if(is_numeric($nomBatterie)) { $nomBatterie .= ' Wh'; }
                             @endphp
-                            @foreach ($batteriesUniques as $variante)
-                                @php
-                                    $estActif = ($variante->id_batterie == $varianteActuelle->id_batterie);
-                                    $lien = route('velo.show', ['reference' => $variante->reference]);
-                                    $nomBatterie = $variante->batterie->puissance ?? $variante->batterie->capacite_batterie ?? 'Batterie';
-                                    if (is_numeric($nomBatterie)) {
-                                        $nomBatterie .= ' Wh';
-                                    }
-                                @endphp
-                                <a href="{{ $lien }}" class="choix-batterie {{ $estActif ? 'active' : '' }}">
-                                    {{ $nomBatterie }}
-                                </a>
-                            @endforeach
-                        </div>
-                    </div>
-                @endif
-            @endif
-
-        </div>
-    </div>
-
-
-    {{-- Accessoire Vélos --}}
-    @if(! $isAccessoire)
-        <section class="st-similar-section section-grey">
-
-            {{-- En-tête avec ton texte personnalisé --}}
-            <div class="st-section-header" style="text-align: center; margin-bottom: 20px;">
-                <h2 class="st-section-title text-section-grey">D’autres cyclistes ont également acheté</h2>
-                <p class="text-section-grey">
-                    Complétez votre équipement avec des accessoires populaires auprès de nos clients.
-                    Chaque produit est sélectionné pour améliorer votre expérience de cycliste et s’adapter parfaitement à
-                    votre vélo Cube.
-                </p>
-            </div>
-
-            {{-- Wrapper du Carousel (Mêmes classes pour garder le CSS) --}}
-            <div class="st-carousel-wrapper">
-                <button class="st-nav-btn st-btn-left">❮</button>
-
-                <div class="st-carousel-track">
-                    @foreach ($article->varianteVelo->accessoires as $accessoire)
-                        <div class="st-card-item">
-                            {{-- Lien vers le produit (Vérifie si tu dois utiliser velo.show ou accessoire.show) --}}
-                            <a href="{{ route('velo.show', $accessoire->reference) }}" class="st-card-link">
-
-                                <div class="st-img-box">
-                                    {{-- LOGIQUE IMAGE LOCALE ADAPTÉE POUR ACCESSOIRE --}}
-                                    @php
-                                        // On suppose que pour les accessoires le préfixe est de 5 (selon ta logique précédente)
-                                        $prefix = 5;
-                                        $folder = substr($accessoire->reference, 0, $prefix);
-
-                                        // ATTENTION: Vérifie si tes accessoires sont dans 'images/VELOS' ou 'images/ACCESSOIRES'
-                                        $imgPath = 'images/VELOS/' . $folder . '/image_1.jpg'; 
-                                    @endphp
-
-                                    @if(file_exists(public_path($imgPath)))
-                                        <img src="{{ asset($imgPath) }}" alt="{{ $accessoire->nom_article }}">
-                                    @else
-                                        <img src="https://placehold.co/300x200?text=Pas+d+image"
-                                            alt="{{ $accessoire->nom_article }}">
-                                    @endif
-                                </div>
-
-                                <div class="st-info-box">
-                                    <h3 class="st-prod-name">{{ $accessoire->nom_article }}</h3>
-                                    <div class="st-prod-price">
-                                        {{ number_format($accessoire->prix, 2, ',', ' ') }} €
-                                    </div>
-                                </div>
-
-                                <div class="st-action-row">
-                                    <span class="st-view-btn"><i class="arrow-icon">▶</i> VOIR LE PRODUIT</span>
-                                </div>
+                            <a href="{{ $lien }}" class="choix-batterie {{ $estActif ? 'active' : '' }}">
+                                {{ $nomBatterie }}
                             </a>
-                        </div>
-                    @endforeach
+                        @endforeach
+                    </div>
                 </div>
+                @endif
+            @endif 
 
-                <button class="st-nav-btn st-btn-right">❯</button>
-            </div>
-        </section>
-    @endif
-
-
-
-
-
+        </div> 
+    </div> 
 
     {{-- Produits Similaires AVEC IMAGES LOCALES --}}
     @if($articlesSimilaires->isNotEmpty())
-        <section class="st-similar-section">
-            <h2 class="st-section-title">ARTICLES SIMILAIRES</h2>
-            <div class="st-carousel-wrapper">
-                <button class="st-nav-btn st-btn-left">❮</button>
-                <div class="st-carousel-track">
-                    @foreach($articlesSimilaires as $similaire)
-                        <div class="st-card-item">
-                            <a href="{{ route('velo.show', $similaire->reference) }}" class="st-card-link">
-                                <div class="st-img-box">
-                                    {{-- LOGIQUE POUR TROUVER L'IMAGE LOCALE --}}
-                                    @php
-                                        $simPrefix = $isAccessoire ? 5 : 6;
-                                        $simFolder = substr($similaire->reference, 0, $simPrefix);
-                                        $simImgPath = 'images/VELOS/' . $simFolder . '/image_1.jpg';
-                                    @endphp
-
-                                    @if(file_exists(public_path($simImgPath)))
-                                        <img src="{{ asset($simImgPath) }}" alt="{{ $similaire->nom_article }}">
-                                    @else
-                                        {{-- Placeholder si pas d'image --}}
-                                        <img src="https://placehold.co/300x200?text=Pas+d+image"
-                                            alt="{{ $similaire->nom_article }}">
-                                    @endif
-                                </div>
-                                <div class="st-info-box">
-                                    <h3 class="st-prod-name">{{ $similaire->nom_article }}</h3>
-                                    <div class="st-prod-price">{{ number_format($similaire->prix, 2, ',', ' ') }} €</div>
-                                </div>
-                                <div class="st-action-row">
-                                    <span class="st-view-btn"><i class="arrow-icon">▶</i> VOIR LE PRODUIT</span>
-                                </div>
-                            </a>
-                        </div>
-                    @endforeach
-                </div>
-                <button class="st-nav-btn st-btn-right">❯</button>
+    <section class="st-similar-section">
+        <h2 class="st-section-title">ARTICLES SIMILAIRES</h2>
+        <div class="st-carousel-wrapper">
+            <button class="st-nav-btn st-btn-left">❮</button>
+            <div class="st-carousel-track">
+                @foreach($articlesSimilaires as $similaire)
+                    <div class="st-card-item">
+                        <a href="{{ route('velo.show', $similaire->reference) }}" class="st-card-link">
+                            <div class="st-img-box">
+                                {{-- LOGIQUE POUR TROUVER L'IMAGE LOCALE (CORRIGÉE) --}}
+                                @php
+                                    $simPrefix = $isAccessoire ? 5 : 6;
+                                    $simFolder = substr($similaire->reference, 0, $simPrefix);
+                                    
+                                    // Correction ici aussi
+                                    $dossierRacineSim = $isAccessoire ? 'images/ACCESSOIRES/' : 'images/VELOS/';
+                                    $simImgPath = $dossierRacineSim . $simFolder . '/image_1.jpg';
+                                @endphp
+                                
+                                @if(file_exists(public_path($simImgPath)))
+                                    <img src="{{ asset($simImgPath) }}" alt="{{ $similaire->nom_article }}">
+                                @else
+                                    {{-- Placeholder si pas d'image --}}
+                                    <img src="https://placehold.co/300x200?text=Pas+d+image" alt="{{ $similaire->nom_article }}">
+                                @endif
+                            </div>
+                            <div class="st-info-box">
+                                <h3 class="st-prod-name">{{ $similaire->nom_article }}</h3>
+                                <div class="st-prod-price">{{ number_format($similaire->prix, 2, ',', ' ') }} €</div>
+                            </div>
+                            <div class="st-action-row">
+                                <span class="st-view-btn"><i class="arrow-icon">▶</i> VOIR LE PRODUIT</span>
+                            </div>
+                        </a>
+                    </div>
+                @endforeach
             </div>
-        </section>
+            <button class="st-nav-btn st-btn-right">❯</button>
+        </div>
+    </section>
     @endif
 
     {{-- SCRIPTS JS --}}
     <script src="{{ asset('js/vizualize_article.js') }}" defer></script>
-
+    
     <script>
         document.addEventListener('DOMContentLoaded', () => {
             const track = document.querySelector('.carousel-track');
@@ -555,13 +477,13 @@
             }
 
             const updateDots = (currentDot, targetDot) => {
-                if (currentDot && targetDot) {
+                if(currentDot && targetDot) {
                     currentDot.classList.remove('current-slide');
                     targetDot.classList.add('current-slide');
                 }
             }
 
-            if (nextButton) {
+            if(nextButton) {
                 nextButton.addEventListener('click', e => {
                     const currentSlide = track.querySelector('.current-slide');
                     let nextSlide = currentSlide.nextElementSibling;
@@ -570,7 +492,7 @@
 
                     if (!nextSlide) {
                         nextSlide = slides[0];
-                        if (dots.length) nextDot = dots[0];
+                        if(dots.length) nextDot = dots[0];
                     }
 
                     moveToSlide(track, currentSlide, nextSlide);
@@ -578,7 +500,7 @@
                 });
             }
 
-            if (prevButton) {
+            if(prevButton) {
                 prevButton.addEventListener('click', e => {
                     const currentSlide = track.querySelector('.current-slide');
                     let prevSlide = currentSlide.previousElementSibling;
@@ -587,7 +509,7 @@
 
                     if (!prevSlide) {
                         prevSlide = slides[slides.length - 1];
-                        if (dots.length) prevDot = dots[dots.length - 1];
+                        if(dots.length) prevDot = dots[dots.length - 1];
                     }
 
                     moveToSlide(track, currentSlide, prevSlide);
@@ -595,7 +517,7 @@
                 });
             }
 
-            if (dotsNav) {
+            if(dotsNav) {
                 dotsNav.addEventListener('click', e => {
                     const targetDot = e.target.closest('button');
                     if (!targetDot) return;
@@ -609,7 +531,7 @@
                     updateDots(currentDot, targetDot);
                 });
             }
-
+            
             window.addEventListener('resize', () => {
                 const newSlideWidth = slides[0].getBoundingClientRect().width;
                 slides.forEach((slide, index) => {
@@ -668,7 +590,7 @@
             const taille = document.getElementById('input-taille-selected').value;
             const token = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
 
-            if (!taille) {
+            if(!taille) {
                 alert("Veuillez sélectionner une taille.");
                 return;
             }
@@ -685,15 +607,15 @@
                     quantity: 1
                 })
             })
-                .then(response => response.json())
-                .then(data => {
-                    if (data.success) {
-                        fillAndOpenModal(data);
-                    } else {
-                        alert("Erreur: " + (data.message || "Une erreur est survenue"));
-                    }
-                })
-                .catch(error => console.error('Erreur:', error));
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    fillAndOpenModal(data);
+                } else {
+                    alert("Erreur: " + (data.message || "Une erreur est survenue"));
+                }
+            })
+            .catch(error => console.error('Erreur:', error));
         }
 
         function fillAndOpenModal(data) {
@@ -705,7 +627,7 @@
 
             document.getElementById('cartCount').textContent = data.cart.count;
             const formattedTotal = new Intl.NumberFormat('fr-FR', { style: 'currency', currency: 'EUR' }).format(data.cart.total);
-            const formattedTax = new Intl.NumberFormat('fr-FR', { style: 'currency', currency: 'EUR' }).format(data.cart.total * 0.2);
+            const formattedTax = new Intl.NumberFormat('fr-FR', { style: 'currency', currency: 'EUR' }).format(data.cart.total * 0.2); 
 
             document.getElementById('cartSubtotal').textContent = formattedTotal;
             document.getElementById('cartTotal').textContent = formattedTotal;
@@ -718,7 +640,7 @@
             document.getElementById('cartModal').style.display = 'none';
         }
 
-        window.onclick = function (event) {
+        window.onclick = function(event) {
             const modal = document.getElementById('cartModal');
             if (event.target == modal) {
                 modal.style.display = "none";
@@ -726,5 +648,4 @@
         }
     </script>
 </body>
-
 </html>
