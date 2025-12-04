@@ -647,6 +647,7 @@ nav {
 
 #resume_container {
     border: none;
+    margin-bottom: 80px;
 }
 
 /* =========================================
@@ -664,7 +665,6 @@ nav {
 
 .section-grey {
     background-color: #efefef;
-    margin-top: 150px !important;
     width: 100% !important;         /* Force la largeur à 100% */
     max-width: none !important;
 }
@@ -980,6 +980,7 @@ p.text-section-grey{
     flex-direction: column;
     justify-content: space-between;
     transition: transform 0.3s ease, box-shadow 0.3s ease;
+    transition: all 0.3 ease;
 }
 
 .st-card-item:hover {
@@ -1123,7 +1124,8 @@ p.text-section-grey{
 }
 
 .dispo-text {
-    font-size: 0.7em;
+    font-size: 0.75em;
+    font-weight: 600 !important;
 }
 
 /* =========================================
