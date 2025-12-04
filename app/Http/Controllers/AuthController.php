@@ -13,29 +13,26 @@ use App\Mail\VerificationCodeMail;
 
 class AuthController extends Controller
 {
-    // Affiche le formulaire d'inscription
     public function showRegisterForm()
     {
         return view('inscription');
     }
 
-    // Affiche le formulaire de facturation
     public function showFacturationForm()
     {
         if (!session('reg_data')) {
             return redirect()->route('register.form');
         }
 
-        return view('facturation');
+        $regData = session('reg_data'); 
+        return view('facturation', compact('regData'));
     }
 
-    // Affiche le formulaire de connexion
     public function showLoginForm()
     {
         return view('connexion');
     }
 
-    // Étape 1 : vérifier l'inscription et rediriger vers facturation
     public function checkInscription(Request $request)
     {
         $request->validate([
@@ -59,14 +56,13 @@ class AuthController extends Controller
         return redirect()->route('facturation.form');
     }
 
-    // Étape 2 : envoyer le code de vérification après facturation
     public function sendVerificationCode(Request $request)
     {
         $request->validate([
-            'address'  => ['required', 'string', 'max:255'],
+            'rue'  => ['required', 'string', 'max:255'],
             'city'     => ['required', 'string', 'max:255'],
             'zipcode'  => ['required', 'string', 'max:10'],
-            'country'  => ['nullable', 'string', 'max:50'],
+            'country'  => ['required', 'string', 'max:50'],
         ]);
 
         $regData = $request->session()->get('reg_data');
@@ -75,22 +71,19 @@ class AuthController extends Controller
         }
 
         $request->session()->put('reg_billing', $request->only([
-            'address', 'city', 'zipcode', 'country'
+            'rue', 'city', 'zipcode', 'country'
         ]));
 
-        // Générer le code
         $code = rand(100000, 999999);
         $expiresAt = now()->addMinutes(10);
         Cache::put('verification_code_'.$regData['email'], $code, $expiresAt);
 
-        // Envoyer le mail
         Mail::to($regData['email'])->send(new VerificationCodeMail($code));
 
         return redirect()->route('verification.form')
                          ->with('success', 'Un code de vérification a été envoyé à votre adresse email.');
     }
 
-    // Étape 3 : vérifier le code et créer l'adresse + client
     public function verifyCode(Request $request)
     {
         $request->validate([
@@ -99,6 +92,8 @@ class AuthController extends Controller
 
         $regData = $request->session()->get('reg_data');
         $billing = $request->session()->get('reg_billing');
+
+        echo $billing['rue'];
 
         if (!$regData || !$billing) {
             return redirect()->route('register.form')->withErrors('Vos données ont expiré. Veuillez recommencer.');
@@ -109,15 +104,13 @@ class AuthController extends Controller
             return back()->withErrors(['verification_code' => 'Le code est incorrect ou expiré.']);
         }
 
-        // 1️⃣ Créer l'adresse
         $adresse = Adresse::create([
-            'rue'        => $billing['address'],
+            'rue'        => $billing['rue'],
             'code_postal'=> $billing['zipcode'],
             'ville'      => $billing['city'],
-            'pays'       => $billing['country'] ?? 'France',
+            'pays'       => $billing['country'],
         ]);
 
-        // 2️⃣ Créer le client
         $client = Client::create([
             'id_adresse_facturation' => $adresse->id_adresse,
             'nom_client'             => $regData['lastname'],
@@ -129,18 +122,15 @@ class AuthController extends Controller
             'date_naissance'         => \Carbon\Carbon::createFromFormat('d/m/Y', $regData['birthday'])->format('Y-m-d'),
         ]);
 
-        // Connexion automatique
         Auth::login($client);
         $request->session()->regenerate();
 
-        // Nettoyage
         Cache::forget('verification_code_'.$regData['email']);
         $request->session()->forget(['reg_data', 'reg_billing']);
 
         return redirect()->route('home')->with('success', 'Votre compte a été créé avec succès !');
     }
 
-    // Connexion
     public function login(Request $request)
     {
         $request->validate([
@@ -159,7 +149,6 @@ class AuthController extends Controller
         return back()->withErrors(['email' => 'Les identifiants ne correspondent pas.'])->onlyInput('email');
     }
 
-    // Déconnexion
     public function logout(Request $request)
     {
         Auth::logout();

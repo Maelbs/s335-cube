@@ -33,7 +33,7 @@
 
                             <form class="js-customer-form needs-validation card card-account text-left cube-validate-form customer-form" 
                                 id="customer-form" 
-                                action="{{ route('sendVerificationCode') }}" 
+                                action="{{ route('register.check') }}"
                                 method="POST" 
                                 novalidate 
                                 autocomplete="off">
