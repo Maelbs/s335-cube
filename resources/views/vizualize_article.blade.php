@@ -55,6 +55,16 @@
             {{-- 1. HERO IMAGE (Carrousel Dynamique Local) --}}
             <div class="product-hero-section" id="mainCarousel">
                 
+                {{-- NOUVEAU : BOUTON LOUPE --}}
+                <button class="zoom-trigger-btn" onclick="openZoom()">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="11" cy="11" r="8"></circle>
+                        <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                        <line x1="11" y1="8" x2="11" y2="14"></line>
+                        <line x1="8" y1="11" x2="14" y2="11"></line>
+                    </svg>
+                </button>
+
                 {{-- LOGIQUE PHP : Scan du dossier --}}
                 @php
                     $prefixLength = $isAccessoire ? 5 : 6;
@@ -434,6 +444,19 @@
     </section>
     @endif
 
+{{-- MODALE ZOOM PLEIN ÉCRAN (AVEC NAVIGATION) --}}
+<div id="zoomModalOverlay" class="zoom-overlay">
+    <button class="zoom-close-btn" onclick="closeZoom(event)">×</button>
+    
+    {{-- NOUVEAU : Boutons Précédent / Suivant --}}
+    <button class="zoom-nav zoom-prev" onclick="changeZoomImage(-1)">❮</button>
+    <button class="zoom-nav zoom-next" onclick="changeZoomImage(1)">❯</button>
+
+    <div class="zoom-container" onclick="toggleZoomState(event)">
+        <img id="zoomImageFull" src="" alt="Zoom Produit">
+    </div>
+</div>
+
     {{-- SCRIPTS JS --}}
     <script src="{{ asset('js/vizualize_article.js') }}" defer></script>
     
@@ -527,6 +550,117 @@
             });
         });
 
+       // --- LOGIQUE DU ZOOM AVANCÉE ---
+    
+    function openZoom() {
+        const overlay = document.getElementById('zoomModalOverlay');
+        const zoomImg = document.getElementById('zoomImageFull');
+        
+        // 1. Trouver l'image active
+        const activeSlide = document.querySelector('.carousel-slide.current-slide img');
+        
+        if (activeSlide) {
+            // 2. Mettre la source et afficher
+            zoomImg.src = activeSlide.src;
+            overlay.style.display = 'flex';
+            
+            // Petit délai pour l'animation opacity
+            setTimeout(() => {
+                overlay.classList.add('active');
+            }, 10);
+        }
+    }
+
+    function changeZoomImage(direction) {
+        // 1. Récupérer toutes les slides
+        const track = document.querySelector('.carousel-track');
+        const slides = Array.from(track.children);
+        
+        // 2. Trouver l'index actuel
+        const currentSlide = track.querySelector('.current-slide');
+        let currentIndex = slides.indexOf(currentSlide);
+        
+        // 3. Calculer le nouvel index (avec boucle infinie)
+        let newIndex = currentIndex + direction;
+        
+        if (newIndex < 0) {
+            newIndex = slides.length - 1; // Retour à la fin
+        } else if (newIndex >= slides.length) {
+            newIndex = 0; // Retour au début
+        }
+        
+        // 4. Mettre à jour le carrousel en arrière-plan (pour la synchro)
+        // On "simule" le mouvement du carrousel principal
+        const targetSlide = slides[newIndex];
+        const slideWidth = slides[0].getBoundingClientRect().width;
+        
+        track.style.transform = 'translateX(-' + (slideWidth * newIndex) + 'px)';
+        currentSlide.classList.remove('current-slide');
+        targetSlide.classList.add('current-slide');
+        
+        // Mise à jour des points (dots) si présents
+        const dotsNav = document.querySelector('.carousel-nav');
+        if(dotsNav) {
+            const dots = Array.from(dotsNav.children);
+            dots[currentIndex].classList.remove('current-slide');
+            dots[newIndex].classList.add('current-slide');
+        }
+
+        // 5. Mettre à jour l'image du Zoom
+        const zoomImg = document.getElementById('zoomImageFull');
+        
+        // Petit effet de fondu pour la transition (optionnel mais classe)
+        zoomImg.style.opacity = 0.5;
+        setTimeout(() => {
+            zoomImg.src = targetSlide.querySelector('img').src;
+            zoomImg.style.opacity = 1;
+        }, 150);
+    }
+
+    // Gestion du clic sur l'image (Zoom X2 ou Pan)
+    function toggleZoomState(e) {
+        // On ignore si le clic vient des boutons nav (propagation)
+        if(e.target.tagName === 'BUTTON') return;
+
+        const img = document.getElementById('zoomImageFull');
+        
+        if (e.target === img || e.target.classList.contains('zoom-container')) {
+            img.classList.toggle('zoomed-in');
+            
+            if (img.classList.contains('zoomed-in')) {
+                img.onmousemove = function(evt) {
+                    const { left, top, width, height } = img.getBoundingClientRect();
+                    const x = (evt.clientX - left) / width * 100;
+                    const y = (evt.clientY - top) / height * 100;
+                    img.style.transformOrigin = `${x}% ${y}%`;
+                }
+            } else {
+                img.onmousemove = null;
+                img.style.transformOrigin = 'center center';
+            }
+        }
+    }
+
+    function closeZoom(e) {
+        // Si c'est un événement (clic bouton ou overlay)
+        if (e) {
+            e.stopPropagation();
+            // Si on clique sur l'image ou les boutons nav, on ne ferme pas
+            if (e.target.id === 'zoomImageFull' || e.target.classList.contains('zoom-nav')) return;
+        }
+
+        const overlay = document.getElementById('zoomModalOverlay');
+        const zoomImg = document.getElementById('zoomImageFull');
+        
+        overlay.classList.remove('active');
+        zoomImg.classList.remove('zoomed-in');
+        zoomImg.style.transformOrigin = 'center center';
+
+        setTimeout(() => {
+            overlay.style.display = 'none';
+        }, 300);
+    }
+        // --- LOGIQUE PANIER ---
         function selectionnerTaille(tailleNom, qtyWeb, qtyMagasin) {
             document.getElementById('input-taille-selected').value = tailleNom;
 
