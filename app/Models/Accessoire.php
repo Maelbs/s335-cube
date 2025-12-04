@@ -23,6 +23,7 @@ class Accessoire extends Article
         'quantite_stock_accessoire', 
         'dispo_en_ligne', 
         'dispo_magasin',
+        'materiau',
     ];
 
     protected $casts = [

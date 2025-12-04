@@ -166,7 +166,8 @@
                     </div>
                 </div>
  
-                @if(!$isAccessoire)
+                {{-- FILTRE TAILLE (Désormais pour Vélos ET Accessoires) --}}
+                @if($availableTailles->isNotEmpty())
                     <div class="filter-section">
                         <div class="filter-header" onclick="toggleSection(this)"><h3>TAILLE</h3><i class="fas fa-chevron-up"></i></div>
                         <div class="filter-content">
@@ -178,7 +179,23 @@
                             @endforeach
                         </div>
                     </div>
-                   
+                @endif
+                @if($isAccessoire && isset($availableMateriaux) && $availableMateriaux->isNotEmpty())
+                    <div class="filter-section">
+                        <div class="filter-header" onclick="toggleSection(this)"><h3>MATÉRIAU</h3><i class="fas fa-chevron-up"></i></div>
+                        <div class="filter-content" style="max-height: 200px; overflow-y: auto;">
+                            @foreach($availableMateriaux as $mat)
+                                <label class="cube-checkbox">
+                                    <input type="checkbox" name="materiaux[]" value="{{ $mat }}" class="auto-submit" {{ (is_array(request('materiaux')) && in_array($mat, request('materiaux'))) ? 'checked' : '' }}>
+                                    <span class="box"></span>{{ ucfirst(trim($mat)) }}
+                                </label>
+                            @endforeach
+                        </div>
+                    </div>
+                @endif
+
+                {{-- FILTRE COULEUR (Uniquement pour les vélos car les accessoires n'ont pas d'id_couleur) --}}
+                @if(!$isAccessoire)
                     <div class="filter-section">
                         <div class="filter-header" onclick="toggleSection(this)"><h3>COULEUR</h3><i class="fas fa-chevron-up"></i></div>
                         <div class="filter-content" style="max-height: 200px; overflow-y: auto;">

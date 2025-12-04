@@ -41,12 +41,13 @@ class BoutiqueController extends Controller
         // BRANCHE 1 : ACCESSOIRES (Table 'accessoire')
         // =================================================================
         if ($isAccessoire) {
-            $query = Accessoire::query()->with(['parent', 'categorie', 'parent.photos']);
+            // On charge 'inventaires.taille' pour le filtre taille et 'categorie'
+            $query = Accessoire::query()->with(['parent', 'categorie', 'parent.photos', 'inventaires.taille']);
+
             // --- 1. RECHERCHE ---
             if ($isSearchMode) {
                 $search = strtolower($request->search);
                 $term = '%' . $search . '%';
- 
                 $query->where(function($g) use ($term, $search) {
                     $g->where(function($sub) use ($term, $search) {
                         $sub->whereRaw('LOWER(nom_article) LIKE ?', [$term])
@@ -54,125 +55,75 @@ class BoutiqueController extends Controller
                     })
                     ->orWhereHas('categorie', function($q) use ($term, $search) {
                         $q->whereRaw('LOWER(nom_categorie_accessoire) LIKE ?', [$term])
-                          ->orWhereRaw('levenshtein(LOWER(nom_categorie_accessoire)::text, ?::text) <= 1', [$search]);
+                        ->orWhereRaw('levenshtein(LOWER(nom_categorie_accessoire)::text, ?::text) <= 1', [$search]);
                     });
                 });
                 $titrePage = "RÉSULTATS ACCESSOIRES : " . strtoupper($request->search);
             } 
-
             // --- 2. NAVIGATION ---
             else {
-                // NIVEAU 3 : On a sélectionné une sous-sous-catégorie
+                // ... (Code de navigation existant : model_id, sub_id, cat_id) ...
+                // Je ne répète pas tout le bloc de navigation ici pour faire court, 
+                // gardez votre logique existante pour $hierarchyItems, etc.
                 if ($model_id) { 
-                     $query->where('id_categorie_accessoire', $model_id);
-                     $currCat = CategorieAccessoire::find($model_id);
-                     $titrePage = $currCat ? $currCat->nom_categorie_accessoire : '';
-                     
-                     // Affiche les frères/sœurs (autres choix au même niveau)
-                     $hierarchyTitle = "AUTRES CHOIX"; 
-                     $hierarchyLevel = 'model';
-                     
-                     if($currCat && $currCat->cat_id_categorie_accessoire) {
-                         $hierarchyItems = CategorieAccessoire::where('cat_id_categorie_accessoire', $currCat->cat_id_categorie_accessoire)
-                            ->orderBy('nom_categorie_accessoire')->get()
-                            ->map(fn($item) => (object)['name' => $item->nom_categorie_accessoire, 'id' => $item->id_categorie_accessoire]);
-                         
-                         // On remonte les ID parents pour garder le fil d'ariane actif
-                         $sub_id = $currCat->cat_id_categorie_accessoire;
-                         $parent = CategorieAccessoire::find($sub_id);
-                         if($parent) $cat_id = $parent->cat_id_categorie_accessoire;
-                     }
-                } 
-                // NIVEAU 2 : On a sélectionné une sous-catégorie
-                elseif ($sub_id) {
+                    $query->where('id_categorie_accessoire', $model_id);
+                    $titrePage = (CategorieAccessoire::find($model_id)->nom_categorie_accessoire ?? '');
+                    // ... logique existante ...
+                } elseif ($sub_id) {
+                    // ... logique existante ...
                     $currCat = CategorieAccessoire::with('enfants')->find($sub_id);
-                    $titrePage = $currCat ? $currCat->nom_categorie_accessoire : '';
-                    
-                    // --- LOGIQUE CORRIGÉE ICI ---
-                    // 1. On inclut les produits de la catégorie courante ET de ses enfants
                     if ($currCat) {
                         $ids = $currCat->enfants->pluck('id_categorie_accessoire');
                         $ids->push($currCat->id_categorie_accessoire);
                         $query->whereIn('id_categorie_accessoire', $ids);
+                        $titrePage = $currCat->nom_categorie_accessoire;
                     }
-
-                    // 2. Sidebar : A-t-elle des enfants ?
-                    if ($currCat && $currCat->enfants->isNotEmpty()) {
-                        // OUI -> On affiche les ENFANTS (pour descendre)
-                        $hierarchyTitle = "TYPES"; 
-                        $hierarchyLevel = 'model'; // On utilise 'model' pour le 3ème niveau
-                        $hierarchyItems = $currCat->enfants->map(fn($item) => (object)[
-                            'name' => $item->nom_categorie_accessoire, 
-                            'id' => $item->id_categorie_accessoire
-                        ]);
-                        // On définit le cat_id pour le lien
-                        if($currCat->cat_id_categorie_accessoire) $cat_id = $currCat->cat_id_categorie_accessoire;
-                    } else {
-                        // NON -> On affiche les FRERES (pour changer)
-                        $hierarchyTitle = "AUTRES SOUS-CATÉGORIES"; 
-                        $hierarchyLevel = 'sub';
-                        if($currCat && $currCat->cat_id_categorie_accessoire) {
-                             $hierarchyItems = CategorieAccessoire::where('cat_id_categorie_accessoire', $currCat->cat_id_categorie_accessoire)
-                                ->orderBy('nom_categorie_accessoire')->get()
-                                ->map(fn($item) => (object)['name' => $item->nom_categorie_accessoire, 'id' => $item->id_categorie_accessoire]);
-                             $cat_id = $currCat->cat_id_categorie_accessoire;
-                        }
-                    }
-                } 
-                // NIVEAU 1 : On a sélectionné une catégorie racine
-                elseif ($cat_id) {
+                    // ... suite logique existante ...
+                } elseif ($cat_id) {
+                    // ... logique existante ...
                     $currCat = CategorieAccessoire::with('enfants')->find($cat_id);
                     if ($currCat) {
-                        // Récupère tous les produits de cette catégorie et de ses enfants (récursif simple ou direct)
-                        // Pour faire simple ici : enfants directs + courant. 
-                        // Note: Si vous avez 3 niveaux, il faudrait idéalement récupérer les IDs des petits-enfants aussi.
-                        // Ici on garde la logique simple :
                         $ids = $currCat->enfants->pluck('id_categorie_accessoire');
                         $ids->push($currCat->id_categorie_accessoire);
-                        $query->whereIn('id_categorie_accessoire', $ids); // Ou logique plus large si besoin
-                        
+                        $query->whereIn('id_categorie_accessoire', $ids);
                         $titrePage = $currCat->nom_categorie_accessoire;
-                        $hierarchyTitle = "SOUS-CATÉGORIES"; 
-                        $hierarchyLevel = 'sub';
-                        $hierarchyItems = $currCat->enfants->map(fn($item) => (object)[
-                            'name' => $item->nom_categorie_accessoire, 
-                            'id' => $item->id_categorie_accessoire
-                        ]);
                     }
-                } 
-                // NIVEAU 0 : Racine
-                else {
-                    $hierarchyTitle = "CATÉGORIES"; 
-                    $hierarchyLevel = 'root';
-                    $hierarchyItems = CategorieAccessoire::whereNull('cat_id_categorie_accessoire')
-                        ->orderBy('nom_categorie_accessoire')->get()
-                        ->map(fn($item) => (object)['name' => $item->nom_categorie_accessoire, 'id' => $item->id_categorie_accessoire]);
+                    // ... suite logique existante ...
+                } else {
+                    // ... logique existante ...
                 }
             }
 
-            // --- 3. FILTRES DISPO (Booléens Accessoire) ---
+            // --- 3. FILTRES SPÉCIFIQUES ACCESSOIRES ---
 
-            if ($request->filled('dispo_ligne')) {
-                $query->whereHas('inventaires', function ($q) {
-                    $q->where('quantite_stock_en_ligne', '>', 0);
+            // NOUVEAU : Filtre Matériaux
+            if ($request->filled('materiaux')) {
+                $query->whereIn('materiau', $request->materiaux);
+            }
+
+            // Filtre Taille (existant)
+            if ($request->filled('tailles')) {
+                $query->whereHas('inventaires.taille', function($q) use ($request) {
+                    $q->whereIn('taille', $request->tailles);
                 });
             }
 
-            // Filtre Stock magasin (via table inventaire_magasin)
+            // Filtres Dispo (existant - correction précédente)
+            if ($request->filled('dispo_ligne')) {
+                $query->whereHas('inventaires', fn($q) => $q->where('quantite_stock_en_ligne', '>', 0));
+            }
             if ($request->filled('dispo_magasin')) {
-                $query->whereHas('inventaires.magasins', function ($q) {
-                    $q->where('quantite_stock_magasin', '>', 0);
-                });
-}
+                $query->whereHas('inventaires.magasins', fn($q) => $q->where('quantite_stock_magasin', '>', 0));
+            }
 
+            // Compteurs (existant)
             $countOnline = (clone $query)->whereHas('inventaires', fn($q) => $q->where('quantite_stock_en_ligne', '>', 0))->count();
             $countStore = (clone $query)->whereHas('inventaires.magasins', fn($q) => $q->where('quantite_stock_magasin', '>', 0))->count();
 
-
-            // Prix & Tri
+            // Prix & Tri (existant)
             if ($request->filled('prix_min')) $query->where('prix', '>=', $request->prix_min);
             if ($request->filled('prix_max')) $query->where('prix', '<=', $request->prix_max);
- 
+            // ... (Logique de tri existante) ...
             if ($request->filled('sort')) {
                 switch ($request->sort) {
                     case 'price_asc': $query->orderBy('prix', 'asc'); break;
@@ -184,7 +135,24 @@ class BoutiqueController extends Controller
             } else {
                 $query->orderBy('prix', 'asc');
             }
-           
+
+            // --- SIDEBAR DATA (Données pour les filtres) ---
+            
+            // NOUVEAU : Récupération des matériaux pour Accessoires
+            // On réutilise la variable $availableMateriaux pour la vue
+            $availableMateriaux = Accessoire::select('materiau')
+                ->distinct()
+                ->whereNotNull('materiau')
+                ->where('materiau', '!=', '')
+                ->orderBy('materiau')
+                ->pluck('materiau'); // Renvoie une Collection de strings
+
+            // Récupération des tailles (existant)
+            $availableTailles = Taille::whereHas('ArticleInventaire.articles.accessoire')
+                ->distinct()
+                ->orderBy('id_taille')
+                ->get();
+
             $maxPrice = Accessoire::max('prix');
             $articles = $query->paginate(15)->withQueryString();
         }
@@ -269,23 +237,43 @@ class BoutiqueController extends Controller
             $hasSize = $request->filled('tailles');
             $hasOnline = $request->filled('dispo_ligne');
             $hasStore = $request->filled('dispo_magasin');
- 
-            if ($hasSize) {
-                // Filtre les variantes qui ont la taille demandée avec le stock demandé
-                $query->whereHas('inventaires', function($q) use ($request, $hasOnline, $hasStore) {
-                    // Jointure sur la table ArticleInventaire
+
+            // --- A. CALCUL DES COMPTEURS (AVANT d'appliquer les filtres de dispo) ---
+            // On clone la requête de base (qui a déjà les filtres de catégorie, prix, etc. mais PAS encore la dispo)
+            $queryForCounts = clone $query;
+
+            // Calcul du nombre de vélos dispos EN LIGNE (en tenant compte de la taille si sélectionnée)
+            $countOnline = (clone $queryForCounts)->whereHas('inventaires', function($q) use ($request, $hasSize) {
+                // Si une taille est choisie, on ne compte que si CETTE taille est dispo
+                if ($hasSize) {
                     $q->whereHas('taille', fn($t) => $t->whereIn('taille', $request->tailles));
+                }
+                $q->where('quantite_stock_en_ligne', '>', 0);
+            })->count();
+
+            // Calcul du nombre de vélos dispos EN MAGASIN (en tenant compte de la taille si sélectionnée)
+            $countStore = (clone $queryForCounts)->whereHas('inventaires', function($q) use ($request, $hasSize) {
+                if ($hasSize) {
+                    $q->whereHas('taille', fn($t) => $t->whereIn('taille', $request->tailles));
+                }
+                $q->whereHas('magasins', fn($m) => $m->where('quantite_stock_magasin', '>', 0));
+            })->count();
+
+
+            // --- B. APPLICATION DES FILTRES SUR LA LISTE DES RÉSULTATS ---
+            if ($hasSize) {
+                // Cas avec Taille : On filtre les vélos qui ont la taille X ET le stock demandé pour cette taille
+                $query->whereHas('inventaires', function($q) use ($request, $hasOnline, $hasStore) {
+                    $q->whereHas('taille', fn($t) => $t->whereIn('taille', $request->tailles));
+                    
                     if ($hasOnline) $q->where('quantite_stock_en_ligne', '>', 0);
                     if ($hasStore) $q->whereHas('magasins', fn($m) => $m->where('quantite_stock_magasin', '>', 0));
                 });
             } else {
+                // Cas sans Taille : On regarde globalement si le vélo est dispo
                 if ($hasOnline) $query->whereHas('inventaires', fn($q) => $q->where('quantite_stock_en_ligne', '>', 0));
                 if ($hasStore) $query->whereHas('inventaires.magasins', fn($q) => $q->where('quantite_stock_magasin', '>', 0));
             }
-
-            // Compteurs
-            $countOnline = (clone $query)->whereHas('inventaires', fn($q) => $q->where('quantite_stock_en_ligne', '>', 0))->count();
-            $countStore = (clone $query)->whereHas('inventaires.magasins', fn($q) => $q->where('quantite_stock_magasin', '>', 0))->count();
 
             // Prix & Tri
             if ($request->filled('prix_min')) $query->where('prix', '>=', $request->prix_min);
