@@ -267,7 +267,7 @@
                            
                             <div class="product-details">
                                 <h2 class="product-title">
-                                    <a href="{{ url($isAccessoire ? '/accessoire/' : '/velo/') . $article->reference }}">
+                                    <a href="{{ url($isAccessoire ? '/accessoire/' : '/velo/') . '/' . $article->reference }}">
                                         @if($isAccessoire)
                                             {{ strtoupper($article->nom_article) }}
                                         @else
