@@ -65,6 +65,6 @@ class VarianteVeloController extends Controller
         ->get();
 
         
-        return view('vizualize_article', compact('velo', 'stockParIdTaille', 'tailleGeometrie', 'specifications', 'velosSimilaires'));
+        return view('vizualizeArticle', compact('velo', 'stockParIdTaille', 'tailleGeometrie', 'specifications', 'velosSimilaires'));
     }
 }

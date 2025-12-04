@@ -80,11 +80,14 @@
                             <h3>{{ $hierarchyTitle }}</h3><i class="fas fa-chevron-up"></i>
                         </div>
                         <div class="filter-content">
-                            @foreach($hierarchyItems as $item)
-                                @php
-                                    $currentFilters = request()->query();
-                                    $routeParams = ['type' => $type];
-                                    $isActive = false;
+                        @foreach($hierarchyItems as $item)
+                            @php
+                                $currentFilters = request()->query();
+                                $routeParams = ['type' => $type];
+                                $isActive = false;
+
+                                // --- CAS 1 : VÉLOS ---
+                                if(!$isAccessoire) {
                                     if ($hierarchyLevel === 'root') {
                                         $routeParams['cat_id'] = $item->id;
                                         $isActive = ($cat_id == $item->id);
@@ -100,13 +103,39 @@
                                         $routeParams['model_id'] = $item->id;
                                         $isActive = ($model_id == $item->id);
                                     }
-                                    $targetUrl = route('boutique.index', array_merge($routeParams, $currentFilters));
-                                @endphp
-                                <label class="cube-checkbox" onclick="window.location.href='{{ $targetUrl }}#listing-anchor'">
-                                    <input type="checkbox" {{ $isActive ? 'checked' : '' }}>
-                                    <span class="box"></span>{{ strtoupper($item->name) }}
-                                </label>
-                            @endforeach
+                                } 
+                                // --- CAS 2 : ACCESSOIRES ---
+                                else {
+                                    if ($hierarchyLevel === 'root') {
+                                        // On est à la racine, on clique pour aller au niveau 1 (cat_id)
+                                        $routeParams['cat_id'] = $item->id;
+                                        $isActive = ($cat_id == $item->id);
+                                    }
+                                    elseif ($hierarchyLevel === 'sub') {
+                                        // On est au niveau 1, on clique pour aller au niveau 2 (sub_id)
+                                        // On doit garder le cat_id parent
+                                        $routeParams['cat_id'] = $cat_id; 
+                                        $routeParams['sub_id'] = $item->id;
+                                        $isActive = ($sub_id == $item->id);
+                                    }
+                                    elseif ($hierarchyLevel === 'model') {
+                                        // On est au niveau 2, on clique pour aller au niveau 3 (model_id)
+                                        // On garde cat_id et sub_id
+                                        $routeParams['cat_id'] = $cat_id;
+                                        $routeParams['sub_id'] = $sub_id;
+                                        $routeParams['model_id'] = $item->id;
+                                        $isActive = ($model_id == $item->id);
+                                    }
+                                }
+
+                                $targetUrl = route('boutique.index', array_merge($routeParams, $currentFilters));
+                            @endphp
+                            
+                            <label class="cube-checkbox" onclick="window.location.href='{{ $targetUrl }}#listing-anchor'">
+                                <input type="checkbox" {{ $isActive ? 'checked' : '' }}>
+                                <span class="box"></span>{{ strtoupper($item->name) }}
+                            </label>
+                        @endforeach
                         </div>
                     </div>
                 @endif
@@ -137,7 +166,8 @@
                     </div>
                 </div>
  
-                @if(!$isAccessoire)
+                {{-- FILTRE TAILLE (Désormais pour Vélos ET Accessoires) --}}
+                @if($availableTailles->isNotEmpty())
                     <div class="filter-section">
                         <div class="filter-header" onclick="toggleSection(this)"><h3>TAILLE</h3><i class="fas fa-chevron-up"></i></div>
                         <div class="filter-content">
@@ -149,7 +179,23 @@
                             @endforeach
                         </div>
                     </div>
-                   
+                @endif
+                @if($isAccessoire && isset($availableMateriaux) && $availableMateriaux->isNotEmpty())
+                    <div class="filter-section">
+                        <div class="filter-header" onclick="toggleSection(this)"><h3>MATÉRIAU</h3><i class="fas fa-chevron-up"></i></div>
+                        <div class="filter-content" style="max-height: 200px; overflow-y: auto;">
+                            @foreach($availableMateriaux as $mat)
+                                <label class="cube-checkbox">
+                                    <input type="checkbox" name="materiaux[]" value="{{ $mat }}" class="auto-submit" {{ (is_array(request('materiaux')) && in_array($mat, request('materiaux'))) ? 'checked' : '' }}>
+                                    <span class="box"></span>{{ ucfirst(trim($mat)) }}
+                                </label>
+                            @endforeach
+                        </div>
+                    </div>
+                @endif
+
+                {{-- FILTRE COULEUR (Uniquement pour les vélos car les accessoires n'ont pas d'id_couleur) --}}
+                @if(!$isAccessoire)
                     <div class="filter-section">
                         <div class="filter-header" onclick="toggleSection(this)"><h3>COULEUR</h3><i class="fas fa-chevron-up"></i></div>
                         <div class="filter-content" style="max-height: 200px; overflow-y: auto;">
@@ -204,7 +250,11 @@
                 <div class="products-grid">
                     @foreach($articles as $article)
                         <div class="product-card">
-                            <div class="badge-new">NOUVEAU</div>
+                            @if(!$isAccessoire)
+                                @if(intval($article->modele->millesime_modele) >= intval(date("Y")))
+                                    <div class="badge-new">NOUVEAU</div>
+                                @endif
+                            @endif
                             <div class="product-image">
                                 <a href="{{ url($isAccessoire ? '/accessoire/' : '/velo/') . '/' . $article->reference }}">
                                     @if ($isAccessoire)

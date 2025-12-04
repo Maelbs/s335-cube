@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <title>Mon Panier</title>
     <link rel="stylesheet" href="{{ asset('css/header.css') }}">
-    <link rel="stylesheet" href="{{ asset('css/cart.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/panier.css') }}">
     <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
     {{-- Token CSRF pour que la sauvegarde AJAX fonctionne --}}
     <meta name="csrf-token" content="{{ csrf_token() }}">

@@ -58,7 +58,7 @@ class InfoArticleController extends Controller
             ->distinct()
             ->get();
 
-        return view('vizualize_article', compact(
+        return view('vizualizeArticle', compact(
             'article',
             'stock',
             'tailleGeometrie',
