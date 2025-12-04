@@ -708,6 +708,11 @@ p.text-section-grey{
     margin-bottom: 20px;
 }
 
+#badge-new {
+    background-color: #000;
+    color: #fff;
+}
+
 .badge-season { 
     background: #fff; 
     color: #000; 
@@ -1471,4 +1476,186 @@ p.text-section-grey{
     .zoom-nav { width: 40px; height: 40px; font-size: 1.5rem; }
     .zoom-prev { left: 10px; }
     .zoom-next { right: 10px; }
+}
+
+/* --- Style du Conteneur (pour référence) --- */
+.carousel-track-container {
+    position: relative; /* Important pour positionner le bouton 3D en absolu */
+    /* Vos styles existants... */
+}
+
+/* --- Bouton Vue 3D --- */
+/* --- 1. BOUTON D'OUVERTURE (Ton style) --- */
+.btn-3d-view {
+    position: absolute;
+    bottom: 25px;
+    right: 25px;        
+    z-index: 15;
+    
+    background-color: #000000;
+    color: #ffffff;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 50px;
+    padding: 10px 24px;
+    
+    font-family: 'Damas Font', sans-serif;
+    font-weight: 700;
+    font-size: 13px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+    box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+}
+
+.icon-3d {
+    width: 20px;
+    height: 20px;
+    transition: transform 0.5s ease;
+}
+
+.btn-3d-view:hover {
+    background-color: #ffffff;
+    color: #000000;
+    transform: translateY(-3px);
+    box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+}
+
+.btn-3d-view:hover .icon-3d {
+    transform: rotate(180deg);
+}
+
+/* --- 2. STRUCTURE LIGHTBOX (Mise à jour pour être grande) --- */
+.lightbox-overlay {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.95); /* Fond quasi noir */
+    z-index: 9999; /* Très haut z-index */
+    justify-content: center;
+    align-items: center;
+}
+
+.lightbox-overlay.active {
+    display: flex;
+}
+
+/* --- 2. STRUCTURE LIGHTBOX --- */
+.lightbox-content {
+    position: relative; /* Sert de repère */
+    
+    /* Taille fixe relative à l'écran */
+    width: 90vw !important;
+    height: 90vh !important;
+    max-width: none !important;
+    
+    background: #fff;
+    border-radius: 8px;
+    box-shadow: 0 5px 30px rgba(0,0,0,0.5);
+    
+    /* On retire tout padding qui pourrait pousser l'image */
+    padding: 0; 
+    overflow: hidden;
+}
+
+/* --- 3. BOUTON FERMER (Repositionné à l'intérieur) --- */
+.lightbox-close {
+    position: absolute;
+    top: 15px;      /* À l'intérieur de la boîte blanche */
+    right: 20px;
+    background: none;
+    border: none;
+    color: #333;    /* Foncé pour contraster avec le fond blanc */
+    font-size: 40px;
+    line-height: 1;
+    cursor: pointer;
+    z-index: 100;   /* Au dessus de l'image */
+    transition: color 0.2s;
+}
+
+.lightbox-close:hover {
+    color: #000;
+    transform: scale(1.1);
+}
+
+/* --- 3. CONTENEUR 3D (La clé du centrage) --- */
+#container-3d-viewer {
+    /* On force le conteneur à prendre EXACTEMENT toute la place de la boîte blanche */
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    
+    /* Flexbox pour centrer l'image à l'intérieur */
+    display: flex;
+    justify-content: center; /* Centre horizontalement */
+    align-items: center;     /* Centre verticalement */
+    
+    z-index: 1; /* En dessous du bouton fermer */
+}
+
+#bike-image {
+    /* L'image va grandir jusqu'à toucher un bord (haut/bas ou gauche/droite) */
+    max-width: 100%;
+    max-height: 100%;
+    
+    /* Assure que l'image ne soit pas déformée */
+    object-fit: contain; 
+    
+    /* Supprime l'espace fantôme sous les images en ligne */
+    display: block; 
+    
+    /* Sécurité supplémentaire */
+    margin: auto;
+    
+    /* Vos styles de fluidité */
+    pointer-events: none;
+    user-select: none;
+    -webkit-user-drag: none;
+}
+
+/* --- 5. LOADER / SPINNER (Nouveau) --- */
+.loader-wrapper {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%); /* Centrage absolu parfait */
+    text-align: center;
+    z-index: 50;
+    background: rgba(255, 255, 255, 0.95);
+    padding: 30px;
+    border-radius: 15px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+}
+
+.spinner {
+    width: 50px;
+    height: 50px;
+    border: 4px solid #f3f3f3;
+    border-top: 4px solid #000; /* Noir pour matcher ton bouton */
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin: 0 auto 15px auto;
+}
+
+.loading-text {
+    font-family: sans-serif;
+    font-weight: 700;
+    color: #000;
+    font-size: 14px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
 }
