@@ -19,10 +19,7 @@
                     <section id="content" class="page-content page-content--authentication">
                         <section class="register-form text-center">
                             <h1 class="h3 register-form__title mt-5">Créez votre compte</h1>
-                            <p class="text-left mb-5">
-                                Vous avez déjà un compte ?<br>
-                                <a class="text-underline" href="{{ route('login') }}">Connectez-vous !</a>
-                            </p>
+
 
                             @if ($errors->any())
                                 <div class="alert alert-danger">
@@ -80,19 +77,19 @@
 
                                     {{-- Confirmation mot de passe --}}
                                     <div class="form-group">
-                                        <label for="password_confirmation">Confirmer le mot de passe</label>
+                                        <label class="required" for="password_confirmation">Confirmer le mot de passe</label>
                                         <input class="form-control" type="password" name="password_confirmation" id="password_confirmation" required>
                                     </div>
 
                                     {{-- tel --}}
                                     <div class="form-group phone">
-                                        <label for="tel">Téléphone</label>
+                                        <label class="required" for="tel">Téléphone</label>
                                         <input class="form-control" name="tel" type="tel" value="{{ old('tel') }}" id="tel" placeholder="0612345678">
                                     </div>
 
                                     {{-- Date de naissance --}}
                                     <div class="form-group birthday">
-                                        <label for="birthday">Date de naissance</label>
+                                        <label class="required" for="birthday">Date de naissance</label>
                                         <input class="form-control" name="birthday" type="text" value="{{ old('birthday') }}" id="birthday" placeholder="DD/MM/YYYY" autocomplete="bday">
                                         <small class="form-text text-muted">(Ex. : 31/05/1970)</small>
                                     </div>
@@ -114,11 +111,15 @@
                                 {{-- Footer du formulaire --}}
                                 <footer class="form-footer">
                                     <input type="hidden" name="submitCreate" value="1">
-                                    <button class="btn btn-primary btn-primary--red form-control-submit ml-md-3" type="submit" data-link-action="save-customer">
+                                    <button class="btn-valider" type="submit" data-link-action="save-customer">
                                         <span class="double-arrows double-arrows--white">Valider mes informations</span>
                                     </button>
                                     <p class="description description--xs description--grey mt-3">* Champs obligatoires</p>
-                                    <p class="description description--xs description--grey mt-3">
+                                    <p class="text-connexion">
+                                        Vous avez déjà un compte ?<br>
+                                        <a class="text-underline" href="{{ route('login') }}">Connectez-vous !</a>
+                                    </p>
+                                    <p class="description">
                                         CUBE Bikes France est responsable du traitement et de la collecte des données personnelles obligatoires signalées par un astérisque...
                                     </p>
                                 </footer>
@@ -128,6 +129,10 @@
                 </section>
             </div>
         </div>
+    </section>
+
+    <section>
+
     </section>
 
     <script src="{{ asset('js/header.js') }}" defer></script>
