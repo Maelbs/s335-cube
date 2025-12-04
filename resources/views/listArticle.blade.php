@@ -9,25 +9,37 @@
     <link rel="stylesheet" href="{{ asset('css/styleBody.css') }}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/noUiSlider/15.7.1/nouislider.min.css">
-    
+   
     <script src="https://cdnjs.cloudflare.com/ajax/libs/noUiSlider/15.7.1/nouislider.min.js"></script>
-    
+   
     <script>
         function scrollToListing() {
             document.getElementById('listing-anchor').scrollIntoView({ behavior: 'smooth' });
         }
+<<<<<<< HEAD
         
         function toggleSortMenu() {
             document.getElementById("sortDropdown").classList.toggle("active");
         }
         
+=======
+       
+        function toggleSortMenu() {
+            document.getElementById("sortDropdown").classList.toggle("active");
+        }
+       
+>>>>>>> df22b750513821a60e414ed14c48c8240eec70b1
         function applySort(sortValue) {
             let currentUrl = new URL(window.location.href);
             currentUrl.searchParams.set('sort', sortValue);
             currentUrl.hash = "listing-anchor";
             window.location.href = currentUrl.toString();
         }
+<<<<<<< HEAD
         
+=======
+       
+>>>>>>> df22b750513821a60e414ed14c48c8240eec70b1
         window.onclick = function(event) {
             if (!event.target.matches('.dropdown-btn') && !event.target.closest('.dropdown-btn')) {
                 var dropdowns = document.getElementsByClassName("custom-dropdown");
@@ -36,29 +48,39 @@
                 }
             }
         }
+<<<<<<< HEAD
 
+=======
+ 
+>>>>>>> df22b750513821a60e414ed14c48c8240eec70b1
         function toggleSection(headerElement) {
             headerElement.parentElement.classList.toggle('closed');
         }
     </script>
 </head>
 <body>
+<<<<<<< HEAD
     
     @include('layouts.header') 
 
+=======
+   
+    @include('layouts.header')
+ 
+>>>>>>> df22b750513821a60e414ed14c48c8240eec70b1
     @php
     if ($type === 'Electrique') {
         $bgImage = 'https://www.cubebikes.fr/img/c/4519.jpg';
     }
     elseif ($type === 'Musculaire') {
         $bgImage = 'https://www.cubebikes.fr/img/c/4518.jpg';
-    } 
+    }
     else {
         $bgImage = asset('images/accessoires-de-velo.png');
     }
     @endphp
-    
-
+   
+ 
     <section class="hero-section" style="background-image: url('{{ $bgImage }}');">
         <div class="hero-overlay"></div>
         <div class="hero-content">
@@ -68,14 +90,14 @@
             </button>
         </div>
     </section>
-    
+   
     <div id="listing-anchor" class="main-container">
-        
+       
         <aside class='filters-sidebar'>
             <form id="filterForm" action="{{ url()->current() }}#listing-anchor" method="GET">
                 @if(request('search')) <input type="hidden" name="search" value="{{ request('search') }}"> @endif
                 @if(request('sort')) <input type="hidden" name="sort" value="{{ request('sort') }}"> @endif
-
+ 
                 @if($hierarchyItems->isNotEmpty())
                     <div class="filter-section">
                         <div class="filter-header" onclick="toggleSection(this)">
@@ -87,23 +109,31 @@
                                     $currentFilters = request()->query();
                                     $routeParams = ['type' => $type];
                                     $isActive = false;
+<<<<<<< HEAD
 
+=======
+ 
+>>>>>>> df22b750513821a60e414ed14c48c8240eec70b1
                                     if ($hierarchyLevel === 'root') {
                                         $routeParams['cat_id'] = $item->id;
                                         $isActive = ($cat_id == $item->id);
-                                    } 
+                                    }
                                     elseif ($hierarchyLevel === 'sub') {
                                         $routeParams['cat_id'] = $cat_id;
                                         $routeParams['sub_id'] = $item->id;
                                         $isActive = ($sub_id == $item->id);
-                                    } 
+                                    }
                                     elseif ($hierarchyLevel === 'model') {
                                         $routeParams['cat_id'] = $cat_id;
                                         $routeParams['sub_id'] = $sub_id;
                                         $routeParams['model_id'] = $item->id;
                                         $isActive = ($model_id == $item->id);
                                     }
+<<<<<<< HEAD
                                     
+=======
+                                   
+>>>>>>> df22b750513821a60e414ed14c48c8240eec70b1
                                     $targetUrl = route('boutique.index', array_merge($routeParams, $currentFilters));
                                 @endphp
                                 <label class="cube-checkbox" onclick="window.location.href='{{ $targetUrl }}#listing-anchor'">
@@ -114,7 +144,7 @@
                         </div>
                     </div>
                 @endif
-
+ 
                 <div class="filter-section">
                     <div class="filter-header" onclick="toggleSection(this)"><h3>DISPONIBILITÉ</h3><i class="fas fa-chevron-up"></i></div>
                     <div class="filter-content">
@@ -128,19 +158,19 @@
                         </label>
                     </div>
                 </div>
-
+ 
                 <div class="filter-section">
                     <div class="filter-header" onclick="toggleSection(this)">
                         <h3>PRIX</h3><i class="fas fa-chevron-up"></i>
                     </div>
-                    
+                   
                     <div class="filter-content price-filter-container">
                         <div id="price-slider"></div>
                         <input type="hidden" name="prix_min" id="input-prix-min" value="{{ request('prix_min') ?? 0 }}">
                         <input type="hidden" name="prix_max" id="input-prix-max" value="{{ request('prix_max') ?? $maxPrice }}">
                     </div>
                 </div>
-
+ 
                 @if(!$isAccessoire)
                     <div class="filter-section">
                         <div class="filter-header" onclick="toggleSection(this)"><h3>TAILLE</h3><i class="fas fa-chevron-up"></i></div>
@@ -153,7 +183,7 @@
                             @endforeach
                         </div>
                     </div>
-                    
+                   
                     <div class="filter-section">
                         <div class="filter-header" onclick="toggleSection(this)"><h3>COULEUR</h3><i class="fas fa-chevron-up"></i></div>
                         <div class="filter-content" style="max-height: 200px; overflow-y: auto;">
@@ -166,14 +196,18 @@
                         </div>
                     </div>
                 @endif
-
+ 
             </form>
         </aside>
-        
+       
         <main class='products-grid-wrapper'>
             <div class="top-bar">
                 <span>{{ $articles->total() }} PRODUITS</span>
+<<<<<<< HEAD
                 
+=======
+               
+>>>>>>> df22b750513821a60e414ed14c48c8240eec70b1
                 <div class="custom-dropdown" id="sortDropdown">
                     <button class="dropdown-btn" onclick="toggleSortMenu()">
                         TRIER PAR : <span id="currentSortLabel">
@@ -188,7 +222,7 @@
                         </span>
                         <i class="fas fa-chevron-down"></i>
                     </button>
-                    
+                   
                     <div class="dropdown-content" id="sortOptions">
                         <div onclick="applySort('relevance')">PERTINENCE</div>
                         <div onclick="applySort('name_asc')">NOM, A À Z</div>
@@ -200,7 +234,11 @@
                     </div>
                 </div>
             </div>
+<<<<<<< HEAD
 
+=======
+ 
+>>>>>>> df22b750513821a60e414ed14c48c8240eec70b1
             @if($articles->isEmpty())
                 <div class="empty-state" style="padding:50px; text-align:center; color:#666;">
                     <p>Aucun article ne correspond à vos critères.</p>
@@ -220,7 +258,7 @@
                                     @endif
                                 </a>
                             </div>
-                            
+                           
                             <div class="product-details">
                                 <h2 class="product-title">
                                     <a href="{{ url($isAccessoire ? '/accessoire/' : '/velo/') . $article->reference }}">
@@ -231,11 +269,15 @@
                                         @endif
                                     </a>
                                 </h2>
-
+ 
                                 @php
                                     $dispoLigne = false;
                                     $dispoMag = false;
+<<<<<<< HEAD
 
+=======
+ 
+>>>>>>> df22b750513821a60e414ed14c48c8240eec70b1
                                     if ($isAccessoire) {
                                         // Disponibilité Accessoires (Booléens simples)
                                         $dispoLigne = (bool)$article->dispo_en_ligne;
@@ -243,6 +285,7 @@
                                     } else {
                                         // Disponibilité Vélos (Via inventaires)
                                         $filtreTailles = request('tailles');
+<<<<<<< HEAD
                                         
                                         // Relation 'inventaires' héritée de Article (hasMany ArticleInventaire)
                                         $invs = $article->inventaires;
@@ -260,11 +303,30 @@
                                         foreach($invs as $i) { 
                                             // 'magasins' est la relation belongsToMany dans ArticleInventaire
                                             $stockMag += $i->magasins->sum('pivot.quantite_stock_magasin'); 
+=======
+                                       
+                                        // Relation 'inventaires' héritée de Article (hasMany ArticleInventaire)
+                                        $invs = $article->inventaires;
+                                       
+                                        if ($filtreTailles && is_array($filtreTailles)) {
+                                            $invs = $invs->filter(fn($i) => in_array(trim($i->taille->taille), $filtreTailles));
+                                        }
+ 
+                                        // Calcul Dispo Ligne
+                                        $stockLigne = $invs->sum('quantite_stock_en_ligne');
+                                        $dispoLigne = ($stockLigne > 0);
+                                       
+                                        // Calcul Dispo Magasin (Somme Pivot via ArticleInventaire -> magasins)
+                                        $stockMag = 0;
+                                        foreach($invs as $i) {
+                                            // 'magasins' est la relation belongsToMany dans ArticleInventaire
+                                            $stockMag += $i->magasins->sum('pivot.quantite_stock_magasin');
+>>>>>>> df22b750513821a60e414ed14c48c8240eec70b1
                                         }
                                         $dispoMag = ($stockMag > 0);
                                     }
                                 @endphp
-
+ 
                                 <div class="availability">
                                     <div class="status-line">
                                         <span class="dot {{ $dispoLigne ? 'green' : 'red' }}"></span>
@@ -275,12 +337,16 @@
                                         <span class="text">Disponible en magasins <i class="far fa-question-circle info-icon"></i></span>
                                     </div>
                                 </div>
-
+ 
                                 <div class="product-footer">
                                     <div class="price">{{ number_format($article->prix, 0, ',', ' ') }} €</div>
                                 </div>
                             </div>
+<<<<<<< HEAD
                             
+=======
+                           
+>>>>>>> df22b750513821a60e414ed14c48c8240eec70b1
                             <a href="{{ url($isAccessoire ? '/accessoire' : '/velo') . '/' . $article->reference }}" class="btn-skew">
                                 <span>VOIR LE PRODUIT</span> <i class="fas fa-caret-right"></i>
                             </a>
@@ -293,18 +359,18 @@
             @endif
         </main>
     </div>
-    
+   
     <footer>
         <p>&copy; 2025 CUBE Bikes France</p>
     </footer>
-
+ 
     <script src="{{ asset('js/header.js') }}" defer></script>
-
+ 
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             const form = document.getElementById('filterForm');
             const inputs = form.querySelectorAll('.auto-submit');
-
+ 
             inputs.forEach(input => {
                 input.addEventListener('change', function() {
                     document.querySelector('.products-grid-wrapper').style.opacity = '0.5';
@@ -312,14 +378,18 @@
                 });
             });
         });
+<<<<<<< HEAD
 
+=======
+ 
+>>>>>>> df22b750513821a60e414ed14c48c8240eec70b1
         document.addEventListener('DOMContentLoaded', function () {
             var slider = document.getElementById('price-slider');
             var minPrice = 0;
             var maxPrice = {{ $maxPrice }};
             var currentMin = {{ request('prix_min') ?? 0 }};
             var currentMax = {{ request('prix_max') ?? $maxPrice }};
-
+ 
             noUiSlider.create(slider, {
                 start: [currentMin, currentMax],
                 connect: true,
@@ -330,7 +400,11 @@
                 ],
                 step: 10,
             });
+<<<<<<< HEAD
 
+=======
+ 
+>>>>>>> df22b750513821a60e414ed14c48c8240eec70b1
             slider.noUiSlider.on('change', function (values, handle) {
                 document.getElementById('input-prix-min').value = Math.round(values[0]);
                 document.getElementById('input-prix-max').value = Math.round(values[1]);

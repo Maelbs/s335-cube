@@ -208,6 +208,7 @@ body {
     text-align: center;
     border: none;
     cursor: pointer;
+<<<<<<< Updated upstream
 }
 
 /* On redresse le texte pour qu'il soit droit dans le bouton penché */
@@ -224,6 +225,24 @@ body {
     text-align: right; /* Aligne le bouton à droite dans le résumé */
 }
 
+=======
+}
+
+/* On redresse le texte pour qu'il soit droit dans le bouton penché */
+.btn-cube-red span {
+    display: block;
+    transform: skewX(20deg);
+}
+
+.btn-cube-red:hover {
+    background-color: #d62c2c;
+}
+
+.summary-btn-container {
+    text-align: right; /* Aligne le bouton à droite dans le résumé */
+}
+
+>>>>>>> Stashed changes
 /* --- BAS DE PAGE (Lien retour + Bouton Valider) --- */
 .cart-footer-actions {
     display: flex;
@@ -278,5 +297,9 @@ body {
     pointer-events: none;
     transform: skewX(-20deg) !important;
     box-shadow: none;
+<<<<<<< Updated upstream
 }
 
+=======
+}
+>>>>>>> Stashed changes
