@@ -516,6 +516,10 @@ nav {
     margin: 0;
 }
 
+.action-buttons-container {
+    font-weight: 500;
+}
+
 .toggle-content {
     max-height: 0;
     opacity: 0;

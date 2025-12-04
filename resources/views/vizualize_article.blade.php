@@ -174,6 +174,9 @@
                                             @if($stockMag)
                                                 / Commandable en magasin
                                             @endif
+                                            @if(! $stockWeb && ! $stockMag)
+                                                En rupture de stock
+                                            @endif
                                         </div>
                                     </div>
                                 @endif
@@ -275,11 +278,13 @@
                 <div class="size-selector">
                     <p class="size-label">TAILLE</p>
                     <div class="sizes-grid">
+                        @php $stockWebVelo = 0 @endphp
                         @foreach ($stock as $inventaire)   
                             @php
                                 $stockWeb = $inventaire->quantite_stock_en_ligne;
                                 $stockMag = $inventaire->magasins->sum('pivot.quantite_stock_magasin');
                                 $classeCss = ($stockWeb <= 0) ? 'out-of-stock' : '';
+                                $stockWebVelo += $stockWeb;
                             @endphp
                             <button 
                                 class="size-btn {{ $classeCss }}"
@@ -351,12 +356,25 @@
                         <input type="hidden" name="taille" id="input-taille-selected" value="Unique">
                     @endif
                     <input type="hidden" name="quantity" value="1">
-
-                    <button type="button" onclick="addToCartAjax()" id="btn-panier" class="btn-skew">
-                        <span class="btn-content-unskew">
-                            <span class="text-label">Ajouter au panier</span>
-                        </span>
-                    </button>
+                    @if($typeVue === "accessoire")
+                        @if($stockMag || $stockWeb)
+                            <button type="button" onclick="addToCartAjax()" id="btn-panier" class="btn-skew ">
+                                <span class="btn-content-unskew">
+                                    <span class="text-label">Ajouter au panier</span>
+                                </span>
+                            </button>
+                        @else
+                            <p>Cet accessoire est en rupture de stock</p>
+                        @endif
+                    @else
+                        @if($stockWebVelo)
+                        <button type="button" onclick="addToCartAjax()" id="btn-panier" class="btn-skew ">
+                            <span class="btn-content-unskew">
+                                <span class="text-label">Ajouter au panier</span>
+                            </span>
+                        </button>
+                        @endif
+                    @endif
                 </form>
 
                 <button id="btn-contact-magasin" class="btn-skew" style="display: none;">
@@ -430,6 +448,69 @@
 
         </div> 
     </div> 
+    
+    {{-- Accessoire Vélos --}}
+    @if(! $isAccessoire)
+        <section class="st-similar-section section-grey">
+
+            {{-- En-tête avec ton texte personnalisé --}}
+            <div class="st-section-header" style="text-align: center; margin-bottom: 20px;">
+                <h2 class="st-section-title text-section-grey">D’autres cyclistes ont également acheté</h2>
+                <p class="text-section-grey">
+                    Complétez votre équipement avec des accessoires populaires auprès de nos clients.
+                    Chaque produit est sélectionné pour améliorer votre expérience de cycliste et s’adapter parfaitement à
+                    votre vélo Cube.
+                </p>
+            </div>
+
+            {{-- Wrapper du Carousel (Mêmes classes pour garder le CSS) --}}
+            <div class="st-carousel-wrapper">
+                <button class="st-nav-btn st-btn-left">❮</button>
+
+                <div class="st-carousel-track">
+                    @foreach ($article->varianteVelo->accessoires as $accessoire)
+                        <div class="st-card-item">
+                            {{-- Lien vers le produit (Vérifie si tu dois utiliser velo.show ou accessoire.show) --}}
+                            <a href="{{ route('velo.show', $accessoire->reference) }}" class="st-card-link">
+
+                                <div class="st-img-box">
+                                    {{-- LOGIQUE IMAGE LOCALE ADAPTÉE POUR ACCESSOIRE --}}
+                                    @php
+                                        // On suppose que pour les accessoires le préfixe est de 5 (selon ta logique précédente)
+                                        $prefix = 5;
+                                        $folder = substr($accessoire->reference, 0, $prefix);
+
+                                        // ATTENTION: Vérifie si tes accessoires sont dans 'images/VELOS' ou 'images/ACCESSOIRES'
+                                        $imgPath = 'images/VELOS/' . $folder . '/image_1.jpg'; 
+                                    @endphp
+
+                                    @if(file_exists(public_path($imgPath)))
+                                        <img src="{{ asset($imgPath) }}" alt="{{ $accessoire->nom_article }}">
+                                    @else
+                                        <img src="https://placehold.co/300x200?text=Pas+d+image"
+                                            alt="{{ $accessoire->nom_article }}">
+                                    @endif
+                                </div>
+
+                                <div class="st-info-box">
+                                    <h3 class="st-prod-name">{{ $accessoire->nom_article }}</h3>
+                                    <div class="st-prod-price">
+                                        {{ number_format($accessoire->prix, 2, ',', ' ') }} €
+                                    </div>
+                                </div>
+
+                                <div class="st-action-row">
+                                    <span class="st-view-btn"><i class="arrow-icon">▶</i> VOIR LE PRODUIT</span>
+                                </div>
+                            </a>
+                        </div>
+                    @endforeach
+                </div>
+
+                <button class="st-nav-btn st-btn-right">❯</button>
+            </div>
+        </section>
+    @endif
 
     {{-- Produits Similaires AVEC IMAGES LOCALES --}}
     @if($articlesSimilaires->isNotEmpty())
@@ -695,38 +776,58 @@
         function selectionnerTaille(tailleNom, qtyWeb, qtyMagasin) {
             document.getElementById('input-taille-selected').value = tailleNom;
 
-            const formPanier = document.getElementById('form-ajout-panier');
-            const btnMagasin = document.getElementById('btn-contact-magasin');
-            const msgIndispo = document.getElementById('msg-indisponible');
+            // 2. On récupère les éléments du DOM
+            const formPanier = document.getElementById('form-ajout-panier'); // Le formulaire qui contient le bouton "Ajouter au panier"
+            const btnMagasin = document.getElementById('btn-contact-magasin'); // Le bouton "Contacter magasin"
+            const msgIndispo = document.getElementById('msg-indisponible'); // Le message "Indisponible"
+
+            // Éléments visuels (Textes et ronds de couleur)
             const dotWeb = document.getElementById('dot-web');
             const textWeb = document.getElementById('text-web');
             const dotMagasin = document.getElementById('dot-magasin');
             const textMagasin = document.getElementById('text-magasin');
 
+            // --- LOGIQUE D'AFFICHAGE DU BOUTON PANIER (WEB) ---
             if (qtyWeb > 0) {
+                // S'il y a du stock web, on affiche le bouton Panier
                 formPanier.style.display = 'inline-block';
+                
+                // Mise à jour visuelle (Vert)
                 dotWeb.className = 'status-dot active-green';
                 textWeb.textContent = "Disponible en ligne";
                 textWeb.style.color = '#15803d';
             } else {
+                // S'il n'y a PAS de stock web, on CACHE le bouton Panier
+                // (Cela couvre aussi le cas où c'est indisponible partout)
                 formPanier.style.display = 'none';
+                
+                // Mise à jour visuelle (Gris/Rouge)
                 dotWeb.className = 'status-dot inactive-gray';
                 textWeb.textContent = "Indisponible en ligne";
                 textWeb.style.color = '#6b7280';
             }
 
+            // --- LOGIQUE D'AFFICHAGE DU BOUTON MAGASIN ---
             if (qtyMagasin > 0) {
+                // S'il y a du stock magasin, on affiche le bouton Contact
                 btnMagasin.style.display = 'inline-block';
+
+                // Mise à jour visuelle (Vert)
                 dotMagasin.className = 'status-dot active-green';
                 textMagasin.textContent = "Disponible en magasin";
                 textMagasin.style.color = '#15803d';
             } else {
+                // Sinon on le cache
                 btnMagasin.style.display = 'none';
+
+                // Mise à jour visuelle (Gris/Rouge)
                 dotMagasin.className = 'status-dot inactive-gray';
                 textMagasin.textContent = "Indisponible en magasin";
                 textMagasin.style.color = '#6b7280';
             }
 
+            // --- MESSAGE GLOBAL D'INDISPONIBILITÉ ---
+            // Si pas de stock Web ET pas de stock Magasin => On affiche "Indisponible"
             if (qtyWeb <= 0 && qtyMagasin <= 0) {
                 msgIndispo.style.display = 'block';
             } else {
