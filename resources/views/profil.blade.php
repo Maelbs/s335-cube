@@ -4,33 +4,63 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Profil</title>
+    <title>Mon Profil | Cube Bikes</title>
     <link rel="stylesheet" href="{{ asset('css/header.css') }}">
     <link rel="stylesheet" href="{{ asset('css/profil.css') }}">
 </head>
 <body>
     @include('layouts.header')
 
-    <div class="profile-card">
-        <h2>PROFIL</h2>
+    <div class="profile-wrapper">
+        <div class="profile-card">
+            
+            <div class="card-header">
+                <h2>Mon Compte</h2>
+                <div class="subtitle">Informations personnelles</div>
+            </div>
 
-        <p><strong>Nom :</strong> {{ $client->nom_client }}</p>
+            <div class="card-body">
+                <div class="info-row">
+                    <span class="label">Nom</span>
+                    <span class="value">{{ strtoupper($client->nom_client) }}</span>
+                </div>
 
-        <p><strong>Prenom :</strong> {{ $client->prenom_client }}</p>
+                <div class="info-row">
+                    <span class="label">Prénom</span>
+                    <span class="value">{{ ucfirst($client->prenom_client) }}</span>
+                </div>
 
-        <p><strong>Email :</strong> {{ $client->email_client }}</p>
+                <div class="info-row">
+                    <span class="label">E-mail</span>
+                    <span class="value">{{ $client->email_client }}</span>
+                </div>
 
-        <p><strong>Téléphone :</strong> {{ $client->tel ?? 'Non renseigné' }}</p>
+                <div class="info-row">
+                    <span class="label">Téléphone</span>
+                    <span class="value">{{ $client->tel ?? 'Non renseigné' }}</span>
+                </div>
 
-        <p><strong>Créé le :</strong> {{ $client->date_inscription->format('d/m/Y') }}</p>
+                <div class="info-row">
+                    <span class="label">Membre depuis le</span>
+                    <span class="value">{{ $client->date_inscription->format('d/m/Y') }}</span>
+                </div>
 
-        <p><strong>Anniversaire :</strong> {{ optional($client->date_naissance)->format('d/m/Y')}}</p>
+                <div class="info-row">
+                    <span class="label">Date de naissance</span>
+                    <span class="value">{{ optional($client->date_naissance)->format('d/m/Y') ?? 'Non renseigné' }}</span>
+                </div>
+            </div>
 
-        <a href="#">Modifier le profil</a>
-        <form action="{{ route('logout') }}" method="POST" style="display:inline">
-            @csrf
-            <button type="submit" style="cursor:pointer;">LOG OUT</button>
-        </form>
+            <div class="card-footer">
+                <form action="{{ route('logout') }}" method="POST">
+                    @csrf
+                    <button type="submit" class="btn-logout">
+                        Se déconnecter
+                    </button>
+                </form>
+            </div>
+
+        </div>
     </div>
     
     <script src="{{ asset('js/header.js') }}" defer></script>

@@ -40,37 +40,39 @@
                          data-stock="{{ $item['max_stock'] }}"> 
                         
                         <div class="card-img">
-                            {{-- LOGIQUE INTELLIGENTE : DÉTECTION VELO OU ACCESSOIRE --}}
                             @php
-                                $ref = (string) $item['reference'];
-                                $len = strlen($ref);
-                                $imageFinale = "https://placehold.co/150x150?text=No+Image"; // Image par défaut
+                                // --- LOGIQUE D'AFFICHAGE IMAGE ---
+                                
+                                // 1. Récupération et nettoyage de la référence
+                                $ref = $item['reference'] ?? '';
+                                $ref = trim((string)$ref);
 
-                                // 1. Déterminer le dossier en fonction de la longueur de la réf
-                                if ($len === 5) {
-                                    // 5 chiffres = ACCESSOIRE
-                                    $dossier = 'ACCESSOIRES';
-                                    $dossierRef = $ref;
-                                } else {
-                                    // 6 chiffres (ou plus) = VELO
-                                    $dossier = 'VELOS';
-                                    // On prend les 6 premiers caractères pour trouver le dossier
-                                    $dossierRef = substr($ref, 0, 6);
-                                }
+                                // 2. Image par défaut (Fallback : l'image externe du panier ou un placeholder)
+                                $imgSrc = $item['image'] ?? 'https://placehold.co/150x150?text=No+Img';
 
-                                // 2. Construire le chemin
-                                $cheminLocal = "images/{$dossier}/{$dossierRef}/image_1.jpg";
+                                // 3. Tentative de trouver l'image LOCALE
+                                if (!empty($ref)) {
+                                    // Logique : <= 5 chars => Accessoire, > 5 => Vélo
+                                    $isAccessoire = strlen($ref) <= 5;
+                                    $dossier = $isAccessoire ? 'ACCESSOIRES' : 'VELOS';
+                                    
+                                    // On coupe la référence pour trouver le nom du dossier
+                                    $cutLength = $isAccessoire ? 5 : 6;
+                                    $refDossier = substr($ref, 0, $cutLength);
 
-                                // 3. Vérifier si le fichier existe
-                                if (file_exists(public_path($cheminLocal))) {
-                                    $imageFinale = asset($cheminLocal);
-                                } elseif (!empty($item['image']) && filter_var($item['image'], FILTER_VALIDATE_URL)) {
-                                    // Fallback : Si l'image dans la session est une URL externe valide
-                                    $imageFinale = $item['image'];
+                                    // Chemin relatif vers l'image
+                                    $relPath = 'images/' . $dossier . '/' . $refDossier . '/image_1.jpg';
+
+                                    // Si le fichier existe physiquement, on prend celui-là
+                                    if (file_exists(public_path($relPath))) {
+                                        $imgSrc = asset($relPath);
+                                    }
                                 }
                             @endphp
 
-                            <img src="{{ $imageFinale }}" alt="{{ $item['name'] }}">
+                            <img src="{{ $imgSrc }}" 
+                                 alt="{{ $item['name'] }}"
+                                 onerror="this.src='https://placehold.co/150x150?text=Img+Error'">
                         </div>
 
                         <div class="card-info">

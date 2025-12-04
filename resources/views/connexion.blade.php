@@ -5,67 +5,64 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Connexion</title>
-    <link rel="stylesheet" href="{{ asset('css/connexion.css') }}">
+    <title>Connexion | Cube Bikes</title>
     <link rel="stylesheet" href="{{ asset('css/header.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/connexion.css') }}">
 </head>
 
 <body>
     @include('layouts.header')
 
-    <h2>Connexion / Inscription</h2>
+    <div class="auth-wrapper">
+        
+        <section class="login-form">
+            <h2>Espace Client</h2>
 
-    <section class="login-form">
-        <div class="invalid-feedback js-invalid-feedback-browser"></div>
+            {{-- Zone pour afficher les erreurs globales si besoin --}}
+            <div class="invalid-feedback js-invalid-feedback-browser"></div>
 
-        <form class="needs-validation cube-validate-form" id="login-form" action="{{ route('login.submit') }}" method="post" novalidate autocomplete="off">
-            @csrf
+            <form class="needs-validation" id="login-form" action="{{ route('login.submit') }}" method="post" novalidate autocomplete="off">
+                @csrf
 
-            <section class="form-fields">
-
+                {{-- Champ EMAIL --}}
                 <div class="form-group email">
-                    <label class="required" for="f-email_60320">E-mail</label>
-                    <input class="form-control" name="email" type="email" id="f-email_60320" value="{{ old('email') }}" required autocomplete="email">
+                    <label for="f-email">Adresse E-mail</label>
+                    <input class="form-control" name="email" type="email" id="f-email" value="{{ old('email') }}" required autocomplete="email" placeholder="Ex: jean.dupont@mail.com">
                     @error('email')
                         <div class="invalid-feedback">{{ $message }}</div>
                     @enderror
                 </div>
 
+                {{-- Champ PASSWORD --}}
                 <div class="form-group password">
-                    <label class="required" for="f-password_56397">Mot de passe</label>
-
-                    <div class="input-group js-parent-focus">
-                        <input class="form-control js-child-focus js-visible-password" name="password" id="f-password_56397" type="password" pattern=".{5,}" required autocomplete="current-password">
-
-                    </div>
-                    <small class="form-text text-muted">Au moins 5 caractères</small>
+                    <label for="f-password">Mot de passe</label>
+                    <input class="form-control" name="password" id="f-password" type="password" required autocomplete="current-password" placeholder="••••••••">
+                    
                     @error('password')
                         <div class="invalid-feedback">{{ $message }}</div>
                     @enderror
                 </div>
 
-                <div class="form-group form-group_forgot-password">
-                    <div class="forgot-password">
-                        <a href="https://www.cubebikes.fr/recuperation-mot-de-passe" rel="nofollow" class="small">Mot de passe oublié ?</a>
-                    </div>
+                {{-- Lien Mot de passe oublié (placé juste après l'input) --}}
+                <div class="forgot-password">
+                    <a href="https://www.cubebikes.fr/recuperation-mot-de-passe" rel="nofollow">Mot de passe oublié ?</a>
                 </div>
 
-            </section>
+                {{-- Bouton Submit --}}
+                <footer class="form-footer">
+                    <input type="hidden" name="submitLogin" value="1">
+                    <button class="btn btn-primary" id="submit-login" type="submit">
+                        Se connecter
+                    </button>
+                </footer>
+            </form>
 
-            <footer class="form-footer">
-                <input type="hidden" name="submitLogin" value="1">
-                <button class="btn btn-primary btn-primary--red form-control-submit" id="submit-login" type="submit" data-link-action="sign-in">
-                    <span class="double-arrows double-arrows--white">Connexion</span>
-                </button>
-            </footer>
-        </form>
-
-        <div class="no-account">
-            <a href="{{ url('/inscription') }}" data-link-action="display-register-form">Pas de compte ? Créez-en un</a>
-        </div>
-    </section>
+            <div class="no-account">
+                <a href="{{ url('/inscription') }}">Pas encore de compte ? <strong>Inscrivez-vous</strong></a>
+            </div>
+        </section>
+    </div>
 
     <script src="{{ asset('js/header.js') }}" defer></script>
 </body>
-
 </html>
