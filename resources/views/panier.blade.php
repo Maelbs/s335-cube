@@ -32,9 +32,7 @@
 
                     @foreach($cart as $key => $item)
                     {{-- 
-                        LIGNE PRODUIT : 
-                        data-row-id : Identifiant pour sauvegarder en session
-                        data-stock : Le stock MAX calculé par le controller (Vélo + Taille spécifique)
+                        LIGNE PRODUIT
                     --}}
                     <div class="cart-card cart-item-row" 
                          data-row-id="{{ $key }}"
@@ -42,16 +40,49 @@
                          data-stock="{{ $item['max_stock'] }}"> 
                         
                         <div class="card-img">
-                            @if(!empty($item['image']))
-                                <img src="{{ filter_var($item['image'], FILTER_VALIDATE_URL) ? $item['image'] : asset('storage/'.$item['image']) }}" alt="{{ $item['name'] }}">
-                            @endif
+                            @php
+                                // --- LOGIQUE D'AFFICHAGE IMAGE ---
+                                
+                                // 1. Récupération et nettoyage de la référence
+                                $ref = $item['reference'] ?? '';
+                                $ref = trim((string)$ref);
+
+                                // 2. Image par défaut (Fallback : l'image externe du panier ou un placeholder)
+                                $imgSrc = $item['image'] ?? 'https://placehold.co/150x150?text=No+Img';
+
+                                // 3. Tentative de trouver l'image LOCALE
+                                if (!empty($ref)) {
+                                    // Logique : <= 5 chars => Accessoire, > 5 => Vélo
+                                    $isAccessoire = strlen($ref) <= 5;
+                                    $dossier = $isAccessoire ? 'ACCESSOIRES' : 'VELOS';
+                                    
+                                    // On coupe la référence pour trouver le nom du dossier
+                                    $cutLength = $isAccessoire ? 5 : 6;
+                                    $refDossier = substr($ref, 0, $cutLength);
+
+                                    // Chemin relatif vers l'image
+                                    $relPath = 'images/' . $dossier . '/' . $refDossier . '/image_1.jpg';
+
+                                    // Si le fichier existe physiquement, on prend celui-là
+                                    if (file_exists(public_path($relPath))) {
+                                        $imgSrc = asset($relPath);
+                                    }
+                                }
+                            @endphp
+
+                            <img src="{{ $imgSrc }}" 
+                                 alt="{{ $item['name'] }}"
+                                 onerror="this.src='https://placehold.co/150x150?text=Img+Error'">
                         </div>
 
                         <div class="card-info">
                             <h3 class="product-name">{{ $item['name'] }}</h3>
                             <div class="product-price-unit">{{ number_format($item['price'], 2, ',', ' ') }} €</div>
                             <div class="product-meta">RÉFÉRENCE : {{ $item['reference'] }}</div>
-                            <div class="product-meta">Taille : {{ $item['taille'] }}</div>
+                            {{-- On n'affiche la taille que si elle n'est pas "Unique" --}}
+                            @if(isset($item['taille']) && $item['taille'] !== 'Unique')
+                                <div class="product-meta">Taille : {{ $item['taille'] }}</div>
+                            @endif
                         </div>
 
                         <div class="card-actions">
@@ -65,9 +96,8 @@
                                     <input type="text" value="{{ $item['quantity'] }}" class="qty-input" readonly>
                                     <button type="button" class="qty-btn btn-plus">+</button>
                                 </div>
-                                {{-- Message d'erreur (Caché par défaut) --}}
                                 <div class="stock-error-msg">
-                                    La quantité sélectionnée pour ce produit est supérieure au stock actuellement disponible
+                                    La quantité sélectionnée est supérieure au stock disponible.
                                 </div>
                             </div>
 
@@ -128,7 +158,6 @@
     <script>
     document.addEventListener('DOMContentLoaded', function() {
         
-        // 1. Formatage des prix
         const formatMoney = (amount) => {
             return new Intl.NumberFormat('fr-FR', {
                 style: 'decimal',
@@ -137,7 +166,6 @@
             }).format(amount);
         };
 
-        // 2. Sauvegarde AJAX (Pour éviter la réinitialisation lors d'une suppression)
         const saveQuantityToServer = (rowId, newQty) => {
             fetch('{{ route("cart.update") }}', {
                 method: 'POST',
@@ -153,14 +181,12 @@
             .then(response => response.json())
             .then(data => {
                 if(data.success) {
-                    // Met à jour le total global affiché à droite
                     const totalElement = document.getElementById('summary-subtotal');
                     const totalTTCElement = document.getElementById('summary-total');
                     
                     if(totalElement) totalElement.textContent = data.newTotal;
                     if(totalTTCElement) totalTTCElement.textContent = data.newTotal;
                     
-                    // Mise à jour des taxes (20%)
                     const numTotal = parseFloat(data.newTotal.replace(/\s/g, '').replace(',', '.'));
                     const taxes = numTotal * 0.2;
                     if(document.getElementById('summary-taxes')) {
@@ -171,23 +197,21 @@
             .catch(error => console.error('Erreur:', error));
         };
 
-        // 3. Mise à jour de l'interface (Stock, Prix Ligne, Bouton Valider)
         const updateCartState = () => {
             let hasGlobalError = false;
 
             document.querySelectorAll('.cart-item-row').forEach(row => {
                 const price = parseFloat(row.dataset.price);
-                const maxStock = parseInt(row.dataset.stock); // Stock spécifique à ce vélo/taille
+                const maxStock = parseInt(row.dataset.stock);
                 const input = row.querySelector('.qty-input');
                 let qty = parseInt(input.value);
                 
                 const errorMsg = row.querySelector('.stock-error-msg');
                 const totalDisplay = row.querySelector('.item-total-display');
 
-                // --- VÉRIFICATION DU STOCK ---
                 if (qty > maxStock) {
                     hasGlobalError = true;
-                    errorMsg.style.display = 'block'; // Affiche le message rouge
+                    errorMsg.style.display = 'block';
                     input.style.color = '#e02b2b';
                     input.style.fontWeight = '800';
                 } else {
@@ -196,12 +220,10 @@
                     input.style.fontWeight = '700';
                 }
 
-                // --- CALCUL PRIX LIGNE ---
                 const lineTotal = price * qty;
                 totalDisplay.textContent = formatMoney(lineTotal);
             });
 
-            // --- BLOCAGE BOUTON VALIDER ---
             const validationButtons = document.querySelectorAll('.btn-validate');
             validationButtons.forEach(btn => {
                 if (hasGlobalError) {
@@ -211,12 +233,11 @@
                 } else {
                     btn.classList.remove('disabled');
                     btn.onclick = null;
-                    btn.href = "/checkout"; // Ton lien vers la caisse
+                    btn.href = "/checkout"; 
                 }
             });
         };
 
-        // 4. Écouteurs d'événements
         document.querySelectorAll('.cart-item-row').forEach(row => {
             const btnPlus = row.querySelector('.btn-plus');
             const btnMinus = row.querySelector('.btn-minus');
@@ -228,8 +249,8 @@
                 let newQty = currentQty + 1;
                 
                 input.value = newQty;
-                updateCartState(); // Mise à jour visuelle instantanée
-                saveQuantityToServer(rowId, newQty); // Sauvegarde en BDD
+                updateCartState();
+                saveQuantityToServer(rowId, newQty);
             });
 
             btnMinus.addEventListener('click', () => {
@@ -244,7 +265,6 @@
             });
         });
 
-        // Lancement initial au chargement de la page
         updateCartState();
     });
     </script>

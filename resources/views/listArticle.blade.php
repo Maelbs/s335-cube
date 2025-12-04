@@ -206,9 +206,9 @@
                         <div class="product-card">
                             <div class="badge-new">NOUVEAU</div>
                             <div class="product-image">
-                                <a href="{{ url($isAccessoire ? '/accessoire/' : '/velo/') . $article->reference }}">
+                                <a href="{{ url($isAccessoire ? '/accessoire/' : '/velo/') . '/' . $article->reference }}">
                                     @if ($isAccessoire)
-                                        <img src="{{ asset('images/VELOS/' . substr($article->reference,0,5) . '/image_1.jpg') }}" alt="{{ $article->nom_article }}">
+                                        <img src="{{ asset('images/ACCESSOIRES/' . substr($article->reference,0,5) . '/image_1.jpg') }}" alt="{{ $article->nom_article }}">
                                     @else
                                         <img src="{{ asset('images/VELOS/' . substr($article->reference,0,6) . '/image_1.jpg') }}" alt="{{ $article->nom_article }}">
                                     @endif

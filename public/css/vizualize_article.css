@@ -495,7 +495,7 @@ nav {
 .each-specs-column {
     display: block; 
     padding: 30px 0; 
-    border-top: 1px solid #e0e0e0;
+    border-bottom: 1px solid #e0e0e0;
 }
 
 .specs-header-row {
@@ -514,6 +514,10 @@ nav {
     letter-spacing: 0.5px;
     margin-top: 40px;
     margin: 0;
+}
+
+.action-buttons-container {
+    font-weight: 500;
 }
 
 .toggle-content {
@@ -1342,3 +1346,129 @@ p.text-section-grey{
 }
 
 .btn-checkout span { margin-left: 10px; }
+
+
+
+/* =========================================
+   ZOOM / LOUPE STYLE
+   ========================================= */
+
+/* Le petit bouton loupe sur l'image */
+.zoom-trigger-btn {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    width: 45px;
+    height: 45px;
+    background: #fff;
+    border: 1px solid #eee;
+    border-radius: 50%; /* Rond parfait */
+    cursor: pointer;
+    z-index: 20; /* Au-dessus de l'image */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+    color: #000;
+}
+
+.zoom-trigger-btn:hover {
+    background: #000;
+    color: #fff;
+    border-color: #000;
+    transform: scale(1.1);
+}
+
+/* L'overlay plein écran (caché par défaut) */
+.zoom-overlay {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background: rgba(255, 255, 255, 0.98); /* Fond blanc très opaque */
+    z-index: 2000; /* Au-dessus de tout */
+    display: none; /* Caché */
+    justify-content: center;
+    align-items: center;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.zoom-overlay.active {
+    display: flex;
+    opacity: 1;
+}
+
+/* Le conteneur de l'image zoomée */
+.zoom-container {
+    width: 90%;
+    height: 90%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden; /* Important pour le pan */
+}
+
+/* L'image en grand */
+.zoom-container img {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+    cursor: zoom-in; /* Indique qu'on peut cliquer */
+    transition: transform 0.3s ease; /* Zoom fluide */
+}
+
+/* État quand on clique sur l'image pour zoomer encore plus */
+.zoom-container img.zoomed-in {
+    transform: scale(2); /* Zoom X2 */
+    cursor: zoom-out;
+}
+
+/* Bouton fermer */
+.zoom-close-btn {
+    position: absolute;
+    top: 30px;
+    right: 40px;
+    background: none;
+    border: none;
+    font-size: 40px;
+    color: #000;
+    cursor: pointer;
+    font-weight: 300;
+    z-index: 2001;
+}
+
+/* --- Navigation dans le Zoom --- */
+.zoom-nav {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background: rgba(255, 255, 255, 0.2); /* Fond discret */
+    color: #000;
+    border: none;
+    font-size: 2rem;
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    cursor: pointer;
+    z-index: 2002; /* Au-dessus de l'image */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+}
+
+.zoom-nav:hover {
+    background: #000;
+    color: #fff;
+}
+
+.zoom-prev { left: 30px; }
+.zoom-next { right: 30px; }
+
+/* Mobile : on réduit un peu les flèches */
+@media (max-width: 768px) {
+    .zoom-nav { width: 40px; height: 40px; font-size: 1.5rem; }
+    .zoom-prev { left: 10px; }
+    .zoom-next { right: 10px; }
+}
