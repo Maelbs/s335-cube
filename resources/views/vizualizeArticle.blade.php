@@ -10,7 +10,7 @@
     <title>{{ $article->nom_article }}</title>
 
     <link rel="stylesheet" href="{{ asset('css/header.css') }}">
-    <link rel="stylesheet" href="{{ asset('css/vizualize_article.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/vizualizeArticle.css') }}">
 </head>
 
 <body>
@@ -19,7 +19,7 @@
     {{-- STRUCTURE MODALE PANIER --}}
     <div id="cartModal" class="modal-overlay">
         <div class="modal-content">
-            <button class="modal-close" onclick="closeModal()">×</button>
+            <button class="modal-close" onclick="closeModalAndRefresh()">×</button>
             <div class="modal-header">PRODUIT AJOUTÉ AU PANIER AVEC SUCCÈS</div>
             <div class="modal-body">
                 {{-- Partie Gauche --}}
@@ -55,7 +55,7 @@
                     <div class="summary-total"><span>Total TTC</span><span id="cartTotal">0,00 €</span></div>
                     <div class="tax-info">Taxes incluses : <span id="cartTax">0,00 €</span></div>
                     <div class="modal-actions">
-                        <button onclick="closeModal()" class="btn-continue">◀ Continuer mes achats</button>
+                        <button onclick="closeModalAndRefresh()" class="btn-continue">◀ Continuer mes achats</button>
                         <a href="{{ route('cart.index') }}" class="btn-checkout">Commander ▶</a>
                     </div>
                 </div>
@@ -614,7 +614,18 @@
     </div>
 
     {{-- SCRIPTS JS --}}
-    <script src="{{ asset('js/vizualize_article.js') }}" defer></script>
+    <script src="{{ asset('js/vizualizeArticle.js') }}" defer></script>
+
+    <script>
+    function closeModalAndRefresh() {
+        const modal = document.getElementById('myModal'); 
+        if(modal) {
+            modal.style.display = 'none';
+        }
+
+        location.reload();
+    }
+    </script>
 </body>
 
 </html>

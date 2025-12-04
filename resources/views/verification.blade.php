@@ -68,7 +68,7 @@
         </div>
     @endif
 
-    <form method="POST" action="{{ route('verifyCode') }}">
+    <form method="POST" action="{{ route('verification.check') }}">
         @csrf
         <input type="hidden" name="email" value="{{ session('reg_data.email') }}">
         <input type="text" name="verification_code" required placeholder="Code de vérification" />

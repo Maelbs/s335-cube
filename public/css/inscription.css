@@ -107,19 +107,25 @@ small.form-text {
 button[type="submit"] {
     margin-top: 20px;
     padding: 12px 20px;
-    background: #e60023;
+    background: #e62528;
     border: none;
-    width: 100%;
+    width: auto;
+    margin-left: 15px;
+    padding-left: 50px;
+    padding-right: 50px;
+    padding-top: 20px;
+    padding-bottom: 20px;
     color: white;
     font-size: 1.1rem;
     font-weight: 700;
-    border-radius: 6px;
+    clip-path: polygon(15px 0, 100% 0, 100% 100%, 0% 100%);
     cursor: pointer;
-    transition: background 0.2s ease;
+    transition: all 0.2s ease;
 }
 
 button[type="submit"]:hover {
-    background: #c7001d;
+    text-decoration: underline 2px;
+    
 }
 
 /* =========================================
@@ -136,6 +142,14 @@ button[type="submit"]:hover {
 .alert-danger li {
     color: #a00000;
     font-size: 0.9rem;
+}
+
+.text-connexion {
+    margin-top: 30px;
+}
+
+.description {
+    margin-top: 30px;
 }
 
 /* =========================================
