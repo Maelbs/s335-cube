@@ -664,7 +664,7 @@ nav {
 
 .section-grey {
     background-color: #efefef;
-    margin-top: 100px;
+    margin-top: 150px !important;
     width: 100% !important;         /* Force la largeur à 100% */
     max-width: none !important;
 }
@@ -934,6 +934,7 @@ p.text-section-grey{
    NOUVEAU CARROUSEL (ARTICLES SIMILAIRES)
    ========================================= */
 .st-similar-section {
+    margin-top: 20px;
     padding: 20px 0;
     max-width: 1400px;
     margin-left: auto;
@@ -944,7 +945,6 @@ p.text-section-grey{
     text-align: left;
     font-size: 2rem;
     margin-bottom: 30px;
-    margin-top: 70px;
     font-weight: 900;
     font-style: italic;
     text-transform: uppercase;

@@ -195,9 +195,6 @@
                     </div>
                 </div>
             </li>
-                <li class="nav-item">
-                    <a id="btn-accessoire" href="#" class="link_category">ACCESSOIRES</a>
-                </li>
             </ul>
         </div>
         
