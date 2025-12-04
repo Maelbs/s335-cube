@@ -1,7 +1,7 @@
 <?php
-
+ 
 namespace App\Http\Controllers;
-
+ 
 use App\Models\CategorieVelo;
 use App\Models\CategorieAccessoire;
 use App\Models\VarianteVelo;
@@ -13,7 +13,7 @@ use App\Models\Batterie;
 use App\Models\Taille;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
-
+ 
 class BoutiqueController extends Controller
 {
     public function index(Request $request, $type, $cat_id = null, $sub_id = null, $model_id = null)
@@ -22,40 +22,36 @@ class BoutiqueController extends Controller
         $isSearchMode = $request->filled('search');
         $titrePage = $isAccessoire ? "TOUS LES ACCESSOIRES" : "TOUS LES VÉLOS " . strtoupper($type) . "S";
 
-        // Initialisation des variables
+        // Initialisation des variables de filtres
         $availableMateriaux = collect();
         $availableMillesimes = collect();
         $availableFourches = collect();
         $availableTailles = collect();
         $availableBatteries = collect();
         $availableCouleurs = collect();
-
+ 
         $hierarchyTitle = "CATÉGORIES";
         $hierarchyItems = collect();
         $hierarchyLevel = 'root';
-        
+       
         $countOnline = 0;
         $countStore = 0;
-        $velos = null;
-
+        $articles = null; // Variable générique remplaçant $velos
         // =================================================================
-        // BRANCHE 1 : ACCESSOIRES
+        // BRANCHE 1 : ACCESSOIRES (Table 'accessoire')
         // =================================================================
         if ($isAccessoire) {
             $query = Accessoire::query()->with(['parent', 'categorie', 'parent.photos']);
-
-            // --- 1. RECHERCHE FLOU (CORRIGÉ) ---
+            // --- 1. RECHERCHE ---
             if ($isSearchMode) {
                 $search = strtolower($request->search);
                 $term = '%' . $search . '%';
-
+ 
                 $query->where(function($g) use ($term, $search) {
-                    // Recherche sur le Nom de l'accessoire (Exact OU Flou)
                     $g->where(function($sub) use ($term, $search) {
                         $sub->whereRaw('LOWER(nom_article) LIKE ?', [$term])
                             ->orWhereRaw('levenshtein(LOWER(nom_article)::text, ?::text) <= 1', [$search]);
                     })
-                    // Recherche sur la Catégorie (Exact OU Flou)
                     ->orWhereHas('categorie', function($q) use ($term, $search) {
                         $q->whereRaw('LOWER(nom_categorie_accessoire) LIKE ?', [$term])
                           ->orWhereRaw('levenshtein(LOWER(nom_categorie_accessoire)::text, ?::text) <= 1', [$search]);
@@ -63,13 +59,18 @@ class BoutiqueController extends Controller
                 });
                 $titrePage = "RÉSULTATS ACCESSOIRES : " . strtoupper($request->search);
             } 
-            // 2. NAVIGATION (Inchangé)
+
+            // --- 2. NAVIGATION ---
             else {
-                if ($sub_id) {
+                if ($model_id) { // Si un ID est passé en 4ème paramètre
+                     $query->where('id_categorie_accessoire', $model_id);
+                     $currCat = CategorieAccessoire::find($model_id);
+                     $titrePage = $currCat ? $currCat->nom_categorie_accessoire : '';
+                } elseif ($sub_id) {
                     $query->where('id_categorie_accessoire', $sub_id);
                     $currCat = CategorieAccessoire::find($sub_id);
                     $titrePage = $currCat ? $currCat->nom_categorie_accessoire : '';
-                    
+                   
                     $hierarchyTitle = "SOUS-CATÉGORIES"; $hierarchyLevel = 'sub';
                     if($currCat && $currCat->cat_id_categorie_accessoire) {
                          $hierarchyItems = CategorieAccessoire::where('cat_id_categorie_accessoire', $currCat->cat_id_categorie_accessoire)
@@ -85,23 +86,26 @@ class BoutiqueController extends Controller
                         $query->whereIn('id_categorie_accessoire', $ids);
                         $titrePage = $currCat->nom_categorie_accessoire;
                         $hierarchyTitle = "SOUS-CATÉGORIES"; $hierarchyLevel = 'sub';
-                        $hierarchyItems = $currCat->enfants->map(fn($item) => (object)['name' => $item->nom_categorie_accessoire, 'id' => $item->id_categorie_accessoire]);
+                        $hierarchyItems = $currCat->enfants->map(fn($item) => (object)['name' => $item->nom_categorie, 'id' => $item->id_categorie_accessoire]);
                     }
                 } else {
                     $hierarchyTitle = "CATÉGORIES"; $hierarchyLevel = 'root';
                     $hierarchyItems = CategorieAccessoire::whereNull('cat_id_categorie_accessoire')->orderBy('nom_categorie_accessoire')->get()
-                        ->map(fn($item) => (object)['name' => $item->nom_categorie_accessoire, 'id' => $item->id_categorie_accessoire]);
+                        ->map(fn($item) => (object)['name' => $item->nom_categorie, 'id' => $item->id_categorie_accessoire]);
                 }
             }
 
-            // Filtres & Tri Accessoires (Inchangé)
+            // --- 3. FILTRES DISPO (Booléens Accessoire) ---
             if ($request->filled('dispo_ligne')) $query->where('dispo_en_ligne', true);
             if ($request->filled('dispo_magasin')) $query->where('dispo_magasin', true);
+
             $countOnline = (clone $query)->where('dispo_en_ligne', true)->count();
             $countStore = (clone $query)->where('dispo_magasin', true)->count();
+
+            // Prix & Tri
             if ($request->filled('prix_min')) $query->where('prix', '>=', $request->prix_min);
             if ($request->filled('prix_max')) $query->where('prix', '<=', $request->prix_max);
-
+ 
             if ($request->filled('sort')) {
                 switch ($request->sort) {
                     case 'price_asc': $query->orderBy('prix', 'asc'); break;
@@ -113,57 +117,55 @@ class BoutiqueController extends Controller
             } else {
                 $query->orderBy('prix', 'asc');
             }
-            
+           
             $maxPrice = Accessoire::max('prix');
-            $velos = $query->paginate(15)->withQueryString();
+            $articles = $query->paginate(15)->withQueryString();
         }
-
+ 
         // =================================================================
-        // BRANCHE 2 : VÉLOS
+        // BRANCHE 2 : VÉLOS (Table 'variante_velo')
         // =================================================================
         else {
             $dbType = ($type === 'Electrique') ? 'electrique' : 'musculaire';
+            
+            // Note: VarianteVelo hérite de Article, donc il hérite de la relation 'inventaires'
             $query = VarianteVelo::query()
                 ->with(['parent', 'modele', 'couleur', 'parent.photos', 'batterie', 'fourche', 'inventaires.taille', 'inventaires.magasins']);
             
-            // --- 1. RECHERCHE FLOU VÉLOS (CORRIGÉ) ---
-            if ($isSearchMode) {
-                $search = strtolower($request->search); 
-                $term = '%' . $search . '%';
 
+            // --- 1. RECHERCHE FLOU VÉLOS ---
+            if ($isSearchMode) {
+                $search = strtolower($request->search);
+                $term = '%' . $search . '%';
+ 
                 $query->where(function($group) use ($term, $search) {
-                    // A. Sur le modèle (ex: Stereo)
                     $group->whereHas('modele', function($q) use ($term, $search) {
                         $q->whereRaw('LOWER(nom_modele) LIKE ?', [$term])
                           ->orWhereRaw('levenshtein(LOWER(nom_modele)::text, ?::text) <= 1', [$search]);
                     })
-                    // B. Sur l'article parent (ex: Vélo Stereo 120)
                     ->orWhereHas('parent', function($q) use ($term, $search) {
                         $q->whereRaw('LOWER(nom_article) LIKE ?', [$term])
                           ->orWhereRaw('levenshtein(LOWER(nom_article)::text, ?::text) <= 1', [$search]);
                     })
-                    // C. Sur la Catégorie (ex: Gravel)
                     ->orWhereHas('modele.categorie', function($q) use ($term, $search) {
                         $q->where(function($subQ) use ($term, $search) {
-                            // Catégorie directe
-                            $subQ->where(function($catQ) use ($term, $search) {
-                                $catQ->whereRaw('LOWER(nom_categorie) LIKE ?', [$term])
-                                     ->orWhereRaw('levenshtein(LOWER(nom_categorie)::text, ?::text) <= 1', [$search]);
-                            })
-                            // Ou catégorie parente
-                            ->orWhereHas('parent', function($pQ) use ($term, $search) {
-                                $pQ->whereRaw('LOWER(nom_categorie) LIKE ?', [$term])
-                                   ->orWhereRaw('levenshtein(LOWER(nom_categorie)::text, ?::text) <= 1', [$search]);
-                            });
+                            $subQ->whereRaw('LOWER(nom_categorie) LIKE ?', [$term])
+                                 ->orWhereRaw('levenshtein(LOWER(nom_categorie)::text, ?::text) <= 1', [$search]);
+                        })
+                        ->orWhereHas('parent', function($pQ) use ($term, $search) {
+                            $pQ->whereRaw('LOWER(nom_categorie) LIKE ?', [$term])
+                               ->orWhereRaw('levenshtein(LOWER(nom_categorie)::text, ?::text) <= 1', [$search]);
                         });
                     });
                 });
                 $titrePage = "RÉSULTATS VÉLOS : " . strtoupper($request->search);
-            } 
-            // Navigation normale Vélos (Inchangé)
+
+            }
+
+            // --- 2. NAVIGATION ---
             else {
                 $query->whereHas('modele', fn($q) => $q->where('type_velo', $dbType));
-                
+               
                 if ($model_id) {
                     $query->where('id_modele', $model_id);
                     $titrePage = "Modèle : " . (Modele::find($model_id)->nom_modele ?? '');
@@ -189,19 +191,22 @@ class BoutiqueController extends Controller
                 }
             }
 
-            // Filtres Vélos (Inchangé)
+            // --- FILTRES SIMPLES ---
             if ($request->filled('couleurs')) $query->whereIn('id_couleur', $request->couleurs);
             if ($request->filled('materiaux')) $query->whereHas('modele', fn($q) => $q->whereIn('materiau_cadre', $request->materiaux));
             if ($request->filled('millesimes')) $query->whereHas('modele', fn($q) => $q->whereIn('millesime_modele', $request->millesimes));
             if ($request->filled('fourches')) $query->whereIn('id_fourche', $request->fourches);
             if ($request->filled('batteries')) $query->whereIn('id_batterie', $request->batteries);
 
+            // --- 3. FILTRES STOCKS COMPLEXES (Via Inventaire) ---
             $hasSize = $request->filled('tailles');
             $hasOnline = $request->filled('dispo_ligne');
             $hasStore = $request->filled('dispo_magasin');
-
+ 
             if ($hasSize) {
+                // Filtre les variantes qui ont la taille demandée avec le stock demandé
                 $query->whereHas('inventaires', function($q) use ($request, $hasOnline, $hasStore) {
+                    // Jointure sur la table ArticleInventaire
                     $q->whereHas('taille', fn($t) => $t->whereIn('taille', $request->tailles));
                     if ($hasOnline) $q->where('quantite_stock_en_ligne', '>', 0);
                     if ($hasStore) $q->whereHas('magasins', fn($m) => $m->where('quantite_stock_magasin', '>', 0));
@@ -211,12 +216,14 @@ class BoutiqueController extends Controller
                 if ($hasStore) $query->whereHas('inventaires.magasins', fn($q) => $q->where('quantite_stock_magasin', '>', 0));
             }
 
+            // Compteurs
             $countOnline = (clone $query)->whereHas('inventaires', fn($q) => $q->where('quantite_stock_en_ligne', '>', 0))->count();
             $countStore = (clone $query)->whereHas('inventaires.magasins', fn($q) => $q->where('quantite_stock_magasin', '>', 0))->count();
 
+            // Prix & Tri
             if ($request->filled('prix_min')) $query->where('prix', '>=', $request->prix_min);
             if ($request->filled('prix_max')) $query->where('prix', '<=', $request->prix_max);
-
+ 
             if ($request->filled('sort')) {
                 switch ($request->sort) {
                     case 'price_asc': $query->orderBy('prix', 'asc'); break;
@@ -229,21 +236,29 @@ class BoutiqueController extends Controller
                 $query->orderBy('prix', 'asc');
             }
 
+            // --- SIDEBAR DATA (CORRECTION DU BUG Article::modele()) ---
             $filterQuery = Modele::query();
             if (!$isSearchMode) $filterQuery->where('type_velo', $dbType);
+            
             $availableCouleurs = Couleur::orderBy('nom_couleur')->get();
             $availableMateriaux = (clone $filterQuery)->select('materiau_cadre')->distinct()->whereNotNull('materiau_cadre')->pluck('materiau_cadre');
             $availableMillesimes = (clone $filterQuery)->select('millesime_modele')->distinct()->orderBy('millesime_modele', 'desc')->pluck('millesime_modele');
             $availableFourches = Fourche::whereHas('varianteVelos.modele', fn($q) => !$isSearchMode ? $q->where('type_velo', $dbType) : $q)->orderBy('nom_fourche')->get();
-            $availableTailles = Taille::whereHas('ArticleInventaire.articles.varianteVelo.modele', fn($q) => !$isSearchMode ? $q->where('type_velo', $dbType) : $q)->orderBy('id_taille')->distinct()->get();
+
+            // ICI: On passe de ArticleInventaire -> Articles -> VarianteVelo -> Modele
+            $availableTailles = Taille::whereHas('ArticleInventaire.articles.varianteVelo.modele', function($q) use ($isSearchMode, $dbType) {
+                if (!$isSearchMode) $q->where('type_velo', $dbType);
+            })->orderBy('id_taille')->distinct()->get();
+            
             if ($type === 'Electrique' || $isSearchMode) $availableBatteries = Batterie::orderBy('capacite_batterie', 'asc')->get();
             $maxPrice = VarianteVelo::max('prix');
             
-            $velos = $query->paginate(15)->withQueryString();
-        }
 
+            $articles = $query->paginate(15)->withQueryString();
+        }
+ 
         return view('listArticle', compact(
-            'velos', 'type', 'titrePage', 'maxPrice', 'isAccessoire',
+            'articles', 'type', 'titrePage', 'maxPrice', 'isAccessoire',
             'availableCouleurs', 'availableMateriaux', 'availableMillesimes',
             'availableFourches', 'availableTailles', 'availableBatteries',
             'hierarchyTitle', 'hierarchyItems', 'hierarchyLevel',

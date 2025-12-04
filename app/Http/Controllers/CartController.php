@@ -8,7 +8,6 @@ use App\Models\Accessoire;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\DB; // INDISPENSABLE
 
-
 class CartController extends Controller
 {
     // --- AFFICHAGE AVEC CALCUL DE STOCK RÉEL ---
@@ -16,7 +15,6 @@ class CartController extends Controller
     {
         $cart = Session::get('cart', []);
         $total = 0;
-
         foreach ($cart as $key => &$item) {
             $total += $item['price'] * $item['quantity'];
 
@@ -171,7 +169,6 @@ class CartController extends Controller
 
         return redirect()->back()->with('success', 'Accessoire ajouté au panier !');
     }
-
     // --- SUPPRESSION (TON CODE D'ORIGINE) ---
     public function remove($key)
     {

@@ -648,6 +648,7 @@ nav {
 #resume_container {
     border: none;
     margin-bottom: 80px;
+    border-bottom: none;
 }
 
 /* =========================================

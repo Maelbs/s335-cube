@@ -156,7 +156,7 @@
                                         @if($root->enfants->isNotEmpty())
                                             @foreach($root->enfants as $enfant)
                                                 <div class="menu-item sub-trigger" data-target="grandchild-acc-{{ $enfant->id_categorie_accessoire }}">
-                                                    <a href="{{ route('boutique.index', ['type' => 'Accessoires', 'cat_id' => $root->id_categorie_accessoire, 'sub_id' => $enfant->id_categorie_accessoire]) }}" class="menu-link-reset">
+                                                    <a href="{{ route('boutique.index', ['type' => 'Accessoires', 'cat_id' => $enfant->cat_id_categorie_accessoire, 'sub_id' => $enfant->id_categorie_accessoire]) }}" class="menu-link-reset">
                                                         {{ strtoupper($enfant->nom_categorie_accessoire) }}
                                                     </a>
                                                     <span>&rsaquo;</span>
@@ -179,7 +179,7 @@
                                             <div class="model-grid">
                                                 @if($enfant->enfants && $enfant->enfants->isNotEmpty())
                                                     @foreach($enfant->enfants as $petitEnfant)
-                                                        <a href="{{ route('boutique.index', ['type' => 'Accessoires', 'cat_id' => $root->id_categorie_accessoire, 'sub_id' => $enfant->id_categorie_accessoire, 'model_id' => $petitEnfant->id_categorie_accessoire]) }}" class="model-link">
+                                                        <a href="{{ route('boutique.index', ['type' => 'Accessoires', 'cat_id' => $enfant->cat_id_categorie_accessoire, 'sub_id' => $petitEnfant->cat_id_categorie_accessoire, 'model_id' => $petitEnfant->id_categorie_accessoire]) }}" class="model-link">
                                                             {{ $petitEnfant->nom_categorie_accessoire }}
                                                         </a>
                                                     @endforeach

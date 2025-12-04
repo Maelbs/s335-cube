@@ -10,7 +10,6 @@ use App\Http\Controllers\BoutiqueController;
 use App\Http\Controllers\AuthController;  
 use App\Http\Controllers\ProfilController;
 use App\Http\Controllers\CartController;
-
 /*
 |--------------------------------------------------------------------------
 | Web Routes

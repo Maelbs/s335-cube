@@ -11,6 +11,7 @@
     <link rel="stylesheet" href="{{ asset('css/header.css') }}">
     <link rel="stylesheet" href="{{ asset('css/vizualize_article.css') }}">
 </head>
+
 <body>
     @include('layouts.header')
 
@@ -151,6 +152,24 @@
                                         <div class="spec-value">{{ $carac->pivot->valeur_caracteristique }}</div>
                                     </div>
                                 @endforeach
+                                @if($isAccessoire)
+                                    <div class="spec-row">
+                                        <div class="spec-label">Disponibilité</div>
+                                        @php
+                                            $stockWeb = $stock->sum('quantite_stock_en_ligne') > 0;
+                                            $stockMag = $stock->flatMap->magasins->sum('pivot.quantite_stock_magasin') > 0;
+                                        @endphp
+                                        <div class="spec-value">
+                                            @if($stockWeb)
+                                                Disponible en ligne
+                                            @endif
+
+                                            @if($stockMag)
+                                                / Commandable en magasin
+                                            @endif
+                                        </div>
+                                    </div>
+                                @endif
                             </div>
                         @endforeach
                     </div>
@@ -204,17 +223,15 @@
                 @endif 
 
                 {{-- 4. DESCRIPTION & RESUME --}}
+                @if($typeVue === 'velo')
                 <div class="each-specs-column">
                     <div class="specs-header-row">
-                    @if($typeVue === 'velo')
                         <h2>Description</h2>
                         <button class="toggle-specs-btn"></button>
                     </div> 
-                        <p>{{ $article->varianteVelo->modele->description->texte_description ?? 'Aucune description disponible.' }}</p>
-                    @else
-                    </div> 
-                    @endif
+                    <p>{{ $article->varianteVelo->modele->description->texte_description ?? 'Aucune description disponible.' }}</p>
                 </div>
+                @endif
 
                 <div class="each-specs-column" id="resume_container">
                     <div class="specs-header-row">
@@ -293,15 +310,22 @@
                 {{-- CAS ACCESSOIRE --}}
                 <div style="margin-top: 20px; margin-bottom: 20px;">
                     @php
-                        $enStock = $stock > 0;
-                        $colorDot = $enStock ? '#28a745' : '#dc3545';
-                        $textStatus = $enStock ? 'En stock' : 'Rupture de stock';
+                        $stockWeb = $stock->sum('quantite_stock_en_ligne') > 0;
+                        $stockMag = $stock->flatMap->magasins->sum('pivot.quantite_stock_magasin') > 0;
+                        $colorDotWeb = $stockWeb ? '#28a745' : '#dc3545';
+                        $colorDotMag = $stockMag ? '#28a745' : '#dc3545';
+                        $enLigneStatus = $stockWeb ? 'Disponible en ligne' : 'Indisponible en ligne';
+                        $enMagasinStatus = $stockMag ? 'Commandable en magasin' : 'Indisponible en magasin';
                     @endphp
                     
                     <div class="dispo-info-container">
                         <div class="dispo-row">
-                            <span class="status-dot" style="background-color: {{ $colorDot }};"></span> 
-                            <span class="dispo-text" style="font-weight: bold;">{{ $textStatus }}</span>
+                            <span class="status-dot" style="background-color: {{ $colorDotWeb }};"></span>
+                            <span class="dispo-text" style="font-weight: bold;">{{ $enLigneStatus }}</span>
+                        </div>
+                        <div class="dispo-row">
+                            <span class="status-dot" style="background-color: {{ $colorDotMag }};"></span>
+                            <span class="dispo-text" style="font-weight: bold;">{{ $enMagasinStatus }}</span>
                         </div>
                     </div>
                 </div>
@@ -313,7 +337,7 @@
 
 
             <div class="action-buttons-container">
-                <form id="form-ajout-panier" data-action="{{ route('cart.add', $article->reference) }}">
+                <form id="form-ajout-panier" data-action="{{ $isAccessoire ? route('cart.addAccessoire', $article->reference) : route('cart.add', $article->reference) }}">
                     @if($typeVue === 'velo')
                         <input type="hidden" name="taille" id="input-taille-selected" value="">
                     @else
