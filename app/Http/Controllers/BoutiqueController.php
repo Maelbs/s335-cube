@@ -67,6 +67,7 @@ class BoutiqueController extends Controller
                 // gardez votre logique existante pour $hierarchyItems, etc.
                 if ($model_id) { 
                     $query->where('id_categorie_accessoire', $model_id);
+                    $titrePage = (CategorieAccessoire::find($model_id)->nom_categorie_accessoire ?? '');
                     // ... logique existante ...
                 } elseif ($sub_id) {
                     // ... logique existante ...
@@ -75,6 +76,7 @@ class BoutiqueController extends Controller
                         $ids = $currCat->enfants->pluck('id_categorie_accessoire');
                         $ids->push($currCat->id_categorie_accessoire);
                         $query->whereIn('id_categorie_accessoire', $ids);
+                        $titrePage = $currCat->nom_categorie_accessoire;
                     }
                     // ... suite logique existante ...
                 } elseif ($cat_id) {
@@ -84,6 +86,7 @@ class BoutiqueController extends Controller
                         $ids = $currCat->enfants->pluck('id_categorie_accessoire');
                         $ids->push($currCat->id_categorie_accessoire);
                         $query->whereIn('id_categorie_accessoire', $ids);
+                        $titrePage = $currCat->nom_categorie_accessoire;
                     }
                     // ... suite logique existante ...
                 } else {
@@ -234,23 +237,43 @@ class BoutiqueController extends Controller
             $hasSize = $request->filled('tailles');
             $hasOnline = $request->filled('dispo_ligne');
             $hasStore = $request->filled('dispo_magasin');
- 
-            if ($hasSize) {
-                // Filtre les variantes qui ont la taille demandée avec le stock demandé
-                $query->whereHas('inventaires', function($q) use ($request, $hasOnline, $hasStore) {
-                    // Jointure sur la table ArticleInventaire
+
+            // --- A. CALCUL DES COMPTEURS (AVANT d'appliquer les filtres de dispo) ---
+            // On clone la requête de base (qui a déjà les filtres de catégorie, prix, etc. mais PAS encore la dispo)
+            $queryForCounts = clone $query;
+
+            // Calcul du nombre de vélos dispos EN LIGNE (en tenant compte de la taille si sélectionnée)
+            $countOnline = (clone $queryForCounts)->whereHas('inventaires', function($q) use ($request, $hasSize) {
+                // Si une taille est choisie, on ne compte que si CETTE taille est dispo
+                if ($hasSize) {
                     $q->whereHas('taille', fn($t) => $t->whereIn('taille', $request->tailles));
+                }
+                $q->where('quantite_stock_en_ligne', '>', 0);
+            })->count();
+
+            // Calcul du nombre de vélos dispos EN MAGASIN (en tenant compte de la taille si sélectionnée)
+            $countStore = (clone $queryForCounts)->whereHas('inventaires', function($q) use ($request, $hasSize) {
+                if ($hasSize) {
+                    $q->whereHas('taille', fn($t) => $t->whereIn('taille', $request->tailles));
+                }
+                $q->whereHas('magasins', fn($m) => $m->where('quantite_stock_magasin', '>', 0));
+            })->count();
+
+
+            // --- B. APPLICATION DES FILTRES SUR LA LISTE DES RÉSULTATS ---
+            if ($hasSize) {
+                // Cas avec Taille : On filtre les vélos qui ont la taille X ET le stock demandé pour cette taille
+                $query->whereHas('inventaires', function($q) use ($request, $hasOnline, $hasStore) {
+                    $q->whereHas('taille', fn($t) => $t->whereIn('taille', $request->tailles));
+                    
                     if ($hasOnline) $q->where('quantite_stock_en_ligne', '>', 0);
                     if ($hasStore) $q->whereHas('magasins', fn($m) => $m->where('quantite_stock_magasin', '>', 0));
                 });
             } else {
+                // Cas sans Taille : On regarde globalement si le vélo est dispo
                 if ($hasOnline) $query->whereHas('inventaires', fn($q) => $q->where('quantite_stock_en_ligne', '>', 0));
                 if ($hasStore) $query->whereHas('inventaires.magasins', fn($q) => $q->where('quantite_stock_magasin', '>', 0));
             }
-
-            // Compteurs
-            $countOnline = (clone $query)->whereHas('inventaires', fn($q) => $q->where('quantite_stock_en_ligne', '>', 0))->count();
-            $countStore = (clone $query)->whereHas('inventaires.magasins', fn($q) => $q->where('quantite_stock_magasin', '>', 0))->count();
 
             // Prix & Tri
             if ($request->filled('prix_min')) $query->where('prix', '>=', $request->prix_min);
