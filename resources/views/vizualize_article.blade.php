@@ -23,7 +23,14 @@
             <div class="modal-body">
                 {{-- Partie Gauche --}}
                 <div class="modal-product">
-                    <div class="modal-img"><img id="modalImg" src="" alt="Article"></div>
+                    <div class="modal-img">
+                        <div id="modalImg" >
+                                    @if ($isAccessoire)
+                                        <img src="{{ asset('images/ACCESSOIRES/' . substr($article->reference,0,5) . '/image_1.jpg') }}" alt="{{ $article->nom_article }}">
+                                    @else
+                                        <img src="{{ asset('images/VELOS/' . substr($article->reference,0,6) . '/image_1.jpg') }}" alt="{{ $article->nom_article }}">
+                                    @endif</div>
+                    </div>
                     <div class="modal-details">
                         <h3 id="modalName">NOM DE L'ARTICLE</h3>
                         <div class="modal-price" id="modalPrice">0,00 € TTC</div>
