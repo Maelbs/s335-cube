@@ -1,56 +1,162 @@
-@font-face {
-    font-family: 'Damas Font';
-    src: url('../font/font.woff2');
-}
-
-html {
-    font-family: 'Damas Font', sans-serif;
-    box-sizing: border-box;
-}
-
-* {
-    margin: 0;
-}
+@import url('https://fonts.googleapis.com/css2?family=Fira+Sans:wght@300;400;500;700;800&display=swap');
 
 body {
-    background-color: #f4f4f4;
+    font-family: 'Fira Sans', sans-serif;
+    margin: 0;
+    padding: 0;
+    /* Même fond que la connexion pour la cohérence */
+    background: linear-gradient(rgba(10, 20, 30, 0.6), rgba(10, 20, 30, 0.8)), url('https://woody.cloudly.space/app/uploads/tourisme-saintomer/2023/03/thumbs/DSC08398-1920x960.jpg');
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+    
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    color: #333;
+}
+
+/* Wrapper principal (Centrage et marges) */
+.profile-wrapper {
+    flex: 1;
     display: flex;
     justify-content: center;
-    align-items: center;
-    height: 100vh;
-    width: 100%;
-    overflow-y: hidden;
+    align-items: flex-start;
+    padding-top: 10vh;
+    padding-bottom: 50px;
+    margin-top: 60px; /* Espace pour le header */
+    backdrop-filter: blur(4px);
 }
+
+/* La carte profil */
 .profile-card {
-    background-color: #fff;
-    padding: 20px 30px;
-    border-radius: 8px;
-    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-    width: 300px;
-    text-align: center;
-}
-.profile-card img {
-    width: 100px;
-    height: 100px;
-    border-radius: 50%;
-    margin-bottom: 15px;
-}
-.profile-card h2 {
-    margin-bottom: 10px;
-}
-.profile-card p {
-    margin: 5px 0;
-    color: #555;
-}
-.profile-card a {
-    display: inline-block;
-    margin-top: 15px;
-    padding: 8px 15px;
-    background-color: #007BFF;
-    color: #fff;
-    text-decoration: none;
+    background-color: #ffffff;
+    width: 100%;
+    max-width: 500px; /* Un peu plus large que le login pour le confort */
+    padding: 0; /* Padding géré à l'intérieur */
     border-radius: 4px;
+    box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+    position: relative;
+    overflow: hidden;
+    animation: slideUp 0.6s ease-out;
 }
-.profile-card a:hover {
-    background-color: #0056b3;
+
+@keyframes slideUp {
+    from { opacity: 0; transform: translateY(30px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* Barre bleue en haut */
+.profile-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 4px;
+    background: #0071e3;
+}
+
+/* En-tête de la carte */
+.card-header {
+    padding: 40px 40px 20px 40px;
+    text-align: center;
+    border-bottom: 1px solid #f1f5f9;
+}
+
+h2 {
+    margin: 0;
+    font-weight: 800;
+    font-size: 24px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: #0f172a;
+}
+
+.subtitle {
+    font-size: 13px;
+    color: #94a3b8;
+    margin-top: 5px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+/* Corps de la carte (Liste des infos) */
+.card-body {
+    padding: 30px 40px;
+}
+
+.info-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 0;
+    border-bottom: 1px solid #f1f5f9;
+}
+
+.info-row:last-child {
+    border-bottom: none;
+}
+
+.label {
+    font-size: 13px;
+    font-weight: 700;
+    color: #64748b; /* Gris texte */
+    text-transform: uppercase;
+}
+
+.value {
+    font-size: 15px;
+    font-weight: 500;
+    color: #0f172a; /* Noir profond */
+    text-align: right;
+}
+
+/* Pied de carte (Bouton) */
+.card-footer {
+    padding: 0 40px 40px 40px;
+}
+
+/* --- BOUTON DECONNEXION (Style identique Login) --- */
+button.btn-logout {
+    position: relative;
+    width: 100%;
+    padding: 16px;
+    background-color: #0f172a;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    font-family: 'Fira Sans', sans-serif;
+    font-weight: 700;
+    font-size: 14px;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    cursor: pointer;
+    overflow: hidden;
+    z-index: 1;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+}
+
+/* Effet glissant rouge ou bleu (Bleu ici pour la cohérence) */
+button.btn-logout::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -15px;
+    width: 0%;
+    height: 100%;
+    background-color: #0071e3;
+    z-index: -1;
+    transform: skewX(-20deg);
+    transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+button.btn-logout:hover::before {
+    width: 160%;
+}
+
+button.btn-logout:hover {
+    box-shadow: 0 8px 25px rgba(0, 113, 227, 0.35);
+    transform: translateY(-2px);
 }

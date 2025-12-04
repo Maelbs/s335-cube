@@ -33,7 +33,7 @@ class Taille extends Model
 
     public function ArticleInventaire()
     {
-        return $this->belongsTo(ArticleInventaire::class, 'id_taille', 'id_taille');
+        return $this->hasMany(ArticleInventaire::class, 'id_taille', 'id_taille');
     }
 
     public function __toString()

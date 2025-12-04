@@ -1,106 +1,219 @@
+@import url('https://fonts.googleapis.com/css2?family=Fira+Sans:wght@300;400;500;700;800&display=swap');
+
 body {
-    font-family: 'Fira Sans', sans-serif; 
+    font-family: 'Fira Sans', sans-serif;
     margin: 0;
-    padding: 20px; 
-    background-color: #f8f9fa; 
+    padding: 0;
+    /* Ton image de fond */
+    background: linear-gradient(rgba(10, 20, 30, 0.5), rgba(10, 20, 30, 0.7)), url('https://woody.cloudly.space/app/uploads/tourisme-saintomer/2023/03/thumbs/DSC08398-1920x960.jpg');
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+    
     display: flex;
-    flex-direction: column; 
-    justify-content: center; 
-    align-items: center;   
-    min-height: 100vh;    
+    flex-direction: column;
+    min-height: 100vh;
     color: #333;
-    box-sizing: border-box;
 }
 
-/* Conteneur du formulaire */
+/* Le conteneur principal */
+.auth-wrapper {
+    flex: 1;
+    display: flex;
+    justify-content: center; /* Centre horizontalement */
+    
+    /* Tes réglages de positionnement validés */
+    align-items: flex-start; 
+    padding-top: 10vh; 
+    padding-bottom: 50px;
+    margin-top: 60px;
+    backdrop-filter: blur(4px);
+}
+
+/* La carte du formulaire */
 .login-form {
     background-color: #ffffff;
-    padding: 20px;
-    border-radius: 8px;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    padding: 50px 40px;
     width: 100%;
-    max-width: 400px; /* Largeur maximale */
+    max-width: 420px;
+    border-radius: 4px;
+    box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+    position: relative;
+    overflow: hidden;
+    margin-top: 20px;
+
+    /* --- ANIMATION D'APPARITION RÉINTÉGRÉE --- */
+    animation: slideUp 0.6s ease-out;
 }
 
-/* Titre du formulaire */
+/* Définition de l'animation vers le haut */
+@keyframes slideUp {
+    from { 
+        opacity: 0; 
+        transform: translateY(30px); /* Part de plus bas */
+    }
+    to { 
+        opacity: 1; 
+        transform: translateY(0); 
+    }
+}
+
+/* Petite barre BLEUE déco en haut */
+.login-form::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 4px;
+    background: #0071e3;
+}
+
 h2 {
     text-align: center;
-    color: #333;
-    margin-bottom: 20px;
+    font-weight: 800;
+    font-size: 24px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 30px;
+    color: #0f172a;
 }
 
-/* Style des champs de saisie */
+/* Style des champs (Inputs) */
 .form-group {
     margin-bottom: 20px;
+    position: relative;
 }
 
 label {
-    display: block;
-    font-size: 14px;
+    font-size: 13px;
+    font-weight: 700;
+    color: #475569;
     margin-bottom: 8px;
-    color: #333;
+    display: block;
 }
 
 input[type="email"],
 input[type="password"] {
     width: 100%;
-    padding: 12px;
-    border: 1px solid #ccc;
+    padding: 14px 16px;
+    background-color: #f1f5f9;
+    border: 1px solid #cbd5e1;
     border-radius: 4px;
-    font-size: 16px;
+    font-size: 15px;
+    color: #333;
     box-sizing: border-box;
+    transition: all 0.3s ease; /* Animation fluide input */
+    font-family: 'Fira Sans', sans-serif;
 }
 
-/* Style pour le bouton de soumission */
-button {
+input[type="email"]:focus,
+input[type="password"]:focus {
+    background-color: #fff;
+    border-color: #0071e3;
+    outline: none;
+    box-shadow: 0 0 0 4px rgba(0, 113, 227, 0.1);
+}
+
+small.text-muted {
+    font-size: 12px;
+    color: #94a3b8;
+    margin-top: 6px;
+    display: block;
+    text-align: right;
+}
+
+/* --- LE BOUTON PREMIUM --- */
+button.btn-primary {
+    position: relative;
     width: 100%;
-    padding: 12px;
-    background-color: #4CAF50;
-    color: white;
+    padding: 16px;
+    background-color: #0f172a;
+    color: #fff;
     border: none;
     border-radius: 4px;
-    font-size: 16px;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
-}
-
-button:hover {
-    background-color: #45a049;
-}
-
-/* Petit texte sous le champ mot de passe */
-small {
-    font-size: 12px;
-    color: #777;
-}
-
-/* Erreurs */
-.invalid-feedback {
-    color: red;
-    font-size: 12px;
-    margin-top: 5px;
-}
-
-/* Lien pour mot de passe oublié */
-.forgot-password a {
+    font-family: 'Fira Sans', sans-serif;
+    font-weight: 700;
     font-size: 14px;
-    color: #007bff;
-    text-decoration: none;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    cursor: pointer;
+    overflow: hidden;
+    z-index: 1;
+    transition: all 0.3s ease;
+    margin-top: 25px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.15);
 }
 
-.forgot-password a:hover {
-    text-decoration: underline;
+button.btn-primary::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -15px;
+    width: 0%;
+    height: 100%;
+    background-color: #0071e3;
+    z-index: -1;
+    transform: skewX(-20deg);
+    transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-/* Lien pour créer un compte */
-.no-account a {
-    display: block;
+button.btn-primary:hover::before {
+    width: 160%;
+}
+
+button.btn-primary:hover {
+    box-shadow: 0 8px 25px rgba(0, 113, 227, 0.35);
+    transform: translateY(-2px);
+}
+
+/* Liens en bas */
+.no-account {
+    margin-top: 25px;
     text-align: center;
-    margin-top: 20px;
-    color: #007bff;
-    text-decoration: none;
+    padding-top: 20px;
+    border-top: 1px solid #e2e8f0;
 }
 
-.no-account a:hover {
+.forgot-password a, .no-account a {
+    color: #64748b;
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: 500;
+    transition: color 0.3s;
+}
+
+.forgot-password a:hover, .no-account a:hover {
+    color: #0071e3;
     text-decoration: underline;
+}
+
+.forgot-password {
+    text-align: right;
+    margin-top: -10px;
+    margin-bottom: 20px;
+}
+
+/* --- FEEDBACK ERREURS SIMPLE --- */
+.invalid-feedback {
+    color: #dc2626; /* Rouge standard simple */
+    font-size: 13px;
+    font-weight: 500;
+    margin-top: 5px;
+    /* On cache le conteneur vide par défaut pour éviter un espace blanc moche */
+    display: none; 
+    
+    /* Animation de secousse en cas d'erreur */
+    animation: shake 0.3s ease-in-out;
+}
+
+/* On affiche seulement quand il y a du texte dedans (géré par Laravel ou JS) */
+.invalid-feedback:not(:empty) {
+    display: block;
+}
+
+@keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    25% { transform: translateX(-4px); }
+    75% { transform: translateX(4px); }
 }
