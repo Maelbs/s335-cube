@@ -237,7 +237,7 @@
                             <div class="product-image">
                                 <a href="{{ url('/velo/' . $velo->reference) }}">
                                     @if ($isAccessoire)
-                                        <img src="{{ asset('images/VELOS/' . substr($velo->reference,0,5) . '/image_1.jpg') }}" alt="{{ $velo->nom_article }}">
+                                        <img src="{{ asset('images/ACCESSOIRES/' . substr($velo->reference,0,5) . '/image_1.jpg') }}" alt="{{ $velo->nom_article }}">
                                     @else
                                         <img src="{{ asset('images/VELOS/' . substr($velo->reference,0,6) . '/image_1.jpg') }}" alt="{{ $velo->nom_article }}">
                                     @endif
