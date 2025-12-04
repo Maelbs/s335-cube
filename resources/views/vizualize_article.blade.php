@@ -305,8 +305,6 @@
                         <div class="dispo-row">
                             <span class="status-dot" style="background-color: {{ $colorDotMag }};"></span>
                             <span class="dispo-text" style="font-weight: bold;">{{ $enMagasinStatus }}</span>
-                            <span class="status-dot" style="background-color: {{ $colorDot }};"></span> 
-                            <span class="dispo-text" style="font-weight: bold;">{{ $textStatus }}</span>
                         </div>
                     </div>
                 </div>
