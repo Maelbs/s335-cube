@@ -144,8 +144,20 @@
                                 @endforeach
                                 @if($isAccessoire)
                                     <div class="spec-row">
-                                        <div class="spec-label">Tailles disponibles</div>
-                                        <div class="spec-value">Disponible en magasin | Disponible en ligne</div>
+                                        <div class="spec-label">Disponibilité</div>
+                                        @php
+                                            $stockWeb = $stock->sum('quantite_stock_en_ligne') > 0;
+                                            $stockMag = $stock->flatMap->magasins->sum('pivot.quantite_stock_magasin') > 0;
+                                        @endphp
+                                        <div class="spec-value">
+                                            @if($stockWeb)
+                                                Disponible en ligne
+                                            @endif
+
+                                            @if($stockMag)
+                                                / Commandable en magasin
+                                            @endif
+                                        </div>
                                     </div>
                                 @endif
                             </div>
@@ -201,17 +213,15 @@
                 @endif 
 
                 {{-- 4. DESCRIPTION & RESUME --}}
+                @if($typeVue === 'velo')
                 <div class="each-specs-column">
                     <div class="specs-header-row">
-                    @if($typeVue === 'velo')
                         <h2>Description</h2>
                         <button class="toggle-specs-btn"></button>
                     </div> 
-                        <p>{{ $article->varianteVelo->modele->description->texte_description ?? 'Aucune description disponible.' }}</p>
-                    @else
-                    </div> 
-                    @endif
+                    <p>{{ $article->varianteVelo->modele->description->texte_description ?? 'Aucune description disponible.' }}</p>
                 </div>
+                @endif
 
                 <div class="each-specs-column" id="resume_container">
                     <div class="specs-header-row">
@@ -582,8 +592,6 @@
                 msgIndispo.style.display = 'none';
             }
         }
-    </script>
-
 
         function addToCartAjax() {
             const form = document.getElementById('form-ajout-panier');

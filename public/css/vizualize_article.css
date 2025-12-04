@@ -495,7 +495,7 @@ nav {
 .each-specs-column {
     display: block; 
     padding: 30px 0; 
-    border-top: 1px solid #e0e0e0;
+    border-bottom: 1px solid #e0e0e0;
 }
 
 .specs-header-row {
