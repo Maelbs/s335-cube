@@ -16,7 +16,7 @@
     <div class="auth-wrapper">
         
         <section class="login-form">
-            <h2>Espace Client</h2>
+            <h2>Connexion</h2>
 
             {{-- Zone pour afficher les erreurs globales si besoin --}}
             <div class="invalid-feedback js-invalid-feedback-browser"></div>

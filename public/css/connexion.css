@@ -25,7 +25,6 @@ body {
     /* Tes réglages de positionnement validés */
     align-items: flex-start; 
     padding-top: 20vh; 
-    padding-bottom: 50px;
     backdrop-filter: blur(4px);
 }
 
