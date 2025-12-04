@@ -316,7 +316,7 @@
 
 
             <div class="action-buttons-container">
-                <form id="form-ajout-panier" data-action="{{ route('cart.add', $article->reference) }}">
+                <form id="form-ajout-panier" data-action="{{ $isAccessoire ? route('cart.addAccessoire', $article->reference) : route('cart.add', $article->reference) }}">
                     @if($typeVue === 'velo')
                         <input type="hidden" name="taille" id="input-taille-selected" value="">
                     @else
