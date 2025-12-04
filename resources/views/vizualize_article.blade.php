@@ -55,13 +55,16 @@
             {{-- 1. HERO IMAGE (Carrousel Dynamique Local) --}}
             <div class="product-hero-section" id="mainCarousel">
                 
-                {{-- LOGIQUE PHP : Scan du dossier --}}
+                {{-- LOGIQUE PHP : Scan du dossier (CORRIGÉE) --}}
                 @php
                     $prefixLength = $isAccessoire ? 5 : 6;
                     $folderName = substr($article->reference, 0, $prefixLength);
                     
+                    // On choisit le bon dossier racine ici
+                    $dossierRacine = $isAccessoire ? 'images/ACCESSOIRES/' : 'images/VELOS/';
+                    
                     // Chemin Web (src) et Serveur (check file)
-                    $webPath = 'images/VELOS/' . $folderName;
+                    $webPath = $dossierRacine . $folderName;
                     $serverPath = public_path($webPath);
                     
                     $validImages = [];
@@ -398,11 +401,14 @@
                     <div class="st-card-item">
                         <a href="{{ route('velo.show', $similaire->reference) }}" class="st-card-link">
                             <div class="st-img-box">
-                                {{-- LOGIQUE POUR TROUVER L'IMAGE LOCALE --}}
+                                {{-- LOGIQUE POUR TROUVER L'IMAGE LOCALE (CORRIGÉE) --}}
                                 @php
                                     $simPrefix = $isAccessoire ? 5 : 6;
                                     $simFolder = substr($similaire->reference, 0, $simPrefix);
-                                    $simImgPath = 'images/VELOS/' . $simFolder . '/image_1.jpg';
+                                    
+                                    // Correction ici aussi
+                                    $dossierRacineSim = $isAccessoire ? 'images/ACCESSOIRES/' : 'images/VELOS/';
+                                    $simImgPath = $dossierRacineSim . $simFolder . '/image_1.jpg';
                                 @endphp
                                 
                                 @if(file_exists(public_path($simImgPath)))
