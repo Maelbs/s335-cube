@@ -147,7 +147,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 if(data.features && data.features.length > 0){
                     data.features.forEach(item => {
                         const props = item.properties;
-                        const label = props.label; // ex: "16 Rue Léandre Vaillat 74000 Annecy"
+                        const label = props.label; 
 
                         const div = document.createElement('div');
                         div.textContent = label;
