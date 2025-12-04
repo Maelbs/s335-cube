@@ -647,6 +647,7 @@ nav {
 
 #resume_container {
     border: none;
+    margin-bottom: 80px;
 }
 
 /* =========================================
@@ -660,6 +661,40 @@ nav {
     padding: 40px;
     border-radius: 2px;
     height: fit-content;
+}
+
+.section-grey {
+    background-color: #efefef;
+    width: 100% !important;         /* Force la largeur à 100% */
+    max-width: none !important;
+}
+
+.text-section-grey {
+    text-align: center !important;
+}
+
+p.text-section-grey{
+    max-width: 800px;           /* Largeur maximale pour ne pas étaler le texte */
+    width: 100%;                /* Prend toute la place disponible jusqu'au max-width */
+    margin-left: auto;          /* Pousse depuis la gauche */
+    margin-right: auto;         /* Pousse depuis la droite -> Résultat : CENTRÉ */
+    
+    /* 2. Le style du TEXTE à l'intérieur */
+    text-align: center;         /* Centre le texte ligne par ligne */
+    color: #666;                /* Ta couleur grise */
+    line-height: 1.6;           /* Aération des lignes */
+    
+    /* 3. Gestion des mots longs (Word-wrap) */
+    word-wrap: break-word;      /* Pour les vieux navigateurs */
+    overflow-wrap: break-word;  /* Standard moderne : coupe les mots trop longs si besoin */
+    
+    /* 4. Petite sécurité mobile */
+    padding: 0 15px
+}
+
+.newMillesime {
+    background-color: #000 !important;
+    color: #fff !important;
 }
 
 .badges {
@@ -899,7 +934,7 @@ nav {
    NOUVEAU CARROUSEL (ARTICLES SIMILAIRES)
    ========================================= */
 .st-similar-section {
-    margin-top: 80px;
+    margin-top: 20px;
     padding: 20px 0;
     max-width: 1400px;
     margin-left: auto;
@@ -910,7 +945,6 @@ nav {
     text-align: left;
     font-size: 2rem;
     margin-bottom: 30px;
-    margin-top: 70px;
     font-weight: 900;
     font-style: italic;
     text-transform: uppercase;
@@ -922,7 +956,7 @@ nav {
     position: relative;
     width: 100%;
     overflow: hidden;
-    padding: 10px 0;
+    padding: 10px 50px;
 }
 
 .st-carousel-track {
@@ -946,6 +980,7 @@ nav {
     flex-direction: column;
     justify-content: space-between;
     transition: transform 0.3s ease, box-shadow 0.3s ease;
+    transition: all 0.3 ease;
 }
 
 .st-card-item:hover {
@@ -1089,7 +1124,8 @@ nav {
 }
 
 .dispo-text {
-    font-size: 0.7em;
+    font-size: 0.75em;
+    font-weight: 600 !important;
 }
 
 /* =========================================

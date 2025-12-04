@@ -15,18 +15,18 @@ class AccessoireVelo extends Model
     public $incrementing = false;
 
     protected $fillable = [
-        'var_reference', 
-        'reference',     
+        'reference_velo', 
+        'reference_accessoire',     
     ];
 
     public function varianteVelo()
     {
-        return $this->belongsTo(VarianteVelo::class, 'var_reference', 'reference');
+        return $this->belongsTo(VarianteVelo::class, 'reference', 'reference_velo');
     }
 
     public function accessoire()
     {
-        return $this->belongsTo(Accessoire::class, 'reference', 'reference');
+        return $this->belongsTo(Accessoire::class, 'reference', 'reference_accessoire');
     }
 
     public function __toString()

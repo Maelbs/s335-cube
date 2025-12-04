@@ -12,6 +12,10 @@ header * {
     box-sizing: border-box;
 }
 
+header, header * {
+    box-sizing: border-box; 
+}
+
 header ul {
     list-style: none;
     margin: 0;
