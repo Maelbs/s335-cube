@@ -80,11 +80,14 @@
                             <h3>{{ $hierarchyTitle }}</h3><i class="fas fa-chevron-up"></i>
                         </div>
                         <div class="filter-content">
-                            @foreach($hierarchyItems as $item)
-                                @php
-                                    $currentFilters = request()->query();
-                                    $routeParams = ['type' => $type];
-                                    $isActive = false;
+                        @foreach($hierarchyItems as $item)
+                            @php
+                                $currentFilters = request()->query();
+                                $routeParams = ['type' => $type];
+                                $isActive = false;
+
+                                // --- CAS 1 : VÉLOS ---
+                                if(!$isAccessoire) {
                                     if ($hierarchyLevel === 'root') {
                                         $routeParams['cat_id'] = $item->id;
                                         $isActive = ($cat_id == $item->id);
@@ -100,13 +103,39 @@
                                         $routeParams['model_id'] = $item->id;
                                         $isActive = ($model_id == $item->id);
                                     }
-                                    $targetUrl = route('boutique.index', array_merge($routeParams, $currentFilters));
-                                @endphp
-                                <label class="cube-checkbox" onclick="window.location.href='{{ $targetUrl }}#listing-anchor'">
-                                    <input type="checkbox" {{ $isActive ? 'checked' : '' }}>
-                                    <span class="box"></span>{{ strtoupper($item->name) }}
-                                </label>
-                            @endforeach
+                                } 
+                                // --- CAS 2 : ACCESSOIRES ---
+                                else {
+                                    if ($hierarchyLevel === 'root') {
+                                        // On est à la racine, on clique pour aller au niveau 1 (cat_id)
+                                        $routeParams['cat_id'] = $item->id;
+                                        $isActive = ($cat_id == $item->id);
+                                    }
+                                    elseif ($hierarchyLevel === 'sub') {
+                                        // On est au niveau 1, on clique pour aller au niveau 2 (sub_id)
+                                        // On doit garder le cat_id parent
+                                        $routeParams['cat_id'] = $cat_id; 
+                                        $routeParams['sub_id'] = $item->id;
+                                        $isActive = ($sub_id == $item->id);
+                                    }
+                                    elseif ($hierarchyLevel === 'model') {
+                                        // On est au niveau 2, on clique pour aller au niveau 3 (model_id)
+                                        // On garde cat_id et sub_id
+                                        $routeParams['cat_id'] = $cat_id;
+                                        $routeParams['sub_id'] = $sub_id;
+                                        $routeParams['model_id'] = $item->id;
+                                        $isActive = ($model_id == $item->id);
+                                    }
+                                }
+
+                                $targetUrl = route('boutique.index', array_merge($routeParams, $currentFilters));
+                            @endphp
+                            
+                            <label class="cube-checkbox" onclick="window.location.href='{{ $targetUrl }}#listing-anchor'">
+                                <input type="checkbox" {{ $isActive ? 'checked' : '' }}>
+                                <span class="box"></span>{{ strtoupper($item->name) }}
+                            </label>
+                        @endforeach
                         </div>
                     </div>
                 @endif
@@ -204,7 +233,11 @@
                 <div class="products-grid">
                     @foreach($articles as $article)
                         <div class="product-card">
-                            <div class="badge-new">NOUVEAU</div>
+                            @if(!$isAccessoire)
+                                @if(intval($article->modele->millesime_modele) >= intval(date("Y")))
+                                    <div class="badge-new">NOUVEAU</div>
+                                @endif
+                            @endif
                             <div class="product-image">
                                 <a href="{{ url($isAccessoire ? '/accessoire/' : '/velo/') . $article->reference }}">
                                     @if ($isAccessoire)

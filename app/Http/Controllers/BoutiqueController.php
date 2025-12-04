@@ -62,45 +62,112 @@ class BoutiqueController extends Controller
 
             // --- 2. NAVIGATION ---
             else {
-                if ($model_id) { // Si un ID est passé en 4ème paramètre
+                // NIVEAU 3 : On a sélectionné une sous-sous-catégorie
+                if ($model_id) { 
                      $query->where('id_categorie_accessoire', $model_id);
                      $currCat = CategorieAccessoire::find($model_id);
                      $titrePage = $currCat ? $currCat->nom_categorie_accessoire : '';
-                } elseif ($sub_id) {
-                    $query->where('id_categorie_accessoire', $sub_id);
-                    $currCat = CategorieAccessoire::find($sub_id);
-                    $titrePage = $currCat ? $currCat->nom_categorie_accessoire : '';
-                   
-                    $hierarchyTitle = "SOUS-CATÉGORIES"; $hierarchyLevel = 'sub';
-                    if($currCat && $currCat->cat_id_categorie_accessoire) {
+                     
+                     // Affiche les frères/sœurs (autres choix au même niveau)
+                     $hierarchyTitle = "AUTRES CHOIX"; 
+                     $hierarchyLevel = 'model';
+                     
+                     if($currCat && $currCat->cat_id_categorie_accessoire) {
                          $hierarchyItems = CategorieAccessoire::where('cat_id_categorie_accessoire', $currCat->cat_id_categorie_accessoire)
                             ->orderBy('nom_categorie_accessoire')->get()
                             ->map(fn($item) => (object)['name' => $item->nom_categorie_accessoire, 'id' => $item->id_categorie_accessoire]);
-                         $cat_id = $currCat->cat_id_categorie_accessoire;
-                    }
-                } elseif ($cat_id) {
-                    $currCat = CategorieAccessoire::with('enfants')->find($cat_id);
+                         
+                         // On remonte les ID parents pour garder le fil d'ariane actif
+                         $sub_id = $currCat->cat_id_categorie_accessoire;
+                         $parent = CategorieAccessoire::find($sub_id);
+                         if($parent) $cat_id = $parent->cat_id_categorie_accessoire;
+                     }
+                } 
+                // NIVEAU 2 : On a sélectionné une sous-catégorie
+                elseif ($sub_id) {
+                    $currCat = CategorieAccessoire::with('enfants')->find($sub_id);
+                    $titrePage = $currCat ? $currCat->nom_categorie_accessoire : '';
+                    
+                    // --- LOGIQUE CORRIGÉE ICI ---
+                    // 1. On inclut les produits de la catégorie courante ET de ses enfants
                     if ($currCat) {
                         $ids = $currCat->enfants->pluck('id_categorie_accessoire');
                         $ids->push($currCat->id_categorie_accessoire);
                         $query->whereIn('id_categorie_accessoire', $ids);
-                        $titrePage = $currCat->nom_categorie_accessoire;
-                        $hierarchyTitle = "SOUS-CATÉGORIES"; $hierarchyLevel = 'sub';
-                        $hierarchyItems = $currCat->enfants->map(fn($item) => (object)['name' => $item->nom_categorie, 'id' => $item->id_categorie_accessoire]);
                     }
-                } else {
-                    $hierarchyTitle = "CATÉGORIES"; $hierarchyLevel = 'root';
-                    $hierarchyItems = CategorieAccessoire::whereNull('cat_id_categorie_accessoire')->orderBy('nom_categorie_accessoire')->get()
-                        ->map(fn($item) => (object)['name' => $item->nom_categorie, 'id' => $item->id_categorie_accessoire]);
+
+                    // 2. Sidebar : A-t-elle des enfants ?
+                    if ($currCat && $currCat->enfants->isNotEmpty()) {
+                        // OUI -> On affiche les ENFANTS (pour descendre)
+                        $hierarchyTitle = "TYPES"; 
+                        $hierarchyLevel = 'model'; // On utilise 'model' pour le 3ème niveau
+                        $hierarchyItems = $currCat->enfants->map(fn($item) => (object)[
+                            'name' => $item->nom_categorie_accessoire, 
+                            'id' => $item->id_categorie_accessoire
+                        ]);
+                        // On définit le cat_id pour le lien
+                        if($currCat->cat_id_categorie_accessoire) $cat_id = $currCat->cat_id_categorie_accessoire;
+                    } else {
+                        // NON -> On affiche les FRERES (pour changer)
+                        $hierarchyTitle = "AUTRES SOUS-CATÉGORIES"; 
+                        $hierarchyLevel = 'sub';
+                        if($currCat && $currCat->cat_id_categorie_accessoire) {
+                             $hierarchyItems = CategorieAccessoire::where('cat_id_categorie_accessoire', $currCat->cat_id_categorie_accessoire)
+                                ->orderBy('nom_categorie_accessoire')->get()
+                                ->map(fn($item) => (object)['name' => $item->nom_categorie_accessoire, 'id' => $item->id_categorie_accessoire]);
+                             $cat_id = $currCat->cat_id_categorie_accessoire;
+                        }
+                    }
+                } 
+                // NIVEAU 1 : On a sélectionné une catégorie racine
+                elseif ($cat_id) {
+                    $currCat = CategorieAccessoire::with('enfants')->find($cat_id);
+                    if ($currCat) {
+                        // Récupère tous les produits de cette catégorie et de ses enfants (récursif simple ou direct)
+                        // Pour faire simple ici : enfants directs + courant. 
+                        // Note: Si vous avez 3 niveaux, il faudrait idéalement récupérer les IDs des petits-enfants aussi.
+                        // Ici on garde la logique simple :
+                        $ids = $currCat->enfants->pluck('id_categorie_accessoire');
+                        $ids->push($currCat->id_categorie_accessoire);
+                        $query->whereIn('id_categorie_accessoire', $ids); // Ou logique plus large si besoin
+                        
+                        $titrePage = $currCat->nom_categorie_accessoire;
+                        $hierarchyTitle = "SOUS-CATÉGORIES"; 
+                        $hierarchyLevel = 'sub';
+                        $hierarchyItems = $currCat->enfants->map(fn($item) => (object)[
+                            'name' => $item->nom_categorie_accessoire, 
+                            'id' => $item->id_categorie_accessoire
+                        ]);
+                    }
+                } 
+                // NIVEAU 0 : Racine
+                else {
+                    $hierarchyTitle = "CATÉGORIES"; 
+                    $hierarchyLevel = 'root';
+                    $hierarchyItems = CategorieAccessoire::whereNull('cat_id_categorie_accessoire')
+                        ->orderBy('nom_categorie_accessoire')->get()
+                        ->map(fn($item) => (object)['name' => $item->nom_categorie_accessoire, 'id' => $item->id_categorie_accessoire]);
                 }
             }
 
             // --- 3. FILTRES DISPO (Booléens Accessoire) ---
-            if ($request->filled('dispo_ligne')) $query->where('dispo_en_ligne', true);
-            if ($request->filled('dispo_magasin')) $query->where('dispo_magasin', true);
 
-            $countOnline = (clone $query)->where('dispo_en_ligne', true)->count();
-            $countStore = (clone $query)->where('dispo_magasin', true)->count();
+            if ($request->filled('dispo_ligne')) {
+                $query->whereHas('inventaires', function ($q) {
+                    $q->where('quantite_stock_en_ligne', '>', 0);
+                });
+            }
+
+            // Filtre Stock magasin (via table inventaire_magasin)
+            if ($request->filled('dispo_magasin')) {
+                $query->whereHas('inventaires.magasins', function ($q) {
+                    $q->where('quantite_stock_magasin', '>', 0);
+                });
+}
+
+            $countOnline = (clone $query)->whereHas('inventaires', fn($q) => $q->where('quantite_stock_en_ligne', '>', 0))->count();
+            $countStore = (clone $query)->whereHas('inventaires.magasins', fn($q) => $q->where('quantite_stock_magasin', '>', 0))->count();
+
 
             // Prix & Tri
             if ($request->filled('prix_min')) $query->where('prix', '>=', $request->prix_min);
