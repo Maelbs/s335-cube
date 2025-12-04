@@ -423,6 +423,69 @@
 
         </div> 
     </div> 
+    
+    {{-- Accessoire Vélos --}}
+    @if(! $isAccessoire)
+        <section class="st-similar-section section-grey">
+
+            {{-- En-tête avec ton texte personnalisé --}}
+            <div class="st-section-header" style="text-align: center; margin-bottom: 20px;">
+                <h2 class="st-section-title text-section-grey">D’autres cyclistes ont également acheté</h2>
+                <p class="text-section-grey">
+                    Complétez votre équipement avec des accessoires populaires auprès de nos clients.
+                    Chaque produit est sélectionné pour améliorer votre expérience de cycliste et s’adapter parfaitement à
+                    votre vélo Cube.
+                </p>
+            </div>
+
+            {{-- Wrapper du Carousel (Mêmes classes pour garder le CSS) --}}
+            <div class="st-carousel-wrapper">
+                <button class="st-nav-btn st-btn-left">❮</button>
+
+                <div class="st-carousel-track">
+                    @foreach ($article->varianteVelo->accessoires as $accessoire)
+                        <div class="st-card-item">
+                            {{-- Lien vers le produit (Vérifie si tu dois utiliser velo.show ou accessoire.show) --}}
+                            <a href="{{ route('velo.show', $accessoire->reference) }}" class="st-card-link">
+
+                                <div class="st-img-box">
+                                    {{-- LOGIQUE IMAGE LOCALE ADAPTÉE POUR ACCESSOIRE --}}
+                                    @php
+                                        // On suppose que pour les accessoires le préfixe est de 5 (selon ta logique précédente)
+                                        $prefix = 5;
+                                        $folder = substr($accessoire->reference, 0, $prefix);
+
+                                        // ATTENTION: Vérifie si tes accessoires sont dans 'images/VELOS' ou 'images/ACCESSOIRES'
+                                        $imgPath = 'images/VELOS/' . $folder . '/image_1.jpg'; 
+                                    @endphp
+
+                                    @if(file_exists(public_path($imgPath)))
+                                        <img src="{{ asset($imgPath) }}" alt="{{ $accessoire->nom_article }}">
+                                    @else
+                                        <img src="https://placehold.co/300x200?text=Pas+d+image"
+                                            alt="{{ $accessoire->nom_article }}">
+                                    @endif
+                                </div>
+
+                                <div class="st-info-box">
+                                    <h3 class="st-prod-name">{{ $accessoire->nom_article }}</h3>
+                                    <div class="st-prod-price">
+                                        {{ number_format($accessoire->prix, 2, ',', ' ') }} €
+                                    </div>
+                                </div>
+
+                                <div class="st-action-row">
+                                    <span class="st-view-btn"><i class="arrow-icon">▶</i> VOIR LE PRODUIT</span>
+                                </div>
+                            </a>
+                        </div>
+                    @endforeach
+                </div>
+
+                <button class="st-nav-btn st-btn-right">❯</button>
+            </div>
+        </section>
+    @endif
 
     {{-- Produits Similaires AVEC IMAGES LOCALES --}}
     @if($articlesSimilaires->isNotEmpty())
