@@ -5,7 +5,7 @@ body {
     margin: 0;
     padding: 0;
     /* Ton image de fond */
-    background: linear-gradient(rgba(10, 20, 30, 0.5), rgba(10, 20, 30, 0.7)), url('https://woody.cloudly.space/app/uploads/tourisme-saintomer/2023/03/thumbs/DSC08398-1920x960.jpg');
+    background: linear-gradient(rgba(10, 20, 30, 0.5), rgba(10, 20, 30, 0.7)), url('../images/connexionBackground.jpg');
     background-size: cover;
     background-position: center;
     background-attachment: fixed;
@@ -24,15 +24,14 @@ body {
     
     /* Tes réglages de positionnement validés */
     align-items: flex-start; 
-    padding-top: 10vh; 
+    padding-top: 20vh; 
     padding-bottom: 50px;
-    margin-top: 60px;
     backdrop-filter: blur(4px);
 }
 
 /* La carte du formulaire */
 .login-form {
-    background-color: #ffffff;
+    background-color: rgba(255, 255, 255, 0.75);
     padding: 50px 40px;
     width: 100%;
     max-width: 420px;
@@ -67,6 +66,12 @@ body {
     width: 100%;
     height: 4px;
     background: #0071e3;
+}
+
+#submit-login {
+    clip-path: polygon(15px 0, 100% 0, 100% 100%, 0% 100%);
+    border-radius: 0;
+    
 }
 
 h2 {

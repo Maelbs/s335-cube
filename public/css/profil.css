@@ -160,3 +160,8 @@ button.btn-logout:hover {
     box-shadow: 0 8px 25px rgba(0, 113, 227, 0.35);
     transform: translateY(-2px);
 }
+
+#btn-logout {
+    clip-path: polygon(15px 0, 100% 0, 100% 100%, 0% 100%);
+    border-radius: 0;
+}

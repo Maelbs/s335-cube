@@ -54,7 +54,7 @@
             <div class="card-footer">
                 <form action="{{ route('logout') }}" method="POST">
                     @csrf
-                    <button type="submit" class="btn-logout">
+                    <button type="submit" class="btn-logout" id="btn-logout">
                         Se déconnecter
                     </button>
                 </form>
