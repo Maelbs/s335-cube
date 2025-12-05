@@ -22,8 +22,6 @@ const showPrevImage = () => {
   showImage(currentImageIndex);
 };
 
-// Auto-slide every 4 seconds
 setInterval(showNextImage, 4000);
 
-// Initialize the first image
 showImage(currentImageIndex);

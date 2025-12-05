@@ -19,7 +19,6 @@ class Description extends Model
     
     public function modeles()
     {
-        // hasMany(Modele::class, 'foreign_key', 'local_key')
         return $this->hasMany(Modele::class, 'id_description', 'id_description');
     }
 }

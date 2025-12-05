@@ -254,59 +254,42 @@
                 </a>
             @endguest
 
+            {{-- 🛒 MINI PANIER --}}
+            
             <div class="cart-dropdown-wrapper">
                 <a id="panier" href="{{ route('cart.index') }}">
                     <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" viewBox="0 0 48 48">
                         <g><path d="M39 32H13L8 12h36l-5 20Z" /><path stroke-linecap="round" stroke-linejoin="round" stroke-width="4" d="M3 6h3.5L8 12m0 0l5 20h26l5-20H8Z" /><circle cx="13" cy="39" r="3" stroke-linecap="round" stroke-linejoin="round" stroke-width="4" /><circle cx="39" cy="39" r="3" stroke-linecap="round" stroke-linejoin="round" stroke-width="4" /></g>
                     </svg>
-                    @if(isset($cartItems) && count($cartItems) > 0)
-                        <span style="position:absolute; top:-5px; right:-5px; background:red; color:white; border-radius:50%; width:16px; height:16px; font-size:10px; display:flex; justify-content:center; align-items:center;">{{ count($cartItems) }}</span>
+                    @if(count($cartItems) > 0)
+                        <span style="position:absolute; top:-5px; right:-5px; background:red; color:white; border-radius:50%; width:16px; height:16px; font-size:10px; display:flex; justify-content:center; align-items:center;">
+                            {{ count($cartItems) }}
+                        </span>
                     @endif
                 </a>
 
                 <div class="cart-preview-box">
                     <div class="cart-items-list">
-                        @if(isset($cartItems) && count($cartItems) > 0)
+                        @if(count($cartItems) > 0)
                             @foreach($cartItems as $item)
                                 <div class="cart-item">
                                     <div class="cart-item-img">
-                                        @php
-                                            // --- LA LOGIQUE QUI MARCHE ENFIN ---
-
-                                            // 1. On récupère la référence proprement (c'est bien un tableau)
-                                            $ref = $item['reference'] ?? '';
-
-                                            // 2. On garde l'image distante en "roue de secours"
-                                            // (celle qui est dans ton tableau actuel)
-                                            $backupImg = $item['image'] ?? 'https://placehold.co/80x80?text=No+Img';
-                                            $imgSrc = $backupImg; 
-
-                                            // 3. On construit ton chemin LOCAL
-                                            if (!empty($ref)) {
-                                                $ref = trim((string)$ref);
-                                                
-                                                // Règle : réf <= 5 chars => Accessoire, sinon Vélo
-                                                $isAccessoire = strlen($ref) <= 5;
-                                                $dossier = $isAccessoire ? 'ACCESSOIRES' : 'VELOS';
-                                                
-                                                // Sous-dossier : 5 ou 6 premiers caractères
-                                                $cutLength = $isAccessoire ? 5 : 6;
-                                                $refDossier = substr($ref, 0, $cutLength);
-
-                                                // URL Locale finale
-                                                $imgSrc = asset('images/' . $dossier . '/' . $refDossier . '/image_1.jpg');
-                                            }
-                                        @endphp
-
-                                        <img src="{{ $imgSrc }}" 
+                                        {{-- Image gérée par le Composer (URL absolue) --}}
+                                        <img src="{{ $item['image'] }}" 
                                              alt="{{ $item['name'] }}"
                                              style="width: 100%; height: auto; object-fit: contain;"
-                                             {{-- Si l'image locale échoue, on remet l'image distante du tableau --}}
-                                             onerror="this.onerror=null; this.src='{{ $backupImg }}'">
+                                             onerror="this.onerror=null; this.src='https://placehold.co/80x80?text=No+Img'">
                                     </div>
+
                                     <div class="cart-item-details">
                                         <span class="item-name">
                                             {{ $item['name'] }}
+                                            
+                                            {{-- AJOUT DE LA TAILLE ICI --}}
+                                            @if(isset($item['taille']) && $item['taille'] !== 'Non renseigné' && $item['taille'] !== 'Unique')
+                                                <span style="font-weight: bold; color: #333;">({{ $item['taille'] }})</span>
+                                            @endif
+
                                             @if(($item['quantity'] ?? 1) > 1)
                                                 <small class="text-muted">x{{ $item['quantity'] }}</small>
                                             @endif
@@ -321,10 +304,12 @@
                             </div>
                         @endif
                     </div>
+                    
                     <div class="cart-footer">
                         <div class="cart-total-row">
                             <span class="label">TOTAL <small>(Hors livraison)</small></span>
-                            <span class="price">{{ isset($cartTotal) ? number_format($cartTotal, 2, ',', ' ') : '0,00' }} € TTC</span>
+                            {{-- Utilisation directe de $cartTotal --}}
+                            <span class="price">{{ number_format($cartTotal, 2, ',', ' ') }} € TTC</span>
                         </div>
                         <a href="{{ route('cart.index') }}" class="btn-view-cart">
                             <span style="margin-right:5px;">&#9658;</span> Voir le panier

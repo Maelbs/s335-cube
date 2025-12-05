@@ -12,7 +12,7 @@ class RetourArticle extends Model
     public $timestamps = false;
 
     protected $fillable = [
-        'id_commande', // Clé étrangère
+        'id_commande', 
         'date_retour',
         'motif',
         'etat_traitement',
@@ -24,7 +24,6 @@ class RetourArticle extends Model
 
     public function commande(): BelongsTo
     {
-        // Clé étrangère : id_commande
         return $this->belongsTo(Commande::class, 'id_commande', 'id_commande');
     }
 

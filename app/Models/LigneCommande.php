@@ -14,8 +14,8 @@ class LigneCommande extends Pivot
     protected $primaryKey = null;
 
     protected $fillable = [
-        'reference',   // Clé étrangère
-        'id_commande', // Clé étrangère
+        'reference',   
+        'id_commande', 
         'quantite_article_commande',
         'prix_unitaire_article',
         'taille_selectionnee',
@@ -28,13 +28,11 @@ class LigneCommande extends Pivot
 
     public function article(): BelongsTo
     {
-        // Clé étrangère : reference
         return $this->belongsTo(Article::class, 'reference', 'reference');
     }
 
     public function commande(): BelongsTo
     {
-        // Clé étrangère : id_commande
         return $this->belongsTo(Commande::class, 'id_commande', 'id_commande');
     }
 

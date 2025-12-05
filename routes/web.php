@@ -1,16 +1,16 @@
 <?php
 
+use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ArticleSimilaireController;
 use App\Http\Controllers\InfoArticleController;
 use App\Http\Controllers\CategorieVeloController;
-use App\Http\Controllers\CategorieAccessoireController; // J'ai ajouté ceci car il manquait l'import
-use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\CategorieAccessoireController; 
 use App\Http\Controllers\CategorieArticleController;
 use App\Http\Controllers\VarianteVeloController;
 use App\Http\Controllers\BoutiqueController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\ProfilController;
-use App\Http\Controllers\CartController;
+use App\Http\Controllers\PanierController;
 
 /*
 |--------------------------------------------------------------------------
@@ -47,11 +47,11 @@ Route::middleware('auth')->group(function () {
     Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 });
 
-Route::get('/panier', [CartController::class, 'index'])->name('cart.index');
-Route::post('/panier/ajouter/{reference}', [CartController::class, 'add'])->name('cart.add');
-Route::delete('/panier/supprimer/{key}', [CartController::class, 'remove'])->name('cart.remove');
-Route::post('/panier/update', [CartController::class, 'updateQuantity'])->name('cart.update');
-Route::post('/panier/ajouter-accessoire/{reference}', [CartController::class, 'addAccessoire'])->name('cart.addAccessoire');
+Route::get('/panier', [PanierController::class, 'index'])->name('cart.index');
+Route::post('/panier/ajouter/{reference}', [PanierController::class, 'add'])->name('cart.add');
+Route::delete('/panier/supprimer/{key}', [PanierController::class, 'remove'])->name('cart.remove');
+Route::post('/panier/update', [PanierController::class, 'updateQuantity'])->name('cart.update');
+Route::post('/panier/ajouter-accessoire/{reference}', [PanierController::class, 'addAccessoire'])->name('cart.addAccessoire');
 
 Route::get('/boutique/{type}/{cat_id?}/{sub_id?}/{model_id?}', [BoutiqueController::class, 'index'])
     ->name('boutique.index')

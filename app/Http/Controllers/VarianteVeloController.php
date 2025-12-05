@@ -26,8 +26,6 @@ class VarianteVeloController extends Controller
 
     public function show($reference)
     {
-        // 1. Récupérer l'article grâce à la référence
-        // On charge 'caracteristiques' ET le 'typeCaracteristique' de chaque caractéristique
         $velo = Article::where('reference', $reference)
             ->with(['caracteristiques.typeCaracteristique', 
             'photos', 
@@ -38,10 +36,8 @@ class VarianteVeloController extends Controller
             'varianteVelo.inventaires.taille',
             'varianteVelo.couleur',
             'varianteVelo.modele.varianteVelos.couleur'])
-            ->firstOrFail(); // Renvoie une 404 si la réf n'existe pas
+            ->firstOrFail(); 
 
-        // 2. Grouper les caractéristiques par leur Type
-        // Cela va créer un tableau associatif où la clé est le nom du type (ex: "CADRE", "SUSPENSIONS")
         $specifications = $velo->caracteristiques->groupBy(function ($item) {
             return $item->typeCaracteristique->nom_type_caracteristique;
         });

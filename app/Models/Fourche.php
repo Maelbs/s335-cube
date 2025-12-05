@@ -24,7 +24,6 @@ class Fourche extends Model
 
     public function varianteVelos()
     {
-        // La clé étrangère est 'id_fourche' dans la table 'Variante_velo'
         return $this->hasMany(VarianteVelo::class, 'id_fourche');
     }
 

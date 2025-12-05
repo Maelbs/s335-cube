@@ -22,7 +22,6 @@ class BoutiqueController extends Controller
         $isSearchMode = $request->filled('search');
         $titrePage = $isAccessoire ? "TOUS LES ACCESSOIRES" : "TOUS LES VÉLOS " . strtoupper($type) . "S";
 
-        // Initialisation des variables de filtres
         $availableMateriaux = collect();
         $availableMillesimes = collect();
         $availableFourches = collect();
@@ -36,15 +35,11 @@ class BoutiqueController extends Controller
        
         $countOnline = 0;
         $countStore = 0;
-        $articles = null; // Variable générique remplaçant $velos
-        // =================================================================
-        // BRANCHE 1 : ACCESSOIRES (Table 'accessoire')
-        // =================================================================
+        $articles = null; 
+
         if ($isAccessoire) {
-            // On charge 'inventaires.taille' pour le filtre taille et 'categorie'
             $query = Accessoire::query()->with(['parent', 'categorie', 'parent.photos', 'inventaires.taille']);
 
-            // --- 1. RECHERCHE ---
             if ($isSearchMode) {
                 $search = strtolower($request->search);
                 $term = '%' . $search . '%';
@@ -60,17 +55,11 @@ class BoutiqueController extends Controller
                 });
                 $titrePage = "RÉSULTATS ACCESSOIRES : " . strtoupper($request->search);
             } 
-            // --- 2. NAVIGATION ---
             else {
-                // ... (Code de navigation existant : model_id, sub_id, cat_id) ...
-                // Je ne répète pas tout le bloc de navigation ici pour faire court, 
-                // gardez votre logique existante pour $hierarchyItems, etc.
                 if ($model_id) { 
                     $query->where('id_categorie_accessoire', $model_id);
                     $titrePage = (CategorieAccessoire::find($model_id)->nom_categorie_accessoire ?? '');
-                    // ... logique existante ...
                 } elseif ($sub_id) {
-                    // ... logique existante ...
                     $currCat = CategorieAccessoire::with('enfants')->find($sub_id);
                     if ($currCat) {
                         $ids = $currCat->enfants->pluck('id_categorie_accessoire');
@@ -78,9 +67,7 @@ class BoutiqueController extends Controller
                         $query->whereIn('id_categorie_accessoire', $ids);
                         $titrePage = $currCat->nom_categorie_accessoire;
                     }
-                    // ... suite logique existante ...
                 } elseif ($cat_id) {
-                    // ... logique existante ...
                     $currCat = CategorieAccessoire::with('enfants')->find($cat_id);
                     if ($currCat) {
                         $ids = $currCat->enfants->pluck('id_categorie_accessoire');
@@ -88,42 +75,34 @@ class BoutiqueController extends Controller
                         $query->whereIn('id_categorie_accessoire', $ids);
                         $titrePage = $currCat->nom_categorie_accessoire;
                     }
-                    // ... suite logique existante ...
-                } else {
-                    // ... logique existante ...
                 }
             }
 
-            // --- 3. FILTRES SPÉCIFIQUES ACCESSOIRES ---
-
-            // NOUVEAU : Filtre Matériaux
             if ($request->filled('materiaux')) {
                 $query->whereIn('materiau', $request->materiaux);
             }
 
-            // Filtre Taille (existant)
             if ($request->filled('tailles')) {
                 $query->whereHas('inventaires.taille', function($q) use ($request) {
                     $q->whereIn('taille', $request->tailles);
                 });
             }
 
-            // Filtres Dispo (existant - correction précédente)
             if ($request->filled('dispo_ligne')) {
                 $query->whereHas('inventaires', fn($q) => $q->where('quantite_stock_en_ligne', '>', 0));
             }
+
             if ($request->filled('dispo_magasin')) {
                 $query->whereHas('inventaires.magasins', fn($q) => $q->where('quantite_stock_magasin', '>', 0));
             }
 
-            // Compteurs (existant)
             $countOnline = (clone $query)->whereHas('inventaires', fn($q) => $q->where('quantite_stock_en_ligne', '>', 0))->count();
             $countStore = (clone $query)->whereHas('inventaires.magasins', fn($q) => $q->where('quantite_stock_magasin', '>', 0))->count();
 
-            // Prix & Tri (existant)
             if ($request->filled('prix_min')) $query->where('prix', '>=', $request->prix_min);
+
             if ($request->filled('prix_max')) $query->where('prix', '<=', $request->prix_max);
-            // ... (Logique de tri existante) ...
+
             if ($request->filled('sort')) {
                 switch ($request->sort) {
                     case 'price_asc': $query->orderBy('prix', 'asc'); break;
@@ -135,19 +114,14 @@ class BoutiqueController extends Controller
             } else {
                 $query->orderBy('prix', 'asc');
             }
-
-            // --- SIDEBAR DATA (Données pour les filtres) ---
             
-            // NOUVEAU : Récupération des matériaux pour Accessoires
-            // On réutilise la variable $availableMateriaux pour la vue
             $availableMateriaux = Accessoire::select('materiau')
                 ->distinct()
                 ->whereNotNull('materiau')
                 ->where('materiau', '!=', '')
                 ->orderBy('materiau')
-                ->pluck('materiau'); // Renvoie une Collection de strings
+                ->pluck('materiau'); 
 
-            // Récupération des tailles (existant)
             $availableTailles = Taille::whereHas('ArticleInventaire.articles.accessoire')
                 ->distinct()
                 ->orderBy('id_taille')
@@ -157,18 +131,12 @@ class BoutiqueController extends Controller
             $articles = $query->paginate(15)->withQueryString();
         }
  
-        // =================================================================
-        // BRANCHE 2 : VÉLOS (Table 'variante_velo')
-        // =================================================================
         else {
             $dbType = ($type === 'Electrique') ? 'electrique' : 'musculaire';
             
-            // Note: VarianteVelo hérite de Article, donc il hérite de la relation 'inventaires'
             $query = VarianteVelo::query()
                 ->with(['parent', 'modele', 'couleur', 'parent.photos', 'batterie', 'fourche', 'inventaires.taille', 'inventaires.magasins']);
             
-
-            // --- 1. RECHERCHE FLOU VÉLOS ---
             if ($isSearchMode) {
                 $search = strtolower($request->search);
                 $term = '%' . $search . '%';
@@ -197,7 +165,6 @@ class BoutiqueController extends Controller
 
             }
 
-            // --- 2. NAVIGATION ---
             else {
                 $query->whereHas('modele', fn($q) => $q->where('type_velo', $dbType));
                
@@ -226,32 +193,25 @@ class BoutiqueController extends Controller
                 }
             }
 
-            // --- FILTRES SIMPLES ---
             if ($request->filled('couleurs')) $query->whereIn('id_couleur', $request->couleurs);
             if ($request->filled('materiaux')) $query->whereHas('modele', fn($q) => $q->whereIn('materiau_cadre', $request->materiaux));
             if ($request->filled('millesimes')) $query->whereHas('modele', fn($q) => $q->whereIn('millesime_modele', $request->millesimes));
             if ($request->filled('fourches')) $query->whereIn('id_fourche', $request->fourches);
             if ($request->filled('batteries')) $query->whereIn('id_batterie', $request->batteries);
 
-            // --- 3. FILTRES STOCKS COMPLEXES (Via Inventaire) ---
             $hasSize = $request->filled('tailles');
             $hasOnline = $request->filled('dispo_ligne');
             $hasStore = $request->filled('dispo_magasin');
 
-            // --- A. CALCUL DES COMPTEURS (AVANT d'appliquer les filtres de dispo) ---
-            // On clone la requête de base (qui a déjà les filtres de catégorie, prix, etc. mais PAS encore la dispo)
             $queryForCounts = clone $query;
 
-            // Calcul du nombre de vélos dispos EN LIGNE (en tenant compte de la taille si sélectionnée)
             $countOnline = (clone $queryForCounts)->whereHas('inventaires', function($q) use ($request, $hasSize) {
-                // Si une taille est choisie, on ne compte que si CETTE taille est dispo
                 if ($hasSize) {
                     $q->whereHas('taille', fn($t) => $t->whereIn('taille', $request->tailles));
                 }
                 $q->where('quantite_stock_en_ligne', '>', 0);
             })->count();
 
-            // Calcul du nombre de vélos dispos EN MAGASIN (en tenant compte de la taille si sélectionnée)
             $countStore = (clone $queryForCounts)->whereHas('inventaires', function($q) use ($request, $hasSize) {
                 if ($hasSize) {
                     $q->whereHas('taille', fn($t) => $t->whereIn('taille', $request->tailles));
@@ -259,10 +219,7 @@ class BoutiqueController extends Controller
                 $q->whereHas('magasins', fn($m) => $m->where('quantite_stock_magasin', '>', 0));
             })->count();
 
-
-            // --- B. APPLICATION DES FILTRES SUR LA LISTE DES RÉSULTATS ---
             if ($hasSize) {
-                // Cas avec Taille : On filtre les vélos qui ont la taille X ET le stock demandé pour cette taille
                 $query->whereHas('inventaires', function($q) use ($request, $hasOnline, $hasStore) {
                     $q->whereHas('taille', fn($t) => $t->whereIn('taille', $request->tailles));
                     
@@ -270,12 +227,10 @@ class BoutiqueController extends Controller
                     if ($hasStore) $q->whereHas('magasins', fn($m) => $m->where('quantite_stock_magasin', '>', 0));
                 });
             } else {
-                // Cas sans Taille : On regarde globalement si le vélo est dispo
                 if ($hasOnline) $query->whereHas('inventaires', fn($q) => $q->where('quantite_stock_en_ligne', '>', 0));
                 if ($hasStore) $query->whereHas('inventaires.magasins', fn($q) => $q->where('quantite_stock_magasin', '>', 0));
             }
 
-            // Prix & Tri
             if ($request->filled('prix_min')) $query->where('prix', '>=', $request->prix_min);
             if ($request->filled('prix_max')) $query->where('prix', '<=', $request->prix_max);
  
@@ -291,7 +246,6 @@ class BoutiqueController extends Controller
                 $query->orderBy('prix', 'asc');
             }
 
-            // --- SIDEBAR DATA (CORRECTION DU BUG Article::modele()) ---
             $filterQuery = Modele::query();
             if (!$isSearchMode) $filterQuery->where('type_velo', $dbType);
             
@@ -300,7 +254,6 @@ class BoutiqueController extends Controller
             $availableMillesimes = (clone $filterQuery)->select('millesime_modele')->distinct()->orderBy('millesime_modele', 'desc')->pluck('millesime_modele');
             $availableFourches = Fourche::whereHas('varianteVelos.modele', fn($q) => !$isSearchMode ? $q->where('type_velo', $dbType) : $q)->orderBy('nom_fourche')->get();
 
-            // ICI: On passe de ArticleInventaire -> Articles -> VarianteVelo -> Modele
             $availableTailles = Taille::whereHas('ArticleInventaire.articles.varianteVelo.modele', function($q) use ($isSearchMode, $dbType) {
                 if (!$isSearchMode) $q->where('type_velo', $dbType);
             })->orderBy('id_taille')->distinct()->get();

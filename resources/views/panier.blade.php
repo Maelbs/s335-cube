@@ -233,7 +233,7 @@
                 } else {
                     btn.classList.remove('disabled');
                     btn.onclick = null;
-                    btn.href = "/checkout"; 
+                    btn.href = "#"; 
                 }
             });
         };

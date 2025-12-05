@@ -20,8 +20,8 @@ class TypeCaracteristique extends Model
     {
         return $this->hasMany(
             Caracteristique::class, 
-            'id_type_caracteristique', // Clé étrangère dans la table enfant
-            'id_type_caracteristique'  // Clé locale dans la table parent
+            'id_type_caracteristique',
+            'id_type_caracteristique'  
         );
     }
 

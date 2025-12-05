@@ -21,19 +21,16 @@ class Adresse extends Model
 
     public function magasins(): BelongsToMany
     {
-        // Table pivot : adresse_magasin | Clés étrangères : id_adresse, id_magasin
         return $this->belongsToMany(MagasinPartenaire::class, 'adresse_magasin', 'id_adresse', 'id_magasin');
     }
 
     public function clientsLivraison(): BelongsToMany
     {
-        // Table pivot : adresse_livraison | Clés étrangères : id_adresse, id_client
         return $this->belongsToMany(Client::class, 'adresse_livraison', 'id_adresse', 'id_client');
     }
 
     public function commandes(): HasMany
     {
-        // Clé étrangère : id_adresse
         return $this->hasMany(Commande::class, 'id_adresse', 'id_adresse');
     }
 

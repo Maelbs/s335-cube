@@ -29,8 +29,8 @@ class Caracteristique extends Model
     {
         return $this->belongsTo(
             TypeCaracteristique::class, 
-            'id_type_caracteristique', // Clé étrangère dans cette table
-            'id_type_caracteristique'  // Clé locale dans la table parente
+            'id_type_caracteristique',  
+            'id_type_caracteristique' 
         );
     }
 

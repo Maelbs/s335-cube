@@ -13,8 +13,8 @@ class TypeLivraisonMagasin extends Pivot
     protected $primaryKey = null;
 
     protected $fillable = [
-        'id_type_livraison', // Clé étrangère
-        'id_magasin', // Clé étrangère
+        'id_type_livraison', 
+        'id_magasin', 
     ];
 
     public function __toString(): string

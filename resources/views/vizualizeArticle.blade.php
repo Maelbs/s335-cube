@@ -86,21 +86,18 @@
                     $prefixLength = $isAccessoire ? 5 : 6;
                     $folderName = substr($article->reference, 0, $prefixLength);
 
-                    // On choisit le bon dossier racine ici
                     $dossierRacine = $isAccessoire ? 'images/ACCESSOIRES/' : 'images/VELOS/';
 
-                    // Chemin Web (src) et Serveur (check file)
                     $webPath = $dossierRacine . $folderName;
                     $serverPath = public_path($webPath);
 
                     $validImages = [];
 
-                    // On cherche de image_1.jpg à image_10.jpg
                     for ($i = 1; $i <= 10; $i++) {
                         if (file_exists($serverPath . '/image_' . $i . '.jpg')) {
                             $validImages[] = $webPath . '/image_' . $i . '.jpg';
                         } else {
-                            break; // On arrête dès qu'une image manque
+                            break; 
                         }
                     }
                 @endphp
@@ -519,11 +516,8 @@
                                 <div class="st-img-box">
                                     {{-- LOGIQUE IMAGE LOCALE ADAPTÉE POUR ACCESSOIRE --}}
                                     @php
-                                        // On suppose que pour les accessoires le préfixe est de 5 (selon ta logique précédente)
                                         $prefix = 5;
                                         $folder = substr($accessoire->reference, 0, $prefix);
-
-                                        // ATTENTION: Vérifie si tes accessoires sont dans 'images/VELOS' ou 'images/ACCESSOIRES'
                                         $imgPath = 'images/ACCESSOIRES/' . $folder . '/image_1.jpg'; 
                                     @endphp
 
@@ -570,8 +564,6 @@
                                     @php
                                         $simPrefix = $isAccessoire ? 5 : 6;
                                         $simFolder = substr($similaire->reference, 0, $simPrefix);
-
-                                        // Correction ici aussi
                                         $dossierRacineSim = $isAccessoire ? 'images/ACCESSOIRES/' : 'images/VELOS/';
                                         $simImgPath = $dossierRacineSim . $simFolder . '/image_1.jpg';
                                     @endphp
@@ -618,7 +610,7 @@
 
     <script>
     function closeModalAndRefresh() {
-        const modal = document.getElementById('myModal'); 
+        const modal = document.getElementById('cartModal'); 
         if(modal) {
             modal.style.display = 'none';
         }

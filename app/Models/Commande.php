@@ -65,16 +65,12 @@ class Commande extends Model
 
     public function __toString(): string
     {
-        // Formatage de la date
         $date = $this->date_commande ? $this->date_commande->format('d/m/Y') : 'Date inconnue';
         
-        // Récupération sécurisée du nom du client (s'il est chargé, sinon on met l'ID)
-        // Astuce : $this->client déclenchera le chargement automatique (Lazy Loading) si nécessaire
         $clientInfo = $this->client 
             ? "{$this->client->prenom_client} {$this->client->nom_client}" 
             : "Client #{$this->id_client}";
 
-        // Formatage du statut (première lettre en majuscule)
         $statut = ucfirst($this->statut_livraison ?? 'indéfini');
 
         return "Commande #{$this->id_commande} du {$date} ({$statut}) - {$clientInfo} - Total : {$this->montant_total_commande} €";

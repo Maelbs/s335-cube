@@ -3,9 +3,10 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\Pivot; 
+use Illuminate\Database\Eloquent\Builder;
 
-class LignePanier extends Model
+class LignePanier extends Pivot
 {
     use HasFactory;
 
@@ -13,6 +14,12 @@ class LignePanier extends Model
     public $timestamps = false;
     protected $primaryKey = null;
     public $incrementing = false;
+    protected $keyType = 'string';
+
+    public function getKeyName()
+    {
+        return null;
+    }
 
     protected $fillable = [
         'id_panier',
@@ -23,8 +30,16 @@ class LignePanier extends Model
 
     protected $casts = [
         'quantite_article' => 'integer',
-        'taille_selectionnee' => 'string',
     ];
+
+    protected function setKeysForSaveQuery($query)
+    {
+        $query
+            ->where('id_panier', $this->getAttribute('id_panier'))
+            ->where('reference', $this->getAttribute('reference'))
+            ->where('taille_selectionnee', $this->getAttribute('taille_selectionnee'));
+        return $query;
+    }
 
     public function panier()
     {

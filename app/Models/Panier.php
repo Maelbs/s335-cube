@@ -38,7 +38,8 @@ class Panier extends Model
     public function articles()
     {
         return $this->belongsToMany(Article::class, 'ligne_panier', 'id_panier', 'reference')
-                    ->withPivot(['quantite_article', 'taille_selectionnee']);
+                    ->withPivot(['quantite_article', 'taille_selectionnee'])
+                    ->using(LignePanier::class);
     }
 
     public function commande()
