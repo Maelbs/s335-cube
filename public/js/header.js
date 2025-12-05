@@ -65,6 +65,29 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
 
+
+    let lastScrollTop = 0;
+    const header = document.querySelector('header');
+    
+    window.addEventListener('scroll', function() {
+        let scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+
+        if (scrollTop < 0)
+            scrollTop = 0;
+
+        if (scrollTop > lastScrollTop && scrollTop > 100) {
+            header.classList.add('header-hidden');
+
+            document.querySelectorAll('.menu-item.active').forEach(item => item.classList.remove('active'));
+            document.querySelectorAll('.subs-container, .models-container').forEach(el => el.classList.add('d-none'));
+
+        } else {
+            header.classList.remove('header-hidden');
+        }
+
+        lastScrollTop = scrollTop;
+    });
+
 });
 
 

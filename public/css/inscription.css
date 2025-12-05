@@ -30,16 +30,15 @@ body {
     color: var(--primary-dark);
 }
 
-/* --- Le Conteneur Principal (Carte) --- */
 .card-account {
     background: rgba(255, 255, 255, 0.75);
-    border: 1px solid rgba(0,0,0,0.05); /* Bordure très légère */
+    border: 1px solid rgba(0,0,0,0.05);
     border-radius: 8px;
     backdrop-filter: blur(5px);
-    padding: 3rem; /* Plus d'espace intérieur */
+    padding: 3rem;
     max-width: 900px;
-    margin: 0 auto;
-    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05); /* Ombre portée douce et large */
+    margin: 0 auto 15vh auto;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
 }
 
 /* --- Titres --- */
@@ -83,11 +82,10 @@ h1.h3 {
         padding: 1.5rem;
     }
 }
-
 /* --- Styles des Inputs (Le point critique) --- */
 .form-group {
     display: flex;
-    flex-direction: column; /* Force les éléments à s'empiler (Label > Input > Aide) */
+    flex-direction: column;
 }
 
 .form-group label {

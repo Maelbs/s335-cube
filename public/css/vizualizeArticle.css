@@ -32,13 +32,6 @@ p {
    HEADER BLANC
    ========================================= */
 header {
-    display: flex;
-    justify-content: space-between;
-    position: relative; 
-    padding: 0 40px;
-    width: 100%;
-    height: 100px;
-    z-index: 1000;
     background-color: #ffffff !important;
     border-bottom: 1px solid #e5e5e5;
     color: #000000 !important;

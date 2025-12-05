@@ -34,7 +34,7 @@ header a {
 header {
     display: flex;
     justify-content: space-between;
-    position: absolute; /* Attention: Sur une page sans carrousel, mettre 'relative' */
+    position: fixed; /* Attention: Sur une page sans carrousel, mettre 'relative' */
     padding: 0 40px;
     top: 0;
     left: 0;
@@ -47,6 +47,10 @@ header {
     transition: all 0.5s ease;
     color: #fff;
     font-family: "Damas Font", sans-serif;
+}
+
+header.header-hidden {
+    transform: translateY(-100%);
 }
 
 /* État Hover / Menu Ouvert */

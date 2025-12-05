@@ -23,10 +23,22 @@
         }
 
         #address-section {
-            margin-top: 30px;
-            padding-top: 20px;
-            border-top: 1px solid #eee;
             animation: fadeIn 0.5s;
+        }
+
+        .suggestion-adresse {
+            position: absolute;
+            border: none;
+            z-index: 99999;
+            width: 100%;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            max-height: 200px;
+            overflow-y: auto;
+            display: none;
+            top: 75px
+        }
+        .card-account {
+            margin: 0 auto !important;
         }
     </style>
 </head>
@@ -40,9 +52,6 @@
                 <section class="register-form text-center">
                     
                     <h1 class="h3 register-form__title mt-5">Adresse Facturation</h1>
-                    <p class="text-left mb-5">
-                        Vous avez déjà un compte ? <a href="{{ route('login') }}">Connectez-vous !</a>
-                    </p>
 
                     @if ($errors->any())
                         <div class="alert alert-danger" style="color: red; text-align: left; margin-bottom: 20px;">
@@ -91,7 +100,7 @@
                             </section>
 
                             <footer class="form-footer mt-4">
-                                <button class="btn btn-primary btn-primary--red form-control-submit ml-md-3" type="submit">
+                                <button class="btn btn-primary btn-primary--red form-control-submit ml-md-3 btn-valider " type="submit">
                                     <span class="double-arrows double-arrows--white">Valider</span>
                                 </button>
                             </footer>
@@ -112,16 +121,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const countryInput = document.getElementById('country');
 
     const suggestionBox = document.createElement('div');
-    suggestionBox.style.position = 'absolute';
-    suggestionBox.style.border = '1px solid #ddd';
-    suggestionBox.style.background = 'white';
-    suggestionBox.style.zIndex = '1000';
-    suggestionBox.style.width = '100%';
-    suggestionBox.style.boxShadow = '0 4px 6px rgba(0,0,0,0.1)';
-    suggestionBox.style.borderRadius = '0 0 4px 4px';
-    suggestionBox.style.maxHeight = '200px';
-    suggestionBox.style.overflowY = 'auto';
-    suggestionBox.style.display = 'none';
+    suggestionBox.classList.add('suggestion-adresse');
 
     rueInput.parentNode.style.position = 'relative';
     rueInput.parentNode.appendChild(suggestionBox);
@@ -151,6 +151,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
                         const div = document.createElement('div');
                         div.textContent = label;
+                        div.style.backgroundColor = "white";
                         div.style.padding = '10px';
                         div.style.cursor = 'pointer';
                         div.style.borderBottom = '1px solid #eee';
