@@ -68,9 +68,6 @@
                                         <label class="required" for="password">Mot de passe</label>
                                         <div class="input-group js-parent-focus">
                                             <input class="form-control js-child-focus js-visible-password" name="password" id="password" type="password" value="" pattern=".{5,}" autocomplete="new-password" required>
-                                            <span class="input-group-btn">
-                                                <button class="btn btn-light" type="button" data-action="show-password" data-text-show="Montrer" data-text-hide="Cacher">Montrer</button>
-                                            </span>
                                         </div>
                                         <small class="form-text text-muted">Au moins 5 caractères</small>
                                     </div>
@@ -105,8 +102,9 @@
                                             </label>
                                         </div>
                                     </div>
-
+                                    
                                 </section>
+                                <p class="description description--xs description--grey mt-3">* Champs obligatoires</p>
 
                                 {{-- Footer du formulaire --}}
                                 <footer class="form-footer">
@@ -114,13 +112,12 @@
                                     <button class="btn-valider" type="submit" data-link-action="save-customer">
                                         <span class="double-arrows double-arrows--white">Valider mes informations</span>
                                     </button>
-                                    <p class="description description--xs description--grey mt-3">* Champs obligatoires</p>
                                     <p class="text-connexion">
                                         Vous avez déjà un compte ?<br>
                                         <a class="text-underline" href="{{ route('login') }}">Connectez-vous !</a>
                                     </p>
-                                    <p class="description">
-                                        CUBE Bikes France est responsable du traitement et de la collecte des données personnelles obligatoires signalées par un astérisque...
+                                    <p class="description" id="traitement-text">
+                                        CUBE Bikes France est responsable du traitement et de la collecte des données personnelles obligatoires signalées par un astérisque. Ces données sont nécessaires au traitement de votre commande, au suivi du programme de fidélisation, à la gestion de la relation commerciale. Elles pourront être utilisées pour la réalisation d’analyses statistiques. Conformément à la Loi Informatique et Liberté de 6 janvier 1978, vous bénéficiez d’un droit d’accès, de rectification et d’opposition aux données vous concernant que vous pouvez exercez en écrivant à CUBE Bikes France - ZI les 4 Chevaliers - Rond Point de la République - 17180 Périgny, ou par email service-clients@cubebike.fr en joignant une copie de votre pièce d’identité recto/verso.
                                     </p>
                                 </footer>
                             </form>

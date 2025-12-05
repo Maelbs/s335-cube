@@ -5,7 +5,7 @@ body {
     margin: 0;
     padding: 0;
     /* Même fond que la connexion pour la cohérence */
-    background: linear-gradient(rgba(10, 20, 30, 0.6), rgba(10, 20, 30, 0.8)), url('https://woody.cloudly.space/app/uploads/tourisme-saintomer/2023/03/thumbs/DSC08398-1920x960.jpg');
+    background: linear-gradient(rgba(10, 20, 30, 0.6), rgba(10, 20, 30, 0.8)), url('../images/connexionBackground.jpg');
     background-size: cover;
     background-position: center;
     background-attachment: fixed;
@@ -21,10 +21,8 @@ body {
     flex: 1;
     display: flex;
     justify-content: center;
-    align-items: flex-start;
+    align-items: center;
     padding-top: 10vh;
-    padding-bottom: 50px;
-    margin-top: 60px; /* Espace pour le header */
     backdrop-filter: blur(4px);
 }
 
