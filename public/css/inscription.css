@@ -1,166 +1,264 @@
-/* =========================================
-   RESET LOCAL (n'affecte pas ton header)
-   ========================================= */
-   #wrapper * {
-    box-sizing: border-box;
-    font-family: Arial, sans-serif;
+/* --- Variables & Base --- */
+:root {
+    --primary-dark: #0f1623;   /* Bleu nuit profond (Connexion) */
+    --primary-accent: #1a2639; /* Version légèrement plus claire pour le survol */
+    --input-bg: #f1f5f9;       /* Gris très pâle, presque blanc */
+    --input-border: #dae1e7;   /* Bordure subtile */
+    --text-color: #333333;
+    --text-muted: #00244b;
+    --radius: 6px;             /* Arrondis plus modernes */
 }
 
-/* =========================================
-   CONTAINER
-   ========================================= */
-#wrapper {
+@font-face {
+    font-family: 'Damas Font';
+    src: url('../font/font.woff2');
+}
+/* header {
+    background-color: #fff !important;
+    color: #000 !important;
+} */
+
+/* .logo img {
+    filter: brightness(0) !important;
+} */
+html {
+    font-family: 'Damas Font', sans-serif; /* Assure-toi d'avoir une font propre */
+}
+body {
+    background: linear-gradient(rgba(10, 20, 30, 0.5), rgba(10, 20, 30, 0.7)), url('../images/connexionBackground.jpg') no-repeat;
+    background-size: cover;
+    color: var(--primary-dark);
+}
+
+/* --- Le Conteneur Principal (Carte) --- */
+.card-account {
+    background: rgba(255, 255, 255, 0.75);
+    border: 1px solid rgba(0,0,0,0.05); /* Bordure très légère */
+    border-radius: 8px;
+    backdrop-filter: blur(5px);
+    padding: 3rem; /* Plus d'espace intérieur */
     max-width: 900px;
-    margin: 12rem auto 5rem auto; /* pour ne pas coller au header ABSOLU */
-    padding: 20px;
+    margin: 0 auto;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05); /* Ombre portée douce et large */
 }
 
-/* =========================================
-   TITRES
-   ========================================= */
-.register-form h1 {
-    font-size: 2rem;
-    font-weight: 700;
-    margin-bottom: 15px;
+/* --- Titres --- */
+h2.h3 {
+    font-size: 1.25rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    color: var(--primary-dark);
+    margin-bottom: 2rem;
+    padding-bottom: 1rem;
+    border-bottom: 2px solid #f0f0f0; /* Ligne de séparation propre */
+    letter-spacing: 0.5px;
 }
 
-.register-form p {
-    font-size: 0.95rem;
-    color: #555;
+h1.h3 {
+    justify-self: center;
+    font-size: 1.9rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: #fff;
+    margin-bottom: 2rem;
+    font-style: italic;
 }
 
-/* Lien connexion */
-.register-form a.text-underline {
-    color: #0066cc;
-    text-decoration: underline;
+/* --- Grille des champs --- */
+.form-fields {
+    display: grid;
+    grid-template-columns: 1fr 1fr; /* 2 colonnes strictes */
+    column-gap: 40px; /* Grand écart entre gauche et droite */
+    row-gap: 25px;    /* Espace vertical aéré */
 }
 
-/* =========================================
-   CARTE FORMULAIRE
-   ========================================= */
-.customer-form {
-    background: #fff;
-    padding: 30px 35px;
-    border-radius: 10px;
-    box-shadow: 0 3px 10px rgba(0,0,0,0.08);
-    border: 1px solid #eee;
+/* Responsive : 1 colonne sur mobile */
+@media (max-width: 768px) {
+    .form-fields {
+        grid-template-columns: 1fr;
+        padding: 0;
+    }
+    .card-account {
+        padding: 1.5rem;
+    }
 }
 
-/* =========================================
-   LABELS & INPUTS
-   ========================================= */
+/* --- Styles des Inputs (Le point critique) --- */
 .form-group {
-    margin-bottom: 18px;
+    display: flex;
+    flex-direction: column; /* Force les éléments à s'empiler (Label > Input > Aide) */
 }
 
-label.required:after {
+.form-group label {
+    font-size: 13px;
+    font-weight: 700;
+    color: #475569;
+    margin-bottom: 8px;
+    display: block;
+    color: var(--primary-dark);
+    letter-spacing: 0.03rem;
+}
+
+.form-group label.required:after {
     content: " *";
-    color: #d00;
-    font-weight: bold;
+    color: #e53935; /* Rouge un peu moins agressif */
 }
 
-input.form-control {
-    width: 100%;
-    padding: 10px 14px;
-    border-radius: 6px;
-    border: 1px solid #ccc;
-    font-size: 1rem;
-    transition: border-color 0.2s ease;
+.form-control {
+    background-color: var(--input-bg);
+    border: 1px solid #cbd5e1;
+    border-radius: 4px;
+    padding: 0.8rem 1rem; /* Champs plus hauts -> plus facile à cliquer */
+    font-size: 15px;
+    color: #333;
+    box-sizing: border-box;
+    width: 100%; /* Prend toute la largeur disponible */
+    box-sizing: border-box; /* Évite que le padding casse la largeur */
+    transition: all 0.3s ease;
 }
 
-input.form-control:focus {
-    border-color: #00b0f0;
+/* Effet au clic dans le champ */
+.form-control:focus {
+    background-color: #fff;
+    border-color: #0071e3;
+    outline: none;
+    box-shadow: 0 0 0 4px rgba(15, 22, 35, 0.1); /* Halo bleu pâle */
     outline: none;
 }
 
-/* Texte d'aide */
-small.form-text {
-    color: #777;
+/* Texte d'aide (sous le champ) */
+.form-text {
+    font-size: 0.75rem;
+    margin-top: 6px;
+    color: var(--text-muted);
+    line-height: 1.4;
+    font-style: italic;
 }
 
-/* =========================================
-   RADIO BUTTONS
-   ========================================= */
+/* --- Cas particulier : Newsletter (Toute largeur) --- */
+.form-group.newsletter {
+    grid-column: 1 / -1; /* Traverse les 2 colonnes */
+    margin-top: 1rem;
+    background: #f8f9fa;
+    padding: 1.5rem;
+    border-radius: var(--radius);
+    border: 1px solid #e9ecef;
+}
 
-.custom-control-inline {
+.custom-control {
     display: flex;
-    align-items: center;
-    gap: 5px;
+    align-items: flex-start; /* Aligne la case en haut du texte */
+    gap: 12px;
 }
 
-/* =========================================
-   NEWSLETTER CHECKBOX
-   ========================================= */
-.custom-checkbox {
-    display: flex;
-    align-items: start;
-}
-
-.custom-checkbox label {
-    margin-left: 8px;
-    font-size: 0.9rem;
-}
-
-/* =========================================
-   BOUTON SUBMIT
-   ========================================= */
-button[type="submit"] {
-    margin-top: 20px;
-    padding: 12px 20px;
-    background: #e62528;
-    border: none;
-    width: auto;
-    margin-left: 15px;
-    padding-left: 50px;
-    padding-right: 50px;
-    padding-top: 20px;
-    padding-bottom: 20px;
-    color: white;
-    font-size: 1.1rem;
-    font-weight: 700;
-    clip-path: polygon(15px 0, 100% 0, 100% 100%, 0% 100%);
+.custom-control-input {
+    margin-top: 4px; /* Petit ajustement optique */
+    transform: scale(1.2); /* Case un peu plus visible */
     cursor: pointer;
-    transition: all 0.2s ease;
 }
 
-button[type="submit"]:hover {
-    text-decoration: underline 2px;
+.custom-control-label span {
+    font-weight: 600;
+    color: var(--primary-dark);
+}
+
+.custom-control-label em {
+    display: block;
+    margin-top: 0.5rem;
+    font-size: 0.9em;
+    color: var(--text-muted);
+    font-style: normal;
+}
+
+/* --- Bouton Valider --- */
+.form-footer {
+    margin-top: 3rem;
+    text-align: center;
+    padding: 10px;
+}
+
+.btn-valider {
+    /* Positionnement et Base */
+    position: relative; /* Nécessaire pour l'effet ::before */
+    display: inline-block;
+    min-width: 400px;   /* Largeur minimale pour que ça fasse propre */
+    padding: 16px 32px;
     
+    /* Style visuel (Repos) */
+    background-color: #0f172a; /* Ton bleu nuit très sombre */
+    color: #fff;
+    border: none;
+    clip-path: polygon(15px 0, 100% 0, 100% 100%, 0% 100%);
+    font-weight: 600;
+    font-size: 14px;
+    letter-spacing: 1.5px;
+    
+    cursor: pointer;
+    overflow: hidden; /* Important : cache le bleu qui dépasse avant le survol */
+    z-index: 1;       /* Le texte reste au-dessus */
+    transition: all 0.4s ease;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.15);
 }
 
-/* =========================================
-   ALERTES ERREURS
-   ========================================= */
-.alert-danger {
-    background: #ffe5e5;
-    padding: 12px 15px;
-    border-left: 4px solid #d8000c;
-    border-radius: 4px;
-    margin-bottom: 20px;
+/* L'élément bleu qui glisse (Le ::before) */
+.btn-valider::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -15px;
+    width: 0%;       /* Invisible au départ */
+    height: 100%;
+    background-color: #0071e3; /* Le bleu électrique */
+    z-index: -1;     /* Se place DERRIÈRE le texte */
+    
+    /* L'angle de l'animation */
+    transform: skewX(-20deg);
+    
+    /* Fluidité de l'animation */
+    transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-.alert-danger li {
-    color: #a00000;
+/* --- L'état Survol (Hover) --- */
+
+/* 1. On fait grandir la barre bleue */
+.btn-valider:hover::before {
+    width: 160%; /* 160% pour être sûr de tout couvrir malgré l'angle */
+}
+
+/* 2. On déplace légèrement le bouton et on ajoute la lueur */
+.btn-valider:hover {
+    box-shadow: 0 8px 25px rgba(0, 113, 227, 0.35); /* Lueur bleue */
+    transform: translateY(-2px);
+    color: #fff; /* S'assure que le texte reste blanc */
+}
+
+/* --- Bas de page (Liens) --- */
+.text-connexion {
+    margin-top: 1.5rem;
     font-size: 0.9rem;
 }
 
-.text-connexion {
-    margin-top: 30px;
+.text-connexion a {
+    color: var(--primary-dark);
+    font-weight: 800;
+    text-decoration: none;
+    border-bottom: 2px solid transparent;
+}
+
+.text-connexion a:hover {
+    border-bottom-color: var(--primary-dark);
 }
 
 .description {
-    margin-top: 30px;
+    font-size: 0.7rem;
+    color: #00244b;
+    margin-top: 2rem;
+    margin-left: auto;
+    margin-right: auto;
+    text-align: justify;
 }
 
-/* =========================================
-   RESPONSIVE
-   ========================================= */
-@media (max-width: 600px) {
-    #wrapper {
-        margin-top: 13rem;
-    }
-
-    .customer-form {
-        padding: 20px;
-    }
+#traitement-text {
+    color: #000;
 }
