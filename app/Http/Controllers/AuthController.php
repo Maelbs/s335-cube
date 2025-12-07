@@ -28,7 +28,7 @@ class AuthController extends Controller
             return redirect()->route('register.form');
         }
 
-        $regData = session('reg_data'); 
+        $regData = session('reg_data');
         return view('facturation', compact('regData'));
     }
 
@@ -40,21 +40,30 @@ class AuthController extends Controller
     public function checkInscription(Request $request)
     {
         $request->validate([
-            'lastname'  => ['required', 'string', 'max:255'],
+            'lastname' => ['required', 'string', 'max:255'],
             'firstname' => ['required', 'string', 'max:255'],
-            'email'     => ['required', 'email', 'max:255'],
-            'password'  => ['required', 'confirmed', 'min:5'],
-            'tel'       => ['required', 'string', 'max:20'],
-            'birthday'  => ['required', 'date_format:d/m/Y'],
+            'email' => ['required', 'email', 'max:255'],
+            'password' => ['required', 'confirmed', 'min:5'],
+            'tel' => ['required', 'string', 'max:20'],
+            'birthday' => ['required', 'date', 'before:today'],
         ]);
 
         $client = Client::where('email_client', $request->email)->first();
+
         if ($client) {
-            return back()->withErrors(['email' => 'Cette adresse email est déjà utilisée.']);
+            return back()
+                ->withErrors(['email' => 'Cette adresse email est déjà utilisée.'])
+                ->withInput();
         }
 
+        // 3. Sauvegarde en session
         $request->session()->put('reg_data', $request->only([
-            'lastname', 'firstname', 'email', 'password', 'tel', 'birthday'
+            'lastname',
+            'firstname',
+            'email',
+            'password',
+            'tel',
+            'birthday'
         ]));
 
         return redirect()->route('facturation.form');
@@ -63,10 +72,10 @@ class AuthController extends Controller
     public function sendVerificationCode(Request $request)
     {
         $request->validate([
-            'rue'  => ['required', 'string', 'max:255'],
-            'city'     => ['required', 'string', 'max:255'],
-            'zipcode'  => ['required', 'string', 'max:10'],
-            'country'  => ['required', 'string', 'max:50'],
+            'rue' => ['required', 'string', 'max:255'],
+            'city' => ['required', 'string', 'max:255'],
+            'zipcode' => ['required', 'string', 'max:10'],
+            'country' => ['required', 'string', 'max:50'],
         ]);
 
         $regData = $request->session()->get('reg_data');
@@ -75,61 +84,71 @@ class AuthController extends Controller
         }
 
         $request->session()->put('reg_billing', $request->only([
-            'rue', 'city', 'zipcode', 'country'
+            'rue',
+            'city',
+            'zipcode',
+            'country'
         ]));
 
         $code = rand(100000, 999999);
         $expiresAt = now()->addMinutes(10);
-        Cache::put('verification_code_'.$regData['email'], $code, $expiresAt);
+        Cache::put('verification_code_' . $regData['email'], $code, $expiresAt);
 
         Mail::to($regData['email'])->send(new VerificationCodeMail($code));
 
         return redirect()->route('verification.form')
-                         ->with('success', 'Un code de vérification a été envoyé à votre adresse email.');
+            ->with('success', 'Un code de vérification a été envoyé à votre adresse email.');
     }
 
     public function verifyCode(Request $request)
     {
+        // 1. Validation avec messages en Français
         $request->validate([
             'verification_code' => ['required', 'numeric', 'digits:6'],
+        ], [
+            'verification_code.required' => 'Le code de vérification est obligatoire.',
+            'verification_code.numeric' => 'Le code doit être composé uniquement de chiffres.',
+            'verification_code.digits' => 'Le code doit contenir exactement 6 chiffres.',
         ]);
 
         $regData = $request->session()->get('reg_data');
         $billing = $request->session()->get('reg_billing');
 
-        echo $billing['rue'];
-
         if (!$regData || !$billing) {
-            return redirect()->route('register.form')->withErrors('Vos données ont expiré. Veuillez recommencer.');
+            return redirect()->route('register.form')
+                ->withErrors(['email' => 'Vos données ont expiré. Veuillez recommencer.']);
         }
 
-        $code = Cache::get('verification_code_'.$regData['email']);
-        if ($code != $request->verification_code) {
-            return back()->withErrors(['verification_code' => 'Le code est incorrect ou expiré.']);
+        $cachedCode = Cache::get('verification_code_' . $regData['email']);
+
+        if (!$cachedCode || $cachedCode != $request->verification_code) {
+            return back()
+                ->withInput()
+                ->withErrors(['verification_code' => 'Le code est incorrect ou a expiré.']);
         }
 
         $adresse = Adresse::create([
-            'rue'        => $billing['rue'],
-            'code_postal'=> $billing['zipcode'],
-            'ville'      => $billing['city'],
-            'pays'       => $billing['country'],
+            'rue' => $billing['rue'],
+            'code_postal' => $billing['zipcode'],
+            'ville' => $billing['city'],
+            'pays' => $billing['country'],
         ]);
 
         $client = Client::create([
             'id_adresse_facturation' => $adresse->id_adresse,
-            'nom_client'             => $regData['lastname'],
-            'prenom_client'          => $regData['firstname'],
-            'email_client'           => $regData['email'],
-            'mdp'                    => Hash::make($regData['password']),
-            'tel'                    => $regData['tel'],
-            'date_inscription'       => now(),
-            'date_naissance'         => \Carbon\Carbon::createFromFormat('d/m/Y', $regData['birthday'])->format('Y-m-d'),
+            'nom_client' => $regData['lastname'],
+            'prenom_client' => $regData['firstname'],
+            'email_client' => $regData['email'],
+            'mdp' => Hash::make($regData['password']),
+            'tel' => $regData['tel'],
+            'date_inscription' => now(),
+            'date_naissance' => $regData['birthday'],
         ]);
 
         Auth::login($client);
         $request->session()->regenerate();
 
-        Cache::forget('verification_code_'.$regData['email']);
+        Cache::forget('verification_code_' . $regData['email']);
         $request->session()->forget(['reg_data', 'reg_billing']);
 
         return redirect()->route('home')->with('success', 'Votre compte a été créé avec succès !');
@@ -170,10 +189,10 @@ class AuthController extends Controller
         foreach ($sessionCart as $item) {
             $ref = $item['reference'];
             $qteSession = $item['quantity'];
-            
-            $taille = (isset($item['taille']) && $item['taille'] !== 'Unique' && $item['taille'] !== '') 
-                      ? $item['taille'] 
-                      : 'Non renseigné';
+
+            $taille = (isset($item['taille']) && $item['taille'] !== 'Unique' && $item['taille'] !== '')
+                ? $item['taille']
+                : 'Non renseigné';
 
             $ligneExistante = LignePanier::where('id_panier', $panier->id_panier)
                 ->where('reference', $ref)
@@ -182,7 +201,7 @@ class AuthController extends Controller
 
             if ($ligneExistante) {
                 $ligneExistante->quantite_article += $qteSession;
-                $ligneExistante->save(); 
+                $ligneExistante->save();
             } else {
                 LignePanier::create([
                     'id_panier' => $panier->id_panier,

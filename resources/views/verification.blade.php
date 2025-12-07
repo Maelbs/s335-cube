@@ -7,18 +7,14 @@
     <title>Vérification du code</title>
     <link rel="stylesheet" href="{{ asset('css/header.css') }}">
     <style>
-        header {
-            background-color: #fff;
-            color: #000;
-        }
-
-        header img {
-            filter: brightness(0) !important;
+        @font-face {
+            font-family: 'Damas Font';
+            src: url('../font/font.woff2');
         }
 
         body {
-            font-family: Arial, sans-serif;
-            background: #f5f5f5;
+            font-family: 'Damas Font', sans-serif;
+            background: linear-gradient(rgba(10, 20, 30, 0.5), rgba(10, 20, 30, 0.7)), url('../images/connexionBackground.jpg') no-repeat;
             margin: 0;
             padding: 0;
             display: flex;
@@ -103,7 +99,21 @@
             outline: none;
             box-shadow: 0 0 0 4px rgba(0, 113, 227, 0.1);
         }
-        
+
+        input.is-invalid {
+            border-color: #dc3545 !important;
+            background-color: #fff8f8;
+            box-shadow: 0 0 0 4px rgba(220, 53, 69, 0.1) !important;
+        }
+
+        .error-message {
+            color: #dc3545;
+            font-size: 0.85rem;
+            margin-top: -8px;
+            margin-bottom: 10px;
+            font-weight: 600;
+            text-align: left;
+        }
     </style>
 </head>
 
@@ -113,20 +123,31 @@
 
         @if (session('success'))
             <div style="
-                        background:#d4edda;
-                        color:#155724;
-                        padding:12px;
-                        border-radius:5px;
-                        margin-bottom:15px;
-                        border:1px solid #c3e6cb;">
+                                    background:#d4edda;
+                                    color:#155724;
+                                    padding:12px;
+                                    border-radius:5px;
+                                    margin-bottom:15px;
+                                    border:1px solid #c3e6cb;">
                 {{ session('success') }}
             </div>
         @endif
 
         <form method="POST" action="{{ route('verification.check') }}">
             @csrf
+
             <input type="hidden" name="email" value="{{ session('reg_data.email') }}">
-            <input type="text" name="verification_code" required placeholder="Code de vérification" />
+
+            <input type="text" name="verification_code" value="{{ old('verification_code') }}"
+                class="@error('verification_code') is-invalid @enderror" required placeholder="Code de vérification"
+                autocomplete="off" />
+
+            @error('verification_code')
+                <div class="error-message">
+                    {{ $message }}
+                </div>
+            @enderror
+
             <button type="submit">Vérifier</button>
         </form>
 

@@ -217,21 +217,16 @@ h1.h3 {
     transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-/* --- L'état Survol (Hover) --- */
-
-/* 1. On fait grandir la barre bleue */
 .btn-valider:hover::before {
-    width: 160%; /* 160% pour être sûr de tout couvrir malgré l'angle */
+    width: 160%;
 }
 
-/* 2. On déplace légèrement le bouton et on ajoute la lueur */
 .btn-valider:hover {
-    box-shadow: 0 8px 25px rgba(0, 113, 227, 0.35); /* Lueur bleue */
+    box-shadow: 0 8px 25px rgba(0, 113, 227, 0.35);
     transform: translateY(-2px);
-    color: #fff; /* S'assure que le texte reste blanc */
+    color: #fff; 
 }
 
-/* --- Bas de page (Liens) --- */
 .text-connexion {
     margin-top: 1.5rem;
     font-size: 0.9rem;
@@ -259,4 +254,44 @@ h1.h3 {
 
 #traitement-text {
     color: #000;
+}
+
+
+.form-control.is-invalid {
+    border-color: #dc3545 !important;
+    background-image: none;
+}
+
+.invalid-feedback {
+    display: none;
+    width: 100%;
+    margin-top: 0.25rem;
+    font-size: 80%;
+    color: #dc3545;
+}
+
+.error-message {
+    color: #dc3545;
+    font-size: 0.7em;
+    margin-top: 5px;
+    display: block;
+}
+
+.form-control.error-border {
+    border: 1px solid #e74c3c;
+    box-shadow: 0 0 5px rgba(231, 76, 60, 0.2);
+}
+
+.error-text {
+    color: #e74c3c;
+    font-size: 0.7em;
+    margin-top: 5px;
+    font-weight: 500;
+    display: block;
+    animation: fadeIn 0.3s ease-in-out;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-5px); }
+    to { opacity: 1; transform: translateY(0); }
 }
