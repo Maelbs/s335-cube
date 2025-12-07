@@ -363,6 +363,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const openBtn = document.getElementById("open-3d-btn");
     const closeBtn = document.getElementById("close-3d-btn");
     const lightbox = document.getElementById("lightbox-3d");
+    const header = document.querySelector('header');
 
     if (!openBtn) return;
 
@@ -392,7 +393,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     openBtn.addEventListener("click", () => {
         lightbox.classList.add("active");
-
+        header.classList.add("header-hidden");
         const sensitivity = 10;
         const viewer = document.getElementById("product-viewer");
         const imgElement = document.getElementById("bike-image");
@@ -486,9 +487,13 @@ document.addEventListener("DOMContentLoaded", () => {
 
     closeBtn.addEventListener("click", () => {
         lightbox.classList.remove("active");
+        header.classList.remove("header-hidden");
     });
     
     lightbox.addEventListener("click", (e) => {
-        if (e.target === lightbox) lightbox.classList.remove("active");
+        if (e.target === lightbox) {
+          lightbox.classList.remove("active")
+          header.classList.remove("header-hidden");
+        };
     });
 });

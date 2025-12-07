@@ -83,7 +83,7 @@
                     <tr>
                         <td align="center" style="padding-top: 20px;">
                             <p style="font-size: 12px; color: #999999;">
-                                Cube Bikes France - [Votre Adresse Physique ici]
+                                Cube Bikes France - 9 Rue de l'Arc-En-Ciel, 74000 Annecy
                             </p>
                         </td>
                     </tr>
