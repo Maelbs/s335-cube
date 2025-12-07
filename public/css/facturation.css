@@ -61,8 +61,16 @@ h2.h4 {
    ========================================= */
 /* C'est ici qu'on a retiré le 'display: grid' pour laisser Bootstrap gérer les colonnes */
 .form-fields {
-    display: block; 
-    width: 100%;
+    display: grid;
+    grid-template-columns: 1fr 1fr; /* Crée 2 colonnes égales */
+    column-gap: 20px; /* Espace entre les colonnes */
+    row-gap: 15px;    /* Espace entre les lignes */
+}
+
+.custom-toggle-container, 
+.form-footer,
+#billing-address-wrapper {
+    grid-column: 1 / -1;
 }
 
 /* Espacement vertical entre les lignes */
