@@ -97,7 +97,7 @@
                         if (file_exists($serverPath . '/image_' . $i . '.jpg')) {
                             $validImages[] = $webPath . '/image_' . $i . '.jpg';
                         } else {
-                            break; 
+                            break;
                         }
                     }
                 @endphp
@@ -327,10 +327,10 @@
                                 $stockWebVelo += $stockWeb;
                             @endphp
                             <button class="size-btn {{ $classeCss }}" onclick="selectionnerTaille(
-                                                                                                                    '{{ $inventaire->taille->taille }}', 
-                                                                                                                    {{ $stockWeb }}, 
-                                                                                                                    {{ $stockMag }}
-                                                                                                                )">
+                                        '{{ $inventaire->taille->taille }}', 
+                                        {{ $stockWeb }}, 
+                                        {{ $stockMag }}
+                                                                                                                        )">
                                 {{ $inventaire->taille->taille }}
                                 <span style="font-size: 0.8em; display:block; font-weight: normal;">
                                     ({{ $inventaire->taille->taille_min }}-{{ $inventaire->taille->taille_max }})
@@ -406,7 +406,8 @@
                         @endif
                     @else
                         @if($stockWebVelo)
-                            <button type="button" onclick="addToCartAjax()" id="btn-panier" class="btn-skew ">
+                            <button type="button" onclick="addToCartAjax()" id="btn-panier" class="btn-skew"
+                                style="display: none;">
                                 <span class="btn-content-unskew">
                                     <span class="text-label">Ajouter au panier</span>
                                 </span>
@@ -449,8 +450,8 @@
                             @endphp
                             <a href="{{ $lien }}" class="couleur-velo"
                                 style="display: inline-block; width: 30px; height: 30px; border-radius: 50%; margin-right: 5px;
-                                                                                                               border: {{ $estActif ? '5px solid #cbcbcb' : '1px solid #ddd' }};
-                                                                                                               background-color: {{ $bg }};">
+                                                                                                                       border: {{ $estActif ? '5px solid #cbcbcb' : '1px solid #ddd' }};
+                                                                                                                       background-color: {{ $bg }};">
                             </a>
                         @endforeach
                     </div>
@@ -609,14 +610,14 @@
     <script src="{{ asset('js/vizualizeArticle.js') }}" defer></script>
 
     <script>
-    function closeModalAndRefresh() {
-        const modal = document.getElementById('cartModal'); 
-        if(modal) {
-            modal.style.display = 'none';
-        }
+        function closeModalAndRefresh() {
+            const modal = document.getElementById('cartModal');
+            if (modal) {
+                modal.style.display = 'none';
+            }
 
-        location.reload();
-    }
+            location.reload();
+        }
     </script>
 </body>
 

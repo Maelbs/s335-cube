@@ -170,9 +170,9 @@ function changeZoomImage(direction) {
   let newIndex = currentIndex + direction;
 
   if (newIndex < 0) {
-    newIndex = slides.length - 1; 
+    newIndex = slides.length - 1;
   } else if (newIndex >= slides.length) {
-    newIndex = 0; 
+    newIndex = 0;
   }
 
   const targetSlide = slides[newIndex];
@@ -242,12 +242,30 @@ function closeZoom(e) {
   }, 300);
 }
 
+const sizeSelectors = document.querySelectorAll(".size-btn");
+
+const btnPanier = document.getElementById("btn-panier");
+
+sizeSelectors.forEach((selector) => {
+  selector.addEventListener("click", function () {
+    if (btnPanier) {
+      btnPanier.style.display = "inline-block";
+
+      btnPanier.style.opacity = "0";
+      btnPanier.style.transition = "opacity 0.5s";
+      setTimeout(() => {
+        btnPanier.style.opacity = "1";
+      }, 10);
+    }
+  });
+});
+
 function selectionnerTaille(tailleNom, qtyWeb, qtyMagasin) {
   document.getElementById("input-taille-selected").value = tailleNom;
 
-  const formPanier = document.getElementById("form-ajout-panier"); 
-  const btnMagasin = document.getElementById("btn-contact-magasin"); 
-  const msgIndispo = document.getElementById("msg-indisponible"); 
+  const formPanier = document.getElementById("form-ajout-panier");
+  const btnMagasin = document.getElementById("btn-contact-magasin");
+  const msgIndispo = document.getElementById("msg-indisponible");
 
   const dotWeb = document.getElementById("dot-web");
   const textWeb = document.getElementById("text-web");
@@ -290,33 +308,34 @@ function selectionnerTaille(tailleNom, qtyWeb, qtyMagasin) {
 }
 
 function addToCartAjax() {
-    const form = document.getElementById('form-ajout-panier');
-    const url = form.dataset.action;
-    const formData = new FormData(form);
-    
-    const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+  const form = document.getElementById("form-ajout-panier");
+  const url = form.dataset.action;
+  const formData = new FormData(form);
 
-    fetch(url, {
-        method: 'POST',
-        headers: {
-            'X-CSRF-TOKEN': csrfToken,
-            'Accept': 'application/json', 
-            'X-Requested-With': 'XMLHttpRequest' 
-        },
-        body: formData
+  const csrfToken = document
+    .querySelector('meta[name="csrf-token"]')
+    .getAttribute("content");
+
+  fetch(url, {
+    method: "POST",
+    headers: {
+      "X-CSRF-TOKEN": csrfToken,
+      Accept: "application/json",
+      "X-Requested-With": "XMLHttpRequest",
+    },
+    body: formData,
+  })
+    .then((response) => response.json())
+    .then((data) => {
+      if (data.success) {
+        fillAndOpenModal(data);
+      } else {
+        alert(data.message || "Une erreur est survenue.");
+      }
     })
-    .then(response => response.json())
-    .then(data => {
-        if (data.success) {
-            fillAndOpenModal(data); 
-        }
-        else {
-            alert(data.message || 'Une erreur est survenue.');
-        }
-    })
-    .catch(error => {
-        console.error('Erreur:', error);
-        alert('Erreur technique lors de l\'ajout au panier.');
+    .catch((error) => {
+      console.error("Erreur:", error);
+      alert("Erreur technique lors de l'ajout au panier.");
     });
 }
 
@@ -360,140 +379,143 @@ window.onclick = function (event) {
 };
 
 document.addEventListener("DOMContentLoaded", () => {
-    const openBtn = document.getElementById("open-3d-btn");
-    const closeBtn = document.getElementById("close-3d-btn");
-    const lightbox = document.getElementById("lightbox-3d");
-    const header = document.querySelector('header');
+  const openBtn = document.getElementById("open-3d-btn");
+  const closeBtn = document.getElementById("close-3d-btn");
+  const lightbox = document.getElementById("lightbox-3d");
+  const header = document.querySelector("header");
 
-    if (!openBtn) return;
+  if (!openBtn) return;
 
-    const folderPath = openBtn.dataset.folder.trim(); 
-    const extension = ".webp";
-    const totalImages = 20;
-    
-    function checkModelExists() {
-        const testImageSrc = `${folderPath}01${extension}`;
-        
-        console.log("Test URL: " + testImageSrc); 
+  const folderPath = openBtn.dataset.folder.trim();
+  const extension = ".webp";
+  const totalImages = 20;
 
-        const tester = new Image();
-        tester.onload = () => {
-            openBtn.style.display = "flex"; 
-            
-            console.log("Modèle trouvé ! Bouton activé.");
+  function checkModelExists() {
+    const testImageSrc = `${folderPath}01${extension}`;
+
+    console.log("Test URL: " + testImageSrc);
+
+    const tester = new Image();
+    tester.onload = () => {
+      openBtn.style.display = "flex";
+
+      console.log("Modèle trouvé ! Bouton activé.");
+    };
+    tester.onerror = () => {
+      console.log("Pas de modèle à : " + testImageSrc);
+      openBtn.style.display = "none";
+    };
+    tester.src = testImageSrc;
+  }
+
+  checkModelExists();
+
+  openBtn.addEventListener("click", () => {
+    lightbox.classList.add("active");
+    header.classList.add("header-hidden");
+    const sensitivity = 10;
+    const viewer = document.getElementById("product-viewer");
+    const imgElement = document.getElementById("bike-image");
+    const loaderWrapper = document.getElementById("loader-wrapper");
+    const loaderText = document.getElementById("loader-text");
+
+    let images = [];
+    let currentFrame = 1;
+    let isDragging = false;
+    let startX = 0;
+    let loadedCount = 0;
+
+    loadedCount = 0;
+    images = [];
+    if (loaderWrapper) loaderWrapper.style.display = "flex";
+
+    function preloadImages() {
+      for (let i = 1; i <= totalImages; i++) {
+        const imageNumber = i.toString().padStart(2, "0");
+
+        const imgSrc = `${folderPath}${imageNumber}${extension}`;
+
+        const img = new Image();
+        img.src = imgSrc;
+
+        img.onload = () => {
+          loadedCount++;
+          if (loaderText) {
+            loaderText.innerText = `Chargement ${Math.floor(
+              (loadedCount / totalImages) * 100
+            )}%`;
+          }
+          if (loadedCount === totalImages) initViewer();
         };
-        tester.onerror = () => {
-            console.log("Pas de modèle à : " + testImageSrc);
-            openBtn.style.display = "none";
-        };
-        tester.src = testImageSrc;
+
+        images.push(imgSrc);
+      }
     }
 
-    checkModelExists();
+    function initViewer() {
+      if (loaderWrapper) loaderWrapper.style.display = "none";
+      updateImage(1);
 
-    openBtn.addEventListener("click", () => {
-        lightbox.classList.add("active");
-        header.classList.add("header-hidden");
-        const sensitivity = 10;
-        const viewer = document.getElementById("product-viewer");
-        const imgElement = document.getElementById("bike-image");
-        const loaderWrapper = document.getElementById("loader-wrapper");
-        const loaderText = document.getElementById("loader-text");
+      const newViewer = viewer.cloneNode(true);
+      viewer.parentNode.replaceChild(newViewer, viewer);
 
-        let images = [];
-        let currentFrame = 1;
-        let isDragging = false;
-        let startX = 0;
-        let loadedCount = 0;
+      newViewer.addEventListener("mousedown", startDrag);
+      window.addEventListener("mouseup", stopDrag);
+      window.addEventListener("mousemove", handleMove);
+      newViewer.addEventListener("touchstart", startDrag, { passive: false });
+      window.addEventListener("touchend", stopDrag);
+      window.addEventListener("touchmove", handleMove, { passive: false });
+    }
 
-        loadedCount = 0;
-        images = [];
-        if(loaderWrapper) loaderWrapper.style.display = "flex";
+    function startDrag(e) {
+      if (e.cancelable) e.preventDefault();
+      isDragging = true;
+      startX = e.pageX || e.touches[0].pageX;
+      document.getElementById("product-viewer").style.cursor = "grabbing";
+    }
+    function stopDrag() {
+      isDragging = false;
+      const v = document.getElementById("product-viewer");
+      if (v) v.style.cursor = "grab";
+    }
+    function handleMove(e) {
+      if (!isDragging) return;
+      const x = e.pageX || e.touches[0].pageX;
+      const change = x - startX;
+      if (Math.abs(change) > sensitivity) {
+        if (change > 0) prevFrame();
+        else nextFrame();
+        startX = x;
+      }
+    }
+    function nextFrame() {
+      currentFrame++;
+      if (currentFrame > totalImages) currentFrame = 1;
+      updateImage(currentFrame);
+    }
+    function prevFrame() {
+      currentFrame--;
+      if (currentFrame < 1) currentFrame = totalImages;
+      updateImage(currentFrame);
+    }
 
-        function preloadImages() {
-            for (let i = 1; i <= totalImages; i++) {
-                const imageNumber = i.toString().padStart(2, "0");
-                
-                const imgSrc = `${folderPath}${imageNumber}${extension}`;
-                
-                const img = new Image();
-                img.src = imgSrc;
+    function updateImage(frameIndex) {
+      const currentImg = document.getElementById("bike-image");
+      if (currentImg) currentImg.src = images[frameIndex - 1];
+    }
 
-                img.onload = () => {
-                    loadedCount++;
-                    if (loaderText) {
-                        loaderText.innerText = `Chargement ${Math.floor((loadedCount / totalImages) * 100)}%`;
-                    }
-                    if (loadedCount === totalImages) initViewer();
-                };
-                
-                images.push(imgSrc);
-            }
-        }
+    preloadImages();
+  });
 
-        function initViewer() {
-            if (loaderWrapper) loaderWrapper.style.display = "none";
-            updateImage(1);
+  closeBtn.addEventListener("click", () => {
+    lightbox.classList.remove("active");
+    header.classList.remove("header-hidden");
+  });
 
-            const newViewer = viewer.cloneNode(true);
-            viewer.parentNode.replaceChild(newViewer, viewer);
-            
-            newViewer.addEventListener("mousedown", startDrag);
-            window.addEventListener("mouseup", stopDrag);
-            window.addEventListener("mousemove", handleMove);
-            newViewer.addEventListener("touchstart", startDrag, { passive: false });
-            window.addEventListener("touchend", stopDrag);
-            window.addEventListener("touchmove", handleMove, { passive: false });
-        }
-        
-        function startDrag(e) { 
-             if (e.cancelable) e.preventDefault();
-             isDragging = true;
-             startX = e.pageX || e.touches[0].pageX;
-             document.getElementById("product-viewer").style.cursor = "grabbing";
-        }
-        function stopDrag() { 
-             isDragging = false;
-             const v = document.getElementById("product-viewer");
-             if(v) v.style.cursor = "grab";
-        }
-        function handleMove(e) { 
-             if (!isDragging) return;
-             const x = e.pageX || e.touches[0].pageX;
-             const change = x - startX;
-             if (Math.abs(change) > sensitivity) {
-                 if (change > 0) prevFrame(); else nextFrame();
-                 startX = x;
-             }
-        }
-        function nextFrame() { 
-             currentFrame++;
-             if (currentFrame > totalImages) currentFrame = 1;
-             updateImage(currentFrame);
-        }
-        function prevFrame() { 
-             currentFrame--;
-             if (currentFrame < 1) currentFrame = totalImages;
-             updateImage(currentFrame);
-        }
-
-        function updateImage(frameIndex) {
-            const currentImg = document.getElementById("bike-image");
-            if(currentImg) currentImg.src = images[frameIndex - 1];
-        }
-
-        preloadImages();
-    });
-
-    closeBtn.addEventListener("click", () => {
-        lightbox.classList.remove("active");
-        header.classList.remove("header-hidden");
-    });
-    
-    lightbox.addEventListener("click", (e) => {
-        if (e.target === lightbox) {
-          lightbox.classList.remove("active")
-          header.classList.remove("header-hidden");
-        };
-    });
+  lightbox.addEventListener("click", (e) => {
+    if (e.target === lightbox) {
+      lightbox.classList.remove("active");
+      header.classList.remove("header-hidden");
+    }
+  });
 });
