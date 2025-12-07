@@ -104,7 +104,6 @@
                                     </div>
                                     
                                 </section>
-                                <p class="description description--xs description--grey mt-3">* Champs obligatoires</p>
 
                                 {{-- Footer du formulaire --}}
                                 <footer class="form-footer">
