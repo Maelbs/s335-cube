@@ -8,12 +8,12 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Session;
+use Illuminate\Support\Facades\DB; // Indispensable pour la table pivot
 use App\Mail\VerificationCodeMail;
 use App\Models\Client;
 use App\Models\Adresse;
 use App\Models\Panier;
 use App\Models\LignePanier;
-use App\Models\Taille;
 
 class AuthController extends Controller
 {
@@ -56,14 +56,8 @@ class AuthController extends Controller
                 ->withInput();
         }
 
-        // 3. Sauvegarde en session
         $request->session()->put('reg_data', $request->only([
-            'lastname',
-            'firstname',
-            'email',
-            'password',
-            'tel',
-            'birthday'
+            'lastname', 'firstname', 'email', 'password', 'tel', 'birthday'
         ]));
 
         return redirect()->route('facturation.form');
@@ -71,25 +65,57 @@ class AuthController extends Controller
 
     public function sendVerificationCode(Request $request)
     {
-        $request->validate([
+        // 1. Validation de l'adresse de livraison (toujours requise)
+        $rules = [
             'rue' => ['required', 'string', 'max:255'],
             'city' => ['required', 'string', 'max:255'],
             'zipcode' => ['required', 'string', 'max:10'],
             'country' => ['required', 'string', 'max:50'],
-        ]);
+        ];
+
+        // 2. Validation conditionnelle pour l'adresse de facturation
+        // Si "use_same_address" N'EST PAS coché, on valide les champs facturation
+        if (!$request->has('use_same_address')) {
+            $rules['billing_rue'] = ['required', 'string', 'max:255'];
+            $rules['billing_city'] = ['required', 'string', 'max:255'];
+            $rules['billing_zipcode'] = ['required', 'string', 'max:10'];
+            $rules['billing_country'] = ['required', 'string', 'max:50'];
+        }
+
+        $request->validate($rules);
 
         $regData = $request->session()->get('reg_data');
         if (!$regData) {
             return redirect()->route('register.form')->withErrors('Vos données ont expiré, veuillez recommencer.');
         }
 
-        $request->session()->put('reg_billing', $request->only([
-            'rue',
-            'city',
-            'zipcode',
-            'country'
-        ]));
+        // 3. Préparation des données
+        $deliveryData = [
+            'rue' => $request->rue,
+            'city' => $request->city,
+            'zipcode' => $request->zipcode,
+            'country' => $request->country
+        ];
 
+        if ($request->has('use_same_address')) {
+            $billingData = $deliveryData; // Copie
+            $sameAddress = true;
+        } else {
+            $billingData = [
+                'rue' => $request->billing_rue,
+                'city' => $request->billing_city,
+                'zipcode' => $request->billing_zipcode,
+                'country' => $request->billing_country
+            ];
+            $sameAddress = false;
+        }
+
+        // Mise en session
+        $request->session()->put('reg_delivery', $deliveryData);
+        $request->session()->put('reg_billing', $billingData);
+        $request->session()->put('reg_same_address', $sameAddress);
+
+        // Envoi Code
         $code = rand(100000, 999999);
         $expiresAt = now()->addMinutes(10);
         Cache::put('verification_code_' . $regData['email'], $code, $expiresAt);
@@ -102,7 +128,6 @@ class AuthController extends Controller
 
     public function verifyCode(Request $request)
     {
-        // 1. Validation avec messages en Français
         $request->validate([
             'verification_code' => ['required', 'numeric', 'digits:6'],
         ], [
@@ -112,9 +137,11 @@ class AuthController extends Controller
         ]);
 
         $regData = $request->session()->get('reg_data');
-        $billing = $request->session()->get('reg_billing');
+        $deliveryData = $request->session()->get('reg_delivery');
+        $billingData = $request->session()->get('reg_billing');
+        $sameAddress = $request->session()->get('reg_same_address');
 
-        if (!$regData || !$billing) {
+        if (!$regData || !$deliveryData || !$billingData) {
             return redirect()->route('register.form')
                 ->withErrors(['email' => 'Vos données ont expiré. Veuillez recommencer.']);
         }
@@ -122,36 +149,64 @@ class AuthController extends Controller
         $cachedCode = Cache::get('verification_code_' . $regData['email']);
 
         if (!$cachedCode || $cachedCode != $request->verification_code) {
-            return back()
-                ->withInput()
-                ->withErrors(['verification_code' => 'Le code est incorrect ou a expiré.']);
+            return back()->withInput()->withErrors(['verification_code' => 'Le code est incorrect ou a expiré.']);
         }
 
-        $adresse = Adresse::create([
-            'rue' => $billing['rue'],
-            'code_postal' => $billing['zipcode'],
-            'ville' => $billing['city'],
-            'pays' => $billing['country'],
-        ]);
+        // --- TRANSACTION DATABASE ---
+        DB::beginTransaction();
+        try {
+            // 1. Créer adresse Livraison
+            $adresseLivraison = Adresse::create([
+                'rue' => $deliveryData['rue'],
+                'code_postal' => $deliveryData['zipcode'],
+                'ville' => $deliveryData['city'],
+                'pays' => $deliveryData['country'],
+            ]);
 
-        $client = Client::create([
-            'id_adresse_facturation' => $adresse->id_adresse,
-            'nom_client' => $regData['lastname'],
-            'prenom_client' => $regData['firstname'],
-            'email_client' => $regData['email'],
-            'mdp' => Hash::make($regData['password']),
-            'tel' => $regData['tel'],
-            'date_inscription' => now(),
-            'date_naissance' => $regData['birthday'],
-        ]);
+            // 2. Gérer adresse Facturation
+            if ($sameAddress) {
+                $idAdresseFacturation = $adresseLivraison->id_adresse;
+            } else {
+                $adresseFacturation = Adresse::create([
+                    'rue' => $billingData['rue'],
+                    'code_postal' => $billingData['zipcode'],
+                    'ville' => $billingData['city'],
+                    'pays' => $billingData['country'],
+                ]);
+                $idAdresseFacturation = $adresseFacturation->id_adresse;
+            }
 
-        Auth::login($client);
-        $request->session()->regenerate();
+            // 3. Créer Client (lié à facturation)
+            $client = Client::create([
+                'id_adresse_facturation' => $idAdresseFacturation,
+                'nom_client' => $regData['lastname'],
+                'prenom_client' => $regData['firstname'],
+                'email_client' => $regData['email'],
+                'mdp' => Hash::make($regData['password']),
+                'tel' => $regData['tel'],
+                'date_inscription' => now(),
+                'date_naissance' => $regData['birthday'],
+            ]);
 
-        Cache::forget('verification_code_' . $regData['email']);
-        $request->session()->forget(['reg_data', 'reg_billing']);
+            // 4. Créer liaison Livraison (Pivot)
+            DB::table('adresse_livraison')->insert([
+                'id_client' => $client->id_client,
+                'id_adresse' => $adresseLivraison->id_adresse,
+            ]);
 
-        return redirect()->route('home')->with('success', 'Votre compte a été créé avec succès !');
+            DB::commit();
+
+            Auth::login($client);
+            $request->session()->regenerate();
+            Cache::forget('verification_code_' . $regData['email']);
+            $request->session()->forget(['reg_data', 'reg_delivery', 'reg_billing', 'reg_same_address']);
+
+            return redirect()->route('home')->with('success', 'Votre compte a été créé avec succès !');
+
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return back()->withErrors(['error' => 'Une erreur est survenue lors de la création du compte. ' . $e->getMessage()]);
+        }
     }
 
     public function login(Request $request)
@@ -189,10 +244,8 @@ class AuthController extends Controller
         foreach ($sessionCart as $item) {
             $ref = $item['reference'];
             $qteSession = $item['quantity'];
-
             $taille = (isset($item['taille']) && $item['taille'] !== 'Unique' && $item['taille'] !== '')
-                ? $item['taille']
-                : 'Non renseigné';
+                ? $item['taille'] : 'Non renseigné';
 
             $ligneExistante = LignePanier::where('id_panier', $panier->id_panier)
                 ->where('reference', $ref)
@@ -211,7 +264,6 @@ class AuthController extends Controller
                 ]);
             }
         }
-
         Session::forget('cart');
     }
 
