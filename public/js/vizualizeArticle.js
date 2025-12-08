@@ -142,6 +142,9 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 });
 
+/* ==========================================================
+   ZOOM IMAGE LOGIC (MODIFIÉE POUR CACHER LE HEADER)
+   ========================================================== */
 function openZoom() {
   const overlay = document.getElementById("zoomModalOverlay");
   const zoomImg = document.getElementById("zoomImageFull");
@@ -153,6 +156,9 @@ function openZoom() {
   if (activeSlide) {
     zoomImg.src = activeSlide.src;
     overlay.style.display = "flex";
+
+    // AJOUT: On ajoute la classe au body pour cacher le header via CSS
+    document.body.classList.add("zoom-is-open");
 
     setTimeout(() => {
       overlay.classList.add("active");
@@ -237,20 +243,24 @@ function closeZoom(e) {
   zoomImg.classList.remove("zoomed-in");
   zoomImg.style.transformOrigin = "center center";
 
+  // AJOUT: On retire la classe du body pour réafficher le header
+  document.body.classList.remove("zoom-is-open");
+
   setTimeout(() => {
     overlay.style.display = "none";
   }, 300);
 }
 
+/* ==========================================================
+   PANIER & SÉLECTION DE TAILLE
+   ========================================================== */
 const sizeSelectors = document.querySelectorAll(".size-btn");
-
 const btnPanier = document.getElementById("btn-panier");
 
 sizeSelectors.forEach((selector) => {
   selector.addEventListener("click", function () {
     if (btnPanier) {
       btnPanier.style.display = "inline-block";
-
       btnPanier.style.opacity = "0";
       btnPanier.style.transition = "opacity 0.5s";
       setTimeout(() => {
@@ -274,13 +284,11 @@ function selectionnerTaille(tailleNom, qtyWeb, qtyMagasin) {
 
   if (qtyWeb > 0) {
     formPanier.style.display = "inline-block";
-
     dotWeb.className = "status-dot active-green";
     textWeb.textContent = "Disponible en ligne";
     textWeb.style.color = "#15803d";
   } else {
     formPanier.style.display = "none";
-
     dotWeb.className = "status-dot inactive-gray";
     textWeb.textContent = "Indisponible en ligne";
     textWeb.style.color = "#6b7280";
@@ -288,13 +296,11 @@ function selectionnerTaille(tailleNom, qtyWeb, qtyMagasin) {
 
   if (qtyMagasin > 0) {
     btnMagasin.style.display = "inline-block";
-
     dotMagasin.className = "status-dot active-green";
     textMagasin.textContent = "Disponible en magasin";
     textMagasin.style.color = "#15803d";
   } else {
     btnMagasin.style.display = "none";
-
     dotMagasin.className = "status-dot inactive-gray";
     textMagasin.textContent = "Indisponible en magasin";
     textMagasin.style.color = "#6b7280";
@@ -378,11 +384,14 @@ window.onclick = function (event) {
   }
 };
 
+/* ==========================================================
+   VIEWER 3D (MODIFIÉ POUR CACHER LE HEADER)
+   ========================================================== */
 document.addEventListener("DOMContentLoaded", () => {
   const openBtn = document.getElementById("open-3d-btn");
   const closeBtn = document.getElementById("close-3d-btn");
   const lightbox = document.getElementById("lightbox-3d");
-  const header = document.querySelector("header");
+  // const header = document.querySelector("header"); // Plus besoin de cibler header directement
 
   if (!openBtn) return;
 
@@ -392,13 +401,11 @@ document.addEventListener("DOMContentLoaded", () => {
 
   function checkModelExists() {
     const testImageSrc = `${folderPath}01${extension}`;
-
     console.log("Test URL: " + testImageSrc);
 
     const tester = new Image();
     tester.onload = () => {
       openBtn.style.display = "flex";
-
       console.log("Modèle trouvé ! Bouton activé.");
     };
     tester.onerror = () => {
@@ -412,7 +419,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
   openBtn.addEventListener("click", () => {
     lightbox.classList.add("active");
-    header.classList.add("header-hidden");
+    // AJOUT: On ajoute la classe pour cacher le header via CSS
+    document.body.classList.add("zoom-is-open");
+
     const sensitivity = 10;
     const viewer = document.getElementById("product-viewer");
     const imgElement = document.getElementById("bike-image");
@@ -432,9 +441,7 @@ document.addEventListener("DOMContentLoaded", () => {
     function preloadImages() {
       for (let i = 1; i <= totalImages; i++) {
         const imageNumber = i.toString().padStart(2, "0");
-
         const imgSrc = `${folderPath}${imageNumber}${extension}`;
-
         const img = new Image();
         img.src = imgSrc;
 
@@ -447,7 +454,6 @@ document.addEventListener("DOMContentLoaded", () => {
           }
           if (loadedCount === totalImages) initViewer();
         };
-
         images.push(imgSrc);
       }
     }
@@ -455,7 +461,6 @@ document.addEventListener("DOMContentLoaded", () => {
     function initViewer() {
       if (loaderWrapper) loaderWrapper.style.display = "none";
       updateImage(1);
-
       const newViewer = viewer.cloneNode(true);
       viewer.parentNode.replaceChild(newViewer, viewer);
 
@@ -498,24 +503,24 @@ document.addEventListener("DOMContentLoaded", () => {
       if (currentFrame < 1) currentFrame = totalImages;
       updateImage(currentFrame);
     }
-
     function updateImage(frameIndex) {
       const currentImg = document.getElementById("bike-image");
       if (currentImg) currentImg.src = images[frameIndex - 1];
     }
-
     preloadImages();
   });
 
   closeBtn.addEventListener("click", () => {
     lightbox.classList.remove("active");
-    header.classList.remove("header-hidden");
+    // AJOUT: On retire la classe du body
+    document.body.classList.remove("zoom-is-open");
   });
 
   lightbox.addEventListener("click", (e) => {
     if (e.target === lightbox) {
       lightbox.classList.remove("active");
-      header.classList.remove("header-hidden");
+      // AJOUT: On retire la classe du body
+      document.body.classList.remove("zoom-is-open");
     }
   });
 });
