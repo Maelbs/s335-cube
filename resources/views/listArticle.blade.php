@@ -251,7 +251,7 @@
                     @foreach($articles as $article)
                         <div class="product-card">
                             @if(!$isAccessoire)
-                                @if(intval($article->modele->millesime_modele) >= intval(date("Y")))
+                                @if(intval($article->modele->millesime_modele) > intval(date("Y")))
                                     <div class="badge-new">NOUVEAU</div>
                                 @endif
                             @endif

@@ -84,7 +84,7 @@
                                     <div class="form-group phone">
                                         <label class="required" for="tel">Téléphone</label>
                                         <input class="form-control @error('tel') error-border @enderror" name="tel"
-                                            type="tel" value="{{ old('tel') }}" id="tel" placeholder="0612345678">
+                                            type="tel" value="{{ old('tel') }}" id="tel" placeholder="0612345678" required>
                                         @error('tel') <div class="error-text">{{ $message }}</div> @enderror
                                     </div>
 

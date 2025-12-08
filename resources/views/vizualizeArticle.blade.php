@@ -294,7 +294,7 @@
 
             <div class="badges">
                 @if (!$isAccessoire)
-                    @if (intval($article->varianteVelo->modele->millesime_modele) >= date("Y"))
+                    @if (intval($article->varianteVelo->modele->millesime_modele) > date("Y"))
                         <span class="badge-season" id="badge-new">Nouveau</span>
                     @endif
                 @endif
@@ -387,7 +387,7 @@
 
             <div class="action-buttons-container">
                 <form id="form-ajout-panier"
-                    data-action="{{ $isAccessoire ? route('cart.addAccessoire', $article->reference) : route('cart.add', $article->reference) }}">
+                    data-action="{{ $isAccessoire ? route('cart.add', $article->reference) : route('cart.add', $article->reference) }}">
                     @if($typeVue === 'velo')
                         <input type="hidden" name="taille" id="input-taille-selected" value="">
                     @else
