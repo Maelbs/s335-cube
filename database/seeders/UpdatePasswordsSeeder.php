@@ -14,7 +14,7 @@ class UpdatePasswordsSeeder extends Seeder
 
         foreach ($clients as $client) {
             $client->mdp = Hash::make($client->mdp);
-            $client->save();
+            $client->save();       
         }
     }
 }

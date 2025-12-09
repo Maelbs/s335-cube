@@ -6,7 +6,7 @@
     <title>Modifier mes informations | Cube Bikes</title>
     
     <link rel="stylesheet" href="{{ asset('css/header.css') }}">
-    <link rel="stylesheet" href="{{ asset('css/inscription.css') }}"> <link rel="stylesheet" href="{{ asset('css/profil.css') }}">      <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="{{ asset('css/inscription.css') }}"> <link rel="stylesheet" href="{{ asset('css/profil.css') }}">      
 
     <style>
         body {
@@ -108,6 +108,19 @@
                             value="{{ old('email', $client->email_client) }}" 
                             id="email" required autocomplete="email">
                         @error('email') <div class="error-text">{{ $message }}</div> @enderror
+                    </div>
+
+                    <div class="form-group password">
+                        <label for="password">Nouveau mot de passe (laisser vide pour ne pas changer)</label>
+                        <input type="password" name="password" id="password" class="form-control @error('password') error-border @enderror" placeholder="Nouveau mot de passe">
+                        @error('password') 
+                            <div class="error-text">{{ $message }}</div> 
+                        @enderror
+                    </div>
+
+                    <div class="form-group password">
+                        <label for="password_confirmation">Confirmer le nouveau mot de passe</label>
+                        <input type="password" name="password_confirmation" id="password_confirmation" class="form-control" placeholder="Confirmer le mot de passe">
                     </div>
 
                     <div class="form-group phone">

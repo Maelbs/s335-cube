@@ -116,7 +116,7 @@
                             <span>&larr;</span> CONTINUER MES ACHATS
                         </a>
 
-                        <a href="{{ Auth::check() ? route('checkout') : route('login') }}" class="btn-cube-red btn-validate">
+                        <a href="{{ Auth::check() ? route('paypal.payment') : route('login') }}" class="btn-cube-red btn-validate">
                             <span>► Valider mon panier</span>
                         </a>
                     </div>
@@ -145,7 +145,7 @@
                                 id="summary-taxes">{{ number_format($total * 0.2, 2, ',', ' ') }}</span> €</div>
 
                         <div class="summary-btn-container">
-                            <a href="{{ Auth::check() ? route('checkout') : route('login') }}" class="btn-cube-red btn-validate">
+                            <a href="{{ Auth::check() ? route('paypal.payment') : route('login') }}" class="btn-cube-red btn-validate">
                                 <span>► Valider mon panier</span>
                             </a>
                         </div>
