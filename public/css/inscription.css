@@ -13,6 +13,7 @@
     font-family: 'Damas Font';
     src: url('../font/font.woff2');
 }
+
 /* header {
     background-color: #fff !important;
     color: #000 !important;
@@ -21,9 +22,11 @@
 /* .logo img {
     filter: brightness(0) !important;
 } */
+
 html {
     font-family: 'Damas Font', sans-serif; /* Assure-toi d'avoir une font propre */
 }
+
 body {
     background: linear-gradient(rgba(10, 20, 30, 0.5), rgba(10, 20, 30, 0.7)), url('../images/connexionBackground.jpg') no-repeat;
     background-size: cover;

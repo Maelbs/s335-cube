@@ -116,7 +116,7 @@
                             <span>&larr;</span> CONTINUER MES ACHATS
                         </a>
 
-                        <a href="{{ Auth::check() ? '#' : route('login') }}" class="btn-cube-red btn-validate">
+                        <a href="{{ Auth::check() ? route('checkout') : route('login') }}" class="btn-cube-red btn-validate">
                             <span>► Valider mon panier</span>
                         </a>
                     </div>
@@ -145,7 +145,7 @@
                                 id="summary-taxes">{{ number_format($total * 0.2, 2, ',', ' ') }}</span> €</div>
 
                         <div class="summary-btn-container">
-                            <a href="#" class="btn-cube-red btn-validate">
+                            <a href="{{ Auth::check() ? route('checkout') : route('login') }}" class="btn-cube-red btn-validate">
                                 <span>► Valider mon panier</span>
                             </a>
                         </div>
@@ -228,22 +228,7 @@
                     totalDisplay.textContent = formatMoney(lineTotal);
                 });
 
-                const validationButtons = document.querySelectorAll('.btn-validate');
-                validationButtons.forEach(btn => {
-                    if (hasGlobalError) {
-                        btn.classList.add('disabled');
-                        btn.onclick = (e) => e.preventDefault();
-                        btn.href = "javascript:void(0)";
-                    } else {
-                        btn.classList.remove('disabled');
-                        btn.onclick = null;
-                        if (isConnected) {
-                            btn.href = "#";
-                        } else {
-                            btn.href = loginRoute;
-                        }
-                    }
-                });
+
             };
 
             document.querySelectorAll('.cart-item-row').forEach(row => {
@@ -280,5 +265,4 @@
     </script>
 
 </body>
-
 </html>

@@ -1,159 +1,257 @@
-@import url('https://fonts.googleapis.com/css2?family=Fira+Sans:wght@300;400;500;700;800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Fira+Sans:ital,wght@0,300;0,400;0,500;0,700;0,800;1,400;1,700;1,800&display=swap');
 
 body {
     font-family: 'Fira Sans', sans-serif;
     margin: 0;
     padding: 0;
+    background-color: #f0f0f0; /* Fond gris clair pour la partie droite */
+    color: #333;
+    overflow: hidden;
+}
 
+/* --- Layout Principal --- */
+.dashboard-container {
+    display: flex;
+    min-height: 100vh; /* Prend toute la hauteur de l'écran */
+    margin-top: 100px; /* Ajustez selon la hauteur de votre header 'layouts.header' */
+}
 
-    background: linear-gradient(rgba(10, 20, 30, 0.6), rgba(10, 20, 30, 0.8)), url('../images/connexionBackground.jpg');
-
-    background-size: cover;
-    background-position: center;
-    background-attachment: fixed;
-    
+/* --- Sidebar (Gauche) --- */
+.sidebar {
+    width: 350px; /* Largeur fixe */
+    background-color: #0b0b0b; /* Noir profond */
+    color: #fff;
     display: flex;
     flex-direction: column;
-    min-height: 100vh;
-    color: #333;
-}
-
-.profile-wrapper {
-    flex: 1;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    padding-top: 10vh;
-    backdrop-filter: blur(4px);
-}
-
-.profile-card {
-    background-color: #ffffff;
-    width: 100%;
-    max-width: 500px; 
-    padding: 0; 
-    border-radius: 4px;
-    box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+    justify-content: center; /* CENTRE VERTICALEMENT LES ÉLÉMENTS */
+    padding: 40px;
     position: relative;
-    overflow: hidden;
-    animation: slideUp 0.6s ease-out;
+    flex-shrink: 0;
 }
 
-@keyframes slideUp {
-    from { opacity: 0; transform: translateY(30px); }
-    to { opacity: 1; transform: translateY(0); }
+.sidebar-content {
+    /* Conteneur pour centrer le bloc */
+    transform: translateY(-50px); /* Léger décalage vers le haut pour l'esthétique */
 }
 
-.profile-card::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 4px;
-    background: #0071e3;
+.user-greeting {
+    margin-bottom: 60px;
 }
 
-.card-header {
-    padding: 40px 40px 20px 40px;
-    text-align: center;
-    border-bottom: 1px solid #f1f5f9;
+.welcome-label {
+    font-style: italic;
+    font-size: 14px;
+    color: #ccc;
+    display: block;
+    margin-bottom: 5px;
 }
 
-h2 {
+.user-name {
     margin: 0;
+    font-size: 28px;
     font-weight: 800;
-    font-size: 24px;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-    color: #0f172a;
+    text-transform: lowercase; /* Comme sur l'image */
+    font-style: italic;
+    line-height: 1.1;
 }
 
-.subtitle {
+.logout-link {
+    background: none;
+    border: none;
+    color: #777;
+    font-family: 'Fira Sans', sans-serif;
+    font-style: italic;
     font-size: 13px;
-    color: #94a3b8;
-    margin-top: 5px;
+    cursor: pointer;
+    padding: 0;
+    margin-top: 10px;
+    text-decoration: none;
+    transition: color 0.3s;
+}
+
+.logout-link:hover {
+    color: #fff;
+}
+
+/* Navigation Latérale */
+.sidebar-nav ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.sidebar-nav li {
+    margin-bottom: 25px;
+}
+
+.nav-item {
+    text-decoration: none;
+    color: #fff;
+    font-weight: 800;
+    font-size: 20px;
+    font-style: italic;
     text-transform: uppercase;
     letter-spacing: 0.5px;
+    transition: color 0.3s, padding-left 0.3s;
+    position: relative;
+}
+
+.nav-item:hover {
+    padding-left: 10px;
+}
+
+/* Style pour l'élément actif (ROUGE) */
+.nav-item.active {
+    color: #d32f2f; /* Rouge Cube */
+}
+
+.nav-item.active::after {
+    content: '>';
+    position: absolute;
+    right: -20px;
+    font-size: 14px;
+    top: 2px;
+}
+
+/* --- Main Content (Droite) --- */
+.main-content {
+    flex-grow: 1;
+    background-color: #f1f1f1;
+    padding: 40px 60px;
+}
+
+.breadcrumb {
+    font-size: 10px;
+    font-weight: 700;
+    text-transform: uppercase;
+    color: #333;
+    margin-bottom: 40px;
+    letter-spacing: 1px;
+}
+
+.breadcrumb .separator {
+    margin: 0 5px;
+    color: #999;
+}
+
+/* --- Grille des Cartes --- */
+.dashboard-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(400px, 1fr)); /* Responsive grid */
+    gap: 30px;
+}
+
+.dashboard-card {
+    background: #fff;
+    padding: 40px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+    transition: transform 0.3s ease;
+    min-height: 200px;
+    display: flex;
+    flex-direction: column;
+}
+
+.dashboard-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+}
+
+.card-header h2 {
+    font-style: italic;
+    font-weight: 800;
+    text-transform: uppercase;
+    margin: 0;
+    font-size: 24px;
+    color: #000;
+}
+
+.card-header .subtitle {
+    margin: 5px 0 20px 0;
+    font-weight: 600;
+    font-size: 14px;
+    color: #666;
 }
 
 .card-body {
-    padding: 30px 40px;
+    flex-grow: 1;
 }
 
-.info-row {
+.info-group {
     display: flex;
     justify-content: space-between;
-    align-items: center;
-    padding: 15px 0;
-    border-bottom: 1px solid #f1f5f9;
-}
-
-.info-row:last-child {
-    border-bottom: none;
-}
-
-.label {
-    font-size: 13px;
-    font-weight: 700;
-    color: #64748b; 
-    text-transform: uppercase;
-}
-
-.value {
-    font-size: 15px;
-    font-weight: 500;
-    color: #0f172a; 
-    text-align: right;
-}
-
-.card-footer {
-    padding: 0 40px 40px 40px;
-}
-
-button.btn-logout {
-    position: relative;
-    width: 100%;
-    padding: 16px;
-    background-color: #0f172a;
-    color: #fff;
-    border: none;
-    border-radius: 4px;
-    font-family: 'Fira Sans', sans-serif;
-    font-weight: 700;
+    padding: 8px 0;
+    border-bottom: 1px solid #eee;
     font-size: 14px;
+}
+
+.info-group label {
+    font-weight: 700;
+    color: #888;
     text-transform: uppercase;
-    letter-spacing: 1.5px;
-    cursor: pointer;
-    overflow: hidden;
-    z-index: 1;
-    transition: all 0.3s ease;
-    box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+    font-size: 12px;
 }
 
-button.btn-logout::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: -15px;
-    width: 0%;
+.info-group span {
+    font-weight: 600;
+    color: #000;
+}
+
+.card-action {
+    display: block;
+    margin-top: 20px;
+    color: #333;
+    font-size: 13px;
+    text-decoration: underline;
+}
+
+/* Styles pour les cartes centrées (comme Commandes/Vélos) */
+.centered-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
     height: 100%;
-    background-color: #0071e3;
-    z-index: -1;
-    transform: skewX(-20deg);
-    transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    text-align: center;
 }
 
-button.btn-logout:hover::before {
-    width: 160%;
+.card-arrow-btn {
+    font-size: 20px;
+    color: #d32f2f;
+    text-decoration: none;
+    margin-top: 10px;
 }
 
-button.btn-logout:hover {
-    box-shadow: 0 8px 25px rgba(0, 113, 227, 0.35);
-    transform: translateY(-2px);
+.text-link {
+    font-weight: 800;
+    text-decoration: none;
+    color: #000;
+    border-bottom: 2px solid #d32f2f; /* Souligné rouge */
+    padding-bottom: 2px;
 }
 
-#btn-logout {
-    clip-path: polygon(15px 0, 100% 0, 100% 100%, 0% 100%);
-    border-radius: 0;
+.icon-large {
+    font-size: 40px;
+    margin-bottom: 15px;
+    color: #000;
+}
+
+.flex-col {
+    flex-direction: column;
+}
+
+/* Responsive Mobile */
+@media (max-width: 900px) {
+    .dashboard-container {
+        flex-direction: column;
+    }
+    
+    .sidebar {
+        width: 100%;
+        padding: 20px;
+        min-height: auto;
+    }
+
+    .main-content {
+        padding: 20px;
+    }
 }

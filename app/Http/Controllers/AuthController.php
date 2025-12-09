@@ -8,7 +8,7 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Session;
-use Illuminate\Support\Facades\DB; // Indispensable pour la table pivot
+use Illuminate\Support\Facades\DB; 
 use App\Mail\VerificationCodeMail;
 use App\Models\Client;
 use App\Models\Adresse;
@@ -65,7 +65,6 @@ class AuthController extends Controller
 
     public function sendVerificationCode(Request $request)
     {
-        // 1. Validation de l'adresse de livraison (toujours requise)
         $rules = [
             'rue' => ['required', 'string', 'max:255'],
             'city' => ['required', 'string', 'max:255'],
@@ -73,8 +72,6 @@ class AuthController extends Controller
             'country' => ['required', 'string', 'max:50'],
         ];
 
-        // 2. Validation conditionnelle pour l'adresse de facturation
-        // Si "use_same_address" N'EST PAS coché, on valide les champs facturation
         if (!$request->has('use_same_address')) {
             $rules['billing_rue'] = ['required', 'string', 'max:255'];
             $rules['billing_city'] = ['required', 'string', 'max:255'];
@@ -89,7 +86,6 @@ class AuthController extends Controller
             return redirect()->route('register.form')->withErrors('Vos données ont expiré, veuillez recommencer.');
         }
 
-        // 3. Préparation des données
         $deliveryData = [
             'rue' => $request->rue,
             'city' => $request->city,
@@ -110,12 +106,10 @@ class AuthController extends Controller
             $sameAddress = false;
         }
 
-        // Mise en session
         $request->session()->put('reg_delivery', $deliveryData);
         $request->session()->put('reg_billing', $billingData);
         $request->session()->put('reg_same_address', $sameAddress);
 
-        // Envoi Code
         $code = rand(100000, 999999);
         $expiresAt = now()->addMinutes(10);
         Cache::put('verification_code_' . $regData['email'], $code, $expiresAt);

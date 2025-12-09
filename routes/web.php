@@ -11,6 +11,8 @@ use App\Http\Controllers\BoutiqueController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\ProfilController;
 use App\Http\Controllers\PanierController;
+use App\Http\Controllers\PayPalController;
+use App\Http\Controllers\CommandeController;
 
 /*
 |--------------------------------------------------------------------------
@@ -43,8 +45,18 @@ Route::middleware('guest')->group(function () {
 });
 
 Route::middleware('auth')->group(function () {
-    Route::get('/profil', [ProfilController::class, 'index'])->name('profil');
+    Route::get('/profil', [ProfilController::class, 'profil'])->name('profil');
     Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
+
+    Route::get('/checkout', [CommandeController::class, 'showCommande'])->name('checkout');
+    Route::post('/commande/finaliser', [CommandeController::class, 'finaliser'])->name('commande.finaliser');
+
+    Route::get('/profil/modifier', [ProfilController::class, 'showUpdateForm'])->name('profil.update.form');
+    Route::put('/profil/modifier', [ProfilController::class, 'update'])->name('profil.update'); 
+
+    Route::get('paypal/payment', [PayPalController::class, 'payment'])->name('paypal.payment');
+    Route::get('paypal/success', [PayPalController::class, 'success'])->name('paypal.success');
+    Route::get('paypal/cancel', [PayPalController::class, 'cancel'])->name('paypal.cancel');
 });
 
 Route::get('/panier', [PanierController::class, 'index'])->name('cart.index');
@@ -56,3 +68,4 @@ Route::post('/panier/ajouter-accessoire/{reference}', [PanierController::class, 
 Route::get('/boutique/{type}/{cat_id?}/{sub_id?}/{model_id?}', [BoutiqueController::class, 'index'])
     ->name('boutique.index')
     ->where('type', 'Musculaire|Electrique|Accessoires');
+
