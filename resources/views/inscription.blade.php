@@ -93,7 +93,7 @@
                                         <label class="required" for="birthday">Date de naissance</label>
                                         <input class="form-control @error('birthday') error-border @enderror"
                                             name="birthday" type="date" value="{{ old('birthday') }}" id="birthday"
-                                            required max="{{ date('Y-m-d') }}" autocomplete="bday">
+                                            required max="{{ date('Y-m-d') }}"  autocomplete="bday">
                                         @error('birthday') <div class="error-text">{{ $message }}</div> @enderror
                                     </div>
 

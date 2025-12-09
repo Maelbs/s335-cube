@@ -1424,8 +1424,8 @@ p.text-section-grey{
 
 /* Bouton fermer */
 .zoom-close-btn {
-    position: absolute;
-    top: 30px;
+    position: fixed;
+    top: 20px;
     right: 40px;
     background: none;
     border: none;
@@ -1433,7 +1433,7 @@ p.text-section-grey{
     color: #000;
     cursor: pointer;
     font-weight: 300;
-    z-index: 2001;
+    z-index: 2001; /* Ensure it is above other elements */
 }
 
 /* --- Navigation dans le Zoom --- */
@@ -1651,4 +1651,19 @@ p.text-section-grey{
 @keyframes spin {
     0% { transform: rotate(0deg); }
     100% { transform: rotate(360deg); }
+}
+
+/* Cache le header quand le zoom est actif */
+body.zoom-is-open header {
+    display: none !important;
+}
+
+/* Optionnel mais recommandé : empêche le scroll de la page en arrière-plan */
+body.zoom-is-open {
+    overflow: hidden; 
+}
+
+/* Assure-toi que ton bouton de fermeture est bien au-dessus de tout */
+.zoom-close-btn {
+    z-index: 2005 !important; /* Une valeur très haute pour être sûr */
 }

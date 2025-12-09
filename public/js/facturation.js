@@ -4,7 +4,7 @@ document.addEventListener("DOMContentLoaded", function () {
   const billingWrapper = document.getElementById("billing-address-wrapper");
   // Sélectionner tous les inputs DANS le wrapper facturation
   const billingInputs = billingWrapper.querySelectorAll("input");
-
+  const body = document.querySelector("body");
   function toggleBilling() {
     if (checkbox.checked) {
       // Si coché (Même adresse) -> On cache la facturation
@@ -14,7 +14,6 @@ document.addEventListener("DOMContentLoaded", function () {
     } else {
       // Si décoché (Adresses différentes) -> On affiche
       billingWrapper.classList.add("visible");
-      // On remet l'attribut required
       billingInputs.forEach((input) => (input.required = true));
     }
   }

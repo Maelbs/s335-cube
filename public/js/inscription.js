@@ -36,6 +36,21 @@ document.addEventListener('DOMContentLoaded', function () {
             else if (input.name === 'password' && input.value.length < 5) {
                 errorMsg = "Le mot de passe doit contenir au moins 5 caractères.";
             }
+            
+            else if (input.name === 'birthday' && !(((calculerAge(input.value)) >= 18) && calculerAge(input.value) <= 125)) {
+                const dateMax = new Date();
+                dateMax.setFullYear(dateMax.getFullYear() - 18);
+
+                const dateMin = new Date();
+                dateMin.setFullYear(dateMin.getFullYear() - 125);
+
+                const options = { day: '2-digit', month: '2-digit', year: 'numeric' };
+
+                errorMsg = `La date doit être comprise entre le ${dateMin.toLocaleDateString('fr-FR', options)} et le ${dateMax.toLocaleDateString('fr-FR', options)}`;
+            }
+                
+
+                
 
             if (errorMsg) {
                 isValid = false;
@@ -65,6 +80,20 @@ document.addEventListener('DOMContentLoaded', function () {
         
         const parent = input.closest('.form-group') || input.parentElement;
         if(parent) parent.appendChild(errorDiv);
+    }
+
+    function calculerAge(dateAnniversaire) {
+        const naissance = new Date(dateAnniversaire);
+        const aujourdhui = new Date();
+
+        let age = aujourdhui.getFullYear() - naissance.getFullYear();
+
+        const moisDiff = aujourdhui.getMonth() - naissance.getMonth();
+        
+        if (moisDiff < 0 || (moisDiff === 0 && aujourdhui.getDate() < naissance.getDate())) {
+            age--;
+        }
+        return age;
     }
 
     form.addEventListener('input', function(e) {

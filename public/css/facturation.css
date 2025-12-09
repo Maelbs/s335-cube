@@ -76,7 +76,7 @@ h2.h4 {
 /* Espacement vertical entre les lignes */
 .form-group, 
 .form-row {
-    margin-bottom: 20px;
+    margin-bottom: 10px;
 }
 
 /* Labels */
@@ -237,7 +237,7 @@ input:checked + .slider:before {
    7. BOUTON VALIDER (Style "Glitch/Slide")
    ========================================= */
 .form-footer {
-    margin-top: 2rem;
+    margin-top: 0;
     text-align: center;
 }
 
