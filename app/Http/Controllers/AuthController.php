@@ -146,10 +146,8 @@ class AuthController extends Controller
             return back()->withInput()->withErrors(['verification_code' => 'Le code est incorrect ou a expiré.']);
         }
 
-        // --- TRANSACTION DATABASE ---
         DB::beginTransaction();
         try {
-            // 1. Créer adresse Livraison
             $adresseLivraison = Adresse::create([
                 'rue' => $deliveryData['rue'],
                 'code_postal' => $deliveryData['zipcode'],
@@ -157,7 +155,6 @@ class AuthController extends Controller
                 'pays' => $deliveryData['country'],
             ]);
 
-            // 2. Gérer adresse Facturation
             if ($sameAddress) {
                 $idAdresseFacturation = $adresseLivraison->id_adresse;
             } else {
@@ -170,7 +167,6 @@ class AuthController extends Controller
                 $idAdresseFacturation = $adresseFacturation->id_adresse;
             }
 
-            // 3. Créer Client (lié à facturation)
             $client = Client::create([
                 'id_adresse_facturation' => $idAdresseFacturation,
                 'nom_client' => $regData['lastname'],
@@ -182,7 +178,6 @@ class AuthController extends Controller
                 'date_naissance' => $regData['birthday'],
             ]);
 
-            // 4. Créer liaison Livraison (Pivot)
             DB::table('adresse_livraison')->insert([
                 'id_client' => $client->id_client,
                 'id_adresse' => $adresseLivraison->id_adresse,

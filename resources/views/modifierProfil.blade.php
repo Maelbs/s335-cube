@@ -9,25 +9,31 @@
     <link rel="stylesheet" href="{{ asset('css/inscription.css') }}"> <link rel="stylesheet" href="{{ asset('css/profil.css') }}">      <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 
     <style>
-        /* Force le fond gris du dashboard au lieu de l'image de forêt */
         body {
             background: #f1f1f1 !important;
-            overflow-y: auto !important; /* Réactive le scroll si besoin */
+            overflow-y: auto !important; 
         }
         
-        /* Adapte la carte formulaire pour qu'elle rentre dans le dashboard */
         .dashboard-form-override {
             margin: 0 !important;
             max-width: 100% !important;
             box-shadow: none !important;
-            background-color: #fff !important; /* Fond blanc uni */
+            background-color: #fff !important; 
             padding: 40px !important;
         }
 
-        /* Cache le footer du formulaire qui contient "se connecter" car inutile ici */
-        .form-footer .text-connexion, 
-        .form-footer .description {
+        .form-footer .text-connexion, .form-footer .description {
             display: none;
+        }
+
+        .error-border {
+            border: 2px solid red;
+        }
+
+        .error-text {
+            color: red;
+            font-size: 12px;
+            margin-top: 5px;
         }
     </style>
 </head>
@@ -70,7 +76,7 @@
                 MODIFIER MES INFORMATIONS
             </div>
 
-            <form class="js-customer-form needs-validation card card-account cube-validate-form customer-form dashboard-form-override" action="{{ route('profil.update') }}" method="POST" novalidate> 
+            <form class="js-customer-form needs-validation card card-account cube-validate-form customer-form dashboard-form-override" action="{{ route('profil.update') }}" id="customer-form" method="POST" novalidate> 
                 @csrf
                 @method('PUT') 
                 <h2 class="h3 font-weight-bold font-normal mb-4" style="color: #000;">ÉDITER MON PROFIL</h2>

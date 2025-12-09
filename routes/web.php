@@ -12,7 +12,6 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\ProfilController;
 use App\Http\Controllers\PanierController;
 use App\Http\Controllers\PayPalController;
-use App\Http\Controllers\CommandeController;
 
 /*
 |--------------------------------------------------------------------------
@@ -47,9 +46,6 @@ Route::middleware('guest')->group(function () {
 Route::middleware('auth')->group(function () {
     Route::get('/profil', [ProfilController::class, 'profil'])->name('profil');
     Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
-
-    Route::get('/checkout', [CommandeController::class, 'showCommande'])->name('checkout');
-    Route::post('/commande/finaliser', [CommandeController::class, 'finaliser'])->name('commande.finaliser');
 
     Route::get('/profil/modifier', [ProfilController::class, 'showUpdateForm'])->name('profil.update.form');
     Route::put('/profil/modifier', [ProfilController::class, 'update'])->name('profil.update'); 
