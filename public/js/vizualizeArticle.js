@@ -142,9 +142,6 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 });
 
-/* ==========================================================
-   ZOOM IMAGE LOGIC (MODIFIÉE POUR CACHER LE HEADER)
-   ========================================================== */
 function openZoom() {
   const overlay = document.getElementById("zoomModalOverlay");
   const zoomImg = document.getElementById("zoomImageFull");
@@ -157,7 +154,6 @@ function openZoom() {
     zoomImg.src = activeSlide.src;
     overlay.style.display = "flex";
 
-    // AJOUT: On ajoute la classe au body pour cacher le header via CSS
     document.body.classList.add("zoom-is-open");
 
     setTimeout(() => {
@@ -243,7 +239,6 @@ function closeZoom(e) {
   zoomImg.classList.remove("zoomed-in");
   zoomImg.style.transformOrigin = "center center";
 
-  // AJOUT: On retire la classe du body pour réafficher le header
   document.body.classList.remove("zoom-is-open");
 
   setTimeout(() => {
@@ -251,9 +246,6 @@ function closeZoom(e) {
   }, 300);
 }
 
-/* ==========================================================
-   PANIER & SÉLECTION DE TAILLE
-   ========================================================== */
 const sizeSelectors = document.querySelectorAll(".size-btn");
 const btnPanier = document.getElementById("btn-panier");
 
@@ -384,14 +376,10 @@ window.onclick = function (event) {
   }
 };
 
-/* ==========================================================
-   VIEWER 3D (MODIFIÉ POUR CACHER LE HEADER)
-   ========================================================== */
 document.addEventListener("DOMContentLoaded", () => {
   const openBtn = document.getElementById("open-3d-btn");
   const closeBtn = document.getElementById("close-3d-btn");
   const lightbox = document.getElementById("lightbox-3d");
-  // const header = document.querySelector("header"); // Plus besoin de cibler header directement
 
   if (!openBtn) return;
 
@@ -419,7 +407,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
   openBtn.addEventListener("click", () => {
     lightbox.classList.add("active");
-    // AJOUT: On ajoute la classe pour cacher le header via CSS
     document.body.classList.add("zoom-is-open");
 
     const sensitivity = 10;
@@ -523,4 +510,76 @@ document.addEventListener("DOMContentLoaded", () => {
       document.body.classList.remove("zoom-is-open");
     }
   });
+});
+
+const header = document.querySelector('header');
+
+function toggleStoreLocator() {
+  const overlay = document.getElementById('store-locator-overlay');
+  const body = document.body;
+  const header = document.querySelector('header');
+  if (overlay.classList.contains('visible')) {
+      // Fermeture
+      overlay.classList.remove('visible');
+      setTimeout(() => {
+          overlay.style.visibility = 'hidden'; // Clean up
+      }, 300);
+      body.style.overflow = ''; // Réactiver le scroll du site
+      header.classList.remove('header-hidden')
+  } else {
+      // Ouverture
+      overlay.style.visibility = 'visible';
+      // Petit délai pour permettre la transition CSS
+      requestAnimationFrame(() => {
+          overlay.classList.add('visible');
+      });
+      body.style.overflow = 'hidden'; // Bloquer le scroll derrière
+      header.classList.add('header-hidden')
+  }
+}
+
+// Fermer si on clique sur le fond gris
+document.getElementById('store-locator-overlay').addEventListener('click', function(e) {
+  if (e.target === this) toggleStoreLocator();
+});
+
+// --- Logique de Filtrage (Stock + Recherche) ---
+document.addEventListener('DOMContentLoaded', function() {
+  const stockToggle = document.getElementById('stockToggle');
+  const searchInput = document.getElementById('storeSearchInput');
+  const cards = document.querySelectorAll('.sl-card');
+
+  function filterMagasins() {
+      const showOnlyStock = stockToggle.checked;
+      const searchText = searchInput.value.toLowerCase();
+
+      cards.forEach(card => {
+          const hasStock = card.getAttribute('data-has-stock') === 'true';
+          const searchString = card.getAttribute('data-searchString');
+          
+          let matchesStock = true;
+          let matchesSearch = true;
+
+          // Condition 1 : Stock
+          if (showOnlyStock && !hasStock) {
+              matchesStock = false;
+          }
+
+          // Condition 2 : Recherche Texte
+          if (searchText.length > 0 && !searchString.includes(searchText)) {
+              matchesSearch = false;
+          }
+
+          // Afficher ou Cacher
+          if (matchesStock && matchesSearch) {
+              card.classList.remove('hidden-item');
+          } else {
+              card.classList.add('hidden-item');
+          }
+      });
+  }
+
+  // Écouteurs d'événements
+  if(stockToggle) stockToggle.addEventListener('change', filterMagasins);
+  if(searchInput) searchInput.addEventListener('keyup', filterMagasins);
 });

@@ -13,6 +13,8 @@ use App\Http\Controllers\ProfilController;
 use App\Http\Controllers\PanierController;
 use App\Http\Controllers\PaymentController;
 
+use App\Http\Controllers\CommandeController;
+
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -45,6 +47,8 @@ Route::middleware('guest')->group(function () {
 
 Route::middleware('auth')->group(function () {
     Route::get('/profil', [ProfilController::class, 'profil'])->name('profil');
+    Route::get('/commandes', [CommandeController::class, 'index'])->name('client.commandes');
+    Route::get('/commandes/{id}', [CommandeController::class, 'show'])->name('client.commandes.show');
     Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
     Route::get('/profil/modifier', [ProfilController::class, 'showUpdateForm'])->name('profil.update.form');
