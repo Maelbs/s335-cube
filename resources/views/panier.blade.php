@@ -10,11 +10,9 @@
     {{-- Token CSRF pour que la sauvegarde AJAX fonctionne --}}
     <meta name="csrf-token" content="{{ csrf_token() }}">
 </head>
-
 <body>
 
     @include('layouts.header')
-
     <div class="page-wrapper">
 
         @if(empty($cart))
@@ -116,7 +114,7 @@
                             <span>&larr;</span> CONTINUER MES ACHATS
                         </a>
 
-                        <a href="{{ Auth::check() ? route('paypal.payment') : route('login') }}" class="btn-cube-red btn-validate">
+                        <a href="{{ Auth::check() ? route('payment.show') : route('login') }}" class="btn-cube-red btn-validate">
                             <span>► Valider mon panier</span>
                         </a>
                     </div>
@@ -145,7 +143,7 @@
                                 id="summary-taxes">{{ number_format($total * 0.2, 2, ',', ' ') }}</span> €</div>
 
                         <div class="summary-btn-container">
-                            <a href="{{ Auth::check() ? route('paypal.payment') : route('login') }}" class="btn-cube-red btn-validate">
+                            <a href="{{ Auth::check() ? route('payment.show') : route('login') }}" class="btn-cube-red btn-validate">
                                 <span>► Valider mon panier</span>
                             </a>
                         </div>
