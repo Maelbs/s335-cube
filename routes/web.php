@@ -49,6 +49,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/profil', [ProfilController::class, 'profil'])->name('profil');
     Route::get('/commandes', [CommandeController::class, 'index'])->name('client.commandes');
     Route::get('/commandes/{id}', [CommandeController::class, 'show'])->name('client.commandes.show');
+    Route::get('/commandes/{id}/facture', [CommandeController::class, 'downloadInvoice'])->name('client.commandes.facture');
     Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
     Route::get('/profil/modifier', [ProfilController::class, 'showUpdateForm'])->name('profil.update.form');
