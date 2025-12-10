@@ -31,7 +31,7 @@
                     <ul>
                         <li><a href="#" class="nav-item active">TABLEAU DE BORD</a></li>
                         <li><a href="{{ route('profil.update.form') }}" class="nav-item ">MON PROFIL</a></li>
-                        <li><a href="#" class="nav-item">MES COMMANDES</a></li>
+                        <li><a href="/commandes" class="nav-item">MES COMMANDES</a></li>
                         <li><a href="#" class="nav-item">MES ADRESSES</a></li>
                         <li><a href="#" class="nav-item">MES VÉLOS</a></li>
                     </ul>
@@ -84,8 +84,7 @@
                         <h2>MES COMMANDES</h2>
                     </div>
                     <div class="card-body centered-content">
-                        <p>Voir toutes mes commandes</p>
-                        <a href="#" class="card-arrow-btn">➜</a>
+                        <a href="/commandes" class="card-arrow-btn">➜ Voir toutes mes commandes</a>
                     </div>
                 </div>
 

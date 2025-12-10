@@ -51,6 +51,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/profil', [ProfilController::class, 'profil'])->name('profil');
     Route::get('/commandes', [CommandeController::class, 'index'])->name('client.commandes');
     Route::get('/commandes/{id}', [CommandeController::class, 'show'])->name('client.commandes.show');
+    Route::get('/commandes/{id}/facture', [CommandeController::class, 'downloadInvoice'])->name('client.commandes.facture');
     Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
     Route::get('/profil/modifier', [ProfilController::class, 'showUpdateForm'])->name('profil.update.form');
@@ -66,6 +67,7 @@ Route::post('/panier/ajouter/{reference}', [PanierController::class, 'add'])->na
 Route::delete('/panier/supprimer/{key}', [PanierController::class, 'remove'])->name('cart.remove');
 Route::post('/panier/update', [PanierController::class, 'updateQuantity'])->name('cart.update');
 Route::post('/panier/ajouter-accessoire/{reference}', [PanierController::class, 'addAccessoire'])->name('cart.addAccessoire');
+Route::post('/panier/apply-promo', [PanierController::class, 'applyPromo'])->name('cart.applyPromo');
 
 Route::get('/boutique/{type}/{cat_id?}/{sub_id?}/{model_id?}', [BoutiqueController::class, 'index'])
     ->name('boutique.index')

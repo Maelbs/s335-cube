@@ -311,3 +311,87 @@ body {
 
 }
 
+/* --- CODE PROMO --- */
+
+.promo-container {
+    margin-top: 40px;
+}
+
+.promo-title {
+    font-size: 14px;
+    text-transform: uppercase;
+    font-weight: 400; 
+    color: #1a1a1a;
+    margin-bottom: 15px;
+    letter-spacing: 0.5px;
+}
+
+.promo-box {
+    background: #fff;
+    padding: 20px; 
+    display: flex;
+    align-items: center;
+}
+
+.promo-input {
+    flex: 1;
+    height: 45px;
+    border: 1px solid #ddd;
+    padding: 0 15px;
+    font-size: 14px;
+    color: #333;
+    outline: none;
+    margin-right: 15px; 
+}
+
+.promo-input::placeholder {
+    color: #ccc;
+    font-style: italic;
+}
+
+
+.btn-cube-black {
+    /* Flexbox pour centrer parfaitement le texte */
+    display: flex; 
+    justify-content: center;
+    align-items: center;
+    
+    background-color: #000;
+    color: white;
+    text-decoration: none;
+    padding: 0 25px;
+    height: 45px; /* Doit être identique à la hauteur de l'input */
+    
+    font-weight: 700;
+    font-size: 13px;
+    text-transform: uppercase;
+    border: none;
+    cursor: pointer;
+    
+    /* Forme penchée */
+    transform: skewX(-20deg);
+    transition: background 0.3s;
+    
+    /* Marge gauche pour ne pas coller à l'input si besoin, ou 0 si collé */
+    margin-left: 0; 
+}
+
+/* Redresser le texte à l'intérieur */
+.btn-cube-black span {
+    display: block;
+    transform: skewX(20deg); /* Annule la penchure pour le texte */
+    margin-top: 2px; /* Petit ajustement optique vertical si nécessaire */
+}
+
+.btn-cube-black:hover {
+    background-color: #333;
+}
+
+.promo-msg {
+    margin-top: 10px;
+    font-size: 12px;
+    font-weight: 700;
+    padding-left: 20px;
+}
+.promo-msg.error { color: #e02b2b; }
+.promo-msg.success { color: #28a745; }
