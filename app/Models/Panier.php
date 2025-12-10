@@ -57,4 +57,9 @@ class Panier extends Model
             $this->code_promo ?? 'Aucun'
         );
     }
+
+    public function codePromo()
+    {
+        return $this->belongsTo(CodePromo::class, 'code_promo', 'id_codepromo');
+    }
 }

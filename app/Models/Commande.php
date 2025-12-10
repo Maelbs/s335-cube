@@ -22,6 +22,7 @@ class Commande extends Model
         'montant_total_commande',
         'cout_livraison',
         'date_livraison',
+        'type_paiement',
         'statut_livraison',
     ];
 
