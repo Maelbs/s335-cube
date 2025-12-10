@@ -80,7 +80,8 @@
                         <a href="/" class="back-link">
                             <span>&larr;</span> CONTINUER MES ACHATS
                         </a>
-                        {{-- Bouton valider du bas (facultatif si celui de droite suffit) --}}
+
+
                         <a href="{{ Auth::check() ? route('paypal.payment') : route('login') }}" class="btn-cube-red btn-validate">
                             <span>► Valider mon panier</span>
                         </a>

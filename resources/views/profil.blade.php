@@ -13,7 +13,6 @@
     @include('layouts.header')
 
     <div class="dashboard-container">
-        
         <aside class="sidebar">
             <div class="sidebar-content">
                 <div class="user-greeting">

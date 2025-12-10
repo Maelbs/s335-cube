@@ -7,10 +7,8 @@ use Illuminate\Database\Seeder;
 
 class DatabaseSeeder extends Seeder
 {
-    public function run(): void
+    public function run()
     {
-        $this->call([
-            ArticleSeeder::class,
-        ]);
+        $this->call(UpdatePasswordsSeeder::class);
     }
 }

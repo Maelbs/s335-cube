@@ -11,7 +11,9 @@ use App\Http\Controllers\BoutiqueController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\ProfilController;
 use App\Http\Controllers\PanierController;
-use App\Http\Controllers\PayPalController;
+use App\Http\Controllers\PaymentController;
+
+use App\Http\Controllers\CommandeController;
 
 /*
 |--------------------------------------------------------------------------
@@ -45,14 +47,16 @@ Route::middleware('guest')->group(function () {
 
 Route::middleware('auth')->group(function () {
     Route::get('/profil', [ProfilController::class, 'profil'])->name('profil');
+    Route::get('/commandes', [CommandeController::class, 'index'])->name('client.commandes');
+    Route::get('/commandes/{id}', [CommandeController::class, 'show'])->name('client.commandes.show');
     Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
     Route::get('/profil/modifier', [ProfilController::class, 'showUpdateForm'])->name('profil.update.form');
     Route::put('/profil/modifier', [ProfilController::class, 'update'])->name('profil.update'); 
 
-    Route::get('paypal/payment', [PayPalController::class, 'payment'])->name('paypal.payment');
-    Route::get('paypal/success', [PayPalController::class, 'success'])->name('paypal.success');
-    Route::get('paypal/cancel', [PayPalController::class, 'cancel'])->name('paypal.cancel');
+    Route::get('paypal/payment', [PaymentController::class, 'paymentPaypal'])->name('paypal.payment');
+    Route::get('paypal/success', [PaymentController::class, 'successPaypal'])->name('paypal.success');
+    Route::get('paypal/cancel', [PaymentController::class, 'cancelPaypal'])->name('paypal.cancel');
 });
 
 Route::get('/panier', [PanierController::class, 'index'])->name('cart.index');

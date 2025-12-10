@@ -5,22 +5,20 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Srmklive\PayPal\Services\PayPal as PayPalClient;
 use Illuminate\Support\Facades\Auth;
-use App\Models\LignePanier; // Assure-toi que ce modèle existe
-use App\Models\Panier; // Ajout du modèle Panier
-use App\Models\Commande; // Optionnel : si tu veux créer la commande après
+use App\Models\LignePanier; 
+use App\Models\Panier; 
+use App\Models\Commande; 
 
-class PayPalController extends Controller
+class PaymentController extends Controller
 {
     private function calculerTotalPanier()
     {
         $userId = Auth::id();
         
-        // On récupère les lignes du panier de l'utilisateur connecté
-        // On charge aussi les relations 'article' pour avoir les prix
         $panierItems = LignePanier::whereHas('panier', function ($query) use ($userId) {
             $query->where('id_client', $userId);
         })
-        ->with(['article']) // Chargement des articles
+        ->with(['article']) 
         ->get();
 
         $total = 0;
@@ -28,31 +26,26 @@ class PayPalController extends Controller
         foreach ($panierItems as $item) {
             $prixUnitaire = 0;
 
-            // Vérification si l'article existe et récupération du prix
             if ($item->article) {
                 $prixUnitaire = $item->article->prix;
             }
 
-            // Calcul : Prix * Quantité
-            $total += $prixUnitaire * $item->quantite_article; // Utilisation de 'quantite_article'
+            $total += $prixUnitaire * $item->quantite_article; 
         }
 
         return $total;
     }
 
-    public function payment()
+    public function paymentPaypal()
     {
         $totalPanier = $this->calculerTotalPanier();
 
-        // Si le total est à 0, on redirige avec une erreur
         if ($totalPanier <= 0) {
             return redirect()->route('cart.index')->with('error', 'Votre panier est vide.');
         }
 
-        // Formater le montant pour Paypal (2 décimales)
         $totalFormatted = number_format($totalPanier, 2, '.', '');
 
-        // Créer la commande PayPal
         $provider = new PayPalClient;
         $provider->setApiCredentials(config('paypal'));
         $paypalToken = $provider->getAccessToken();
@@ -73,7 +66,6 @@ class PayPalController extends Controller
             ]
         ]);
 
-        // Si la commande a été créée avec succès, on redirige vers Paypal
         if (isset($response['id']) && $response['id'] != null) {
             foreach ($response['links'] as $link) {
                 if ($link['rel'] == 'approve') {
@@ -94,7 +86,6 @@ class PayPalController extends Controller
 
         if (isset($response['status']) && $response['status'] == 'COMPLETED') {
             
-            // Récupérer le panier de l'utilisateur
             $panier = Panier::where('id_client', Auth::id())->first();
             
             if ($panier) {

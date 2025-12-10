@@ -11,6 +11,8 @@
 
     <link rel="stylesheet" href="{{ asset('css/header.css') }}">
     <link rel="stylesheet" href="{{ asset('css/vizualizeArticle.css') }}">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 </head>
 
 <body>
@@ -289,6 +291,139 @@
             </div>
         </div>
 
+        {{--
+        ATTENTION : Assurez-vous de passer la variable $stock à cette vue.
+        $stock doit être une instance qui a la relation 'magasins' chargée.
+        --}}
+        @php
+            $listeMagasins = $stock->flatMap->magasins->unique('id_magasin');
+
+            $jsonMagasins = $listeMagasins->map(function ($magasin) {
+                $ad = $magasin->adresses->first();
+                $adresseString = $ad ? ($ad->rue . ' ' . $ad->code_postal . ' ' . $ad->ville) : '';
+                return [
+                    'id' => $magasin->id_magasin,
+                    'nom' => $magasin->nom_magasin,
+                    'adresse' => $adresseString,
+                    'ville' => $ad ? $ad->ville : '',
+                    'stock' => ($magasin->pivot->quantite_stock_magasin ?? 0) > 0
+                ];
+            })->values();
+        @endphp
+
+        <div id="store-locator-overlay" class="sl-overlay">
+            <div class="sl-panel">
+
+                <div class="sl-header">
+                    <h2>CHOISIR UN MAGASIN</h2>
+                    <button onclick="toggleStoreLocator()" class="sl-close-btn">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="1" stroke-linecap="round" stroke-linejoin="round">
+                            <line x1="18" y1="6" x2="6" y2="18"></line>
+                            <line x1="6" y1="6" x2="18" y2="18"></line>
+                        </svg>
+                    </button>
+                </div>
+
+                <div class="sl-content">
+                    <div class="sl-search-box">
+                        <input type="text" id="storeSearchInput"
+                            placeholder="Saisir une adresse, un code postal ou une ville...">
+                        <svg class="search-icon" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <circle cx="11" cy="11" r="8"></circle>
+                            <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                        </svg>
+                    </div>
+
+                    <div class="sl-toggle-row">
+                        <label class="sl-switch">
+                            <input type="checkbox" id="stockToggle">
+                            <span class="sl-slider round"></span>
+                        </label>
+                        <span class="sl-toggle-label">VOIR UNIQUEMENT LES MAGASINS AYANT LE PRODUIT EN STOCK</span>
+                    </div>
+
+                    <div class="sl-tabs">
+                        <button class="sl-tab active" onclick="switchView('list')">VUE LISTE</button>
+                        <button class="sl-tab" onclick="switchView('map')">VUE CARTE</button>
+                    </div>
+
+                    <p class="sl-disclaimer">Le stock est approximatif. Pour plus d'informations, veuillez contacter le
+                        magasin.</p>
+
+                    <div class="sl-views-wrapper">
+
+                        <div id="view-list" class="sl-list-container custom-scroll">
+                            @forelse($listeMagasins as $magasin)
+                                @php
+                                    $adresse = $magasin->adresses->first();
+                                    $enStock = ($magasin->pivot->quantite_stock_magasin ?? 0) > 0;
+                                    // Création string de recherche pour le filtre JS
+                                    $searchString = strtolower($magasin->nom_magasin . ' ' . ($adresse ? $adresse->ville . ' ' . $adresse->code_postal : ''));
+                                @endphp
+
+                                <div class="sl-card" data-has-stock="{{ $enStock ? 'true' : 'false' }}"
+                                    data-searchString="{{ $searchString }}">
+
+                                    <div class="sl-card-header">
+                                        <h3>{{ $magasin->nom_magasin }}</h3>
+                                    </div>
+
+                                    <div class="sl-card-body">
+                                        <div class="sl-card-info">
+                                            @if($enStock)
+                                                <div class="sl-stock-status">
+                                                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#00AEEF"
+                                                        stroke-width="4" stroke-linecap="round" stroke-linejoin="round">
+                                                        <polyline points="20 6 9 17 4 12"></polyline>
+                                                    </svg>
+                                                    Commandable en magasins
+                                                </div>
+                                            @else
+                                                <div class="sl-stock-status" style="color: #999;">
+                                                    <span style="font-size:12px;">✖</span> Indisponible actuellement
+                                                </div>
+                                            @endif
+
+                                            @if($adresse)
+                                                <p class="sl-address">
+                                                    {{ $adresse->ville }}, {{ $adresse->code_postal }}<br>
+                                                    <span style="font-size: 0.9em; color: #666;">{{ $adresse->rue }}</span>
+                                                </p>
+                                            @endif
+
+                                            <div class="sl-status-line">
+                                                Votre magasin est actuellement : <span class="status-open">● OUVERT</span>
+                                            </div>
+                                            <p class="sl-hours">Horaires aujourd'hui : 09:30 – 19:00</p>
+                                        </div>
+
+                                        <div class="sl-card-action">
+                                            <form action="" method="POST"> @csrf
+                                                <input type="hidden" name="id_magasin" value="{{ $magasin->id_magasin }}">
+                                                <button type="submit" class="btn-skew-black">
+                                                    <span class="btn-content">
+                                                        <span class="arrow">▶</span> CHOISIR
+                                                    </span>
+                                                </button>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                            @empty
+                                <div style="padding: 20px; text-align: center; color: #666;">Aucun magasin trouvé.</div>
+                            @endforelse
+                        </div>
+
+                        <div id="view-map" style="display: none; flex-grow: 1; height: 100%;">
+                            <div id="sl-map" style="height: 100%; width: 100%; background: #eee;"></div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
         {{-- COLONNE DROITE (SIDEBAR) --}}
         <div class="sidebar-column">
 
@@ -326,11 +461,11 @@
                                 $classeCss = ($stockWeb <= 0) ? 'out-of-stock' : '';
                                 $stockWebVelo += $stockWeb;
                             @endphp
-                            <button class="size-btn {{ $classeCss }}" onclick="selectionnerTaille(
-                                        '{{ $inventaire->taille->taille }}', 
-                                        {{ $stockWeb }}, 
-                                        {{ $stockMag }}
-                                                                                                                        )">
+                            <button class="size-btn {{ $classeCss }}"
+                                onclick="selectionnerTaille(
+                                            '{{ $inventaire->taille->taille }}', 
+                                            {{ $stockWeb }}, 
+                                            {{ $stockMag }}                                                                                                                                                    )">
                                 {{ $inventaire->taille->taille }}
                                 <span style="font-size: 0.8em; display:block; font-weight: normal;">
                                     ({{ $inventaire->taille->taille_min }}-{{ $inventaire->taille->taille_max }})
@@ -356,7 +491,6 @@
                 </div>
 
             @else
-                {{-- CAS ACCESSOIRE --}}
                 <div style="margin-top: 20px; margin-bottom: 20px;">
                     @php
                         $stockWeb = $stock->sum('quantite_stock_en_ligne') > 0;
@@ -416,7 +550,7 @@
                     @endif
                 </form>
 
-                <button id="btn-contact-magasin" class="btn-skew" style="display: none;">
+                <button id="btn-contact-magasin" class="btn-skew" style="display: none;" onclick=toggleStoreLocator()>
                     <span class="btn-content-unskew">
                         <span class="text-label">Contacter mon magasin</span>
                     </span>
@@ -450,8 +584,8 @@
                             @endphp
                             <a href="{{ $lien }}" class="couleur-velo"
                                 style="display: inline-block; width: 30px; height: 30px; border-radius: 50%; margin-right: 5px;
-                                                                                                                       border: {{ $estActif ? '5px solid #cbcbcb' : '1px solid #ddd' }};
-                                                                                                                       background-color: {{ $bg }};">
+                                                                                                                                                                                                                               border: {{ $estActif ? '5px solid #cbcbcb' : '1px solid #ddd' }};
+                                                                                                                                                                                                                               background-color: {{ $bg }};">
                             </a>
                         @endforeach
                     </div>
@@ -619,6 +753,11 @@
             location.reload();
         }
     </script>
+    <script>
+        window.magasinsData = @json($jsonMagasins);
+    </script>
+
+    <script src="{{ asset('js/map.js') }}"></script>
 </body>
 
 </html>
