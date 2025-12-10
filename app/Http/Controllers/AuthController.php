@@ -207,9 +207,21 @@ class AuthController extends Controller
 
         $client = Client::where('email_client', $request->email)->first();
 
+        //dd('Session Magasin:', session('id_magasin_choisi'), 'Client ID Magasin:', $client->id_magasin);
+
         if ($client && Hash::check($request->password, $client->mdp)) {
             Auth::login($client);
             $request->session()->regenerate();
+
+            if ($request->session()->has('id_magasin_choisi')) {
+                $client->id_magasin = $request->session()->get('id_magasin_choisi');
+                $client->save();
+            } 
+
+            elseif ($client->id_magasin) {
+                $request->session()->put('id_magasin_choisi', $client->id_magasin);
+            }
+
             $this->fusionnerPanier($client->id_client);
             return redirect()->route('home');
         }

@@ -12,6 +12,7 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\ProfilController;
 use App\Http\Controllers\PanierController;
 use App\Http\Controllers\PaymentController;
+use App\Http\Controllers\MagasinController;
 
 use App\Http\Controllers\CommandeController;
 
@@ -30,6 +31,7 @@ Route::get('/api/categories-velos/parents', [CategorieVeloController::class, 'ge
 
 Route::get('/velo/{reference}', [InfoArticleController::class, 'show'])->name('velo.show');
 Route::get('/accessoire/{reference}', [InfoArticleController::class, 'show'])->name('accessoire.show');
+Route::post('/choisir-magasin', [MagasinController::class, 'definirMagasin'])->name('magasin.definir');
 
 Route::middleware('guest')->group(function () {
     Route::get('/connexion', [AuthController::class, 'showLoginForm'])->name('login');

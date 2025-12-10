@@ -1,3 +1,9 @@
+<head>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <link rel="stylesheet" href="{{ asset('css/magasin.css') }}">
+</head>
+
 <header>
     <div class="menu-category">
         <a href="{{ url('/') }}" class="logo">
@@ -209,7 +215,19 @@
     </style>
     
     <div class="menu-user">
-        <a id="magasin" href="{{ url('/login') }}">CHOISIR UN MAGASIN</a>
+       
+    <div class="header-store-info">
+        @if(isset($magasinHeader) && $magasinHeader)
+            {{-- CAS 1 : Un magasin est sélectionné --}}
+            <button onclick="toggleStoreLocator()" class="btn-select-store">{{ strtoupper($magasinHeader->nom_magasin) }}</button>
+
+        @else
+            {{-- CAS 2 : Aucun magasin sélectionné --}}
+            <button onclick="toggleStoreLocator()" class="btn-select-store">
+                Choisir mon magasin
+            </button>
+        @endif
+    </div>
         
         <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" viewBox="0 0 24 24">
             <g>
@@ -334,5 +352,7 @@
     </div>
     <div class="close-btn" onclick="closeSearch()">&times;</div>
 </div>
+@include('layouts.storeLocator')
 
 <script src="{{ asset('js/header.js') }}" defer></script>
+<script src="{{ asset('js/map.js') }}" defer></script>

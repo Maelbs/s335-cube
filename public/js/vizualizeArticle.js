@@ -1,4 +1,7 @@
 document.addEventListener("DOMContentLoaded", function () {
+  /* =========================================
+     GESTION DES BOUTONS SPECS (ACCORDÉON)
+     ========================================= */
   const toggles = document.querySelectorAll(".toggle-specs-btn");
 
   toggles.forEach((btn) => {
@@ -28,27 +31,33 @@ document.addEventListener("DOMContentLoaded", function () {
     });
   });
 
+  /* =========================================
+     CAROUSEL SIMPLE (Track Scroll)
+     ========================================= */
   const track = document.querySelector(".st-carousel-track");
   const btnLeft = document.querySelector(".st-btn-left");
   const btnRight = document.querySelector(".st-btn-right");
 
-  if (!track || !btnLeft || !btnRight) return;
+  if (track && btnLeft && btnRight) {
+    function scrollCarousel(direction) {
+      const card = track.querySelector(".st-card-item");
+      const scrollAmount = card ? card.offsetWidth + 25 : 300;
 
-  function scrollCarousel(direction) {
-    const card = track.querySelector(".st-card-item");
-    const scrollAmount = card ? card.offsetWidth + 25 : 300;
-
-    if (direction === "left") {
-      track.scrollBy({ left: -scrollAmount, behavior: "smooth" });
-    } else {
-      track.scrollBy({ left: scrollAmount, behavior: "smooth" });
+      if (direction === "left") {
+        track.scrollBy({ left: -scrollAmount, behavior: "smooth" });
+      } else {
+        track.scrollBy({ left: scrollAmount, behavior: "smooth" });
+      }
     }
-  }
 
-  btnLeft.addEventListener("click", () => scrollCarousel("left"));
-  btnRight.addEventListener("click", () => scrollCarousel("right"));
+    btnLeft.addEventListener("click", () => scrollCarousel("left"));
+    btnRight.addEventListener("click", () => scrollCarousel("right"));
+  }
 });
 
+/* =========================================
+   CAROUSEL AVANCÉ (Slides + Dots)
+   ========================================= */
 document.addEventListener("DOMContentLoaded", () => {
   const track = document.querySelector(".carousel-track");
   if (!track || track.children.length <= 1) return;
@@ -142,6 +151,9 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 });
 
+/* =========================================
+   ZOOM IMAGE
+   ========================================= */
 function openZoom() {
   const overlay = document.getElementById("zoomModalOverlay");
   const zoomImg = document.getElementById("zoomImageFull");
@@ -246,6 +258,9 @@ function closeZoom(e) {
   }, 300);
 }
 
+/* =========================================
+   PANIER & SÉLECTION TAILLE
+   ========================================= */
 const sizeSelectors = document.querySelectorAll(".size-btn");
 const btnPanier = document.getElementById("btn-panier");
 
@@ -376,6 +391,9 @@ window.onclick = function (event) {
   }
 };
 
+/* =========================================
+   3D VIEWER
+   ========================================= */
 document.addEventListener("DOMContentLoaded", () => {
   const openBtn = document.getElementById("open-3d-btn");
   const closeBtn = document.getElementById("close-3d-btn");
@@ -389,15 +407,12 @@ document.addEventListener("DOMContentLoaded", () => {
 
   function checkModelExists() {
     const testImageSrc = `${folderPath}01${extension}`;
-    console.log("Test URL: " + testImageSrc);
-
+    
     const tester = new Image();
     tester.onload = () => {
       openBtn.style.display = "flex";
-      console.log("Modèle trouvé ! Bouton activé.");
     };
     tester.onerror = () => {
-      console.log("Pas de modèle à : " + testImageSrc);
       openBtn.style.display = "none";
     };
     tester.src = testImageSrc;
@@ -411,7 +426,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
     const sensitivity = 10;
     const viewer = document.getElementById("product-viewer");
-    const imgElement = document.getElementById("bike-image");
     const loaderWrapper = document.getElementById("loader-wrapper");
     const loaderText = document.getElementById("loader-text");
 
@@ -499,87 +513,135 @@ document.addEventListener("DOMContentLoaded", () => {
 
   closeBtn.addEventListener("click", () => {
     lightbox.classList.remove("active");
-    // AJOUT: On retire la classe du body
     document.body.classList.remove("zoom-is-open");
   });
 
   lightbox.addEventListener("click", (e) => {
     if (e.target === lightbox) {
       lightbox.classList.remove("active");
-      // AJOUT: On retire la classe du body
       document.body.classList.remove("zoom-is-open");
     }
   });
 });
 
-const header = document.querySelector('header');
+/* =========================================
+   STORE LOCATOR & FILTRAGE (CORRIGÉ & ROBUSTE)
+   ========================================= */
+
+// Variable globale pour éviter les conflits d'animation
+let storeLocatorTimeout = null;
 
 function toggleStoreLocator() {
-  const overlay = document.getElementById('store-locator-overlay');
+  const overlay = document.getElementById("store-locator-overlay");
+  const header = document.querySelector("header");
   const body = document.body;
-  const header = document.querySelector('header');
-  if (overlay.classList.contains('visible')) {
-      // Fermeture
-      overlay.classList.remove('visible');
-      setTimeout(() => {
-          overlay.style.visibility = 'hidden'; // Clean up
-      }, 300);
-      body.style.overflow = ''; // Réactiver le scroll du site
-      header.classList.remove('header-hidden')
+
+  if (!overlay) return;
+
+  // Si un timer de fermeture est en cours, on l'annule !
+  if (storeLocatorTimeout) {
+    clearTimeout(storeLocatorTimeout);
+    storeLocatorTimeout = null;
+  }
+
+  const isVisible = overlay.classList.contains("visible");
+
+  if (isVisible) {
+    // --- FERMETURE ---
+    
+    // 1. On retire la classe visible pour lancer l'animation de fade-out
+    overlay.classList.remove("visible");
+    
+    // 2. IMPORTANT : On réaffiche le header tout de suite
+    if (header) header.classList.remove("header-hidden");
+    
+    // 3. On réactive le scroll
+    body.style.overflow = "";
+
+    // 4. On attend 300ms (durée transition CSS) pour cacher l'élément (visibility:hidden)
+    storeLocatorTimeout = setTimeout(() => {
+      overlay.style.visibility = "hidden";
+    }, 300);
+
   } else {
-      // Ouverture
-      overlay.style.visibility = 'visible';
-      // Petit délai pour permettre la transition CSS
-      requestAnimationFrame(() => {
-          overlay.classList.add('visible');
-      });
-      body.style.overflow = 'hidden'; // Bloquer le scroll derrière
-      header.classList.add('header-hidden')
+    // --- OUVERTURE ---
+    
+    // 1. On rend l'élément visible (mais transparent)
+    overlay.style.visibility = "visible";
+    
+    // 2. On bloque le scroll
+    body.style.overflow = "hidden";
+    
+    // 3. On cache le header
+    if (header) header.classList.add("header-hidden");
+
+    // 4. Petit hack pour forcer le navigateur à prendre en compte le changement 
+    // avant d'appliquer l'opacité (transition)
+    requestAnimationFrame(() => {
+      overlay.classList.add("visible");
+    });
   }
 }
 
-// Fermer si on clique sur le fond gris
-document.getElementById('store-locator-overlay').addEventListener('click', function(e) {
-  if (e.target === this) toggleStoreLocator();
-});
-
-// --- Logique de Filtrage (Stock + Recherche) ---
-document.addEventListener('DOMContentLoaded', function() {
-  const stockToggle = document.getElementById('stockToggle');
-  const searchInput = document.getElementById('storeSearchInput');
-  const cards = document.querySelectorAll('.sl-card');
-
-  function filterMagasins() {
-      const showOnlyStock = stockToggle.checked;
-      const searchText = searchInput.value.toLowerCase();
-
-      cards.forEach(card => {
-          const hasStock = card.getAttribute('data-has-stock') === 'true';
-          const searchString = card.getAttribute('data-searchString');
-          
-          let matchesStock = true;
-          let matchesSearch = true;
-
-          // Condition 1 : Stock
-          if (showOnlyStock && !hasStock) {
-              matchesStock = false;
-          }
-
-          // Condition 2 : Recherche Texte
-          if (searchText.length > 0 && !searchString.includes(searchText)) {
-              matchesSearch = false;
-          }
-
-          // Afficher ou Cacher
-          if (matchesStock && matchesSearch) {
-              card.classList.remove('hidden-item');
-          } else {
-              card.classList.add('hidden-item');
-          }
-      });
+// Initialisation au chargement
+document.addEventListener("DOMContentLoaded", function () {
+  
+  // 1. Bouton "Voir en magasin"
+  const btnMagasin = document.getElementById("btn-contact-magasin");
+  if (btnMagasin) {
+    btnMagasin.addEventListener("click", function (e) {
+      e.preventDefault();
+      toggleStoreLocator();
+    });
   }
 
-  // Écouteurs d'événements
-  if(stockToggle) stockToggle.addEventListener('change', filterMagasins);
-  if(searchInput) searchInput.addEventListener('keyup', filterMagasins);
+  // 2. Clic sur le fond gris (CORRECTION ERGONOMIE)
+  const overlay = document.getElementById("store-locator-overlay");
+  if (overlay) {
+    overlay.addEventListener("click", function (e) {
+      // On vérifie strictement que l'élément cliqué a l'ID de l'overlay.
+      // Si on clique sur la carte (enfant), l'ID sera différent, donc ça ne ferme pas.
+      if (e.target.id === "store-locator-overlay") {
+        toggleStoreLocator();
+      }
+    });
+  }
+
+  // 3. Bouton croix (si existant)
+  const closeBtn = document.querySelector(".close-store-locator");
+  if (closeBtn) {
+    closeBtn.addEventListener("click", toggleStoreLocator);
+  }
+
+  // 4. Logique de Filtrage
+  const stockToggle = document.getElementById("stockToggle");
+  const searchInput = document.getElementById("storeSearchInput");
+  const cards = document.querySelectorAll(".sl-card");
+
+  function filterMagasins() {
+    if (!cards.length) return;
+
+    const showOnlyStock = stockToggle ? stockToggle.checked : false;
+    const searchText = searchInput ? searchInput.value.toLowerCase() : "";
+
+    cards.forEach((card) => {
+      const hasStock = card.getAttribute("data-has-stock") === "true";
+      const searchString = card.getAttribute("data-searchString") || "";
+
+      let matchesStock = true;
+      let matchesSearch = true;
+
+      if (showOnlyStock && !hasStock) matchesStock = false;
+      if (searchText.length > 0 && !searchString.includes(searchText)) matchesSearch = false;
+
+      if (matchesStock && matchesSearch) {
+        card.classList.remove("hidden-item");
+      } else {
+        card.classList.add("hidden-item");
+      }
+    });
+  }
+
+  if (stockToggle) stockToggle.addEventListener("change", filterMagasins);
+  if (searchInput) searchInput.addEventListener("keyup", filterMagasins);
 });
