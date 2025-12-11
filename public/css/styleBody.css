@@ -85,17 +85,34 @@ button:hover, .btn:hover {
     z-index: 0;
 }
 
+.carousel::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(rgba(10, 20, 30, 0.2), rgba(10, 20, 30, 0.8));
+    z-index: 2; 
+    pointer-events: none;
+}
+
 .carousel-image {
+    position: absolute;
+    top: 0;
+    left: 0;
     width: 100%;
     height: 100%;
     object-fit: cover;
-    position: absolute;
     opacity: 0;
-    transition: opacity 1s ease-in-out;
+    z-index: 1;
+    transition: opacity 0s linear 1s; 
 }
 
 .carousel-image.active {
     opacity: 1;
+    z-index: 2;
+    transition: opacity 1s ease-in-out 0s;
 }
 
 .intro-text {
@@ -467,3 +484,38 @@ footer {
 .btn-accept-all { background-color: #00b0f0; color: #fff; }
 .btn-save { background-color: #333; color: #fff; }
 .btn-reject-all { background-color: transparent; border-color: #ddd; color: #555; }
+
+.text-stylee {
+    font-weight: 800;
+    color: transparent;
+    -webkit-text-stroke: 2px #fff;
+    padding-top: 0;
+}
+
+.text-intro {
+    color: #fff;
+    position: absolute;
+    top: 35vh;
+    left: 7vw;
+    font-style: italic;
+    z-index: 999999;
+}
+
+#text1 {
+    padding-left: 15px;
+    font-size: 1em;
+    font-style: normal;
+    font-weight: 600;
+}
+
+#text2 {
+    font-size: 7em;
+    font-weight: 800;
+    font-stretch: narrower;
+}
+
+#text3 {
+    font-style: normal;
+    padding-left: 10px;
+    color: #b6b6b6;
+}

@@ -10,6 +10,7 @@ const showImage = (index) => {
       img.classList.remove('active');
     }
   });
+
 };
 
 const showNextImage = () => {
@@ -25,3 +26,4 @@ const showPrevImage = () => {
 setInterval(showNextImage, 4000);
 
 showImage(currentImageIndex);
+

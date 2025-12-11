@@ -659,3 +659,7 @@ header:hover .logo img {
     background-color: transparent !important;
     transform: translateY(0);
 }
+
+.store-locator-overlay {
+    z-index: 999999999 !important;
+}

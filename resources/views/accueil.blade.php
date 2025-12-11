@@ -11,7 +11,7 @@
     <title>CUBE Bikes France</title>
 </head>
 <body>
-    <div id="cookieBanner" class="cookie-banner">
+    <!-- <div id="cookieBanner" class="cookie-banner">
         <div class="cookie-content">
             <div class="cookie-img-container">
                 <img src="{{ asset('images/cookies-bg.jpg   ') }}" alt="CUBE Logo" class="cookie-img">
@@ -99,7 +99,7 @@
                 <button id="rejectAllModal" class="btn-modal btn-reject-all">Tout refuser</button>
             </div>
         </div>
-    </div>
+    </div> -->
     @include('layouts.header')
 
     <main>
@@ -108,6 +108,16 @@
                 <img src="{{ asset('images/1.png') }}" alt="Image 1" class="carousel-image active">
                 <img src="{{ asset('images/2.jpg') }}" alt="Image 2" class="carousel-image">
                 <img src="{{ asset('images/3.jpg') }}" alt="Image 3" class="carousel-image">
+            </div>
+
+            <div class="text-intro">
+                <p id="text1">GAMME 2026</p>
+                <p id="text2">Nouveau vélos. <br> <span class="text-stylee">Même Passion.</span></p>
+                <div>
+                    <p id="text3">
+                        Un design audacieux, de nouvelles innovations, et toujours la même passion pour la perfection. 
+                    </p>
+                </div>
             </div>
         </section>
 
