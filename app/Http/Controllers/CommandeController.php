@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Barryvdh\DomPDF\Facade\Pdf;
 
 class CommandeController extends Controller
 {
@@ -28,5 +29,22 @@ class CommandeController extends Controller
             ->firstOrFail();
     
         return view('vizualizeCommande', compact('commande'));
+    }
+
+    public function downloadInvoice($id)
+    {
+        $client = Auth::user();
+
+        // On récupère la commande avec toutes les infos (y compris l'adresse de facturation)
+        $commande = $client->commandes()
+            ->with(['articles', 'adresse', 'client.adresseFacturation'])
+            ->where('id_commande', $id)
+            ->firstOrFail();
+
+        // On charge la vue 'client.commandes.invoice' avec les données
+        $pdf = Pdf::loadView('invoice', compact('commande'));
+
+        // On télécharge le fichier avec un nom propre
+        return $pdf->download('facture-cube-' . $commande->id_commande . '.pdf');
     }
 }

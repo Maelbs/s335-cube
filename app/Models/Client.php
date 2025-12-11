@@ -23,6 +23,7 @@ class Client extends Authenticatable
         'tel',
         'date_inscription',
         'date_naissance',
+        'id_magasin'
     ];
 
     protected $hidden = [
@@ -66,6 +67,7 @@ class Client extends Authenticatable
         return $this->hasMany(VeloEnregistre::class, 'id_client');
     }
 
+
     public function codesPromoUtilises()
     {
         return $this->belongsToMany(
@@ -74,6 +76,11 @@ class Client extends Authenticatable
             'id_client',                
             'id_codepromo'             
         );
+    }
+
+    public function magasin() {
+        return $this->belongsTo(MagasinPartenaire::class, 'id_magasin', 'id_magasin');
+
     }
 
     public function __toString()
@@ -86,4 +93,5 @@ class Client extends Authenticatable
             $this->email_client
         );
     }
+
 }

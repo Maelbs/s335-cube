@@ -591,3 +591,71 @@ header:hover .logo img {
     background-color: #c4271f;
     color: #fff;
 }
+
+
+
+.header-store-info {
+    display: flex;
+    align-items: center;
+    font-size: 0.9rem;
+}
+
+.selected-store {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: #f8f9fa; /* Fond léger */
+    padding: 5px 15px;
+    border-radius: 4px;
+    border: 1px solid #eee;
+}
+
+.store-details {
+    display: flex;
+    flex-direction: column;
+    line-height: 1.2;
+}
+
+.store-name {
+    font-weight: bold;
+    color: #000;
+    text-transform: uppercase;
+    font-size: 0.85rem;
+}
+
+.store-city {
+    font-size: 0.75rem;
+    color: #666;
+}
+
+.btn-change-store {
+    background: none;
+    border: none;
+    text-decoration: underline;
+    font-size: 0.75rem;
+    color: #999;
+    cursor: pointer;
+    margin-left: 5px;
+}
+
+.btn-change-store:hover {
+    color: #000;
+    background-color: transparent;
+}
+
+/* Bouton quand rien n'est sélectionné */
+.btn-select-store {
+    background-color: transparent;
+    color: inherit;
+    border: none;
+    text-decoration: underline;
+    margin-right: 10px;
+    font-weight: bold;
+    cursor: pointer;
+    font-size: 1.05em !important;
+}
+
+.btn-select-store:hover {
+    background-color: transparent !important;
+    transform: translateY(0);
+}

@@ -11,6 +11,7 @@ use App\Models\Panier;
 use App\Models\LignePanier;
 use App\Models\Taille;
 use App\Models\CodePromo;
+
 class PanierController extends Controller
 {
     public function index()

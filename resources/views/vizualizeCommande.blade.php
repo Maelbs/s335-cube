@@ -179,7 +179,7 @@
                 {{-- Bloc Actions --}}
                 <div>
                     {{-- Bouton Facture --}}
-                    <a href="#" class="cube-btn-action cube-btn-primary">
+                    <a href="{{ url('/commandes') . '/' . $commande->id_commande . '/' . 'facture' }}" class="cube-btn-action cube-btn-primary">
                         <span style="margin-right: 10px">📄</span> Télécharger la facture
                     </a>
 

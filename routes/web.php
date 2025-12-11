@@ -12,6 +12,7 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\ProfilController;
 use App\Http\Controllers\PanierController;
 use App\Http\Controllers\PaymentController;
+use App\Http\Controllers\MagasinController;
 
 use App\Http\Controllers\CommandeController;
 
@@ -30,6 +31,7 @@ Route::get('/api/categories-velos/parents', [CategorieVeloController::class, 'ge
 
 Route::get('/velo/{reference}', [InfoArticleController::class, 'show'])->name('velo.show');
 Route::get('/accessoire/{reference}', [InfoArticleController::class, 'show'])->name('accessoire.show');
+Route::post('/choisir-magasin', [MagasinController::class, 'definirMagasin'])->name('magasin.definir');
 
 Route::middleware('guest')->group(function () {
     Route::get('/connexion', [AuthController::class, 'showLoginForm'])->name('login');
@@ -47,16 +49,23 @@ Route::middleware('guest')->group(function () {
 
 Route::middleware('auth')->group(function () {
     Route::get('/profil', [ProfilController::class, 'profil'])->name('profil');
+
     Route::get('/commandes', [CommandeController::class, 'index'])->name('client.commandes');
     Route::get('/commandes/{id}', [CommandeController::class, 'show'])->name('client.commandes.show');
+    Route::get('/commandes/{id}/facture', [CommandeController::class, 'downloadInvoice'])->name('client.commandes.facture');
+
     Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
     Route::get('/profil/modifier', [ProfilController::class, 'showUpdateForm'])->name('profil.update.form');
     Route::put('/profil/modifier', [ProfilController::class, 'update'])->name('profil.update'); 
 
-    Route::get('paypal/payment', [PaymentController::class, 'paymentPaypal'])->name('paypal.payment');
+    Route::get('payment', [PaymentController::class, 'paymentShow'])->name('payment.show');
+    Route::post('stripe/payment', [PaymentController::class, 'paymentStripe'])->name('stripe.payment');
+    Route::get('stripe/success', [PaymentController::class, 'successStripe'])->name('stripe.success');
+    Route::get('stripe/cancel', [PaymentController::class, 'cancelPayment'])->name('stripe.cancel');
+    Route::post('paypal/payment', [PaymentController::class, 'paymentPaypal'])->name('paypal.payment');    
     Route::get('paypal/success', [PaymentController::class, 'successPaypal'])->name('paypal.success');
-    Route::get('paypal/cancel', [PaymentController::class, 'cancelPaypal'])->name('paypal.cancel');
+    Route::get('paypal/cancel', [PaymentController::class, 'cancelPayment'])->name('paypal.cancel');
 });
 
 Route::get('/panier', [PanierController::class, 'index'])->name('cart.index');
@@ -69,4 +78,3 @@ Route::post('/panier/apply-promo', [PanierController::class, 'applyPromo'])->nam
 Route::get('/boutique/{type}/{cat_id?}/{sub_id?}/{model_id?}', [BoutiqueController::class, 'index'])
     ->name('boutique.index')
     ->where('type', 'Musculaire|Electrique|Accessoires');
-

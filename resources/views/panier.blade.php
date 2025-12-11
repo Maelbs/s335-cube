@@ -9,11 +9,9 @@
     <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
     <meta name="csrf-token" content="{{ csrf_token() }}">
 </head>
-
 <body>
 
     @include('layouts.header')
-
     <div class="page-wrapper">
 
         @if(empty($cart))
@@ -80,9 +78,7 @@
                         <a href="/" class="back-link">
                             <span>&larr;</span> CONTINUER MES ACHATS
                         </a>
-
-
-                        <a href="{{ Auth::check() ? route('paypal.payment') : route('login') }}" class="btn-cube-red btn-validate">
+                        <a href="{{ Auth::check() ? route('payment.show') : route('login') }}" class="btn-cube-red btn-validate">
                             <span>► Valider mon panier</span>
                         </a>
                     </div>
@@ -124,7 +120,7 @@
                         </div>
 
                         <div class="summary-btn-container">
-                            <a href="{{ Auth::check() ? route('paypal.payment') : route('login') }}" class="btn-cube-red btn-validate">
+                            <a href="{{ Auth::check() ? route('payment.show') : route('login') }}" class="btn-cube-red btn-validate">
                                 <span>► Valider mon panier</span>
                             </a>
                         </div>
@@ -218,7 +214,6 @@
                 });
             });
 
-            // --- GESTION CODE PROMO ---
             const btnPromo = document.getElementById('btn-apply-promo');
             const inputPromo = document.getElementById('promo-input');
             const msgPromo = document.getElementById('promo-message');
@@ -230,7 +225,6 @@
                     const code = inputPromo.value.trim();
                     if(!code) return;
 
-                    // Message d'attente
                     msgPromo.textContent = "Vérification...";
                     msgPromo.className = 'promo-msg';
                     msgPromo.style.color = '#333';
@@ -250,7 +244,6 @@
                     })
                     .then(data => {
                         if(data.success) {
-                            // SUCCÈS : RECHARGEMENT POUR CALCUL PHP
                             window.location.reload();
                         } else {
                             msgPromo.textContent = data.message;

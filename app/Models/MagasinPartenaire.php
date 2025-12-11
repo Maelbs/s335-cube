@@ -37,6 +37,10 @@ class MagasinPartenaire extends Model
         )->withPivot('quantite_stock_magasin'); 
     }
 
+    public function client() {
+        return $this->hasMany(Client::class, 'id_magasin', 'id_magasin');
+    }
+
     public function __toString(): string
     {
         return (string) $this->nom_magasin;
