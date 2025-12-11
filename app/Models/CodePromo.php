@@ -35,4 +35,13 @@ class CodePromo extends Model
     {
         return ($this->pourcentage * 100) . '%';
     }
+    public function clientsAyantUtilise()
+    {
+        return $this->belongsToMany(
+            Client::class,              
+            'utilisation_code_promo',   
+            'id_codepromo',             
+            'id_client'                 
+        );
+    }
 }
