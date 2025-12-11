@@ -11,6 +11,7 @@
 
     <link rel="stylesheet" href="{{ asset('css/header.css') }}">
     <link rel="stylesheet" href="{{ asset('css/vizualizeArticle.css') }}">
+    {{-- Leaflet pour la carte --}}
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 </head>
@@ -40,10 +41,8 @@
                     <div class="modal-details">
                         <h3 id="modalName">NOM DE L'ARTICLE</h3>
                         <div class="modal-price" id="modalPrice">0,00 € TTC</div>
-                        <div class="modal-meta">TAILLE : <span id="modalSize"
-                                style="font-weight:bold; color:black;"></span></div>
-                        <div class="modal-meta">QUANTITÉ : <span id="modalQty"
-                                style="font-weight:bold; color:black;"></span></div>
+                        <div class="modal-meta">TAILLE : <span id="modalSize" style="font-weight:bold; color:black;"></span></div>
+                        <div class="modal-meta">QUANTITÉ : <span id="modalQty" style="font-weight:bold; color:black;"></span></div>
                     </div>
                 </div>
                 {{-- Partie Droite (Résumé) --}}
@@ -51,8 +50,7 @@
                     <div style="margin-bottom: 15px; font-size: 0.9rem; color:#555;">
                         Il y a <span id="cartCount" style="font-weight:bold;"></span> articles dans votre panier.
                     </div>
-                    <div class="summary-line"><span>Sous-total :</span><span id="cartSubtotal"
-                            style="font-weight: bold;">0,00 €</span></div>
+                    <div class="summary-line"><span>Sous-total :</span><span id="cartSubtotal" style="font-weight: bold;">0,00 €</span></div>
                     <div class="summary-line"><span>Transport :</span><span>Gratuit</span></div>
                     <div class="summary-total"><span>Total TTC</span><span id="cartTotal">0,00 €</span></div>
                     <div class="tax-info">Taxes incluses : <span id="cartTax">0,00 €</span></div>
@@ -72,7 +70,7 @@
             {{-- 1. HERO IMAGE (Carrousel Dynamique Local) --}}
             <div class="product-hero-section" id="mainCarousel">
 
-                {{-- NOUVEAU : BOUTON LOUPE --}}
+                {{-- BOUTON LOUPE --}}
                 <button class="zoom-trigger-btn" onclick="openZoom()">
                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
                         stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -83,16 +81,12 @@
                     </svg>
                 </button>
 
-                {{-- LOGIQUE PHP : Scan du dossier --}}
                 @php
                     $prefixLength = $isAccessoire ? 5 : 6;
                     $folderName = substr($article->reference, 0, $prefixLength);
-
                     $dossierRacine = $isAccessoire ? 'images/ACCESSOIRES/' : 'images/VELOS/';
-
                     $webPath = $dossierRacine . $folderName;
                     $serverPath = public_path($webPath);
-
                     $validImages = [];
 
                     for ($i = 1; $i <= 10; $i++) {
@@ -122,10 +116,8 @@
                     <button id="open-3d-btn" class="btn-3d-view" style="display: none;"
                         data-folder="{{ asset('images/MODELE3D/' . trim($article->reference)) }}/"
                         title="Ouvrir la vue 3D" aria-label="Ouvrir la vue 3D">
-                        <svg class="icon-3d" xmlns="http://www.w3.org/2000/svg" width="24" height="24"
-                            viewBox="0 0 24 24">
-                            <path fill="currentColor"
-                                d="M12 22q-2.075 0-3.9-.788t-3.175-2.137q-1.35-1.35-2.137-3.175T2 12h2q0 2.875 1.813 5.075t4.637 2.775L9 18.4l1.4-1.4l4.55 4.55q-.725.25-1.463.35T12 22Zm.5-7V9h3q.425 0 .713.288T16.5 10v4q0 .425-.288.713T15.5 15h-3Zm-5 0v-1.5H10v-1H8.5v-1H10v-1H7.5V9h3q.425 0 .713.288T11.5 10v4q0 .425-.288.713T10.5 15h-3Zm6.5-1.5h1v-3h-1v3Zm6-1.5q0-2.875-1.813-5.075T13.55 4.15L15 5.6L13.6 7L9.05 2.45q.725-.25 1.463-.35T12 2q2.075 0 3.9.788t3.175 2.137q1.35 1.35 2.138 3.175T22 12h-2Z" />
+                        <svg class="icon-3d" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+                            <path fill="currentColor" d="M12 22q-2.075 0-3.9-.788t-3.175-2.137q-1.35-1.35-2.137-3.175T2 12h2q0 2.875 1.813 5.075t4.637 2.775L9 18.4l1.4-1.4l4.55 4.55q-.725.25-1.463.35T12 22Zm.5-7V9h3q.425 0 .713.288T16.5 10v4q0 .425-.288.713T15.5 15h-3Zm-5 0v-1.5H10v-1H8.5v-1H10v-1H7.5V9h3q.425 0 .713.288T11.5 10v4q0 .425-.288.713T10.5 15h-3Zm6.5-1.5h1v-3h-1v3Zm6-1.5q0-2.875-1.813-5.075T13.55 4.15L15 5.6L13.6 7L9.05 2.45q.725-.25 1.463-.35T12 2q2.075 0 3.9.788t3.175 2.137q1.35 1.35 2.138 3.175T22 12h-2Z" />
                         </svg>
                     </button>
                 </div>
@@ -133,20 +125,14 @@
                 <div id="lightbox-3d" class="lightbox-overlay">
                     <div class="lightbox-content">
                         <button type="button" id="close-3d-btn" class="lightbox-close">&times;</button>
-
                         <div id="container-3d-viewer">
-
-                            {{-- NOUVEAU LOADER CENTRÉ --}}
                             <div id="loader-wrapper" class="loader-wrapper">
                                 <div class="spinner"></div>
                                 <div id="loader-text" class="loading-text">Chargement 0%</div>
                             </div>
-
-                            {{-- ZONE DE VISUALISATION --}}
                             <div id="product-viewer" style="width: 100%; height: 100%; cursor: grab;">
                                 <img id="bike-image" src="" alt="Vue 360">
                             </div>
-
                         </div>
                     </div>
                 </div>
@@ -155,7 +141,6 @@
                 @if(count($validImages) > 1)
                     <button class="carousel-button carousel-button--left">❮</button>
                     <button class="carousel-button carousel-button--right">❯</button>
-
                     <div class="carousel-nav">
                         @foreach($validImages as $index => $unused)
                             <button class="carousel-indicator {{ $index === 0 ? 'current-slide' : '' }}"></button>
@@ -165,7 +150,6 @@
             </div>
 
             <div class="specs-column">
-
                 {{-- 2. FICHE TECHNIQUE --}}
                 <div class="each-specs-column">
                     <div class="specs-header-row">
@@ -195,27 +179,6 @@
                                         <div class="spec-value">{{ $carac->pivot->valeur_caracteristique }}</div>
                                     </div>
                                 @endforeach
-                                @if($isAccessoire)
-                                    <div class="spec-row">
-                                        <div class="spec-label">Disponibilité</div>
-                                        @php
-                                            $stockWeb = $stock->sum('quantite_stock_en_ligne') > 0;
-                                            $stockMag = $stock->flatMap->magasins->sum('pivot.quantite_stock_magasin') > 0;
-                                        @endphp
-                                        <div class="spec-value">
-                                            @if($stockWeb)
-                                                Disponible en ligne
-                                            @endif
-
-                                            @if($stockMag)
-                                                / Commandable en magasin
-                                            @endif
-                                            @if(!$stockWeb && !$stockMag)
-                                                En rupture de stock
-                                            @endif
-                                        </div>
-                                    </div>
-                                @endif
                             </div>
                         @endforeach
                     </div>
@@ -228,7 +191,6 @@
                             <h2>GÉOMÉTRIE</h2>
                             <button class="toggle-specs-btn"></button>
                         </div>
-
                         <div class="table-responsive">
                             <table class="geo-table">
                                 <thead>
@@ -275,8 +237,7 @@
                             <h2>Description</h2>
                             <button class="toggle-specs-btn"></button>
                         </div>
-                        <p>{{ $article->varianteVelo->modele->description->texte_description ?? 'Aucune description disponible.' }}
-                        </p>
+                        <p>{{ $article->varianteVelo->modele->description->texte_description ?? 'Aucune description disponible.' }}</p>
                     </div>
                 @endif
 
@@ -287,11 +248,10 @@
                     </div>
                     <p>{{ $article->resume->contenu_resume }}</p>
                 </div>
-
             </div>
         </div>
 
-        
+        {{-- COLONNE DROITE (PRIX, STOCK, ACTIONS) --}}
         <div class="sidebar-column">
 
             <div class="badges">
@@ -315,24 +275,46 @@
                 @endif
             </div>
 
-            {{-- LOGIQUE STOCK & PRIX --}}
+            {{-- DÉBUT DE LA LOGIQUE STOCK CORRIGÉE --}}
+            @php
+                // Vérification globale : Est-ce qu'un magasin est sélectionné ?
+                $hasMagasin = isset($magasinHeader) && $magasinHeader;
+                $idMagasinSelect = $hasMagasin ? $magasinHeader->id_magasin : 0;
+            @endphp
+
             @if($typeVue === 'velo')
+                {{-- === VUE VÉLO === --}}
                 <div class="size-selector">
                     <p class="size-label">TAILLE</p>
                     <div class="sizes-grid">
+                        
                         @php $stockWebVelo = 0 @endphp
                         @foreach ($stock as $inventaire)
                             @php
                                 $stockWeb = $inventaire->quantite_stock_en_ligne;
-                                $stockMag = $inventaire->magasins->sum('pivot.quantite_stock_magasin');
+                                // Stock global (somme tous magasins)
+                                $stockGlobal = $inventaire->magasins->sum('pivot.quantite_stock_magasin');
+                                // Stock spécifique (mon magasin)
+                                $stockMonMagasin = 0;
+                                if ($hasMagasin) {
+                                    $stockMonMagasin = $inventaire->magasins
+                                        ->where('id_magasin', $idMagasinSelect)
+                                        ->sum('pivot.quantite_stock_magasin');
+                                }
+
                                 $classeCss = ($stockWeb <= 0) ? 'out-of-stock' : '';
                                 $stockWebVelo += $stockWeb;
                             @endphp
+                            
+                            {{-- On passe toutes les infos au JS --}}
                             <button class="size-btn {{ $classeCss }}"
                                 onclick="selectionnerTaille(
-                                            '{{ $inventaire->taille->taille }}', 
-                                            {{ $stockWeb }}, 
-                                            {{ $stockMag }}                                                                                                                                                    )">
+                                    '{{ $inventaire->taille->taille }}', 
+                                    {{ $stockWeb }}, 
+                                    {{ $stockGlobal }},       
+                                    {{ $stockMonMagasin }},   
+                                    {{ $hasMagasin ? 'true' : 'false' }} 
+                                )">
                                 {{ $inventaire->taille->taille }}
                                 <span style="font-size: 0.8em; display:block; font-weight: normal;">
                                     ({{ $inventaire->taille->taille_min }}-{{ $inventaire->taille->taille_max }})
@@ -358,46 +340,65 @@
                 </div>
 
             @else
-                <div style="margin-top: 20px; margin-bottom: 20px;">
-                    @php
-                        $stockWeb = $stock->sum('quantite_stock_en_ligne') > 0;
-                        $stockMag = $stock->flatMap->magasins->sum('pivot.quantite_stock_magasin') > 0;
-                        $colorDotWeb = $stockWeb ? '#28a745' : '#dc3545';
-                        $colorDotMag = $stockMag ? '#28a745' : '#dc3545';
-                        $enLigneStatus = $stockWeb ? 'Disponible en ligne' : 'Indisponible en ligne';
-                        $enMagasinStatus = $stockMag ? 'Commandable en magasin' : 'Indisponible en magasin';
-                    @endphp
+                {{-- === VUE ACCESSOIRE (Pas de taille) === --}}
+                @php
+                    $stockWeb = $stock->sum('quantite_stock_en_ligne') > 0;
+                    
+                    // Stock global
+                    $stockGlobal = $stock->flatMap->magasins->sum('pivot.quantite_stock_magasin') > 0;
+                    
+                    // Valeurs par défaut
+                    $txtMagasin = $stockGlobal ? 'Disponible en magasin' : 'Indisponible en magasin';
+                    $colorDotMag = $stockGlobal ? '#28a745' : '#dc3545'; // Vert ou Rouge
 
-                    <div class="dispo-info-container">
-                        <div class="dispo-row">
-                            <span class="status-dot" style="background-color: {{ $colorDotWeb }};"></span>
-                            <span class="dispo-text" style="font-weight: bold;">{{ $enLigneStatus }}</span>
-                        </div>
-                        <div class="dispo-row">
-                            <span class="status-dot" style="background-color: {{ $colorDotMag }};"></span>
-                            <span class="dispo-text" style="font-weight: bold;">{{ $enMagasinStatus }}</span>
-                        </div>
+                    if ($hasMagasin) {
+                        $stockDansMonMagasin = $stock->flatMap->magasins
+                                                     ->where('id_magasin', $idMagasinSelect)
+                                                     ->sum('pivot.quantite_stock_magasin') > 0;
+                        if ($stockDansMonMagasin) {
+                            $txtMagasin = 'Disponible dans votre magasin';
+                            $colorDotMag = '#28a745'; // Vert
+                        } elseif ($stockGlobal) {
+                            $txtMagasin = "Disponible dans d'autres magasins";
+                            $colorDotMag = '#ffc107'; // Orange
+                        } else {
+                            $txtMagasin = 'Indisponible dans votre magasin';
+                            $colorDotMag = '#dc3545'; // Rouge
+                        }
+                    }
+
+                    $colorDotWeb = $stockWeb ? '#28a745' : '#dc3545';
+                    $enLigneStatus = $stockWeb ? 'Disponible en ligne' : 'Indisponible en ligne';
+                @endphp
+
+                <div class="dispo-info-container" style="margin-bottom: 20px;">
+                    <div class="dispo-row">
+                        <span class="status-dot" style="background-color: {{ $colorDotWeb }};"></span>
+                        <span class="dispo-text" style="font-weight: bold;">{{ $enLigneStatus }}</span>
+                    </div>
+                    <div class="dispo-row">
+                        <span class="status-dot" style="background-color: {{ $colorDotMag }};"></span>
+                        <span class="dispo-text" style="font-weight: bold;">{{ $txtMagasin }}</span>
                     </div>
                 </div>
-
-                <div class="price-section">
-                    <span class="price">{{ number_format($article->prix ?? 0, 2, ',', ' ') }} € TTC</span>
-                </div>
             @endif
-
 
             <div class="action-buttons-container">
                 <form id="form-ajout-panier"
                     data-action="{{ $isAccessoire ? route('cart.add', $article->reference) : route('cart.add', $article->reference) }}">
+                    
                     @if($typeVue === 'velo')
                         <input type="hidden" name="taille" id="input-taille-selected" value="">
                     @else
                         <input type="hidden" name="taille" id="input-taille-selected" value="Unique">
                     @endif
+                    
                     <input type="hidden" name="quantity" value="1">
+                    
                     @if($typeVue === "accessoire")
-                        @if($stockMag || $stockWeb)
-                            <button type="button" onclick="addToCartAjax()" id="btn-panier" class="btn-skew ">
+                        {{-- Pour les accessoires, on affiche si stock web ou mag --}}
+                        @if($stockGlobal || $stockWeb)
+                            <button type="button" onclick="addToCartAjax()" id="btn-panier" class="btn-skew">
                                 <span class="btn-content-unskew">
                                     <span class="text-label">Ajouter au panier</span>
                                 </span>
@@ -406,20 +407,25 @@
                             <p>Cet accessoire est en rupture de stock</p>
                         @endif
                     @else
-                        @if($stockWebVelo)
-                            <button type="button" onclick="addToCartAjax()" id="btn-panier" class="btn-skew"
-                                style="display: none;">
-                                <span class="btn-content-unskew">
-                                    <span class="text-label">Ajouter au panier</span>
-                                </span>
-                            </button>
-                        @endif
+                        {{-- Pour les vélos, géré par JS --}}
+                        <button type="button" onclick="addToCartAjax()" id="btn-panier" class="btn-skew" style="display: none;">
+                            <span class="btn-content-unskew">
+                                <span class="text-label">Ajouter au panier</span>
+                            </span>
+                        </button>
                     @endif
                 </form>
 
-                <button id="btn-contact-magasin" class="btn-skew" style="display: none;" onclick=toggleStoreLocator()>
+                {{-- BOUTON CONTACTER / CHANGER --}}
+                <button id="btn-contact-magasin" class="btn-skew" style="display: inline-block;" onclick="toggleStoreLocator()">
                     <span class="btn-content-unskew">
-                        <span class="text-label">Contacter mon magasin</span>
+                        <span class="text-label">
+                            @if($hasMagasin)
+                                CHANGER DE MAGASIN
+                            @else
+                                CONTACTER MON MAGASIN
+                            @endif
+                        </span>
                     </span>
                 </button>
 
@@ -450,9 +456,7 @@
                                 $bg = str_starts_with($hex, '#') ? $hex : '#' . $hex;
                             @endphp
                             <a href="{{ $lien }}" class="couleur-velo"
-                                style="display: inline-block; width: 30px; height: 30px; border-radius: 50%; margin-right: 5px;
-                                                                                                                                                                                                                               border: {{ $estActif ? '5px solid #cbcbcb' : '1px solid #ddd' }};
-                                                                                                                                                                                                                               background-color: {{ $bg }};">
+                                style="display: inline-block; width: 30px; height: 30px; border-radius: 50%; margin-right: 5px; border: {{ $estActif ? '5px solid #cbcbcb' : '1px solid #ddd' }}; background-color: {{ $bg }};">
                             </a>
                         @endforeach
                     </div>
@@ -491,53 +495,37 @@
         </div>
     </div>
 
-    {{-- Accessoire Vélos --}}
+    {{-- Accessoires similaires / Cross-sell --}}
     @if(!$isAccessoire)
         <section class="st-similar-section section-grey">
-
-            {{-- En-tête avec ton texte personnalisé --}}
             <div class="st-section-header" style="text-align: center; margin-bottom: 20px;">
                 <h2 class="st-section-title text-section-grey">D’autres cyclistes ont également acheté</h2>
                 <p class="text-section-grey">
                     Complétez votre équipement avec des accessoires populaires auprès de nos clients.
-                    Chaque produit est sélectionné pour améliorer votre expérience de cycliste et s’adapter parfaitement à
-                    votre vélo Cube.
                 </p>
             </div>
-
-            {{-- Wrapper du Carousel (Mêmes classes pour garder le CSS) --}}
             <div class="st-carousel-wrapper">
                 <button class="st-nav-btn st-btn-left">❮</button>
-
                 <div class="st-carousel-track">
                     @foreach ($article->varianteVelo->accessoires as $accessoire)
                         <div class="st-card-item">
-                            {{-- Lien vers le produit (Vérifie si tu dois utiliser velo.show ou accessoire.show) --}}
                             <a href="{{ route('velo.show', $accessoire->reference) }}" class="st-card-link">
-
                                 <div class="st-img-box">
-                                    {{-- LOGIQUE IMAGE LOCALE ADAPTÉE POUR ACCESSOIRE --}}
                                     @php
                                         $prefix = 5;
                                         $folder = substr($accessoire->reference, 0, $prefix);
-                                        $imgPath = 'images/ACCESSOIRES/' . $folder . '/image_1.jpg'; 
+                                        $imgPath = 'images/ACCESSOIRES/' . $folder . '/image_1.jpg';
                                     @endphp
-
                                     @if(file_exists(public_path($imgPath)))
                                         <img src="{{ asset($imgPath) }}" alt="{{ $accessoire->nom_article }}">
                                     @else
-                                        <img src="https://placehold.co/300x200?text=Pas+d+image"
-                                            alt="{{ $accessoire->nom_article }}">
+                                        <img src="https://placehold.co/300x200?text=Pas+d+image" alt="{{ $accessoire->nom_article }}">
                                     @endif
                                 </div>
-
                                 <div class="st-info-box">
                                     <h3 class="st-prod-name">{{ $accessoire->nom_article }}</h3>
-                                    <div class="st-prod-price">
-                                        {{ number_format($accessoire->prix, 2, ',', ' ') }} €
-                                    </div>
+                                    <div class="st-prod-price">{{ number_format($accessoire->prix, 2, ',', ' ') }} €</div>
                                 </div>
-
                                 <div class="st-action-row">
                                     <span class="st-view-btn"><i class="arrow-icon">▶</i> VOIR LE PRODUIT</span>
                                 </div>
@@ -545,13 +533,12 @@
                         </div>
                     @endforeach
                 </div>
-
                 <button class="st-nav-btn st-btn-right">❯</button>
             </div>
         </section>
     @endif
 
-    {{-- Produits Similaires AVEC IMAGES LOCALES --}}
+    {{-- Produits Similaires --}}
     @if($articlesSimilaires->isNotEmpty())
         <section class="st-similar-section">
             <h2 class="st-section-title">ARTICLES SIMILAIRES</h2>
@@ -562,20 +549,16 @@
                         <div class="st-card-item">
                             <a href="{{ route('velo.show', $similaire->reference) }}" class="st-card-link">
                                 <div class="st-img-box">
-                                    {{-- LOGIQUE POUR TROUVER L'IMAGE LOCALE (CORRIGÉE) --}}
                                     @php
                                         $simPrefix = $isAccessoire ? 5 : 6;
                                         $simFolder = substr($similaire->reference, 0, $simPrefix);
                                         $dossierRacineSim = $isAccessoire ? 'images/ACCESSOIRES/' : 'images/VELOS/';
                                         $simImgPath = $dossierRacineSim . $simFolder . '/image_1.jpg';
                                     @endphp
-
                                     @if(file_exists(public_path($simImgPath)))
                                         <img src="{{ asset($simImgPath) }}" alt="{{ $similaire->nom_article }}">
                                     @else
-                                        {{-- Placeholder si pas d'image --}}
-                                        <img src="https://placehold.co/300x200?text=Pas+d+image"
-                                            alt="{{ $similaire->nom_article }}">
+                                        <img src="https://placehold.co/300x200?text=Pas+d+image" alt="{{ $similaire->nom_article }}">
                                     @endif
                                 </div>
                                 <div class="st-info-box">
@@ -594,34 +577,24 @@
         </section>
     @endif
 
-    {{-- MODALE ZOOM PLEIN ÉCRAN (AVEC NAVIGATION) --}}
+    {{-- MODALES ET SCRIPTS --}}
     <div id="zoomModalOverlay" class="zoom-overlay">
         <button class="zoom-close-btn" onclick="closeZoom(event)">×</button>
-
-        {{-- NOUVEAU : Boutons Précédent / Suivant --}}
         <button class="zoom-nav zoom-prev" onclick="changeZoomImage(-1)">❮</button>
         <button class="zoom-nav zoom-next" onclick="changeZoomImage(1)">❯</button>
-
         <div class="zoom-container" onclick="toggleZoomState(event)">
             <img id="zoomImageFull" src="" alt="Zoom Produit">
         </div>
     </div>
 
-    {{-- SCRIPTS JS --}}
     <script src="{{ asset('js/vizualizeArticle.js') }}" defer></script>
-
     <script>
         function closeModalAndRefresh() {
             const modal = document.getElementById('cartModal');
-            if (modal) {
-                modal.style.display = 'none';
-            }
-
+            if (modal) modal.style.display = 'none';
             location.reload();
         }
     </script>
-
     <script src="{{ asset('js/map.js') }}"></script>
 </body>
-
 </html>

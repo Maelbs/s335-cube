@@ -92,7 +92,7 @@ button:hover, .btn:hover {
     left: 0;
     width: 100%;
     height: 100%;
-    background: linear-gradient(rgba(10, 20, 30, 0.2), rgba(10, 20, 30, 0.8));
+    background:  linear-gradient(to left, rgba(10, 20, 30, 0.1), rgba(10, 20, 30, 0.7));
     z-index: 2; 
     pointer-events: none;
 }
@@ -490,6 +490,7 @@ footer {
     color: transparent;
     -webkit-text-stroke: 2px #fff;
     padding-top: 0;
+    margin-top: -30px;
 }
 
 .text-intro {
@@ -506,12 +507,13 @@ footer {
     font-size: 1em;
     font-style: normal;
     font-weight: 600;
+    margin-bottom: -10px;
 }
 
-#text2 {
+.text2 {
     font-size: 7em;
     font-weight: 800;
-    font-stretch: narrower;
+    text-transform: uppercase !important;
 }
 
 #text3 {

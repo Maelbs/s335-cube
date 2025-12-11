@@ -133,19 +133,27 @@
                                 </div>
 
                                 <div class="sl-card-action">
-                                    {{-- 4. LOGIQUE DU BOUTON --}}
+                                    @php
+                                        // On vérifie si ce magasin correspond à celui stocké en session/BDD (injecté via $magasinHeader)
+                                        $estSelectionne = isset($magasinHeader) && $magasinHeader->id_magasin == $magasin->id_magasin;
+                                    @endphp
+
                                     @if($estSelectionne)
-                                        {{-- Bouton inactif "Déjà sélectionné" --}}
-                                        <button type="button" class="btn-skew-grey" disabled>
-                                            <span class="btn-content">✔ SÉLECTIONNÉ</span>
+                                        {{-- CAS : C'est mon magasin actuel --}}
+                                        <button type="button" class="btn-skew-black" style="background-color: #28a745; cursor: default; border-color: #28a745;">
+                                            <span class="btn-content">
+                                                <span class="arrow">✔</span> MAGASIN SÉLECTIONNÉ
+                                            </span>
                                         </button>
                                     @else
-                                        {{-- Bouton normal "Choisir" --}}
+                                        {{-- CAS : Ce n'est pas mon magasin, je peux le choisir --}}
                                         <form action="{{ route('magasin.definir') }}" method="POST">
                                             @csrf
                                             <input type="hidden" name="id_magasin" value="{{ $magasin->id_magasin }}">
                                             <button type="submit" class="btn-skew-black">
-                                                <span class="btn-content"><span class="arrow">▶</span> CHOISIR</span>
+                                                <span class="btn-content">
+                                                    <span class="arrow">▶</span> CHOISIR
+                                                </span>
                                             </button>
                                         </form>
                                     @endif
@@ -165,7 +173,45 @@
     </div>
 </div>
 
-{{-- 3. INJECTION JS --}}
 <script>
+    // 1. Données des magasins
     window.magasinsData = @json($jsonMagasins);
+
+    // 2. Token CSRF pour les formulaires POST (Indispensable pour le bouton dans la Map)
+    window.csrfToken = "{{ csrf_token() }}";
+    window.routeDefinirMagasin = "{{ route('magasin.definir') }}";
+
+    // 3. Adresse du client connecté (pour le tri)
+    @auth
+        @php
+            $client = Auth::user();
+            $adresseClient = "";
+            
+            // 1. On vérifie d'abord si la relation 'adresses' existe et renvoie quelque chose
+            // On utilise la syntaxe sécurisée optional() ou une vérification simple
+            $collectionAdresses = $client->adresses ?? null;
+
+            if($collectionAdresses && $collectionAdresses->isNotEmpty()) {
+                $adObj = $collectionAdresses->first();
+                if($adObj) {
+                    $adresseClient = $adObj->rue . ' ' . $adObj->code_postal . ' ' . $adObj->ville;
+                }
+            } 
+            // 2. Fallback : Si pas de relation 'adresses', on essaie l'adresse de facturation
+            elseif ($client->adresseFacturation ?? false) {
+                 $adObj = $client->adresseFacturation;
+                 $adresseClient = $adObj->rue . ' ' . $adObj->code_postal . ' ' . $adObj->ville;
+            }
+        @endphp
+        window.userAddress = "{{ $adresseClient }}";
+    @else
+        window.userAddress = null;
+    @endauth
 </script>
+<style>
+    .btn-skew-grey {
+        background: #e0e0e0; color: #555; border: 1px solid #ccc;
+        padding: 12px 25px; transform: skewX(-20deg); cursor: default;
+        display: inline-block;
+    }
+</style>

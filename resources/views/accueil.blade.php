@@ -112,7 +112,8 @@
 
             <div class="text-intro">
                 <p id="text1">GAMME 2026</p>
-                <p id="text2">Nouveau vélos. <br> <span class="text-stylee">Même Passion.</span></p>
+                <p class="text2">Nouveaux vélos.</p>
+                <p class="text2 text-stylee">Même Passion.</p>
                 <div>
                     <p id="text3">
                         Un design audacieux, de nouvelles innovations, et toujours la même passion pour la perfection. 

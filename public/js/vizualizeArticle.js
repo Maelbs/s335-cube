@@ -6,7 +6,6 @@ document.addEventListener("DOMContentLoaded", function () {
 
   toggles.forEach((btn) => {
     btn.textContent = "";
-
     const headerRow = btn.closest(".specs-header-row");
     const content = headerRow.nextElementSibling;
 
@@ -17,7 +16,6 @@ document.addEventListener("DOMContentLoaded", function () {
     btn.addEventListener("click", function () {
       if (content) {
         const isOpen = content.classList.contains("is-visible");
-
         if (isOpen) {
           content.style.maxHeight = null;
           content.classList.remove("is-visible");
@@ -42,14 +40,12 @@ document.addEventListener("DOMContentLoaded", function () {
     function scrollCarousel(direction) {
       const card = track.querySelector(".st-card-item");
       const scrollAmount = card ? card.offsetWidth + 25 : 300;
-
       if (direction === "left") {
         track.scrollBy({ left: -scrollAmount, behavior: "smooth" });
       } else {
         track.scrollBy({ left: scrollAmount, behavior: "smooth" });
       }
     }
-
     btnLeft.addEventListener("click", () => scrollCarousel("left"));
     btnRight.addEventListener("click", () => scrollCarousel("right"));
   }
@@ -92,16 +88,13 @@ document.addEventListener("DOMContentLoaded", () => {
     nextButton.addEventListener("click", (e) => {
       const currentSlide = track.querySelector(".current-slide");
       let nextSlide = currentSlide.nextElementSibling;
-      const currentDot = dotsNav
-        ? dotsNav.querySelector(".current-slide")
-        : null;
+      const currentDot = dotsNav ? dotsNav.querySelector(".current-slide") : null;
       let nextDot = currentDot ? currentDot.nextElementSibling : null;
 
       if (!nextSlide) {
         nextSlide = slides[0];
         if (dots.length) nextDot = dots[0];
       }
-
       moveToSlide(track, currentSlide, nextSlide);
       updateDots(currentDot, nextDot);
     });
@@ -111,16 +104,13 @@ document.addEventListener("DOMContentLoaded", () => {
     prevButton.addEventListener("click", (e) => {
       const currentSlide = track.querySelector(".current-slide");
       let prevSlide = currentSlide.previousElementSibling;
-      const currentDot = dotsNav
-        ? dotsNav.querySelector(".current-slide")
-        : null;
+      const currentDot = dotsNav ? dotsNav.querySelector(".current-slide") : null;
       let prevDot = currentDot ? currentDot.previousElementSibling : null;
 
       if (!prevSlide) {
         prevSlide = slides[slides.length - 1];
         if (dots.length) prevDot = dots[dots.length - 1];
       }
-
       moveToSlide(track, currentSlide, prevSlide);
       updateDots(currentDot, prevDot);
     });
@@ -130,12 +120,10 @@ document.addEventListener("DOMContentLoaded", () => {
     dotsNav.addEventListener("click", (e) => {
       const targetDot = e.target.closest("button");
       if (!targetDot) return;
-
       const currentSlide = track.querySelector(".current-slide");
       const currentDot = dotsNav.querySelector(".current-slide");
       const targetIndex = dots.findIndex((dot) => dot === targetDot);
       const targetSlide = slides[targetIndex];
-
       moveToSlide(track, currentSlide, targetSlide);
       updateDots(currentDot, targetDot);
     });
@@ -157,17 +145,12 @@ document.addEventListener("DOMContentLoaded", () => {
 function openZoom() {
   const overlay = document.getElementById("zoomModalOverlay");
   const zoomImg = document.getElementById("zoomImageFull");
-
-  const activeSlide = document.querySelector(
-    ".carousel-slide.current-slide img"
-  );
+  const activeSlide = document.querySelector(".carousel-slide.current-slide img");
 
   if (activeSlide) {
     zoomImg.src = activeSlide.src;
     overlay.style.display = "flex";
-
     document.body.classList.add("zoom-is-open");
-
     setTimeout(() => {
       overlay.classList.add("active");
     }, 10);
@@ -177,10 +160,8 @@ function openZoom() {
 function changeZoomImage(direction) {
   const track = document.querySelector(".carousel-track");
   const slides = Array.from(track.children);
-
   const currentSlide = track.querySelector(".current-slide");
   let currentIndex = slides.indexOf(currentSlide);
-
   let newIndex = currentIndex + direction;
 
   if (newIndex < 0) {
@@ -204,7 +185,6 @@ function changeZoomImage(direction) {
   }
 
   const zoomImg = document.getElementById("zoomImageFull");
-
   zoomImg.style.opacity = 0.5;
   setTimeout(() => {
     zoomImg.src = targetSlide.querySelector("img").src;
@@ -214,12 +194,9 @@ function changeZoomImage(direction) {
 
 function toggleZoomState(e) {
   if (e.target.tagName === "BUTTON") return;
-
   const img = document.getElementById("zoomImageFull");
-
   if (e.target === img || e.target.classList.contains("zoom-container")) {
     img.classList.toggle("zoomed-in");
-
     if (img.classList.contains("zoomed-in")) {
       img.onmousemove = function (evt) {
         const { left, top, width, height } = img.getBoundingClientRect();
@@ -237,35 +214,31 @@ function toggleZoomState(e) {
 function closeZoom(e) {
   if (e) {
     e.stopPropagation();
-    if (
-      e.target.id === "zoomImageFull" ||
-      e.target.classList.contains("zoom-nav")
-    )
-      return;
+    if (e.target.id === "zoomImageFull" || e.target.classList.contains("zoom-nav")) return;
   }
-
   const overlay = document.getElementById("zoomModalOverlay");
   const zoomImg = document.getElementById("zoomImageFull");
-
   overlay.classList.remove("active");
   zoomImg.classList.remove("zoomed-in");
   zoomImg.style.transformOrigin = "center center";
-
   document.body.classList.remove("zoom-is-open");
-
   setTimeout(() => {
     overlay.style.display = "none";
   }, 300);
 }
 
 /* =========================================
-   PANIER & SÉLECTION TAILLE
+   PANIER & SÉLECTION TAILLE (CORRIGÉ ICI)
    ========================================= */
 const sizeSelectors = document.querySelectorAll(".size-btn");
 const btnPanier = document.getElementById("btn-panier");
 
 sizeSelectors.forEach((selector) => {
   selector.addEventListener("click", function () {
+    // Gestion visuelle de la sélection du bouton
+    sizeSelectors.forEach(btn => btn.classList.remove('active')); // Reset autres boutons
+    this.classList.add('active'); // Active le bouton cliqué
+
     if (btnPanier) {
       btnPanier.style.display = "inline-block";
       btnPanier.style.opacity = "0";
@@ -277,7 +250,9 @@ sizeSelectors.forEach((selector) => {
   });
 });
 
-function selectionnerTaille(tailleNom, qtyWeb, qtyMagasin) {
+// --- FONCTION CORRIGÉE : GESTION DES 5 ARGUMENTS ET COULEURS ---
+function selectionnerTaille(tailleNom, qtyWeb, qtyGlobal, qtyLocal, isStoreSelected) {
+  
   document.getElementById("input-taille-selected").value = tailleNom;
 
   const formPanier = document.getElementById("form-ajout-panier");
@@ -289,34 +264,54 @@ function selectionnerTaille(tailleNom, qtyWeb, qtyMagasin) {
   const dotMagasin = document.getElementById("dot-magasin");
   const textMagasin = document.getElementById("text-magasin");
 
+  // 1. GESTION STOCK WEB
   if (qtyWeb > 0) {
-    formPanier.style.display = "inline-block";
-    dotWeb.className = "status-dot active-green";
+    if(formPanier) formPanier.style.display = "inline-block";
+    dotWeb.style.backgroundColor = "#28a745"; // Vert
     textWeb.textContent = "Disponible en ligne";
-    textWeb.style.color = "#15803d";
+    textWeb.style.color = "#333";
   } else {
-    formPanier.style.display = "none";
-    dotWeb.className = "status-dot inactive-gray";
+    if(formPanier) formPanier.style.display = "none";
+    dotWeb.style.backgroundColor = "#dc3545"; // Rouge
     textWeb.textContent = "Indisponible en ligne";
     textWeb.style.color = "#6b7280";
   }
 
-  if (qtyMagasin > 0) {
-    btnMagasin.style.display = "inline-block";
-    dotMagasin.className = "status-dot active-green";
-    textMagasin.textContent = "Disponible en magasin";
-    textMagasin.style.color = "#15803d";
+  // 2. GESTION STOCK MAGASIN (LOGIQUE INTELLIGENTE)
+  if (btnMagasin) btnMagasin.style.display = "inline-block"; // Toujours afficher le bouton (Contacter ou Changer)
+
+  if (isStoreSelected) {
+    // CAS A : UN MAGASIN EST DÉJÀ CHOISI (ex: Cycles Mari)
+    if (qtyLocal > 0) {
+      // Dispo chez moi
+      dotMagasin.style.backgroundColor = "#28a745"; // Vert
+      textMagasin.textContent = "Disponible dans votre magasin";
+    } else if (qtyGlobal > 0) {
+      // Pas chez moi, mais dispo ailleurs
+      dotMagasin.style.backgroundColor = "#ffc107"; // Orange
+      textMagasin.textContent = "Disponible dans d'autres magasins";
+    } else {
+      // Dispo nulle part
+      dotMagasin.style.backgroundColor = "#dc3545"; // Rouge
+      textMagasin.textContent = "Indisponible dans votre magasin";
+    }
   } else {
-    btnMagasin.style.display = "none";
-    dotMagasin.className = "status-dot inactive-gray";
-    textMagasin.textContent = "Indisponible en magasin";
-    textMagasin.style.color = "#6b7280";
+    // CAS B : AUCUN MAGASIN CHOISI (Mode visiteur global)
+    if (qtyGlobal > 0) {
+      dotMagasin.style.backgroundColor = "#28a745"; // Vert
+      textMagasin.textContent = "Disponible en magasin";
+    } else {
+      dotMagasin.style.backgroundColor = "#dc3545"; // Rouge
+      textMagasin.textContent = "Indisponible en magasin";
+    }
   }
 
-  if (qtyWeb <= 0 && qtyMagasin <= 0) {
-    msgIndispo.style.display = "block";
+  // 3. MESSAGE GLOBAL INDISPONIBLE
+  // On affiche "Indisponible" en gros seulement si indispo web ET indispo partout en magasin
+  if (qtyWeb <= 0 && qtyGlobal <= 0) {
+    if(msgIndispo) msgIndispo.style.display = "block";
   } else {
-    msgIndispo.style.display = "none";
+    if(msgIndispo) msgIndispo.style.display = "none";
   }
 }
 
@@ -324,10 +319,7 @@ function addToCartAjax() {
   const form = document.getElementById("form-ajout-panier");
   const url = form.dataset.action;
   const formData = new FormData(form);
-
-  const csrfToken = document
-    .querySelector('meta[name="csrf-token"]')
-    .getAttribute("content");
+  const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute("content");
 
   fetch(url, {
     method: "POST",
@@ -354,11 +346,10 @@ function addToCartAjax() {
 
 function fillAndOpenModal(data) {
   document.getElementById("modalName").textContent = data.product.name;
-  document.getElementById("modalPrice").textContent =
-    new Intl.NumberFormat("fr-FR", {
-      style: "currency",
-      currency: "EUR",
-    }).format(data.product.price) + " TTC";
+  document.getElementById("modalPrice").textContent = new Intl.NumberFormat("fr-FR", {
+    style: "currency",
+    currency: "EUR",
+  }).format(data.product.price) + " TTC";
   document.getElementById("modalImg").src = data.product.image;
   document.getElementById("modalSize").textContent = data.product.taille;
   document.getElementById("modalQty").textContent = data.product.qty;
@@ -407,7 +398,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
   function checkModelExists() {
     const testImageSrc = `${folderPath}01${extension}`;
-    
     const tester = new Image();
     tester.onload = () => {
       openBtn.style.display = "flex";
@@ -449,9 +439,7 @@ document.addEventListener("DOMContentLoaded", () => {
         img.onload = () => {
           loadedCount++;
           if (loaderText) {
-            loaderText.innerText = `Chargement ${Math.floor(
-              (loadedCount / totalImages) * 100
-            )}%`;
+            loaderText.innerText = `Chargement ${Math.floor((loadedCount / totalImages) * 100)}%`;
           }
           if (loadedCount === totalImages) initViewer();
         };
@@ -525,10 +513,8 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 /* =========================================
-   STORE LOCATOR & FILTRAGE (CORRIGÉ & ROBUSTE)
+   STORE LOCATOR & FILTRAGE
    ========================================= */
-
-// Variable globale pour éviter les conflits d'animation
 let storeLocatorTimeout = null;
 
 function toggleStoreLocator() {
@@ -538,7 +524,6 @@ function toggleStoreLocator() {
 
   if (!overlay) return;
 
-  // Si un timer de fermeture est en cours, on l'annule !
   if (storeLocatorTimeout) {
     clearTimeout(storeLocatorTimeout);
     storeLocatorTimeout = null;
@@ -547,87 +532,52 @@ function toggleStoreLocator() {
   const isVisible = overlay.classList.contains("visible");
 
   if (isVisible) {
-    // --- FERMETURE ---
-    
-    // 1. On retire la classe visible pour lancer l'animation de fade-out
     overlay.classList.remove("visible");
-    
-    // 2. IMPORTANT : On réaffiche le header tout de suite
     if (header) header.classList.remove("header-hidden");
-    
-    // 3. On réactive le scroll
     body.style.overflow = "";
-
-    // 4. On attend 300ms (durée transition CSS) pour cacher l'élément (visibility:hidden)
     storeLocatorTimeout = setTimeout(() => {
       overlay.style.visibility = "hidden";
     }, 300);
-
   } else {
-    // --- OUVERTURE ---
-    
-    // 1. On rend l'élément visible (mais transparent)
     overlay.style.visibility = "visible";
-    
-    // 2. On bloque le scroll
     body.style.overflow = "hidden";
-    
-    // 3. On cache le header
     if (header) header.classList.add("header-hidden");
-
-    // 4. Petit hack pour forcer le navigateur à prendre en compte le changement 
-    // avant d'appliquer l'opacité (transition)
     requestAnimationFrame(() => {
       overlay.classList.add("visible");
     });
   }
 }
 
-// Initialisation au chargement
 document.addEventListener("DOMContentLoaded", function () {
+  // Le listener pour le bouton "btn-contact-magasin" n'est plus nécessaire ici
+  // car il est géré directement par le 'onclick' dans le Blade.
   
-  // 1. Bouton "Voir en magasin"
-  const btnMagasin = document.getElementById("btn-contact-magasin");
-  if (btnMagasin) {
-    btnMagasin.addEventListener("click", function (e) {
-      e.preventDefault();
-      toggleStoreLocator();
-    });
-  }
-
-  // 2. Clic sur le fond gris (CORRECTION ERGONOMIE)
   const overlay = document.getElementById("store-locator-overlay");
   if (overlay) {
     overlay.addEventListener("click", function (e) {
-      // On vérifie strictement que l'élément cliqué a l'ID de l'overlay.
-      // Si on clique sur la carte (enfant), l'ID sera différent, donc ça ne ferme pas.
       if (e.target.id === "store-locator-overlay") {
         toggleStoreLocator();
       }
     });
   }
 
-  // 3. Bouton croix (si existant)
   const closeBtn = document.querySelector(".close-store-locator");
   if (closeBtn) {
     closeBtn.addEventListener("click", toggleStoreLocator);
   }
 
-  // 4. Logique de Filtrage
   const stockToggle = document.getElementById("stockToggle");
   const searchInput = document.getElementById("storeSearchInput");
   const cards = document.querySelectorAll(".sl-card");
 
   function filterMagasins() {
     if (!cards.length) return;
-
     const showOnlyStock = stockToggle ? stockToggle.checked : false;
     const searchText = searchInput ? searchInput.value.toLowerCase() : "";
 
     cards.forEach((card) => {
       const hasStock = card.getAttribute("data-has-stock") === "true";
       const searchString = card.getAttribute("data-searchString") || "";
-
       let matchesStock = true;
       let matchesSearch = true;
 
