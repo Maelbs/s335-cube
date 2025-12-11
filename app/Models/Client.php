@@ -61,13 +61,26 @@ class Client extends Authenticatable
         return $this->hasMany(Panier::class, 'id_client');
     }
 
+   
     public function velosEnregistres()
     {
         return $this->hasMany(VeloEnregistre::class, 'id_client');
     }
 
+
+    public function codesPromoUtilises()
+    {
+        return $this->belongsToMany(
+            CodePromo::class,           
+            'utilisation_code_promo',   
+            'id_client',                
+            'id_codepromo'             
+        );
+    }
+
     public function magasin() {
         return $this->belongsTo(MagasinPartenaire::class, 'id_magasin', 'id_magasin');
+
     }
 
     public function __toString()
@@ -80,4 +93,5 @@ class Client extends Authenticatable
             $this->email_client
         );
     }
+
 }

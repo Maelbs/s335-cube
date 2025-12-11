@@ -103,35 +103,49 @@ class PanierController extends Controller
     }
 
     public function applyPromo(Request $request)
-    {
-        // On nettoie l'entrée (supprime les espaces)
-        $code = trim($request->input('code_promo'));
-        $promo = CodePromo::find($code);
+{
+    $code = trim($request->input('code_promo'));
 
-        if (!$promo) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Ce code promo n\'existe pas.'
-            ]);
-        }
+    
+    $promo = CodePromo::find($code);
 
-        // Logique d'application
-        if (Auth::check()) {
-            $panier = Panier::firstOrCreate(['id_client' => Auth::id()]);
-            $panier->code_promo = $promo->id_codepromo;
-            $panier->save();
-        } else {
-            session()->put('promo', [
-                'code' => $promo->id_codepromo,
-                'pourcentage' => $promo->pourcentage
-            ]);
-        }
-
+    if (!$promo) {
         return response()->json([
-            'success' => true,
-            'message' => 'Code appliqué avec succès !'
+            'success' => false,
+            'message' => 'Ce code promo n\'existe pas.'
         ]);
     }
+    
+    if (Auth::check()) {
+        /** @var \App\Models\Client $client */
+        $client = Auth::user(); 
+
+        
+        if ($client->codesPromoUtilises()->where('utilisation_code_promo.id_codepromo', $promo->id_codepromo)->exists()) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Vous avez déjà utilisé ce code promo par le passé.'
+            ]);
+        }
+        
+        
+        $panier = Panier::firstOrCreate(['id_client' => Auth::id()]);
+        $panier->code_promo = $promo->id_codepromo;
+        $panier->save();
+
+    } else {
+        
+        session()->put('promo', [
+            'code' => $promo->id_codepromo,
+            'pourcentage' => $promo->pourcentage
+        ]);
+    }
+
+    return response()->json([
+        'success' => true,
+        'message' => 'Code appliqué avec succès !'
+    ]);
+}
     public function add(Request $request, $reference)
     {
         $request->validate([

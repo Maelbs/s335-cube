@@ -143,37 +143,43 @@ class PaymentController extends Controller
     }
     
     public function successPaypal(Request $request)
-    {
-        $request->validate([
-            'id_adresse' => 'required|exists:adresse,id_adresse',
-            'token' => 'required'
-        ]);
+{
+    $request->validate([
+        'id_adresse' => 'required|exists:adresse,id_adresse',
+        'token' => 'required'
+    ]);
 
-        $provider = new PayPalClient;
-        $provider->setApiCredentials(config('paypal'));
-        $provider->getAccessToken();
-        $response = $provider->capturePaymentOrder($request['token']);
+    $provider = new PayPalClient;
+    $provider->setApiCredentials(config('paypal'));
+    $provider->getAccessToken();
+    $response = $provider->capturePaymentOrder($request['token']);
 
-        if (isset($response['status']) && $response['status'] == 'COMPLETED') {
-            
-            $idAdresse = $request->query('id_adresse');
-            
-            $commande = $this->insertionCommande($idAdresse, 'Paypal');
-            
-            if (!$commande) {
-                return redirect()->route('cart.index')->with('error', 'Erreur lors de la création de la commande.');
-            }
-
-            $panier = Panier::where('id_client', Auth::id())->first();
-            if ($panier) {
-                LignePanier::where('id_panier', $panier->id_panier)->delete();
-            }
-
-            return redirect()->route('client.commandes.show', $commande -> id_commande)->with('success', 'Paiement PayPal validé ! Merci pour votre achat.');
-        } 
+    if (isset($response['status']) && $response['status'] == 'COMPLETED') {
         
-        return redirect()->route('paypal.cancel')->with('error', 'Le paiement PayPal a échoué.');
-    }
+        $idAdresse = $request->query('id_adresse');
+        
+        
+        $commande = $this->insertionCommande($idAdresse, 'Paypal');
+        
+        if (!$commande) {
+            return redirect()->route('cart.index')->with('error', 'Erreur lors de la création de la commande.');
+        }
+
+      
+        $this->finaliserCodePromo(Auth::id());
+
+        $panier = Panier::where('id_client', Auth::id())->first();
+        if ($panier) {
+            
+            LignePanier::where('id_panier', $panier->id_panier)->delete();
+        }
+
+        return redirect()->route('client.commandes.show', $commande->id_commande)
+                         ->with('success', 'Paiement PayPal validé ! Merci pour votre achat.');
+    } 
+    
+    return redirect()->route('paypal.cancel')->with('error', 'Le paiement PayPal a échoué.');
+}
 
     public function paymentStripe(Request $request)
     {
@@ -220,23 +226,43 @@ class PaymentController extends Controller
 
         $idAdresse = $request->query('id_adresse');
 
+    
         $commande = $this->insertionCommande($idAdresse, 'CB');
 
         if (!$commande) {
             return redirect()->route('cart.index')->with('error', 'Erreur lors de la création de la commande.');
         }
 
+       
+        $this->finaliserCodePromo(Auth::id()); 
+
         $panier = Panier::where('id_client', Auth::id())->first();
 
         if ($panier) {
+            
             LignePanier::where('id_panier', $panier->id_panier)->delete();
         }
 
-        return redirect()->route('client.commandes.show', $commande -> id_commande)->with('success', 'Paiement Stripe validé !');
+        return redirect()->route('client.commandes.show', $commande->id_commande)
+                        ->with('success', 'Paiement Stripe validé !');
     }
 
     public function cancelPayment()
     {
         return redirect()->route('cart.index')->with('error', 'Vous avez annulé le paiement.');
+    }
+    private function finaliserCodePromo($clientId)
+    {
+        $panier = Panier::where('id_client', $clientId)->first();
+        $client = Auth::user();
+
+        if ($panier && $panier->code_promo) {
+        
+            if (!$client->codesPromoUtilises()->where('utilisation_code_promo.id_codepromo', $panier->code_promo)->exists()) {
+                $client->codesPromoUtilises()->attach($panier->code_promo);
+            }
+            $panier->code_promo = null;
+            $panier->save();
+        }
     }
 }
