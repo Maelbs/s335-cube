@@ -595,6 +595,5 @@
             location.reload();
         }
     </script>
-    <script src="{{ asset('js/map.js') }}"></script>
 </body>
 </html>

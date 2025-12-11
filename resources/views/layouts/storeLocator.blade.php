@@ -177,7 +177,7 @@
     // 1. Données des magasins
     window.magasinsData = @json($jsonMagasins);
 
-    // 2. Token CSRF pour les formulaires POST (Indispensable pour le bouton dans la Map)
+    // 2. Token CSRF pour les formulaires POST
     window.csrfToken = "{{ csrf_token() }}";
     window.routeDefinirMagasin = "{{ route('magasin.definir') }}";
 
@@ -186,21 +186,13 @@
         @php
             $client = Auth::user();
             $adresseClient = "";
-            
-            // 1. On vérifie d'abord si la relation 'adresses' existe et renvoie quelque chose
-            // On utilise la syntaxe sécurisée optional() ou une vérification simple
-            $collectionAdresses = $client->adresses ?? null;
-
-            if($collectionAdresses && $collectionAdresses->isNotEmpty()) {
-                $adObj = $collectionAdresses->first();
-                if($adObj) {
-                    $adresseClient = $adObj->rue . ' ' . $adObj->code_postal . ' ' . $adObj->ville;
-                }
-            } 
-            // 2. Fallback : Si pas de relation 'adresses', on essaie l'adresse de facturation
-            elseif ($client->adresseFacturation ?? false) {
-                 $adObj = $client->adresseFacturation;
-                 $adresseClient = $adObj->rue . ' ' . $adObj->code_postal . ' ' . $adObj->ville;
+            // Sécurité : on vérifie si la relation existe avant d'appeler ->first()
+            if(isset($client->adresses) && $client->adresses->isNotEmpty()) {
+                $adObj = $client->adresses->last();
+                $adresseClient = $adObj->rue . ' ' . $adObj->code_postal . ' ' . $adObj->ville;
+            } elseif (isset($client->adresseFacturation)) {
+                 // Fallback si vous utilisez une autre relation
+                 $adresseClient = $client->adresseFacturation->rue ?? ''; 
             }
         @endphp
         window.userAddress = "{{ $adresseClient }}";
@@ -208,10 +200,15 @@
         window.userAddress = null;
     @endauth
 </script>
+
+{{-- Gardez le style --}}
 <style>
     .btn-skew-grey {
         background: #e0e0e0; color: #555; border: 1px solid #ccc;
         padding: 12px 25px; transform: skewX(-20deg); cursor: default;
         display: inline-block;
     }
+    /* Style pour le popup Leaflet */
+    .leaflet-popup-content-wrapper { border-radius: 0; padding: 0; }
+    .leaflet-popup-content { margin: 15px; width: 200px !important; }
 </style>
