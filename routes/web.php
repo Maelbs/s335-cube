@@ -74,6 +74,7 @@ Route::delete('/panier/supprimer/{key}', [PanierController::class, 'remove'])->n
 Route::post('/panier/update', [PanierController::class, 'updateQuantity'])->name('cart.update');
 Route::post('/panier/ajouter-accessoire/{reference}', [PanierController::class, 'addAccessoire'])->name('cart.addAccessoire');
 Route::post('/panier/apply-promo', [PanierController::class, 'applyPromo'])->name('cart.applyPromo');
+Route::post('/panier/remove-promo', [PanierController::class, 'removePromo'])->name('cart.removePromo');
 
 Route::get('/boutique/{type}/{cat_id?}/{sub_id?}/{model_id?}', [BoutiqueController::class, 'index'])
     ->name('boutique.index')
