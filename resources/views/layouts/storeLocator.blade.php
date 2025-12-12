@@ -4,7 +4,7 @@
     $stockLocal = isset($stock) ? $stock : null;
 
     // Préparation du JSON pour la Map (JS)
-    $jsonMagasins = $tousLesMagasins->map(function ($magasin) use ($stockLocal) {
+    $jsonMagasins = $tousLesMagasins->map(function ($magasin) use ($stockLocal, $magasinHeader) {
         $ad = $magasin->adresses->first();
 
         $enStock = false;
@@ -12,13 +12,14 @@
         if ($stockLocal) {
             $enStock = $stockLocal->flatMap->magasins->where('id_magasin', $magasin->id_magasin)->count() > 0;
         }
-
+        $estSelectionne = isset($magasinHeader) && $magasinHeader->id_magasin == $magasin->id_magasin;
         return [
             'id' => $magasin->id_magasin,
             'nom' => $magasin->nom_magasin,
             'adresse' => $ad ? ($ad->rue . ' ' . $ad->code_postal . ' ' . $ad->ville) : '',
             'ville' => $ad ? $ad->ville : '',
-            'stock' => $enStock
+            'stock' => $enStock,
+            'selected' => $estSelectionne
         ];
     })->values();
 @endphp
@@ -177,27 +178,32 @@
     // 1. Données des magasins
     window.magasinsData = @json($jsonMagasins);
 
-    // 2. Token CSRF pour les formulaires POST
+    // 2. Token et Routes
     window.csrfToken = "{{ csrf_token() }}";
     window.routeDefinirMagasin = "{{ route('magasin.definir') }}";
 
-    // 3. Adresse du client connecté (pour le tri)
+    // 3. Initialisation de l'adresse à null par défaut
+    window.userAddress = null;
+
+    // 4. Injection de l'adresse client (si connecté)
     @auth
         @php
             $client = Auth::user();
             $adresseClient = "";
-            // Sécurité : on vérifie si la relation existe avant d'appeler ->first()
+            
             if(isset($client->adresses) && $client->adresses->isNotEmpty()) {
                 $adObj = $client->adresses->last();
                 $adresseClient = $adObj->rue . ' ' . $adObj->code_postal . ' ' . $adObj->ville;
             } elseif (isset($client->adresseFacturation)) {
-                 // Fallback si vous utilisez une autre relation
-                 $adresseClient = $client->adresseFacturation->rue ?? ''; 
+                $adFac = $client->adresseFacturation;
+                $adresseClient = ($adFac->rue ?? '') . ' ' . ($adFac->code_postal ?? '') . ' ' . ($adFac->ville ?? '');
             }
         @endphp
-        window.userAddress = "{{ $adresseClient }}";
-    @else
-        window.userAddress = null;
+
+        @if(!empty($adresseClient))
+            // PAS DE BALISE <SCRIPT> ICI, on est déjà dedans !
+            window.userAddress = "{!! addslashes($adresseClient) !!}";
+        @endif
     @endauth
 </script>
 
