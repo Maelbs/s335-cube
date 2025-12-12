@@ -399,4 +399,22 @@ class PanierController extends Controller
 
         return $totalStock;
     }
+    public function removePromo()
+    {
+        if (Auth::check()) {
+            $panier = Panier::where('id_client', Auth::id())->first();
+            if ($panier) {
+                $panier->code_promo = null; 
+                $panier->save();
+            }
+        } else {
+            
+            session()->forget('promo');
+        }
+
+        return response()->json([
+            'success' => true, 
+            'message' => 'Code promo retiré.'
+        ]);
+    }
 }

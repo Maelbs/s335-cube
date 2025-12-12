@@ -4,7 +4,7 @@
     $stockLocal = isset($stock) ? $stock : null;
 
     // Préparation du JSON pour la Map (JS)
-    $jsonMagasins = $tousLesMagasins->map(function ($magasin) use ($stockLocal) {
+    $jsonMagasins = $tousLesMagasins->map(function ($magasin) use ($stockLocal, $magasinHeader) {
         $ad = $magasin->adresses->first();
 
         $enStock = false;
@@ -12,13 +12,14 @@
         if ($stockLocal) {
             $enStock = $stockLocal->flatMap->magasins->where('id_magasin', $magasin->id_magasin)->count() > 0;
         }
-
+        $estSelectionne = isset($magasinHeader) && $magasinHeader->id_magasin == $magasin->id_magasin;
         return [
             'id' => $magasin->id_magasin,
             'nom' => $magasin->nom_magasin,
             'adresse' => $ad ? ($ad->rue . ' ' . $ad->code_postal . ' ' . $ad->ville) : '',
             'ville' => $ad ? $ad->ville : '',
-            'stock' => $enStock
+            'stock' => $enStock,
+            'selected' => $estSelectionne
         ];
     })->values();
 @endphp
@@ -133,19 +134,27 @@
                                 </div>
 
                                 <div class="sl-card-action">
-                                    {{-- 4. LOGIQUE DU BOUTON --}}
+                                    @php
+                                        // On vérifie si ce magasin correspond à celui stocké en session/BDD (injecté via $magasinHeader)
+                                        $estSelectionne = isset($magasinHeader) && $magasinHeader->id_magasin == $magasin->id_magasin;
+                                    @endphp
+
                                     @if($estSelectionne)
-                                        {{-- Bouton inactif "Déjà sélectionné" --}}
-                                        <button type="button" class="btn-skew-grey" disabled>
-                                            <span class="btn-content">✔ SÉLECTIONNÉ</span>
+                                        {{-- CAS : C'est mon magasin actuel --}}
+                                        <button type="button" class="btn-skew-black" style="background-color: #28a745; cursor: default; border-color: #28a745;">
+                                            <span class="btn-content">
+                                                <span class="arrow">✔</span> MAGASIN SÉLECTIONNÉ
+                                            </span>
                                         </button>
                                     @else
-                                        {{-- Bouton normal "Choisir" --}}
+                                        {{-- CAS : Ce n'est pas mon magasin, je peux le choisir --}}
                                         <form action="{{ route('magasin.definir') }}" method="POST">
                                             @csrf
                                             <input type="hidden" name="id_magasin" value="{{ $magasin->id_magasin }}">
                                             <button type="submit" class="btn-skew-black">
-                                                <span class="btn-content"><span class="arrow">▶</span> CHOISIR</span>
+                                                <span class="btn-content">
+                                                    <span class="arrow">▶</span> CHOISIR
+                                                </span>
                                             </button>
                                         </form>
                                     @endif
@@ -165,7 +174,47 @@
     </div>
 </div>
 
-{{-- 3. INJECTION JS --}}
 <script>
+    // 1. Données des magasins
     window.magasinsData = @json($jsonMagasins);
+
+    // 2. Token et Routes
+    window.csrfToken = "{{ csrf_token() }}";
+    window.routeDefinirMagasin = "{{ route('magasin.definir') }}";
+
+    // 3. Initialisation de l'adresse à null par défaut
+    window.userAddress = null;
+
+    // 4. Injection de l'adresse client (si connecté)
+    @auth
+        @php
+            $client = Auth::user();
+            $adresseClient = "";
+            
+            if(isset($client->adresses) && $client->adresses->isNotEmpty()) {
+                $adObj = $client->adresses->last();
+                $adresseClient = $adObj->rue . ' ' . $adObj->code_postal . ' ' . $adObj->ville;
+            } elseif (isset($client->adresseFacturation)) {
+                $adFac = $client->adresseFacturation;
+                $adresseClient = ($adFac->rue ?? '') . ' ' . ($adFac->code_postal ?? '') . ' ' . ($adFac->ville ?? '');
+            }
+        @endphp
+
+        @if(!empty($adresseClient))
+            // PAS DE BALISE <SCRIPT> ICI, on est déjà dedans !
+            window.userAddress = "{!! addslashes($adresseClient) !!}";
+        @endif
+    @endauth
 </script>
+
+{{-- Gardez le style --}}
+<style>
+    .btn-skew-grey {
+        background: #e0e0e0; color: #555; border: 1px solid #ccc;
+        padding: 12px 25px; transform: skewX(-20deg); cursor: default;
+        display: inline-block;
+    }
+    /* Style pour le popup Leaflet */
+    .leaflet-popup-content-wrapper { border-radius: 0; padding: 0; }
+    .leaflet-popup-content { margin: 15px; width: 200px !important; }
+</style>

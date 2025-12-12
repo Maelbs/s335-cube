@@ -96,24 +96,27 @@
                                             required max="{{ date('Y-m-d') }}"  autocomplete="bday">
                                         @error('birthday') <div class="error-text">{{ $message }}</div> @enderror
                                     </div>
-
                                     {{-- Newsletter --}}
                                     <div class="form-group newsletter">
                                         <div class="custom-control custom-checkbox">
                                             <input name="newsletter" type="checkbox" value="1" id="newsletter"
-                                                class="custom-control-input" {{ old('newsletter') ? 'checked' : '' }}>
+                                            class="custom-control-input" {{ old('newsletter') ? 'checked' : '' }}>
                                             <label class="custom-control-label" for="newsletter">
                                                 <span>Recevoir des informations relatives aux produits, aux offres et
                                                     aux évènements de CUBE</span>
-                                                <br>
-                                                <em>Votre adresse email est uniquement utilisée pour vous envoyer les
-                                                    actualités de CUBE. Vous pouvez à tout moment utiliser le lien de
-                                                    désabonnement intégré à la newsletter. Voir notre politique de
-                                                    confidentialité.</em>
-                                            </label>
+                                                    <br>
+                                                    <em>Votre adresse email est uniquement utilisée pour vous envoyer les
+                                                        actualités de CUBE. Vous pouvez à tout moment utiliser le lien de
+                                                        désabonnement intégré à la newsletter. Voir notre politique de
+                                                        confidentialité.</em>
+                                                    </label>
+                                                </div>
+                                            </div>
+                                            
+                                        <div class='info'>
+                                            <p class='carac-info'>*</p>
+                                            <p>Champs obligatoires</p>
                                         </div>
-                                    </div>
-
                                 </section>
 
                                 {{-- Footer du formulaire --}}
