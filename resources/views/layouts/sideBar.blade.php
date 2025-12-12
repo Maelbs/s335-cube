@@ -1,3 +1,8 @@
+<style>
+    .logout-form {
+        
+    }
+</style>
 <aside class="sidebar">
     <div class="sidebar-content">
         <div class="user-greeting">
@@ -7,7 +12,7 @@
                 {{ substr(strtolower($client->nom_client), 0, 1) }}.
             </h1>
             
-            <form action="{{ route('logout') }}" method="POST">
+            <form class="logout-form" action="{{ route('logout') }}" method="POST">
                 @csrf
                 <button type="submit" class="logout-link">
                     <i class="fa-solid fa-arrow-right-from-bracket"></i> Se déconnecter

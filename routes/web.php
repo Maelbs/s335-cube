@@ -56,7 +56,7 @@ Route::middleware('auth')->group(function () {
 
     Route::get('/adresses', [AdresseController::class, 'index'])->name('client.adresses');
     Route::get('/adresses/create', [AdresseController::class, 'createAdresse'])->name('adresses.create.show');
-    Route::get('/adresses/create/Nouvelle-Adresse', [AdresseController::class, 'create'])->name('adresses.create');
+    Route::post('/adresses/create/Nouvelle-Adresse', [AdresseController::class, 'create'])->name('adresses.create');
     Route::get('/adresses/{id}/edit', [AdresseController::class, 'editAdresse'])->name('adresses.edit');
     Route::post('/adresses/{id}/update', [AdresseController::class, 'update'])->name('adresses.update');
 

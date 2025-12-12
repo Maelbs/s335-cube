@@ -55,8 +55,7 @@
 
                 <div class="form-group">
                     <label>Pays</label>
-                    <input class="form-control" type="text" name="pays" id="countryId"
-                        value="{{ old('pays', $adresse->pays) }}" readonly required>
+                    <input class="form-control" type="text" name="pays" id="countryId" readonly required>
                 </div>
 
                 <button class="cube-btn-primary w-100" style="margin-top:20px;">Enregistrer les modifications</button>

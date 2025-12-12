@@ -1,149 +1,167 @@
-@font-face {
-    font-family: 'Damas Font';
-    src: url('../font/font.woff2');
+/* =========================================
+   1. VARIABLES
+   ========================================= */
+   :root {
+    --primary-dark: #0f1623;
+    --input-bg: #f1f5f9;
+    --input-border: #dae1e7;
+    --cube-red: #cc0000;
+    --text-color: #333;
 }
 
-:root {
-    --cube-red: #e30613;
-    --cube-black: #1a1a1a;
-    --cube-dark-grey: #2f353a;
-    --cube-light-grey: #f8f9fa;
-    --cube-border: #e0e0e0;
-}
-
-/* ----------------- LAYOUT GENERAL ------------------ */
-
-header {
-    background-color: #ffffff !important;
-    border-bottom: 1px solid #e5e5e5;
-    color: #000 !important;
-    box-shadow: 0 2px 10px rgba(0,0,0,0.03);
-}
-
-header img {
-    filter: brightness(0) !important;
-}
-
-.cube-container {
-    max-width: 900px;
-    margin: 140px auto 80px;
-    padding: 0 20px;
-    font-family: 'Damas Font';
-    color: var(--cube-black);
-}
-
-/* ----------------- TITRES ------------------ */
-
-.cube-title {
-    font-size: 2.8rem;
-    font-weight: 900;
-    font-style: italic;
-    text-transform: uppercase;
-    text-align: center;
-    margin-bottom: 10px;
-}
-
-.cube-title::after {
-    content: "";
-    display: block;
-    width: 70px;
-    height: 4px;
-    background-color: var(--cube-red);
-    margin: 15px auto 0;
-}
-
+/* =========================================
+   2. BADGES & SOUS-TITRE
+   ========================================= */
 .cube-subtitle {
-    text-align: center;
     font-size: 1.1rem;
     color: #666;
-    margin-bottom: 40px;
+    margin-bottom: 2rem;
 }
 
-/* ----------------- CARD FORMULAIRE ------------------ */
-
-.cube-card-form {
-    background: white;
-    border: 1px solid var(--cube-border);
-    border-top: 4px solid var(--cube-black);
-    padding: 35px;
-    box-shadow: 0 5px 20px rgba(0,0,0,0.05);
+.cube-subtitle span {
+    box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+    letter-spacing: 0.5px;
 }
 
-.cube-form-group {
-    margin-bottom: 25px;
+/* =========================================
+   3. MISE EN PAGE DU FORMULAIRE
+   ========================================= */
+
+/* IMPORTANT : On cible uniquement le formulaire DANS le container principal */
+.cube-container form {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    column-gap: 25px;
+    row-gap: 20px;
+    background: #fff;
+    padding: 30px;
+    border-radius: 8px;
+    border: 1px solid #eee;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.03); /* Petite ombre esthétique */
 }
 
-.cube-form-group label {
-    font-weight: 800;
-    font-size: 0.9rem;
-    text-transform: uppercase;
-    margin-bottom: 6px;
-    display: block;
-    color: var(--cube-black);
+/* Le bouton prend toute la largeur */
+.cube-container form button {
+    grid-column: 1 / -1;
 }
 
-.cube-input {
-    width: 100%;
-    padding: 14px 15px;
-    border: 1px solid #ccc;
-    background-color: white;
-    font-size: 1rem;
-    transition: all 0.2s;
-}
-
-.cube-input:focus {
-    border-color: var(--cube-black);
-    outline: none;
-    box-shadow: 0 0 3px rgba(0,0,0,0.2);
-}
-
-/* ----------------- BADGE FACTURATION ------------------ */
-
-.cube-badge-facturation {
-    display: inline-block;
-    padding: 7px 15px;
-    background-color: var(--cube-red);
-    color: white;
-    font-size: 0.85rem;
-    font-weight: 800;
-    text-transform: uppercase;
-    border-radius: 3px;
-    margin-bottom: 20px;
-}
-
-/* ----------------- BOUTON VALIDER ------------------ */
-
-.cube-btn-submit {
-    width: 100%;
-    padding: 15px;
-    background-color: var(--cube-black);
-    color: white;
-    font-size: 1rem;
-    font-weight: 900;
-    text-transform: uppercase;
-    border: 2px solid var(--cube-black);
-    cursor: pointer;
-    transition: 0.3s ease;
-}
-
-.cube-btn-submit:hover {
-    background-color: var(--cube-red);
-    border-color: var(--cube-red);
-}
-
-/* ----------------- RESPONSIVE ------------------ */
-
+/* Responsive Mobile */
 @media (max-width: 768px) {
-
-    .cube-title {
-        font-size: 2rem;
-    }
-
-    .cube-card-form {
+    .cube-container form {
+        grid-template-columns: 1fr;
         padding: 20px;
     }
+}
 
-    .cube-input {
-        padding: 12px;
-    }
+/* =========================================
+   4. STYLES DES CHAMPS
+   ========================================= */
+.form-group {
+    display: flex;
+    flex-direction: column;
+}
+
+.form-group label {
+    font-size: 13px;
+    font-weight: 800;
+    color: var(--primary-dark);
+    margin-bottom: 8px;
+    display: block;
+    text-transform: uppercase;
+    font-family: 'Fira Sans', sans-serif;
+}
+
+.form-control {
+    background-color: var(--input-bg);
+    border: 1px solid var(--input-border);
+    border-radius: 4px;
+    padding: 12px 15px;
+    font-size: 15px;
+    color: #333;
+    width: 100%;
+    transition: all 0.3s ease;
+    box-sizing: border-box;
+}
+
+.form-control:focus {
+    background-color: #fff;
+    border-color: var(--primary-dark);
+    box-shadow: 0 0 0 3px rgba(15, 22, 35, 0.1);
+    outline: none;
+}
+
+/* =========================================
+   5. BOUTON VALIDER
+   ========================================= */
+.cube-btn-primary {
+    position: relative;
+    display: block;
+    width: 100%;
+    padding: 16px 32px;
+    background-color: var(--primary-dark);
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    font-weight: 700;
+    font-size: 14px;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    cursor: pointer;
+    overflow: hidden;
+    z-index: 1;
+    transition: all 0.4s ease;
+}
+
+.cube-btn-primary::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -20px;
+    width: 0%;
+    height: 100%;
+    background-color: #0071e3;
+    z-index: -1;
+    transform: skewX(-20deg);
+    transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.cube-btn-primary:hover::before {
+    width: 150%;
+}
+
+.cube-btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(0, 113, 227, 0.25);
+    color: white;
+}
+
+/* =========================================
+   6. AUTOCOMPLETION
+   ========================================= */
+.suggestion-adresse {
+    position: absolute;
+    border: 1px solid #ddd;
+    z-index: 1000;
+    width: 100%;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    max-height: 200px;
+    overflow-y: auto;
+    display: none;
+    background: white;
+    border-radius: 0 0 6px 6px;
+    left: 0;
+    top: 100%;
+}
+
+.suggestion-adresse div {
+    padding: 12px;
+    cursor: pointer;
+    font-size: 14px;
+    border-bottom: 1px solid #f0f0f0;
+    color: #333;
+}
+
+.suggestion-adresse div:hover {
+    background-color: #f8f9fa;
+    color: #0071e3;
 }

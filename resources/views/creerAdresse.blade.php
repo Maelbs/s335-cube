@@ -6,7 +6,8 @@
     <title>Ajouter une adresse | Cube Bikes</title>
     <link rel="stylesheet" href="{{ asset('css/header.css') }}">
     <link rel="stylesheet" href="{{ asset('css/profil.css') }}">
-    <link rel="stylesheet" href="{{ asset('css/creerAdresses.css') }}"> </head>
+    <link rel="stylesheet" href="{{ asset('css/creerAdresses.css') }}"> 
+</head>
 
 <body>
     @include('layouts.header')
@@ -20,7 +21,7 @@
                 <h1 class="cube-title">Nouvelle Adresse</h1>
                 <p class="cube-subtitle">Ajoutez une adresse de livraison à votre carnet.</p>
 
-                <form method="POST" action="{{ route('adresses.create') }}" autocomplete="off">
+                <form method="POST" action="{{ route('adresses.create') }}" autocomplete="off" class="creer-form">
                     @csrf
 
                     <div class="form-group">
@@ -41,7 +42,7 @@
 
                     <div class="form-group">
                         <label class="required font-weight-bold" for="pays">Pays</label>
-                        <input class="form-control" name="pays" type="text" id="countryId" value="France" readonly required>
+                        <input class="form-control" name="pays" type="text" id="countryId" readonly required>
                     </div>
 
                     <button class="cube-btn-primary w-100" style="margin-top:20px;">
