@@ -13,8 +13,8 @@ use App\Http\Controllers\ProfilController;
 use App\Http\Controllers\PanierController;
 use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\MagasinController;
-
 use App\Http\Controllers\CommandeController;
+use App\Http\Controllers\AdresseController;
 
 /*
 |--------------------------------------------------------------------------
@@ -53,6 +53,12 @@ Route::middleware('auth')->group(function () {
     Route::get('/commandes', [CommandeController::class, 'index'])->name('client.commandes');
     Route::get('/commandes/{id}', [CommandeController::class, 'show'])->name('client.commandes.show');
     Route::get('/commandes/{id}/facture', [CommandeController::class, 'downloadInvoice'])->name('client.commandes.facture');
+
+    Route::get('/adresses', [AdresseController::class, 'index'])->name('client.adresses');
+    Route::get('/adresses/create', [AdresseController::class, 'createAdresse'])->name('adresses.create.show');
+    Route::get('/adresses/create/Nouvelle-Adresse', [AdresseController::class, 'create'])->name('adresses.create');
+    Route::get('/adresses/{id}/edit', [AdresseController::class, 'editAdresse'])->name('adresses.edit');
+    Route::post('/adresses/{id}/update', [AdresseController::class, 'update'])->name('adresses.update');
 
     Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 

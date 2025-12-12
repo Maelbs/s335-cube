@@ -6,13 +6,15 @@
     <title>Mes commandes | Cube Bikes</title>
     <link rel="stylesheet" href="{{ asset('css/header.css') }}">
     <link rel="stylesheet" href="{{ asset('css/listCommandes.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/profil.css') }}">  
 </head>
 <body>
     @include('layouts.header')
 
-
-<div class="cube-container">
-    
+<div class="dashboard-container">
+    @include('layouts.sideBar')
+    <main class="main-content scrollable">
+    <div class="cube-container">
     <div class="cube-header">
         <h1 class="cube-title">MES COMMANDES</h1>
         <p class="cube-subtitle">
@@ -127,6 +129,8 @@
                 </tbody>
             </table>
         @endif
-    </div>
+    </main>
+</div>
+</div>
 </body>
 </html>

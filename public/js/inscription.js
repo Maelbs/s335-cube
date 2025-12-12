@@ -8,7 +8,6 @@ document.addEventListener('DOMContentLoaded', function () {
     form.addEventListener('submit', function (event) {
         let isValid = true;
 
-        // 1. Nettoyage des erreurs visuelles
         const inputsError = form.querySelectorAll('.error-border');
         inputsError.forEach(el => el.classList.remove('error-border'));
         const msgs = form.querySelectorAll('.error-text');

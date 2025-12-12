@@ -1,0 +1,588 @@
+/* --- Variables & Base --- */
+:root {
+    --primary-dark: #0f1623;   /* Bleu nuit profond (Connexion) */
+    --primary-accent: #1a2639; /* Version légèrement plus claire pour le survol */
+    --input-bg: #f1f5f9;       /* Gris très pâle, presque blanc */
+    --input-border: #dae1e7;   /* Bordure subtile */
+    --text-color: #333333;
+    --text-muted: #00244b;
+    --radius: 6px;             /* Arrondis plus modernes */
+}
+
+@font-face {
+    font-family: 'Damas Font';
+    src: url('../font/font.woff2');
+}
+
+/* header {
+    background-color: #fff !important;
+    color: #000 !important;
+} */
+
+/* .logo img {
+    filter: brightness(0) !important;
+} */
+
+html {
+    font-family: 'Damas Font', sans-serif; /* Assure-toi d'avoir une font propre */
+}
+
+body {
+    background: linear-gradient(rgba(10, 20, 30, 0.5), rgba(10, 20, 30, 0.7)), url('../images/connexionBackground.jpg') no-repeat;
+    background-size: cover;
+    color: var(--primary-dark);
+}
+
+.card-account {
+    background: rgba(255, 255, 255, 0.75);
+    border: 1px solid rgba(0,0,0,0.05);
+    border-radius: 8px;
+    backdrop-filter: blur(5px);
+    padding: 3rem;
+    max-width: 900px;
+    margin: 0 auto 15vh auto;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
+}
+
+/* --- Titres --- */
+h2.h3 {
+    font-size: 1.25rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    color: var(--primary-dark);
+    margin-bottom: 2rem;
+    padding-bottom: 1rem;
+    border-bottom: 2px solid #f0f0f0; /* Ligne de séparation propre */
+    letter-spacing: 0.5px;
+}
+
+h1.h3 {
+    justify-self: center;
+    font-size: 1.9rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: #fff;
+    margin-bottom: 2rem;
+    font-style: italic;
+}
+
+/* --- Grille des champs --- */
+.form-fields {
+    display: grid;
+    grid-template-columns: 1fr 1fr; /* 2 colonnes strictes */
+    column-gap: 40px; /* Grand écart entre gauche et droite */
+    row-gap: 25px;    /* Espace vertical aéré */
+}
+
+/* Responsive : 1 colonne sur mobile */
+@media (max-width: 768px) {
+    .form-fields {
+        grid-template-columns: 1fr;
+        padding: 0;
+    }
+    .card-account {
+        padding: 1.5rem;
+    }
+}
+/* --- Styles des Inputs (Le point critique) --- */
+.form-group {
+    display: flex;
+    flex-direction: column;
+}
+
+.form-group label {
+    font-size: 13px;
+    font-weight: 700;
+    color: #475569;
+    margin-bottom: 8px;
+    display: block;
+    color: var(--primary-dark);
+    letter-spacing: 0.03rem;
+}
+
+.form-group label.required:after {
+    content: " *";
+    color: #e53935; /* Rouge un peu moins agressif */
+}
+
+.form-control {
+    background-color: var(--input-bg);
+    border: 1px solid #cbd5e1;
+    border-radius: 4px;
+    padding: 0.8rem 1rem; /* Champs plus hauts -> plus facile à cliquer */
+    font-size: 15px;
+    color: #333;
+    box-sizing: border-box;
+    width: 100%; /* Prend toute la largeur disponible */
+    box-sizing: border-box; /* Évite que le padding casse la largeur */
+    transition: all 0.3s ease;
+}
+
+/* Effet au clic dans le champ */
+.form-control:focus {
+    background-color: #fff;
+    border-color: #0071e3;
+    outline: none;
+    box-shadow: 0 0 0 4px rgba(15, 22, 35, 0.1); /* Halo bleu pâle */
+    outline: none;
+}
+
+/* Texte d'aide (sous le champ) */
+.form-text {
+    font-size: 0.75rem;
+    margin-top: 6px;
+    color: var(--text-muted);
+    line-height: 1.4;
+    font-style: italic;
+}
+
+/* --- Cas particulier : Newsletter (Toute largeur) --- */
+.form-group.newsletter {
+    grid-column: 1 / -1; /* Traverse les 2 colonnes */
+    margin-top: 1rem;
+    background: #f8f9fa;
+    padding: 1.5rem;
+    border-radius: var(--radius);
+    border: 1px solid #e9ecef;
+}
+
+.custom-control {
+    display: flex;
+    align-items: flex-start; /* Aligne la case en haut du texte */
+    gap: 12px;
+}
+
+.custom-control-input {
+    margin-top: 4px; /* Petit ajustement optique */
+    transform: scale(1.2); /* Case un peu plus visible */
+    cursor: pointer;
+}
+
+.custom-control-label span {
+    font-weight: 600;
+    color: var(--primary-dark);
+}
+
+.custom-control-label em {
+    display: block;
+    margin-top: 0.5rem;
+    font-size: 0.9em;
+    color: var(--text-muted);
+    font-style: normal;
+}
+
+/* --- Bouton Valider --- */
+.form-footer {
+    margin-top: 3rem;
+    text-align: center;
+    padding: 10px;
+}
+
+.btn-valider {
+    /* Positionnement et Base */
+    position: relative; /* Nécessaire pour l'effet ::before */
+    display: inline-block;
+    min-width: 400px;   /* Largeur minimale pour que ça fasse propre */
+    padding: 16px 32px;
+    
+    /* Style visuel (Repos) */
+    background-color: #0f172a; /* Ton bleu nuit très sombre */
+    color: #fff;
+    border: none;
+    clip-path: polygon(15px 0, 100% 0, 100% 100%, 0% 100%);
+    font-weight: 600;
+    font-size: 14px;
+    letter-spacing: 1.5px;
+    
+    cursor: pointer;
+    overflow: hidden; /* Important : cache le bleu qui dépasse avant le survol */
+    z-index: 1;       /* Le texte reste au-dessus */
+    transition: all 0.4s ease;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+}
+
+/* L'élément bleu qui glisse (Le ::before) */
+.btn-valider::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -15px;
+    width: 0%;       /* Invisible au départ */
+    height: 100%;
+    background-color: #0071e3; /* Le bleu électrique */
+    z-index: -1;     /* Se place DERRIÈRE le texte */
+    
+    /* L'angle de l'animation */
+    transform: skewX(-20deg);
+    
+    /* Fluidité de l'animation */
+    transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.btn-valider:hover::before {
+    width: 160%;
+}
+
+.btn-valider:hover {
+    box-shadow: 0 8px 25px rgba(0, 113, 227, 0.35);
+    transform: translateY(-2px);
+    color: #fff; 
+}
+
+.text-connexion {
+    margin-top: 1.5rem;
+    font-size: 0.9rem;
+}
+
+.text-connexion a {
+    color: var(--primary-dark);
+    font-weight: 800;
+    text-decoration: none;
+    border-bottom: 2px solid transparent;
+}
+
+.text-connexion a:hover {
+    border-bottom-color: var(--primary-dark);
+}
+
+.description {
+    font-size: 0.7rem;
+    color: #00244b;
+    margin-top: 2rem;
+    margin-left: auto;
+    margin-right: auto;
+    text-align: justify;
+}
+
+#traitement-text {
+    color: #000;
+}
+
+
+.form-control.is-invalid {
+    border-color: #dc3545 !important;
+    background-image: none;
+}
+
+.invalid-feedback {
+    display: none;
+    width: 100%;
+    margin-top: 0.25rem;
+    font-size: 80%;
+    color: #dc3545;
+}
+
+.error-message {
+    color: #dc3545;
+    font-size: 0.7em;
+    margin-top: 5px;
+    display: block;
+}
+
+.form-control.error-border {
+    border: 1px solid #e74c3c;
+    box-shadow: 0 0 5px rgba(231, 76, 60, 0.2);
+}
+
+.error-text {
+    color: #e74c3c;
+    font-size: 0.7em;
+    margin-top: 5px;
+    font-weight: 500;
+    display: block;
+    animation: fadeIn 0.3s ease-in-out;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-5px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* =========================================
+   1. VARIABLES & BASE
+   ========================================= */
+   :root {
+    --primary-dark: #0f1623;   /* Bleu nuit profond */
+    --primary-accent: #1a2639; /* Version plus claire */
+    --input-bg: #f1f5f9;       /* Gris très pâle */
+    --input-border: #dae1e7;   /* Bordure subtile */
+    --text-color: #333333;
+    --text-muted: #64748b;
+    --radius: 6px;
+    --cube-red: #cc0000;       /* Rouge CUBE */
+}
+
+@font-face {
+    font-family: "Damas Font";
+    src: url("../font/font.woff2");
+}
+
+html {
+    font-family: "Damas Font", sans-serif;
+}
+
+body {
+    /* Fond identique à ta page de connexion */
+    background: linear-gradient(rgba(10, 20, 30, 0.5), rgba(10, 20, 30, 0.7)), url('../images/connexionBackground.jpg') no-repeat;
+    background-size: cover;
+    background-attachment: fixed;
+    color: var(--primary-dark);
+    min-height: 100vh;
+}
+
+/* =========================================
+   2. CONTENEUR (CARTE)
+   ========================================= */
+.register-form {
+    margin-bottom: 50px;
+}
+
+.card-account {
+    background: rgba(255, 255, 255, 0.9); /* Un peu plus opaque pour la lisibilité */
+    border: 1px solid rgba(0,0,0,0.05);
+    border-radius: 8px;
+    backdrop-filter: blur(5px);
+    padding: 3rem;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+}
+
+/* Titres des sections */
+h2.h4 {
+    color: var(--primary-dark);
+    font-weight: 800;
+    letter-spacing: 0.5px;
+    border-bottom: 2px solid #333; /* Gardé ton style original ici */
+    padding-bottom: 10px;
+    margin-bottom: 1.5rem;
+}
+
+/* =========================================
+   3. GRILLE & CHAMPS (CORRECTIF MAJEUR)
+   ========================================= */
+/* C'est ici qu'on a retiré le 'display: grid' pour laisser Bootstrap gérer les colonnes */
+.form-fields {
+    display: grid;
+    grid-template-columns: 1fr 1fr; /* Crée 2 colonnes égales */
+    column-gap: 20px; /* Espace entre les colonnes */
+    row-gap: 15px;    /* Espace entre les lignes */
+}
+
+.custom-toggle-container, 
+.form-footer,
+#billing-address-wrapper {
+    grid-column: 1 / -1;
+}
+
+/* Espacement vertical entre les lignes */
+.form-group, 
+.form-row {
+    margin-bottom: 10px;
+}
+
+/* Labels */
+.form-group label {
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--primary-dark);
+    margin-bottom: 8px;
+    display: block;
+    letter-spacing: 0.03rem;
+    text-transform: uppercase;
+}
+
+.required:after {
+    content: " *";
+    color: #cc0000;
+}
+
+/* Inputs */
+.form-control {
+    background-color: var(--input-bg);
+    border: 1px solid var(--input-border);
+    border-radius: 4px;
+    padding: 0.6rem 1rem; /* Ajusté pour être joli mais pas trop haut */
+    font-size: 15px;
+    color: #333;
+    width: 100%;
+    transition: all 0.3s ease;
+}
+
+.form-control:focus {
+    background-color: #fff;
+    border-color: var(--primary-dark);
+    box-shadow: 0 0 0 3px rgba(15, 22, 35, 0.1);
+    outline: none;
+}
+
+/* Champs lecture seule (gris) */
+.form-control[readonly] {
+    background-color: #e9ecef;
+    opacity: 1;
+    cursor: not-allowed;
+}
+
+/* =========================================
+   4. SWITCH TOGGLE (Même adresse)
+   ========================================= */
+.custom-toggle-container {
+    display: flex;
+    align-items: center;
+    background: transparent;
+    padding: 10px 0;
+    border: none;
+    cursor: pointer;
+}
+
+.toggle-switch {
+    position: relative;
+    display: inline-block;
+    width: 50px;
+    height: 26px;
+    margin-right: 15px;
+    flex-shrink: 0;
+}
+
+.toggle-switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background-color: #ccc;
+    transition: 0.4s;
+    border-radius: 34px;
+}
+
+.slider:before {
+    position: absolute;
+    content: "";
+    height: 18px; width: 18px;
+    left: 4px; bottom: 4px;
+    background-color: white;
+    transition: 0.4s;
+    border-radius: 50%;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+/* Couleur active (Rouge CUBE ou Bleu selon ta pref) */
+input:checked + .slider {
+    background-color: var(--primary-dark); /* J'ai mis bleu nuit pour matcher le thème */
+}
+
+input:checked + .slider:before {
+    transform: translateX(24px);
+}
+
+.toggle-label {
+    font-weight: 600;
+    color: var(--primary-dark);
+    font-size: 0.95rem;
+    user-select: none;
+}
+
+/* =========================================
+   5. ANIMATION FACTURATION
+   ========================================= */
+#billing-address-wrapper {
+    overflow: hidden;
+    transition: all 0.5s ease-in-out;
+    max-height: 0;
+    opacity: 0;
+    margin-top: 0;
+    visibility: hidden;
+}
+
+#billing-address-wrapper.visible {
+    max-height: 1000px;
+    opacity: 1;
+    margin-top: 20px;
+    visibility: visible;
+}
+
+/* =========================================
+   6. AUTOCOMPLETION
+   ========================================= */
+.suggestion-adresse {
+    position: absolute;
+    border: 1px solid #ddd;
+    z-index: 1000; /* Très important pour passer au dessus */
+    width: 100%;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    max-height: 200px;
+    overflow-y: auto;
+    display: none;
+    top: 100%;
+    left: 0;
+    background: white;
+    border-radius: 0 0 6px 6px;
+}
+
+.suggestion-adresse div {
+    padding: 12px;
+    cursor: pointer;
+    font-size: 14px;
+    border-bottom: 1px solid #f0f0f0;
+}
+
+.suggestion-adresse div:hover {
+    background-color: #f8f9fa;
+    color: #0249a7;
+}
+
+/* =========================================
+   7. BOUTON VALIDER (Style "Glitch/Slide")
+   ========================================= */
+.form-footer {
+    margin-top: 0;
+    text-align: center;
+}
+
+.btn-valider {
+    position: relative;
+    display: block; 
+    width: 100%;
+    padding: 16px 32px;
+    margin-top: 50px;
+    background-color: var(--primary-dark);
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    font-weight: 700;
+    font-size: 14px;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    cursor: pointer;
+    overflow: hidden;
+    z-index: 1;
+    transition: all 0.4s ease;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+}
+
+/* L'animation bleue au survol */
+.btn-valider::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -20px;
+    width: 0%;
+    height: 100%;
+    background-color: #0071e3; /* J'ai mis rouge pour contraster, sinon #0071e3 */
+    z-index: -1;
+    transform: skewX(-20deg);
+    transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.btn-valider:hover::before {
+    width: 150%;
+}
+
+.btn-valider:hover {
+    box-shadow: 0 8px 25px rgba(204, 0, 0, 0.3); /* Ombre rouge */
+    transform: translateY(-2px);
+}
+

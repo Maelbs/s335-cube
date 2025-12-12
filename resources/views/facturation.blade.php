@@ -43,25 +43,25 @@
                                 <div class="form-group">
                                     <label class="required font-weight-bold" for="rue">Rue</label>
                                     <input class="form-control" name="rue" type="text" value="{{ old('rue') }}" id="rue"
-                                        required placeholder="Ex: 10 rue de la paix...">
+                                    required placeholder="Ex: 10 rue de la paix...">
                                 </div>
 
                                 <div class="form-group">
                                     <label class="required font-weight-bold" for="zipcode">Code postal</label>
                                     <input class="form-control" name="zipcode" type="text" value="{{ old('zipcode') }}"
-                                        id="zipcode" required ly style="background-color: #e9ecef;">
+                                        id="zipcode" readonly required ly style="background-color: #e9ecef;">
                                 </div>
 
                                 <div class="form-group">
                                     <label class="required font-weight-bold" for="country">Pays</label>
                                     <input class="form-control" name="country" type="text" value="{{ old('country') }}"
-                                        id="country" required ly style="background-color: #e9ecef;">
+                                        id="country" readonly required ly style="background-color: #e9ecef;">
                                 </div>
 
                                 <div class="form-group">
                                     <label class="required font-weight-bold" for="city">Ville</label>
                                     <input class="form-control" name="city" type="text" value="{{ old('city') }}"
-                                        id="city" required ly style="background-color: #e9ecef;">
+                                        id="city" readonly required ly style="background-color: #e9ecef;">
                                 </div>
                             </section>
 
@@ -93,21 +93,21 @@
                                         <label class="required font-weight-bold" for="billing_zipcode">Code postal</label>
                                         <input class="form-control" name="billing_zipcode" type="text"
                                             value="{{ old('billing_zipcode') }}" id="billing_zipcode"
-                                            style="background-color: #e9ecef;">
+                                            style="background-color: #e9ecef;" readonly>
                                     </div>
 
                                     <div class="form-group">
                                         <label class="required font-weight-bold" for="billing_country">Pays</label>
                                         <input class="form-control" name="billing_country" type="text"
                                             value="{{ old('billing_country') }}" id="billing_country"
-                                            style="background-color: #e9ecef;">
+                                            style="background-color: #e9ecef;" readonly>
                                     </div>
 
                                     <div class="form-group">
                                         <label class="required font-weight-bold" for="billing_city">Ville</label>
                                         <input class="form-control" name="billing_city" type="text"
                                             value="{{ old('billing_city') }}" id="billing_city"
-                                            style="background-color: #e9ecef;">
+                                            style="background-color: #e9ecef;" readonly>
                                     </div>
                                 </section>
                             </div>

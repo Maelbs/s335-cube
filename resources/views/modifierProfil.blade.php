@@ -6,7 +6,8 @@
     <title>Modifier mes informations | Cube Bikes</title>
     
     <link rel="stylesheet" href="{{ asset('css/header.css') }}">
-    <link rel="stylesheet" href="{{ asset('css/inscription.css') }}"> <link rel="stylesheet" href="{{ asset('css/profil.css') }}">      
+    <link rel="stylesheet" href="{{ asset('css/inscription.css') }}"> 
+    <link rel="stylesheet" href="{{ asset('css/profil.css') }}">      
 
     <style>
         body {
@@ -41,33 +42,7 @@
     @include('layouts.header')
 
     <div class="dashboard-container">
-        
-        <aside class="sidebar">
-            <div class="sidebar-content">
-                <div class="user-greeting">
-                    <span class="welcome-label">Bienvenue</span>
-                    <h1 class="user-name">{{ strtolower($client->prenom_client) }} {{ substr(strtolower($client->nom_client), 0, 1) }}.</h1>
-                    
-                    <form action="{{ route('logout') }}" method="POST">
-                        @csrf
-                        <button type="submit" class="logout-link">
-                            <i class="fa-solid fa-arrow-right-from-bracket"></i> Se déconnecter
-                        </button>
-                    </form>
-                </div>
-
-                <nav class="sidebar-nav">
-                    <ul>
-                        <li><a href="{{ route('profil') }}" class="nav-item">TABLEAU DE BORD</a></li>
-                        <li><a href="{{ route('profil.update.form') }}" class="nav-item active">MON PROFIL</a></li>
-                        <li><a href="#" class="nav-item">MES COMMANDES</a></li>
-                        <li><a href="#" class="nav-item">MES ADRESSES</a></li>
-                        <li><a href="#" class="nav-item">MES VÉLOS</a></li>
-                    </ul>
-                </nav>
-            </div>
-        </aside>
-
+        @include('layouts.sideBar')
         <main class="main-content">
             
             <div class="breadcrumb">

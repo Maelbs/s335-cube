@@ -16,7 +16,7 @@ class CommandeController extends Controller
                             ->orderBy('date_commande', 'desc')
                             ->get();
     
-            return view('listCommandes', compact('commandes'));;
+            return view('listCommandes', compact('commandes', 'client'));;
     }
 
     public function show($id)
