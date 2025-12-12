@@ -395,3 +395,39 @@ body {
 }
 .promo-msg.error { color: #e02b2b; }
 .promo-msg.success { color: #28a745; }
+
+.summary-row.promo-active-row {
+    color: #e62624;
+    font-weight: 700;
+    margin-top: 5px;
+    align-items: center; /* Centre verticalement */
+}
+
+/* Groupe Texte + Bouton à gauche */
+.promo-label-group {
+    display: flex;
+    align-items: center;
+    gap: 8px; /* Espace entre le texte et la croix */
+}
+
+/* Le bouton petite croix */
+.btn-remove-promo {
+    background: none;
+    border: none;
+    color: #999;
+    font-size: 18px;
+    font-weight: bold;
+    cursor: pointer;
+    line-height: 1;
+    padding: 0;
+    margin-top: -2px; 
+    transition: color 0.2s;
+}
+
+.btn-remove-promo:hover {
+    color: #000; /* Devient noir au survol */
+}
+
+.promo-amount {
+    white-space: nowrap;
+}

@@ -97,9 +97,15 @@
 
                         {{-- LIGNE DE RÉDUCTION SI ACTIVE --}}
                         @if(isset($discountAmount) && $discountAmount > 0)
-                            <div class="summary-row" style="color: #e62624; font-weight: 700; margin-top: 5px;">
-                                <span>Réduction ({{ $promoCode }})</span>
-                                <span>- {{ number_format($discountAmount, 2, ',', ' ') }} €</span>
+                            <div class="summary-row promo-active-row">
+                                    <div class="promo-label-group">
+                                        <span>Réduction ({{ $promoCode }})</span>
+                                        {{-- Le bouton croix pour supprimer --}}
+                                        <button type="button" id="btn-remove-promo" class="btn-remove-promo" title="Retirer le code">
+                                            &times;
+                                        </button>
+                                    </div>
+                                <span class="promo-amount">- {{ number_format($discountAmount, 2, ',', ' ') }} €</span>
                             </div>
                         @endif
 
@@ -257,6 +263,27 @@
                         msgPromo.className = 'promo-msg error';
                         msgPromo.style.color = '#e02b2b';
                     });
+                });
+            }
+
+            const btnRemovePromo = document.getElementById('btn-remove-promo');
+
+            if (btnRemovePromo) {
+            btnRemovePromo.addEventListener('click', function(e) {e.preventDefault();
+                    fetch('{{ route("cart.removePromo") }}', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                        }
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            window.location.reload(); // On recharge pour recalculer les prix
+                        }
+                    })
+                    .catch(error => console.error('Erreur:', error));
                 });
             }
         });
