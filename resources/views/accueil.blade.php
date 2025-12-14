@@ -179,7 +179,6 @@
                 </div>
             </div>
         </section>
-
         <section class="accessoires" id="accessoires">
             <h2>Accessoires indispensables pour votre vélo</h2> 
             <div class="accessoires-cards">
@@ -210,7 +209,7 @@
           <img src="{{ asset('images/3.jpg') }}" alt="Image 3" class="carousel-image">
         </div>
     </main>
-
+    
     <footer>
         <p>&copy; 2025 CUBE Bikes France</p>
     </footer>

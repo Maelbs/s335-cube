@@ -13,7 +13,7 @@ class CommandeController extends Controller
         $client = Auth::user();
         
         $commandes = $client->commandes()
-                            ->orderBy('date_commande', 'desc')
+                            ->orderBy('id_commande', 'desc')
                             ->get();
     
             return view('listCommandes', compact('commandes', 'client'));;

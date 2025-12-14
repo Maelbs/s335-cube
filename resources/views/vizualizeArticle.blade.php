@@ -494,7 +494,9 @@
 
         </div>
     </div>
-
+                                    
+    @include('layouts.bikeSizing')
+    
     {{-- Accessoires similaires / Cross-sell --}}
     @if(!$isAccessoire)
         <section class="st-similar-section section-grey">
