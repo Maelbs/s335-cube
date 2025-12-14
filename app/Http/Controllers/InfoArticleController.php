@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\MagasinPartenaire;
 use Illuminate\Http\Request;
 use App\Models\Article;
 
@@ -11,11 +12,14 @@ class InfoArticleController extends Controller
     {
         $article = Article::where('reference', $reference)->firstOrFail();
 
+        // --- MODIFICATION ICI : On ajoute 'inventaires.magasins' ---
+        // Cela permet de récupérer le stock de chaque déclinaison dans chaque magasin (table pivot)
         $relationsCommunes = [
             'caracteristiques.typeCaracteristique',
             'photos',
             'resume',
-            'inventaires.taille'
+            'inventaires.taille',
+            'inventaires.magasins' // <--- INDISPENSABLE pour le store locator
         ];
 
         if ($this->estUnVelo($article)) {
@@ -29,6 +33,7 @@ class InfoArticleController extends Controller
                 'varianteVelo.accessoires'
             ]));
 
+            // On garde le keyBy si tu en as besoin pour tes boutons de taille
             $stock = $article->inventaires->keyBy('id_taille');
             $tailleGeometrie = $article->varianteVelo->modele->tailles->keyBy('id_taille');
             $typeVue = 'velo';
@@ -58,6 +63,11 @@ class InfoArticleController extends Controller
             ->distinct()
             ->get();
 
+        // --- AJOUT POUR LE STORE LOCATOR ---
+        // On a besoin de la liste de tous les magasins pour initialiser la carte et la liste
+        // On charge aussi 'adresses' pour afficher la ville et le code postal
+        $tousLesMagasins = MagasinPartenaire::with('adresses')->get();
+
         return view('vizualizeArticle', compact(
             'article',
             'stock',
@@ -65,7 +75,8 @@ class InfoArticleController extends Controller
             'specifications',
             'articlesSimilaires',
             'typeVue',
-            'isAccessoire'
+            'isAccessoire',
+            'tousLesMagasins' // <--- On envoie cette variable à la vue
         ));
     }
     private function estUnVelo($article)

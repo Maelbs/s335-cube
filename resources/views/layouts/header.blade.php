@@ -229,7 +229,7 @@
         @endif
     </div>
         
-        <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" viewBox="0 0 24 24">
+        <svg xmlns="http://www.w3.org/2000/svg" onclick="toggleStoreLocator()" width="25" height="25" viewBox="0 0 24 24">
             <g>
                 <path d="M20.485 3h-3.992l.5 5s1 1 2.5 1a3.23 3.23 0 0 0 2.139-.806a.503.503 0 0 0 .15-.465L21.076 3.5a.6.6 0 0 0-.591-.5Z"/>
                 <path d="m16.493 3l.5 5s-1 1-2.5 1s-2.5-1-2.5-1V3h4.5Z"/>

@@ -1,300 +1,415 @@
 /* public/js/map.js */
 
-if (typeof window.mapScriptLoaded === 'undefined') {
-    window.mapScriptLoaded = true;
+if (typeof window.mapScriptLoaded === "undefined") {
+  window.mapScriptLoaded = true;
 
-    var mapInitialized = false;
-    var map = null;
-    var markersLayer = null; // Nouveau : Pour gérer le groupe de marqueurs
-    var userCoords = null;
-    var storeLocatorTimeout = null;
+  // --- VARIABLES GLOBALES ---
+  var mapInitialized = false;
+  var map = null;
+  var markersLayer = null;
+  var userCoords = null; // Stockera les coordonnées de votre adresse
+  var storeLocatorTimeout = null;
 
-    // --- 1. DÉFINITION DES ICÔNES ---
-    // Icône Verte (Client)
-    var greenIcon = new L.Icon({
-        iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-green.png',
-        shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
-        iconSize: [25, 41], iconAnchor: [12, 41], popupAnchor: [1, -34], shadowSize: [41, 41]
-    });
+  // Stocke l'ID de la taille sélectionnée
+  window.currentTailleId = null;
 
-    // Icône Rouge (Magasin Sélectionné)
-    var redIcon = new L.Icon({
-        iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-red.png',
-        shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
-        iconSize: [25, 41], iconAnchor: [12, 41], popupAnchor: [1, -34], shadowSize: [41, 41]
-    });
+  // --- 1. DÉFINITION DES ICÔNES ---
+  var greenIcon = new L.Icon({
+    iconUrl:
+      "https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-green.png",
+    shadowUrl:
+      "https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png",
+    iconSize: [25, 41],
+    iconAnchor: [12, 41],
+    popupAnchor: [1, -34],
+    shadowSize: [41, 41],
+  });
 
-    // Icône Bleue (Magasins standards)
-    var blueIcon = new L.Icon({
-        iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-blue.png',
-        shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
-        iconSize: [25, 41], iconAnchor: [12, 41], popupAnchor: [1, -34], shadowSize: [41, 41]
-    });
+  var redIcon = new L.Icon({
+    iconUrl:
+      "https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-red.png",
+    shadowUrl:
+      "https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png",
+    iconSize: [25, 41],
+    iconAnchor: [12, 41],
+    popupAnchor: [1, -34],
+    shadowSize: [41, 41],
+  });
 
-    // --- FONCTIONS UTILITAIRES ---
-    window.getDistanceFromLatLonInKm = function (lat1, lon1, lat2, lon2) {
-        var R = 6371;
-        var dLat = deg2rad(lat2 - lat1);
-        var dLon = deg2rad(lon2 - lon1);
-        var a = Math.sin(dLat / 2) * Math.sin(dLat / 2) + Math.cos(deg2rad(lat1)) * Math.cos(deg2rad(lat2)) * Math.sin(dLon / 2) * Math.sin(dLon / 2);
-        var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-        return R * c;
-    };
-    window.deg2rad = function (deg) { return deg * (Math.PI / 180); };
+  var blueIcon = new L.Icon({
+    iconUrl:
+      "https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-blue.png",
+    shadowUrl:
+      "https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png",
+    iconSize: [25, 41],
+    iconAnchor: [12, 41],
+    popupAnchor: [1, -34],
+    shadowSize: [41, 41],
+  });
 
-    // --- GESTION DE L'AFFICHAGE ET DU FILTRE ---
+  // --- FONCTIONS UTILITAIRES ---
+  window.getDistanceFromLatLonInKm = function (lat1, lon1, lat2, lon2) {
+    var R = 6371; // Rayon de la terre en km
+    var dLat = deg2rad(lat2 - lat1);
+    var dLon = deg2rad(lon2 - lon1);
+    var a =
+      Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+      Math.cos(deg2rad(lat1)) *
+        Math.cos(deg2rad(lat2)) *
+        Math.sin(dLon / 2) *
+        Math.sin(dLon / 2);
+    var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+    return R * c;
+  };
+  window.deg2rad = function (deg) {
+    return deg * (Math.PI / 180);
+  };
 
-    // Cette fonction gère tout : filtre la liste HTML ET recharge la carte
-    window.refreshStoreDisplay = function () {
-        var onlyStock = document.getElementById('stockToggle') ? document.getElementById('stockToggle').checked : false;
-
-        // A. FILTRE LISTE HTML
-        var cards = document.querySelectorAll('.sl-card');
-        cards.forEach(function (card) {
-            var hasStock = card.getAttribute('data-has-stock') === 'true';
-            if (onlyStock && !hasStock) {
-                card.style.display = 'none';
-            } else {
-                card.style.display = 'block';
-            }
-        });
-
-        // B. FILTRE CARTE
-        loadStoresOnMap();
-    };
-
-    window.initMap = function () {
-        if (typeof L === 'undefined' || map) return;
-
-        map = L.map('sl-map').setView([46.603354, 1.888334], 6);
-        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { attribution: '&copy; OpenStreetMap' }).addTo(map);
-
-        // Création du groupe de calques pour pouvoir les supprimer facilement
-        markersLayer = L.layerGroup().addTo(map);
-
-        function setUserLocation(lat, lng) {
-            userCoords = { lat: lat, lng: lng };
-            L.marker([lat, lng], { icon: redIcon }).addTo(map).bindPopup("<b>Vous êtes ici</b>").openPopup();
-            map.setView([lat, lng], 10);
-
-            // Calcul des distances dans la liste
-            var cards = document.querySelectorAll('.sl-card');
-            // ... (Votre logique de calcul de distance existante pourrait aller ici si besoin de recalculer)
-
-            refreshStoreDisplay(); // On lance l'affichage
-        }
-
-        function useDatabaseAddress() {
-            if (window.userAddress && window.userAddress.trim() !== "") {
-                var url = 'https://api-adresse.data.gouv.fr/search/?q=' + encodeURIComponent(window.userAddress) + '&limit=1';
-                if (window.userAddress.includes("74")) url += '&deptCODE=74';
-
-                fetch(url).then(r => r.json()).then(data => {
-                    if (data.features && data.features.length > 0) {
-                        var c = data.features[0].geometry.coordinates;
-                        setUserLocation(c[1], c[0], "Adresse Profil");
-                    } else {
-                        refreshStoreDisplay();
-                    }
-                }).catch(() => refreshStoreDisplay());
-            } else {
-                refreshStoreDisplay();
-            }
-        }
-
-        if (navigator.geolocation) {
-            navigator.geolocation.getCurrentPosition(
-                function (p) { setUserLocation(p.coords.latitude, p.coords.longitude, "GPS"); },
-                function () { useDatabaseAddress(); }
-            );
-        } else {
-            useDatabaseAddress();
-        }
-    };
-    if (userCoords) {
-        var dist = getDistanceFromLatLonInKm(userCoords.lat, userCoords.lng, lat, lng);
-        // Mise à jour du badge dans la liste HTML correspondante
-        var card = Array.from(document.querySelectorAll('.sl-card')).find(c => c.innerText.includes(mag.nom));
-        if (card) {
-            card.setAttribute('data-distance', dist);
-            var header = card.querySelector('.sl-card-header');
-            if (header && !header.querySelector('.dist-badge')) {
-                var b = document.createElement('span');
-                b.className = 'dist-badge';
-                b.style.cssText = "float:right; font-size:0.8rem; color:#666; font-weight:normal;";
-                b.innerHTML = dist.toFixed(1) + ' km';
-                header.appendChild(b);
-            }
-        }
+  /**
+   * Vérifie la disponibilité d'un magasin selon la taille sélectionnée
+   */
+  function checkAvailability(cardElement) {
+    var rawJson = cardElement.getAttribute("data-stock-details");
+    var stockGlobal = cardElement.getAttribute("data-stock-global") === "1";
+    var stockDetails = {};
+    try {
+      if (rawJson) stockDetails = JSON.parse(rawJson);
+    } catch (e) {
+      console.error(e);
     }
-    window.loadStoresOnMap = function () {
-        if (!window.magasinsData || !markersLayer) return;
 
-        // 1. On nettoie les anciens marqueurs (indispensable pour le filtre)
-        markersLayer.clearLayers();
+    if (window.currentTailleId) {
+      var qty = stockDetails[String(window.currentTailleId)] || 0;
+      return qty > 0;
+    } else {
+      return stockGlobal;
+    }
+  }
 
-        // 2. On récupère l'état du filtre stock
-        var onlyStock = document.getElementById('stockToggle') ? document.getElementById('stockToggle').checked : false;
+  // --- GESTION DE L'AFFICHAGE LISTE ---
+  window.refreshStoreDisplay = function () {
+    var onlyStock = document.getElementById("stockToggle")
+      ? document.getElementById("stockToggle").checked
+      : false;
+    var searchInput = document.getElementById("storeSearchInput");
+    var searchText = searchInput ? searchInput.value.toLowerCase().trim() : "";
 
-        window.magasinsData.forEach(function (mag) {
+    var cards = document.querySelectorAll(".sl-card");
 
-            // FILTRE : Si on veut que du stock et que le magasin n'en a pas, on passe au suivant
-            if (onlyStock && !mag.stock) return;
+    cards.forEach(function (card) {
+      var hasStock = checkAvailability(card);
+      var searchString =
+        card.getAttribute("data-search-string") ||
+        card.getAttribute("data-searchString") ||
+        "";
+      var matchesSearch = searchString.indexOf(searchText) !== -1;
 
-            if (mag.adresse) {
-                var query = encodeURIComponent(mag.adresse);
+      var showCard = true;
+      if (onlyStock && !hasStock) showCard = false;
+      if (!matchesSearch) showCard = false;
 
-                // Petit délai aléatoire pour éviter de spammer l'API (Rate Limit)
-                setTimeout(function () {
-                    fetch('https://api-adresse.data.gouv.fr/search/?q=' + query + '&limit=1')
-                        .then(r => r.json())
-                        .then(data => {
-                            if (data.features && data.features.length > 0) {
-                                var coords = data.features[0].geometry.coordinates;
-                                var lat = coords[1];
-                                var lng = coords[0];
-
-                                // CHOIX DE L'ICÔNE : Rouge si sélectionné, Bleu sinon
-                                var iconToUse = mag.selected ? greenIcon : blueIcon;
-
-                                var marker = L.marker([lat, lng], { icon: iconToUse });
-
-                                // Contenu Popup
-                                var stockHtml = mag.stock
-                                    ? '<div style="font-size:11px; margin-bottom:10px;">🟢 En stock</div>'
-                                    : '<div style="font-size:11px; margin-bottom:10px;">🔴 Indisponible</div>';
-
-                                var btnHtml = mag.selected
-                                    ? '<button class="btn-skew-black" style="background:#28a745; border-color:#28a745; width:100%; cursor:default;">DÉJÀ SÉLECTIONNÉ</button>'
-                                    : '<form action="' + window.routeDefinirMagasin + '" method="POST">' +
-                                    '<input type="hidden" name="_token" value="' + window.csrfToken + '">' +
-                                    '<input type="hidden" name="id_magasin" value="' + mag.id + '">' +
-                                    '<button type="submit" class="btn-skew-black" style="font-size:11px; padding:8px 15px; width:100%;">CHOISIR</button>' +
-                                    '</form>';
-
-                                marker.bindPopup(
-                                    '<div style="text-align:center; min-width: 180px;">' +
-                                    '<h3 style="margin:0 0 5px 0; font-size:14px;">' + mag.nom + '</h3>' +
-                                    '<div style="font-size:12px; margin-bottom:5px;">' + mag.ville + '</div>' +
-                                    stockHtml +
-                                    btnHtml +
-                                    '</div>'
-                                );
-
-                                // IMPORTANT : On ajoute au groupe markersLayer, pas directement à map
-                                markersLayer.addLayer(marker);
-
-                                // Calcul distance (si userCoords existe)
-                                if (userCoords) {
-                                    var dist = getDistanceFromLatLonInKm(userCoords.lat, userCoords.lng, lat, lng);
-                                    // Mise à jour du badge dans la liste HTML correspondante
-                                    var card = Array.from(document.querySelectorAll('.sl-card')).find(c => c.innerText.includes(mag.nom));
-                                    if (card) {
-                                        card.setAttribute('data-distance', dist);
-                                        var header = card.querySelector('.sl-card-header');
-                                        if (header && !header.querySelector('.dist-badge')) {
-                                            var b = document.createElement('span');
-                                            b.className = 'dist-badge';
-                                            b.style.cssText = "float:right; font-size:0.8rem; color:#666; font-weight:normal;";
-                                            b.innerHTML = dist.toFixed(1) + ' km';
-                                            header.appendChild(b);
-                                        }
-                                    }
-                                }
-                            }
-                        });
-                }, Math.random() * 1000); // Délai pour l'API
-            }
-        });
-
-        // On retrie la liste après un petit délai pour laisser le temps aux distances d'arriver
-        setTimeout(window.sortStoreList, 1500);
-    };
-
-    // --- ÉCOUTEURS D'ÉVÉNEMENTS ---
-    document.addEventListener("DOMContentLoaded", function () {
-        // ... (gestion overlay existante) ...
-        var overlay = document.getElementById("store-locator-overlay");
-        if (overlay) overlay.addEventListener("click", function (e) { if (e.target.id === "store-locator-overlay") toggleStoreLocator(); });
-        var closeBtn = document.querySelector(".sl-close-btn");
-        if (closeBtn) closeBtn.addEventListener("click", toggleStoreLocator);
-
-        // NOUVEAU : Écouteur sur le switch de stock
-        var stockToggle = document.getElementById('stockToggle');
-        if (stockToggle) {
-            stockToggle.addEventListener('change', function () {
-                // Quand on clique sur le switch, on relance l'affichage
-                window.refreshStoreDisplay();
-            });
-        }
+      if (showCard) {
+        card.style.display = "block";
+        card.classList.remove("hidden-item");
+      } else {
+        card.style.display = "none";
+        card.classList.add("hidden-item");
+      }
     });
 
-    // ... (restes des fonctions toggleStoreLocator, switchView, sortStoreList...) ...
-    window.toggleStoreLocator = function () {
-        /* ... VOTRE CODE EXISTANT ... */
-        var overlay = document.getElementById("store-locator-overlay");
-        var header = document.querySelector("header");
-        var body = document.body; if (!overlay) return;
+    // On recharge les marqueurs (et donc les distances)
+    window.loadStoresOnMap();
+  };
 
-        if (storeLocatorTimeout) {
-            clearTimeout(storeLocatorTimeout);
-            storeLocatorTimeout = null;
-        }
-        if (overlay.classList.contains("visible")) {
-            overlay.classList.remove("visible");
-            if (header) header.classList.remove("header-hidden");
-            body.style.overflow = "";
-            storeLocatorTimeout = setTimeout(function () { overlay.style.visibility = "hidden"; }, 300);
-        }
-        else {
-            overlay.style.visibility = "visible";
-            body.style.overflow = "hidden";
-            if (header) header.classList.add("header-hidden"); requestAnimationFrame(function () {
-                overlay.classList.add("visible");
-            });
-        }
-        
-    };
+  // --- INITIALISATION CARTE ---
+  window.initMap = function () {
+    if (typeof L === "undefined" || map) return;
 
+    map = L.map("sl-map").setView([46.603354, 1.888334], 6);
+    L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+      attribution: "&copy; OpenStreetMap",
+    }).addTo(map);
 
-    window.switchView = function (viewName) {
-        var tabs = document.querySelectorAll('.sl-tab');
-        var list = document.getElementById('view-list');
-        var mapDiv = document.getElementById('view-map');
+    markersLayer = L.layerGroup().addTo(map);
 
-        if (list && mapDiv) {
-            list.style.display = (viewName === 'list') ? 'block' : 'none';
-            mapDiv.style.display = (viewName === 'map') ? 'block' : 'none';
-        }
+    function setUserLocation(lat, lng, label) {
+      console.log("📍 Position utilisateur fixée :", lat, lng);
+      userCoords = { lat: lat, lng: lng };
 
-        if (tabs.length > 0) {
-            tabs[0].classList.toggle('active', viewName === 'list');
-            tabs[1].classList.toggle('active', viewName === 'map');
-        }
+      L.marker([lat, lng], { icon: redIcon })
+        .addTo(map)
+        .bindPopup("<b>" + label + "</b>")
+        .openPopup();
 
-        // Gestion de la carte
-        if (viewName === 'map') {
-            // Si la carte n'est pas encore lancée, on la lance (cas rare maintenant)
-            if (!mapInitialized) {
-                initMap();
-                mapInitialized = true;
+      map.setView([lat, lng], 10);
+
+      // Une fois la position de l'utilisateur connue, on lance le calcul des distances
+      window.refreshStoreDisplay();
+    }
+
+    function useDatabaseAddress() {
+      // Vérification console pour débugger
+      if (window.userAddress && window.userAddress.trim() !== "") {
+        console.log("📍 Adresse client trouvée :", window.userAddress);
+
+        var url =
+          "https://api-adresse.data.gouv.fr/search/?q=" +
+          encodeURIComponent(window.userAddress) +
+          "&limit=1";
+        if (window.userAddress.includes("74")) url += "&deptCODE=74";
+
+        fetch(url)
+          .then((r) => r.json())
+          .then((data) => {
+            if (data.features && data.features.length > 0) {
+              var c = data.features[0].geometry.coordinates;
+              // c[1] = lat, c[0] = lng
+              setUserLocation(c[1], c[0], "Votre adresse");
             } else {
-                // Si elle tourne déjà, on la redessine correctement
-                setTimeout(function () {
-                    if (map) {
-                        map.invalidateSize();
-
-                        // NOUVEAU : On recentre sur l'utilisateur si on a ses coordonnées
-                        // (Car l'initialisation cachée peut avoir décalé le centre)
-                        if (userCoords) {
-                            map.setView([userCoords.lat, userCoords.lng], 10);
-                        }
-                    }
-                }, 100);
+              console.warn("⚠️ Adresse non trouvée par l'API Gouv.");
+              window.refreshStoreDisplay();
             }
-        }
-    };
+          })
+          .catch((e) => {
+            console.error("Erreur API Adresse", e);
+            window.refreshStoreDisplay();
+          });
+      } else {
+        console.log(
+          "ℹ️ Aucune adresse client détectée (Invité ?). Pas de calcul de distance possible."
+        );
+        window.refreshStoreDisplay();
+      }
+    }
 
+    // ON LANCE DIRECTEMENT L'ADRESSE (Pas de GPS)
+    useDatabaseAddress();
+  };
 
-    window.sortStoreList = function () { var container = document.getElementById('view-list'); if (!container) return; var cards = Array.from(container.getElementsByClassName('sl-card')); cards.sort(function (a, b) { var distA = parseFloat(a.getAttribute('data-distance')) || 99999; var distB = parseFloat(b.getAttribute('data-distance')) || 99999; return distA - distB; }); cards.forEach(function (card) { container.appendChild(card); }); };
+  // --- CHARGEMENT DES MARQUEURS ET CALCUL DES DISTANCES ---
+  window.loadStoresOnMap = function () {
+    if (!window.magasinsData) return;
+    if (markersLayer) markersLayer.clearLayers();
+
+    var onlyStock = document.getElementById("stockToggle")
+      ? document.getElementById("stockToggle").checked
+      : false;
+    var searchInput = document.getElementById("storeSearchInput");
+    var searchText = searchInput ? searchInput.value.toLowerCase().trim() : "";
+
+    window.magasinsData.forEach(function (mag) {
+      // 1. Récup carte DOM pour vérifier dispo
+      var domCard = document.querySelector(
+        '.sl-card[data-id="' + mag.id + '"]'
+      );
+      var isAvailable = domCard ? checkAvailability(domCard) : mag.stock;
+
+      // 2. Filtres (Stock et Recherche)
+      if (onlyStock && !isAvailable) return;
+      var magSearchString = (
+        mag.nom +
+        " " +
+        mag.ville +
+        " " +
+        mag.adresse
+      ).toLowerCase();
+      if (searchText !== "" && magSearchString.indexOf(searchText) === -1)
+        return;
+
+      // 3. Calcul coordonnées magasin (API)
+      if (mag.adresse) {
+        var query = encodeURIComponent(mag.adresse);
+        setTimeout(function () {
+          fetch(
+            "https://api-adresse.data.gouv.fr/search/?q=" + query + "&limit=1"
+          )
+            .then((r) => r.json())
+            .then((data) => {
+              if (data.features && data.features.length > 0) {
+                var coords = data.features[0].geometry.coordinates;
+                var lat = coords[1];
+                var lng = coords[0];
+
+                if (map && markersLayer) {
+                  // --- GESTION DES COULEURS (CORRIGÉE) ---
+
+                  // Par défaut : BLEU pour les autres magasins
+                  var iconToUse = blueIcon;
+
+                  // Si c'est le magasin sélectionné : VERT
+                  if (mag.selected) {
+                    iconToUse = greenIcon;
+                  }
+
+                  // (Note: La position utilisateur est gérée ailleurs en ROUGE)
+
+                  var marker = L.marker([lat, lng], { icon: iconToUse });
+
+                  // Préparation du contenu de la Popup
+                  var stockHtml = isAvailable
+                    ? '<div style="color:green;">🟢 Disponible</div>'
+                    : '<div style="color:red;">🔴 Indisponible</div>';
+                  var btnHtml = mag.selected
+                    ? '<button class="btn-skew-black" style="background:#28a745; width:100%; cursor:default;">DÉJÀ SÉLECTIONNÉ</button>'
+                    : '<form action="' +
+                      window.routeDefinirMagasin +
+                      '" method="POST"><input type="hidden" name="_token" value="' +
+                      window.csrfToken +
+                      '"><input type="hidden" name="id_magasin" value="' +
+                      mag.id +
+                      '"><button type="submit" class="btn-skew-black" style="font-size:10px; padding:5px; width:100%;">CHOISIR</button></form>';
+
+                  marker.bindPopup(
+                    '<div style="text-align:center;"><b>' +
+                      mag.nom +
+                      "</b><br>" +
+                      mag.ville +
+                      "<br>" +
+                      stockHtml +
+                      "<br>" +
+                      btnHtml +
+                      "</div>"
+                  );
+                  markersLayer.addLayer(marker);
+                }
+
+                // CALCUL DISTANCE (LISTE)
+                if (window.userCoords && domCard) {
+                  var dist = window.getDistanceFromLatLonInKm(
+                    window.userCoords.lat,
+                    window.userCoords.lng,
+                    lat,
+                    lng
+                  );
+                  domCard.setAttribute("data-distance", dist);
+
+                  // Ecriture dans le <p class="sl-distance">
+                  var distanceP = domCard.querySelector(".sl-distance");
+                  if (distanceP) {
+                    distanceP.innerText = dist.toFixed(1) + " km";
+                    distanceP.style.display = "block";
+                  }
+                }
+              }
+            });
+        }, Math.random() * 500);
+      }
+    });
+
+    setTimeout(window.sortStoreList, 2000);
+  };
+  // --- ÉCOUTEURS DOM ET TOGGLE ---
+  document.addEventListener("DOMContentLoaded", function () {
+    // ... Vos écouteurs existants ...
+    var overlay = document.getElementById("store-locator-overlay");
+    if (overlay)
+      overlay.addEventListener("click", function (e) {
+        if (e.target.id === "store-locator-overlay")
+          window.toggleStoreLocator();
+      });
+
+    var stockToggle = document.getElementById("stockToggle");
+    if (stockToggle)
+      stockToggle.addEventListener("change", window.refreshStoreDisplay);
+
+    var searchInput = document.getElementById("storeSearchInput");
+    if (searchInput)
+      searchInput.addEventListener("input", window.refreshStoreDisplay);
+  });
+
+  window.toggleStoreLocator = function () {
+    var overlay = document.getElementById("store-locator-overlay");
+    var header = document.querySelector("header");
+    var body = document.body;
+    if (!overlay) return;
+    if (storeLocatorTimeout) {
+      clearTimeout(storeLocatorTimeout);
+      storeLocatorTimeout = null;
+    }
+
+    if (overlay.classList.contains("visible")) {
+      overlay.classList.remove("visible");
+      if (header) header.classList.remove("header-hidden");
+      body.style.overflow = "";
+      storeLocatorTimeout = setTimeout(function () {
+        overlay.style.visibility = "hidden";
+      }, 300);
+    } else {
+      overlay.style.visibility = "visible";
+      body.style.overflow = "hidden";
+      if (header) header.classList.add("header-hidden");
+      requestAnimationFrame(function () {
+        overlay.classList.add("visible");
+      });
+      if (document.getElementById("view-map").style.display !== "none")
+        window.switchView("map");
+    }
+  };
+
+  window.switchView = function (viewName) {
+    var tabs = document.querySelectorAll(".sl-tab");
+    var list = document.getElementById("view-list");
+    var mapDiv = document.getElementById("view-map");
+    if (list && mapDiv) {
+      list.style.display = viewName === "list" ? "block" : "none";
+      mapDiv.style.display = viewName === "map" ? "block" : "none";
+    }
+    if (tabs.length > 0) {
+      tabs[0].classList.toggle("active", viewName === "list");
+      tabs[1].classList.toggle("active", viewName === "map");
+    }
+    if (viewName === "map") {
+      if (!mapInitialized) {
+        window.initMap();
+        mapInitialized = true;
+      } else {
+        setTimeout(function () {
+          if (map) {
+            map.invalidateSize();
+            if (userCoords) map.setView([userCoords.lat, userCoords.lng], 10);
+          }
+        }, 100);
+      }
+    }
+  };
+
+  window.sortStoreList = function () {
+    var container = document.getElementById("view-list");
+    if (!container) return;
+    var cards = Array.from(container.getElementsByClassName("sl-card"));
+    cards.sort(function (a, b) {
+      var distA = parseFloat(a.getAttribute("data-distance")) || 99999;
+      var distB = parseFloat(b.getAttribute("data-distance")) || 99999;
+      return distA - distB;
+    });
+    cards.forEach(function (card) {
+      container.appendChild(card);
+    });
+  };
 }
+
+// Fonction appelée par le clic bouton taille
+window.updateStoreLocatorStocks = function (idInventaire) {
+  window.currentTailleId = idInventaire;
+  // ... (même logique d'affichage que précédemment) ...
+  const cards = document.querySelectorAll(".sl-card");
+  cards.forEach((card) => {
+    // ... mise à jour texte dispo ...
+    const displayDiv = card.querySelector(".js-stock-display");
+    if (!displayDiv) return;
+    var isAvailable = checkAvailability(card);
+    var message = isAvailable
+      ? idInventaire
+        ? "Disponible (Taille sélectionnée)"
+        : "Disponible"
+      : idInventaire
+      ? "Indisponible (Taille sélectionnée)"
+      : "Indisponible";
+
+    // HTML simplifié pour l'exemple
+    displayDiv.innerHTML = isAvailable
+      ? `<div class="sl-stock-status status-dispo"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#00AEEF" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg> ${message}</div>`
+      : `<div class="sl-stock-status status-indispo" style="color: #999;"><span style="font-size:12px;">✖</span> ${message}</div>`;
+  });
+  window.refreshStoreDisplay();
+};
