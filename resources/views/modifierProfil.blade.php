@@ -131,7 +131,10 @@
 
         </main>
     </div>
-
+    
+    <script>
+        modifierProfil = true;
+    </script>
     <script src="{{ asset('js/header.js') }}" defer></script>
     <script src="{{ asset('js/inscription.js') }}" defer></script>
 </body>
