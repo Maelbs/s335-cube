@@ -75,57 +75,81 @@
 
                 {{-- VUE 1 : LISTE --}}
                 <div id="view-list" class="sl-list-container custom-scroll">
+                    {{-- DANS store-locator.blade.php --}}
+
                     @foreach($tousLesMagasins as $magasin)
                         @php
                             $adresse = $magasin->adresses->first();
-                            $enStock = false;
+                            $searchString = strtolower($magasin->nom_magasin . ' ' . ($adresse ? $adresse->ville . ' ' . $adresse->code_postal : ''));
 
-                            // 1. Logique Stock (Uniquement si on est sur une page produit)
-                            if ($stockLocal) {
-                                $magasinDansStock = $stockLocal->flatMap->magasins->firstWhere('id_magasin', $magasin->id_magasin);
-                                if ($magasinDansStock && $magasinDansStock->pivot->quantite_stock_magasin > 0) {
-                                    $enStock = true;
+                            // --- 1. PRÉPARATION DES DONNÉES DE STOCK (JSON) ---
+                            $stockMap = [];
+                            $enStockGlobal = false;
+
+                            // On vérifie si la variable $stock existe (cas Page Produit)
+                            if (isset($stock) && $stock) {
+                                foreach ($stock as $inventaire) {
+                                    // On cherche si ce magasin possède cette déclinaison (taille)
+                                    // $inventaire->magasins est la relation chargée via le Controller
+                                    $pivot = $inventaire->magasins->firstWhere('id_magasin', $magasin->id_magasin);
+
+                                    $qty = $pivot ? $pivot->pivot->quantite_stock_magasin : 0;
+
+                                    // CLÉ = ID de l'inventaire (ex: 145), VALEUR = Quantité
+                                    $stockMap[$inventaire->id_taille] = $qty;
+
+                                    if ($qty > 0)
+                                        $enStockGlobal = true;
                                 }
                             }
-
-                            // 2. Vérifier si c'est le magasin actuellement sélectionné
-                            // On utilise $magasinHeader injecté par AppServiceProvider
-                            $estSelectionne = isset($magasinHeader) && $magasinHeader->id_magasin == $magasin->id_magasin;
-
-                            $searchString = strtolower($magasin->nom_magasin . ' ' . ($adresse ? $adresse->ville . ' ' . $adresse->code_postal : ''));
                         @endphp
 
-                        <div class="sl-card" data-has-stock="{{ $enStock ? 'true' : 'false' }}"
-                            data-searchString="{{ $searchString }}">
+                        {{--
+                        --- 2. ATTRIBUTS HTML POUR LE JS ---
+                        data-stock-details : Contient l'objet JSON { "id_taille": quantite, ... }
+                        data-stock-global : État par défaut (si aucune taille n'est sélectionnée)
+                        --}}
+                        <div class="sl-card store-item js-store-card" 
+                            data-id="{{ $magasin->id_magasin }}" 
+                            data-search-string="{{ $searchString }}"
+                            data-stock-details="{{ json_encode($stockMap) }}"
+                            data-stock-global="{{ $enStockGlobal ? '1' : '0' }}">
 
                             <div class="sl-card-header">
                                 <h3>
                                     {{ $magasin->nom_magasin }}
-                                    {{-- Petit indicateur visuel à côté du titre --}}
-                                    @if($estSelectionne)
-                                        <span style="font-size: 0.7em; color: #28a745; margin-left: 10px;">● Mon magasin</span>
+                                    @if(isset($magasinHeader) && $magasinHeader && $magasinHeader->id_magasin == $magasin->id_magasin)
+                                        <span class="badge-mon-magasin">● Mon magasin</span>
                                     @endif
                                 </h3>
+                                <p class="sl-distance"></p>
                             </div>
 
                             <div class="sl-card-body">
                                 <div class="sl-card-info">
 
-                                    {{-- 3. BADGES DE STOCK : On n'affiche RIEN si $stockLocal est null (Accueil) --}}
-                                    @if($stockLocal)
-                                        @if($enStock)
-                                            <div class="sl-stock-status">
-                                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#00AEEF"
-                                                    stroke-width="4" stroke-linecap="round" stroke-linejoin="round">
-                                                    <polyline points="20 6 9 17 4 12"></polyline>
-                                                </svg>
-                                                Commandable ici
+                                    {{-- N'affiche le statut de stock que si on est sur une page produit ($stock existe)
+                                    --}}
+                                    @if(isset($stock))
+                                        <div class="sl-stock-status-container">
+                                            {{-- CIBLE JS : class="js-stock-display" --}}
+                                            <div class="js-stock-display">
+                                                {{-- ÉTAT INITIAL (CHARGEMENT PHP) --}}
+                                                @if($enStockGlobal)
+                                                    <div class="sl-stock-status status-dispo">
+                                                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#00AEEF"
+                                                            stroke-width="4" stroke-linecap="round" stroke-linejoin="round">
+                                                            <polyline points="20 6 9 17 4 12"></polyline>
+                                                        </svg>
+                                                        Disponible
+                                                    </div>
+                                                @else
+                                                    <div class="sl-stock-status status-indispo" style="color: #999;">
+                                                        <span style="font-size:12px;">✖</span> Indisponible
+                                                    </div>
+                                                @endif
                                             </div>
-                                        @else
-                                            <div class="sl-stock-status" style="color: #999;">
-                                                <span style="font-size:12px;">✖</span> Indisponible
-                                            </div>
-                                        @endif
+                                        </div>
                                     @endif
 
                                     @if($adresse)
@@ -134,27 +158,18 @@
                                 </div>
 
                                 <div class="sl-card-action">
-                                    @php
-                                        // On vérifie si ce magasin correspond à celui stocké en session/BDD (injecté via $magasinHeader)
-                                        $estSelectionne = isset($magasinHeader) && $magasinHeader->id_magasin == $magasin->id_magasin;
-                                    @endphp
-
-                                    @if($estSelectionne)
-                                        {{-- CAS : C'est mon magasin actuel --}}
-                                        <button type="button" class="btn-skew-black" style="background-color: #28a745; cursor: default; border-color: #28a745;">
-                                            <span class="btn-content">
-                                                <span class="arrow">✔</span> MAGASIN SÉLECTIONNÉ
-                                            </span>
+                                    {{-- Tes boutons Choisir / Sélectionné --}}
+                                    @if(isset($magasinHeader) && $magasinHeader && $magasinHeader->id_magasin == $magasin->id_magasin)
+                                        <button type="button" class="btn-skew-black"
+                                            style="background-color: #28a745; cursor: default; border-color: #28a745;">
+                                            <span class="btn-content"><span class="arrow">✔</span> SÉLECTIONNÉ</span>
                                         </button>
                                     @else
-                                        {{-- CAS : Ce n'est pas mon magasin, je peux le choisir --}}
                                         <form action="{{ route('magasin.definir') }}" method="POST">
                                             @csrf
                                             <input type="hidden" name="id_magasin" value="{{ $magasin->id_magasin }}">
                                             <button type="submit" class="btn-skew-black">
-                                                <span class="btn-content">
-                                                    <span class="arrow">▶</span> CHOISIR
-                                                </span>
+                                                <span class="btn-content"><span class="arrow">▶</span> CHOISIR</span>
                                             </button>
                                         </form>
                                     @endif
@@ -174,24 +189,26 @@
     </div>
 </div>
 
-<script>
-    // 1. Données des magasins
-    window.magasinsData = @json($jsonMagasins);
+<script src="{{ asset('js/map.js') }}" defer></script>
 
-    // 2. Token et Routes
+<script>
+    window.magasinsData = @json($jsonMagasins);
     window.csrfToken = "{{ csrf_token() }}";
     window.routeDefinirMagasin = "{{ route('magasin.definir') }}";
+    
+    // --- AJOUTEZ CETTE LIGNE ICI ---
+    // Si la variable $stock existe (page produit), ceci vaudra true. Sinon false.
+    window.checkStock = @json(isset($stock)); 
+    // -------------------------------
 
-    // 3. Initialisation de l'adresse à null par défaut
     window.userAddress = null;
 
-    // 4. Injection de l'adresse client (si connecté)
     @auth
         @php
             $client = Auth::user();
             $adresseClient = "";
-            
-            if(isset($client->adresses) && $client->adresses->isNotEmpty()) {
+
+            if (isset($client->adresses) && $client->adresses->isNotEmpty()) {
                 $adObj = $client->adresses->last();
                 $adresseClient = $adObj->rue . ' ' . $adObj->code_postal . ' ' . $adObj->ville;
             } elseif (isset($client->adresseFacturation)) {
@@ -201,7 +218,6 @@
         @endphp
 
         @if(!empty($adresseClient))
-            // PAS DE BALISE <SCRIPT> ICI, on est déjà dedans !
             window.userAddress = "{!! addslashes($adresseClient) !!}";
         @endif
     @endauth
@@ -210,11 +226,23 @@
 {{-- Gardez le style --}}
 <style>
     .btn-skew-grey {
-        background: #e0e0e0; color: #555; border: 1px solid #ccc;
-        padding: 12px 25px; transform: skewX(-20deg); cursor: default;
+        background: #e0e0e0;
+        color: #555;
+        border: 1px solid #ccc;
+        padding: 12px 25px;
+        transform: skewX(-20deg);
+        cursor: default;
         display: inline-block;
     }
+
     /* Style pour le popup Leaflet */
-    .leaflet-popup-content-wrapper { border-radius: 0; padding: 0; }
-    .leaflet-popup-content { margin: 15px; width: 200px !important; }
+    .leaflet-popup-content-wrapper {
+        border-radius: 0;
+        padding: 0;
+    }
+
+    .leaflet-popup-content {
+        margin: 15px;
+        width: 200px !important;
+    }
 </style>

@@ -182,6 +182,10 @@ header:hover .logo img {
     stroke-width: 2;
 }
 
+.menu-user svg:hover {
+    cursor: pointer;
+}
+
 /* =========================================
    3. MEGA MENU DROPDOWN
    ========================================= */
@@ -653,6 +657,7 @@ header:hover .logo img {
     font-weight: bold;
     cursor: pointer;
     font-size: 1.05em !important;
+    text-transform: uppercase;
 }
 
 .btn-select-store:hover {

@@ -1,10 +1,12 @@
 <!DOCTYPE html>
 <html lang="fr">
+
 <head>
     <meta charset="UTF-8">
     <title>Facture #{{ $commande->id_commande }}</title>
     <link rel="stylesheet" href="css/invoice.css">
 </head>
+
 <body>
 
     <div class="header-container">
@@ -17,7 +19,8 @@
                     <div class="invoice-title">FACTURE</div>
                     <div class="invoice-number">N° #{{ $commande->id_commande }}</div>
                     <div class="invoice-date">
-                        Date : {{ $commande->date_commande ? $commande->date_commande->format('d/m/Y') : now()->format('d/m/Y') }}
+                        Date :
+                        {{ $commande->date_commande ? $commande->date_commande->format('d/m/Y') : now()->format('d/m/Y') }}
                     </div>
                 </td>
             </tr>
@@ -31,7 +34,8 @@
                 @if($commande->client->adresseFacturation)
                     <strong>{{ $commande->client->prenom_client }} {{ $commande->client->nom_client }}</strong><br>
                     {{ $commande->client->adresseFacturation->rue }}<br>
-                    {{ $commande->client->adresseFacturation->code_postal }} {{ $commande->client->adresseFacturation->ville }}<br>
+                    {{ $commande->client->adresseFacturation->code_postal }}
+                    {{ $commande->client->adresseFacturation->ville }}<br>
                     {{ $commande->client->adresseFacturation->pays }}
                 @else
                     <strong>{{ $commande->client->prenom_client }} {{ $commande->client->nom_client }}</strong><br>
@@ -40,13 +44,19 @@
                 <br>
                 <div style="margin-top:5px; font-size:11px;">{{ $commande->client->email_client }}</div>
             </td>
-            
+
             <td class="spacer-cell"></td>
 
             <td class="address-box right">
                 <span class="box-label">Livré à</span>
                 @if($commande->adresse)
-                    <strong>{{ $commande->client->prenom_client }} {{ $commande->client->nom_client }}</strong><br>
+                    @if($commande->id_type_livraison == 2)
+                        <strong>
+                            {{ $commande->adresse->magasins->first()->nom_magasin ?? 'Magasin Partenaire' }}
+                        </strong><br>
+                    @else
+                        <strong>{{ $commande->client->prenom_client }} {{ $commande->client->nom_client }}</strong><br>
+                    @endif
                     {{ $commande->adresse->rue }}<br>
                     {{ $commande->adresse->code_postal }} {{ $commande->adresse->ville }}<br>
                     {{ $commande->adresse->pays }}
@@ -69,20 +79,21 @@
         </thead>
         <tbody>
             @foreach($commande->articles as $article)
-            <tr>
-                <td class="item-ref">{{ trim($article->reference) }}</td>
-                <td>
-                    <span class="item-name">{{ $article->nom_article }}</span>
-                    @if($article->pivot->taille_selectionnee && $article->pivot->taille_selectionnee !== 'Non renseigné')
-                        <div class="item-meta">Taille : {{ $article->pivot->taille_selectionnee }}</div>
-                    @endif
-                </td>
-                <td class="center">{{ $article->pivot->quantite_article_commande }}</td>
-                <td class="right">{{ number_format($article->pivot->prix_unitaire_article, 2, ',', ' ') }} €</td>
-                <td class="right" style="font-weight:bold;">
-                    {{ number_format($article->pivot->quantite_article_commande * $article->pivot->prix_unitaire_article, 2, ',', ' ') }} €
-                </td>
-            </tr>
+                <tr>
+                    <td class="item-ref">{{ trim($article->reference) }}</td>
+                    <td>
+                        <span class="item-name">{{ $article->nom_article }}</span>
+                        @if($article->pivot->taille_selectionnee && $article->pivot->taille_selectionnee !== 'Non renseigné')
+                            <div class="item-meta">Taille : {{ $article->pivot->taille_selectionnee }}</div>
+                        @endif
+                    </td>
+                    <td class="center">{{ $article->pivot->quantite_article_commande }}</td>
+                    <td class="right">{{ number_format($article->pivot->prix_unitaire_article, 2, ',', ' ') }} €</td>
+                    <td class="right" style="font-weight:bold;">
+                        {{ number_format($article->pivot->quantite_article_commande * $article->pivot->prix_unitaire_article, 2, ',', ' ') }}
+                        €
+                    </td>
+                </tr>
             @endforeach
         </tbody>
     </table>
@@ -115,4 +126,5 @@
     </div>
 
 </body>
+
 </html>

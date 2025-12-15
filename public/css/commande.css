@@ -4,6 +4,7 @@ body {
     font-family: 'Fira Sans', sans-serif;
     color: #333;
     margin: 0;
+    /* overflow: hidden; */
 }
 
 header {
@@ -21,7 +22,7 @@ filter: brightness(0) !important;
     display: flex;
     justify-content: center;
     padding: 120px 20px 60px 20px; /* Marge pour le header fixed */
-    min-height: 100vh;
+    margin: auto;
 }
 
 .checkout-card {

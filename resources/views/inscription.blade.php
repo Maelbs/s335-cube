@@ -149,7 +149,9 @@
             </div>
         </div>
     </section>
-
+    <script>
+        modifierProfil = false;
+    </script>
     <script src="{{ asset('js/header.js') }}" defer></script>
     <script src="{{ asset('js/inscription.js') }}" defer></script>
 </body>

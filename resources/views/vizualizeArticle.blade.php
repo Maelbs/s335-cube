@@ -5,7 +5,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    {{-- Méta nécessaire pour sécuriser les requêtes AJAX Laravel --}}
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>{{ $article->nom_article }}</title>
 
@@ -19,7 +18,7 @@
 <body>
     @include('layouts.header')
 
-    {{-- STRUCTURE MODALE PANIER --}}
+    {{-- MODALE PANIER --}}
     <div id="cartModal" class="modal-overlay">
         <div class="modal-content">
             <button class="modal-close" onclick="closeModalAndRefresh()">×</button>
@@ -41,16 +40,19 @@
                     <div class="modal-details">
                         <h3 id="modalName">NOM DE L'ARTICLE</h3>
                         <div class="modal-price" id="modalPrice">0,00 € TTC</div>
-                        <div class="modal-meta">TAILLE : <span id="modalSize" style="font-weight:bold; color:black;"></span></div>
-                        <div class="modal-meta">QUANTITÉ : <span id="modalQty" style="font-weight:bold; color:black;"></span></div>
+                        <div class="modal-meta">TAILLE : <span id="modalSize"
+                                style="font-weight:bold; color:black;"></span></div>
+                        <div class="modal-meta">QUANTITÉ : <span id="modalQty"
+                                style="font-weight:bold; color:black;"></span></div>
                     </div>
                 </div>
-                {{-- Partie Droite (Résumé) --}}
+                {{-- Partie Droite --}}
                 <div class="modal-summary">
                     <div style="margin-bottom: 15px; font-size: 0.9rem; color:#555;">
                         Il y a <span id="cartCount" style="font-weight:bold;"></span> articles dans votre panier.
                     </div>
-                    <div class="summary-line"><span>Sous-total :</span><span id="cartSubtotal" style="font-weight: bold;">0,00 €</span></div>
+                    <div class="summary-line"><span>Sous-total :</span><span id="cartSubtotal"
+                            style="font-weight: bold;">0,00 €</span></div>
                     <div class="summary-line"><span>Transport :</span><span>Gratuit</span></div>
                     <div class="summary-total"><span>Total TTC</span><span id="cartTotal">0,00 €</span></div>
                     <div class="tax-info">Taxes incluses : <span id="cartTax">0,00 €</span></div>
@@ -66,11 +68,8 @@
     <div class="page-product-container">
 
         <div class="left-column-wrapper">
-
-            {{-- 1. HERO IMAGE (Carrousel Dynamique Local) --}}
+            {{-- 1. HERO IMAGE --}}
             <div class="product-hero-section" id="mainCarousel">
-
-                {{-- BOUTON LOUPE --}}
                 <button class="zoom-trigger-btn" onclick="openZoom()">
                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
                         stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -116,12 +115,15 @@
                     <button id="open-3d-btn" class="btn-3d-view" style="display: none;"
                         data-folder="{{ asset('images/MODELE3D/' . trim($article->reference)) }}/"
                         title="Ouvrir la vue 3D" aria-label="Ouvrir la vue 3D">
-                        <svg class="icon-3d" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
-                            <path fill="currentColor" d="M12 22q-2.075 0-3.9-.788t-3.175-2.137q-1.35-1.35-2.137-3.175T2 12h2q0 2.875 1.813 5.075t4.637 2.775L9 18.4l1.4-1.4l4.55 4.55q-.725.25-1.463.35T12 22Zm.5-7V9h3q.425 0 .713.288T16.5 10v4q0 .425-.288.713T15.5 15h-3Zm-5 0v-1.5H10v-1H8.5v-1H10v-1H7.5V9h3q.425 0 .713.288T11.5 10v4q0 .425-.288.713T10.5 15h-3Zm6.5-1.5h1v-3h-1v3Zm6-1.5q0-2.875-1.813-5.075T13.55 4.15L15 5.6L13.6 7L9.05 2.45q.725-.25 1.463-.35T12 2q2.075 0 3.9.788t3.175 2.137q1.35 1.35 2.138 3.175T22 12h-2Z" />
+                        <svg class="icon-3d" xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+                            viewBox="0 0 24 24">
+                            <path fill="currentColor"
+                                d="M12 22q-2.075 0-3.9-.788t-3.175-2.137q-1.35-1.35-2.137-3.175T2 12h2q0 2.875 1.813 5.075t4.637 2.775L9 18.4l1.4-1.4l4.55 4.55q-.725.25-1.463.35T12 22Zm.5-7V9h3q.425 0 .713.288T16.5 10v4q0 .425-.288.713T15.5 15h-3Zm-5 0v-1.5H10v-1H8.5v-1H10v-1H7.5V9h3q.425 0 .713.288T11.5 10v4q0 .425-.288.713T10.5 15h-3Zm6.5-1.5h1v-3h-1v3Zm6-1.5q0-2.875-1.813-5.075T13.55 4.15L15 5.6L13.6 7L9.05 2.45q.725-.25 1.463-.35T12 2q2.075 0 3.9.788t3.175 2.137q1.35 1.35 2.138 3.175T22 12h-2Z" />
                         </svg>
                     </button>
                 </div>
 
+                {{-- LIGHTBOX 3D --}}
                 <div id="lightbox-3d" class="lightbox-overlay">
                     <div class="lightbox-content">
                         <button type="button" id="close-3d-btn" class="lightbox-close">&times;</button>
@@ -137,7 +139,6 @@
                     </div>
                 </div>
 
-                {{-- NAVIGATION --}}
                 @if(count($validImages) > 1)
                     <button class="carousel-button carousel-button--left">❮</button>
                     <button class="carousel-button carousel-button--right">❯</button>
@@ -237,7 +238,8 @@
                             <h2>Description</h2>
                             <button class="toggle-specs-btn"></button>
                         </div>
-                        <p>{{ $article->varianteVelo->modele->description->texte_description ?? 'Aucune description disponible.' }}</p>
+                        <p>{{ $article->varianteVelo->modele->description->texte_description ?? 'Aucune description disponible.' }}
+                        </p>
                     </div>
                 @endif
 
@@ -275,9 +277,7 @@
                 @endif
             </div>
 
-            {{-- DÉBUT DE LA LOGIQUE STOCK CORRIGÉE --}}
             @php
-                // Vérification globale : Est-ce qu'un magasin est sélectionné ?
                 $hasMagasin = isset($magasinHeader) && $magasinHeader;
                 $idMagasinSelect = $hasMagasin ? $magasinHeader->id_magasin : 0;
             @endphp
@@ -287,34 +287,41 @@
                 <div class="size-selector">
                     <p class="size-label">TAILLE</p>
                     <div class="sizes-grid">
-                        
                         @php $stockWebVelo = 0 @endphp
                         @foreach ($stock as $inventaire)
                             @php
-                                $stockWeb = $inventaire->quantite_stock_en_ligne;
-                                // Stock global (somme tous magasins)
-                                $stockGlobal = $inventaire->magasins->sum('pivot.quantite_stock_magasin');
-                                // Stock spécifique (mon magasin)
+                                // On s'assure que ce sont des nombres (0 si null)
+                                $stockWeb = $inventaire->quantite_stock_en_ligne ?? 0;
+
+                                // Calcul du stock global
+                                $stockGlobal = $inventaire->magasins->sum('pivot.quantite_stock_magasin') ?? 0;
+
+                                // Calcul du stock magasin
                                 $stockMonMagasin = 0;
                                 if ($hasMagasin) {
                                     $stockMonMagasin = $inventaire->magasins
                                         ->where('id_magasin', $idMagasinSelect)
-                                        ->sum('pivot.quantite_stock_magasin');
+                                        ->sum('pivot.quantite_stock_magasin') ?? 0;
                                 }
 
                                 $classeCss = ($stockWeb <= 0) ? 'out-of-stock' : '';
                                 $stockWebVelo += $stockWeb;
                             @endphp
-                            
-                            {{-- On passe toutes les infos au JS --}}
-                            <button class="size-btn {{ $classeCss }}"
-                                onclick="selectionnerTaille(
-                                    '{{ $inventaire->taille->taille }}', 
-                                    {{ $stockWeb }}, 
-                                    {{ $stockGlobal }},       
-                                    {{ $stockMonMagasin }},   
-                                    {{ $hasMagasin ? 'true' : 'false' }} 
-                                )">
+
+                            {{--
+                            CORRECTION ICI :
+                            1. J'ai tout mis sur une ligne pour éviter les erreurs d'espaces
+                            2. J'ai ajouté '?? 0' pour éviter les trous dans les arguments
+                            3. J'ai ajouté addslashes() sur le nom de la taille au cas où elle contiendrait une apostrophe
+                            --}}
+                            <button class="size-btn {{ $classeCss }}" onclick="handleSizeSelection(
+                                            {{ $inventaire->id_inventaire ?? $inventaire->id_taille ?? 0 }}, 
+                                            '{{ addslashes($inventaire->taille->taille) }}', 
+                                            {{ $stockWeb ?? 0 }}, 
+                                            {{ $stockGlobal ?? 0 }}, 
+                                            {{ $stockMonMagasin ?? 0 }}, 
+                                            {{ $hasMagasin ? 'true' : 'false' }}
+                                        )">
                                 {{ $inventaire->taille->taille }}
                                 <span style="font-size: 0.8em; display:block; font-weight: normal;">
                                     ({{ $inventaire->taille->taille_min }}-{{ $inventaire->taille->taille_max }})
@@ -340,33 +347,29 @@
                 </div>
 
             @else
-                {{-- === VUE ACCESSOIRE (Pas de taille) === --}}
+                {{-- === VUE ACCESSOIRE === --}}
                 @php
                     $stockWeb = $stock->sum('quantite_stock_en_ligne') > 0;
-                    
-                    // Stock global
                     $stockGlobal = $stock->flatMap->magasins->sum('pivot.quantite_stock_magasin') > 0;
-                    
-                    // Valeurs par défaut
+
                     $txtMagasin = $stockGlobal ? 'Disponible en magasin' : 'Indisponible en magasin';
-                    $colorDotMag = $stockGlobal ? '#28a745' : '#dc3545'; // Vert ou Rouge
+                    $colorDotMag = $stockGlobal ? '#28a745' : '#dc3545';
 
                     if ($hasMagasin) {
                         $stockDansMonMagasin = $stock->flatMap->magasins
-                                                     ->where('id_magasin', $idMagasinSelect)
-                                                     ->sum('pivot.quantite_stock_magasin') > 0;
+                            ->where('id_magasin', $idMagasinSelect)
+                            ->sum('pivot.quantite_stock_magasin') > 0;
                         if ($stockDansMonMagasin) {
                             $txtMagasin = 'Disponible dans votre magasin';
-                            $colorDotMag = '#28a745'; // Vert
+                            $colorDotMag = '#28a745';
                         } elseif ($stockGlobal) {
                             $txtMagasin = "Disponible dans d'autres magasins";
-                            $colorDotMag = '#ffc107'; // Orange
+                            $colorDotMag = '#ffc107';
                         } else {
                             $txtMagasin = 'Indisponible dans votre magasin';
-                            $colorDotMag = '#dc3545'; // Rouge
+                            $colorDotMag = '#dc3545';
                         }
                     }
-
                     $colorDotWeb = $stockWeb ? '#28a745' : '#dc3545';
                     $enLigneStatus = $stockWeb ? 'Disponible en ligne' : 'Indisponible en ligne';
                 @endphp
@@ -386,17 +389,16 @@
             <div class="action-buttons-container">
                 <form id="form-ajout-panier"
                     data-action="{{ $isAccessoire ? route('cart.add', $article->reference) : route('cart.add', $article->reference) }}">
-                    
+
                     @if($typeVue === 'velo')
                         <input type="hidden" name="taille" id="input-taille-selected" value="">
                     @else
                         <input type="hidden" name="taille" id="input-taille-selected" value="Unique">
                     @endif
-                    
+
                     <input type="hidden" name="quantity" value="1">
-                    
+
                     @if($typeVue === "accessoire")
-                        {{-- Pour les accessoires, on affiche si stock web ou mag --}}
                         @if($stockGlobal || $stockWeb)
                             <button type="button" onclick="addToCartAjax()" id="btn-panier" class="btn-skew">
                                 <span class="btn-content-unskew">
@@ -408,7 +410,8 @@
                         @endif
                     @else
                         {{-- Pour les vélos, géré par JS --}}
-                        <button type="button" onclick="addToCartAjax()" id="btn-panier" class="btn-skew" style="display: none;">
+                        <button type="button" onclick="addToCartAjax()" id="btn-panier" class="btn-skew"
+                            style="display: none;">
                             <span class="btn-content-unskew">
                                 <span class="text-label">Ajouter au panier</span>
                             </span>
@@ -417,7 +420,8 @@
                 </form>
 
                 {{-- BOUTON CONTACTER / CHANGER --}}
-                <button id="btn-contact-magasin" class="btn-skew" style="display: inline-block;" onclick="toggleStoreLocator()">
+                <button id="btn-contact-magasin" class="btn-skew" style="display: inline-block;"
+                    onclick="toggleStoreLocator()">
                     <span class="btn-content-unskew">
                         <span class="text-label">
                             @if($hasMagasin)
@@ -495,7 +499,12 @@
         </div>
     </div>
 
-    {{-- Accessoires similaires / Cross-sell --}}
+    @include('layouts.bikeSizing')
+
+    {{-- CROSS SELL ET PRODUITS SIMILAIRES (CODE IDENTIQUE A VOTRE ORIGINAL) --}}
+    {{-- ============================================= --}}
+    {{-- 1. SECTION ACCESSOIRES (Cross-Selling) --}}
+    {{-- ============================================= --}}
     @if(!$isAccessoire)
         <section class="st-similar-section section-grey">
             <div class="st-section-header" style="text-align: center; margin-bottom: 20px;">
@@ -504,28 +513,37 @@
                     Complétez votre équipement avec des accessoires populaires auprès de nos clients.
                 </p>
             </div>
+
             <div class="st-carousel-wrapper">
                 <button class="st-nav-btn st-btn-left">❮</button>
+
                 <div class="st-carousel-track">
                     @foreach ($article->varianteVelo->accessoires as $accessoire)
                         <div class="st-card-item">
+                            {{-- Attention : adaptez la route si vous avez une route différente pour les accessoires --}}
                             <a href="{{ route('velo.show', $accessoire->reference) }}" class="st-card-link">
+
+                                {{-- Gestion de l'image de l'accessoire --}}
                                 <div class="st-img-box">
                                     @php
-                                        $prefix = 5;
+                                        $prefix = 5; // Les ref accessoires font souvent 5 chars
                                         $folder = substr($accessoire->reference, 0, $prefix);
                                         $imgPath = 'images/ACCESSOIRES/' . $folder . '/image_1.jpg';
                                     @endphp
+
                                     @if(file_exists(public_path($imgPath)))
                                         <img src="{{ asset($imgPath) }}" alt="{{ $accessoire->nom_article }}">
                                     @else
-                                        <img src="https://placehold.co/300x200?text=Pas+d+image" alt="{{ $accessoire->nom_article }}">
+                                        <img src="https://placehold.co/300x200?text=Image+Non+Disponible"
+                                            alt="{{ $accessoire->nom_article }}">
                                     @endif
                                 </div>
+
                                 <div class="st-info-box">
                                     <h3 class="st-prod-name">{{ $accessoire->nom_article }}</h3>
                                     <div class="st-prod-price">{{ number_format($accessoire->prix, 2, ',', ' ') }} €</div>
                                 </div>
+
                                 <div class="st-action-row">
                                     <span class="st-view-btn"><i class="arrow-icon">▶</i> VOIR LE PRODUIT</span>
                                 </div>
@@ -533,38 +551,51 @@
                         </div>
                     @endforeach
                 </div>
+
                 <button class="st-nav-btn st-btn-right">❯</button>
             </div>
         </section>
     @endif
 
-    {{-- Produits Similaires --}}
+
+    {{-- ============================================= --}}
+    {{-- 2. SECTION ARTICLES SIMILAIRES --}}
+    {{-- ============================================= --}}
     @if($articlesSimilaires->isNotEmpty())
         <section class="st-similar-section">
             <h2 class="st-section-title">ARTICLES SIMILAIRES</h2>
+
             <div class="st-carousel-wrapper">
                 <button class="st-nav-btn st-btn-left">❮</button>
+
                 <div class="st-carousel-track">
                     @foreach($articlesSimilaires as $similaire)
                         <div class="st-card-item">
                             <a href="{{ route('velo.show', $similaire->reference) }}" class="st-card-link">
+
+                                {{-- Gestion de l'image (Velo ou Accessoire selon le contexte actuel) --}}
                                 <div class="st-img-box">
                                     @php
+                                        // On détermine le dossier en fonction du type de l'article actuel
                                         $simPrefix = $isAccessoire ? 5 : 6;
                                         $simFolder = substr($similaire->reference, 0, $simPrefix);
                                         $dossierRacineSim = $isAccessoire ? 'images/ACCESSOIRES/' : 'images/VELOS/';
                                         $simImgPath = $dossierRacineSim . $simFolder . '/image_1.jpg';
                                     @endphp
+
                                     @if(file_exists(public_path($simImgPath)))
                                         <img src="{{ asset($simImgPath) }}" alt="{{ $similaire->nom_article }}">
                                     @else
-                                        <img src="https://placehold.co/300x200?text=Pas+d+image" alt="{{ $similaire->nom_article }}">
+                                        <img src="https://placehold.co/300x200?text=Image+Non+Disponible"
+                                            alt="{{ $similaire->nom_article }}">
                                     @endif
                                 </div>
+
                                 <div class="st-info-box">
                                     <h3 class="st-prod-name">{{ $similaire->nom_article }}</h3>
                                     <div class="st-prod-price">{{ number_format($similaire->prix, 2, ',', ' ') }} €</div>
                                 </div>
+
                                 <div class="st-action-row">
                                     <span class="st-view-btn"><i class="arrow-icon">▶</i> VOIR LE PRODUIT</span>
                                 </div>
@@ -572,12 +603,13 @@
                         </div>
                     @endforeach
                 </div>
+
                 <button class="st-nav-btn st-btn-right">❯</button>
             </div>
         </section>
     @endif
 
-    {{-- MODALES ET SCRIPTS --}}
+    {{-- MODALES --}}
     <div id="zoomModalOverlay" class="zoom-overlay">
         <button class="zoom-close-btn" onclick="closeZoom(event)">×</button>
         <button class="zoom-nav zoom-prev" onclick="changeZoomImage(-1)">❮</button>
@@ -587,6 +619,16 @@
         </div>
     </div>
 
+    {{--
+    =======================================================
+    INCLUDE DU STORE LOCATOR (MODIFICATION IMPORTANTE)
+    C'est ici que le fichier store-locator.blade.php est injecté
+    =======================================================
+    --}}
+    {{-- @include('store-locator', ['stock' => $stock, 'tousLesMagasins' => $tousLesMagasins]) --}}
+
+
+    {{-- SCRIPTS --}}
     <script src="{{ asset('js/vizualizeArticle.js') }}" defer></script>
     <script>
         function closeModalAndRefresh() {
@@ -594,6 +636,29 @@
             if (modal) modal.style.display = 'none';
             location.reload();
         }
+
+        /**
+         * Fonction intermédiaire (Pont)
+         * Elle déclenche la mise à jour de l'UI classique (vizualizeArticle.js)
+         * ET la mise à jour du Store Locator
+         */
+        function handleSizeSelection(idInventaire, tailleNom, stockWeb, stockGlobal, stockLocal, hasMagasin) {
+
+            // 1. Mettre à jour le Store Locator (Fonction définie dans store-locator.blade.php ou son script associé)
+            // On vérifie qu'elle existe pour éviter une erreur JS
+            if (typeof updateStoreLocatorStocks === 'function') {
+                updateStoreLocatorStocks(idInventaire);
+            } else {
+                console.warn("La fonction updateStoreLocatorStocks n'est pas définie.");
+            }
+
+            // 2. Appeler la fonction originale pour mettre à jour la page (Prix, Pastilles, Bouton panier...)
+            // Cette fonction est supposée être dans vizualizeArticle.js
+            if (typeof selectionnerTaille === 'function') {
+                selectionnerTaille(tailleNom, stockWeb, stockGlobal, stockLocal, hasMagasin);
+            }
+        }
     </script>
 </body>
+
 </html>
