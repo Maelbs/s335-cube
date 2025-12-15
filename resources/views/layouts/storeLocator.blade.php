@@ -109,7 +109,9 @@
                         data-stock-details : Contient l'objet JSON { "id_taille": quantite, ... }
                         data-stock-global : État par défaut (si aucune taille n'est sélectionnée)
                         --}}
-                        <div class="sl-card store-item js-store-card" data-search-string="{{ $searchString }}"
+                        <div class="sl-card store-item js-store-card" 
+                            data-id="{{ $magasin->id_magasin }}" 
+                            data-search-string="{{ $searchString }}"
                             data-stock-details="{{ json_encode($stockMap) }}"
                             data-stock-global="{{ $enStockGlobal ? '1' : '0' }}">
 
@@ -190,17 +192,17 @@
 <script src="{{ asset('js/map.js') }}" defer></script>
 
 <script>
-    // 1. Données des magasins
     window.magasinsData = @json($jsonMagasins);
-
-    // 2. Token et Routes
     window.csrfToken = "{{ csrf_token() }}";
     window.routeDefinirMagasin = "{{ route('magasin.definir') }}";
+    
+    // --- AJOUTEZ CETTE LIGNE ICI ---
+    // Si la variable $stock existe (page produit), ceci vaudra true. Sinon false.
+    window.checkStock = @json(isset($stock)); 
+    // -------------------------------
 
-    // 3. Initialisation de l'adresse à null par défaut
     window.userAddress = null;
 
-    // 4. Injection de l'adresse client (si connecté)
     @auth
         @php
             $client = Auth::user();
@@ -216,7 +218,6 @@
         @endphp
 
         @if(!empty($adresseClient))
-            // PAS DE BALISE <SCRIPT> ICI, on est déjà dedans !
             window.userAddress = "{!! addslashes($adresseClient) !!}";
         @endif
     @endauth
