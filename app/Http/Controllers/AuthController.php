@@ -91,7 +91,6 @@ class AuthController extends Controller
             'country' => $request->country
         ];
 
-        // Préparation des données de facturation (soit copie, soit spécifiques)
         if ($request->has('use_same_address')) {
             $billingData = $deliveryData; 
             $sameAddress = true;

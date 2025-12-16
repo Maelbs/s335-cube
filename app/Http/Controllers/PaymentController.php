@@ -22,7 +22,6 @@ class PaymentController extends Controller
         $adresses = $client->adressesLivraison()->get();
 
         $magasin = null;
-        // CORRECTION ICI : on utilise 'id_magasin_choisi' comme vu dans ton debug
         if (session()->has('id_magasin_choisi')) {
             $magasin = MagasinPartenaire::with('adresses')->find(session('id_magasin_choisi'));
         }
@@ -40,14 +39,14 @@ class PaymentController extends Controller
             if ($adresseMagasin) {
                 return [
                     'id_adresse' => $adresseMagasin->id_adresse,
-                    'id_type_livraison' => 2 // Retrait Magasin
+                    'id_type_livraison' => 2 
                 ];
             }
         }
 
         return [
             'id_adresse' => $requestAdresseId,
-            'id_type_livraison' => 1 // Livraison Domicile
+            'id_type_livraison' => 1 
         ];
     }
 
