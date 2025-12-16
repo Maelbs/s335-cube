@@ -16,11 +16,24 @@ use App\Http\Controllers\MagasinController;
 use App\Http\Controllers\CommandeController;
 use App\Http\Controllers\AdresseController;
 
-/*
-|--------------------------------------------------------------------------
-| Web Routes
-|--------------------------------------------------------------------------
-*/
+use App\Http\Controllers\ContactController; 
+
+/* ... TOUTES VOS AUTRES ROUTES ... */
+
+// Route boutique
+Route::get('/boutique/{type}/{cat_id?}/{sub_id?}/{model_id?}', [BoutiqueController::class, 'index'])
+    ->name('boutique.index')
+    ->where('type', 'Musculaire|Electrique|Accessoires');
+
+
+// ------------------------------------
+// PARTIE AIDE ET CONTACT
+// ------------------------------------
+
+Route::view('/aide', 'aide')->name('aide');
+
+Route::get('/contact', [ContactController::class, 'show'])->name('contact');
+Route::post('/contact', [ContactController::class, 'submit'])->name('contact.submit');
 
 Route::get('/', [CategorieArticleController::class, 'index'])->name('home');
 
@@ -45,6 +58,7 @@ Route::middleware('guest')->group(function () {
 
     Route::get('/verification', function() { return view('verification'); })->name('verification.form');
     Route::post('/verification', [AuthController::class, 'verifyCode'])->name('verification.check');
+
 });
 
 Route::middleware('auth')->group(function () {
@@ -85,3 +99,9 @@ Route::post('/panier/remove-promo', [PanierController::class, 'removePromo'])->n
 Route::get('/boutique/{type}/{cat_id?}/{sub_id?}/{model_id?}', [BoutiqueController::class, 'index'])
     ->name('boutique.index')
     ->where('type', 'Musculaire|Electrique|Accessoires');
+
+
+
+Route::view('/aide', 'aide')->name('aide');
+
+
