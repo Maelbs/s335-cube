@@ -26,6 +26,8 @@ class PaymentController extends Controller
             $magasin = MagasinPartenaire::with('adresses')->find(session('id_magasin_choisi'));
         }
 
+        $uniquementAccessoire = $panier->articles->exists('')
+
         return view('commande', compact('client', 'adresses', 'magasin'));
     }
 

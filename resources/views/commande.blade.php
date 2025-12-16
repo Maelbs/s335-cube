@@ -73,7 +73,6 @@
                 <div class="form-section">
                     <h2><i class="fa-solid fa-location-dot"></i> Livraison</h2>
 
-                    {{-- SI UN MAGASIN EST SÉLECTIONNÉ (VÉLO) --}}
                     @if(isset($magasin) && $magasin)
 
                         <div class="magasin-info-card">
@@ -94,10 +93,7 @@
                                 </div>
                             </div>
                         </div>
-
-                        {{-- SINON (ACCESSOIRES OU DEFAUT) --}}
                     @else
-
                         <div class="select-wrapper">
                             <select name="id_adresse" class="custom-select" required>
                                 <option value="" disabled selected>-- Choisissez votre adresse --</option>
@@ -115,7 +111,6 @@
                         @if($adresses->isEmpty())
                             <a href="{{ route('profil') }}" class="add-address-link">+ Ajouter une nouvelle adresse</a>
                         @endif
-
                     @endif
                 </div>
 
