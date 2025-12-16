@@ -23,7 +23,6 @@
 
                 <form method="POST" action="{{ route('adresses.create') }}" autocomplete="off" class="creer-form">
                     @csrf
-
                     <div class="form-group">
                         <label class="required font-weight-bold" for="rue">Rue</label>
                         <input class="form-control" name="rue" type="text" id="rueId" 
@@ -48,7 +47,6 @@
                     <button class="cube-btn-primary w-100" style="margin-top:20px;">
                         Ajouter cette adresse
                     </button>
-
                 </form>
 
             </div>

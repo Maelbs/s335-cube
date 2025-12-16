@@ -1,12 +1,11 @@
-/* --- Variables & Base --- */
 :root {
-    --primary-dark: #0f1623;   /* Bleu nuit profond (Connexion) */
-    --primary-accent: #1a2639; /* Version légèrement plus claire pour le survol */
-    --input-bg: #f1f5f9;       /* Gris très pâle, presque blanc */
-    --input-border: #dae1e7;   /* Bordure subtile */
+    --primary-dark: #0f1623;
+    --primary-accent: #1a2639;
+    --input-bg: #f1f5f9;
+    --input-border: #dae1e7;
     --text-color: #333333;
     --text-muted: #00244b;
-    --radius: 6px;             /* Arrondis plus modernes */
+    --radius: 6px;
 }
 
 @font-face {
@@ -14,17 +13,8 @@
     src: url('../font/font.woff2');
 }
 
-/* header {
-    background-color: #fff !important;
-    color: #000 !important;
-} */
-
-/* .logo img {
-    filter: brightness(0) !important;
-} */
-
 html {
-    font-family: 'Damas Font', sans-serif; /* Assure-toi d'avoir une font propre */
+    font-family: 'Damas Font', sans-serif;
 }
 
 body {
@@ -44,7 +34,6 @@ body {
     box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
 }
 
-/* --- Titres --- */
 h2.h3 {
     font-size: 1.25rem;
     font-weight: 800;
@@ -52,7 +41,7 @@ h2.h3 {
     color: var(--primary-dark);
     margin-bottom: 2rem;
     padding-bottom: 1rem;
-    border-bottom: 2px solid #f0f0f0; /* Ligne de séparation propre */
+    border-bottom: 2px solid #f0f0f0;
     letter-spacing: 0.5px;
 }
 
@@ -67,15 +56,13 @@ h1.h3 {
     font-style: italic;
 }
 
-/* --- Grille des champs --- */
 .form-fields {
     display: grid;
-    grid-template-columns: 1fr 1fr; /* 2 colonnes strictes */
-    column-gap: 40px; /* Grand écart entre gauche et droite */
-    row-gap: 25px;    /* Espace vertical aéré */
+    grid-template-columns: 1fr 1fr;
+    column-gap: 40px;
+    row-gap: 25px;
 }
 
-/* Responsive : 1 colonne sur mobile */
 @media (max-width: 768px) {
     .form-fields {
         grid-template-columns: 1fr;
@@ -85,7 +72,7 @@ h1.h3 {
         padding: 1.5rem;
     }
 }
-/* --- Styles des Inputs (Le point critique) --- */
+
 .form-group {
     display: flex;
     flex-direction: column;
@@ -121,32 +108,30 @@ p.form-group span {
 
 .form-group label.required:after {
     content: " *";
-    color: #e53935; /* Rouge un peu moins agressif */
+    color: #e53935;
 }
 
 .form-control {
     background-color: var(--input-bg);
     border: 1px solid #cbd5e1;
     border-radius: 4px;
-    padding: 0.8rem 1rem; /* Champs plus hauts -> plus facile à cliquer */
+    padding: 0.8rem 1rem;
     font-size: 15px;
     color: #333;
     box-sizing: border-box;
-    width: 100%; /* Prend toute la largeur disponible */
-    box-sizing: border-box; /* Évite que le padding casse la largeur */
+    width: 100%;
+    box-sizing: border-box;
     transition: all 0.3s ease;
 }
 
-/* Effet au clic dans le champ */
 .form-control:focus {
     background-color: #fff;
     border-color: #0071e3;
     outline: none;
-    box-shadow: 0 0 0 4px rgba(15, 22, 35, 0.1); /* Halo bleu pâle */
+    box-shadow: 0 0 0 4px rgba(15, 22, 35, 0.1);
     outline: none;
 }
 
-/* Texte d'aide (sous le champ) */
 .form-text {
     font-size: 0.75rem;
     margin-top: 6px;
@@ -155,9 +140,8 @@ p.form-group span {
     font-style: italic;
 }
 
-/* --- Cas particulier : Newsletter (Toute largeur) --- */
 .form-group.newsletter {
-    grid-column: 1 / -1; /* Traverse les 2 colonnes */
+    grid-column: 1 / -1;
     margin-top: 1rem;
     background: #f8f9fa;
     padding: 1.5rem;
@@ -167,13 +151,13 @@ p.form-group span {
 
 .custom-control {
     display: flex;
-    align-items: flex-start; /* Aligne la case en haut du texte */
+    align-items: flex-start;
     gap: 12px;
 }
 
 .custom-control-input {
-    margin-top: 4px; /* Petit ajustement optique */
-    transform: scale(1.2); /* Case un peu plus visible */
+    margin-top: 4px;
+    transform: scale(1.2);
     cursor: pointer;
 }
 
@@ -190,50 +174,40 @@ p.form-group span {
     font-style: normal;
 }
 
-/* --- Bouton Valider --- */
 .form-footer {
     text-align: center;
     padding: 10px;
 }
 
 .btn-valider {
-    /* Positionnement et Base */
-    position: relative; /* Nécessaire pour l'effet ::before */
+    position: relative;
     display: inline-block;
-    min-width: 400px;   /* Largeur minimale pour que ça fasse propre */
+    min-width: 400px;
     padding: 16px 32px;
-    
-    /* Style visuel (Repos) */
-    background-color: #0f172a; /* Ton bleu nuit très sombre */
+    background-color: #0f172a;
     color: #fff;
     border: none;
     clip-path: polygon(15px 0, 100% 0, 100% 100%, 0% 100%);
     font-weight: 600;
     font-size: 14px;
     letter-spacing: 1.5px;
-    
     cursor: pointer;
-    overflow: hidden; /* Important : cache le bleu qui dépasse avant le survol */
-    z-index: 1;       /* Le texte reste au-dessus */
+    overflow: hidden;
+    z-index: 1;
     transition: all 0.4s ease;
     box-shadow: 0 4px 10px rgba(0,0,0,0.15);
 }
 
-/* L'élément bleu qui glisse (Le ::before) */
 .btn-valider::before {
     content: '';
     position: absolute;
     top: 0;
     left: -15px;
-    width: 0%;       /* Invisible au départ */
+    width: 0%;
     height: 100%;
-    background-color: #0071e3; /* Le bleu électrique */
-    z-index: -1;     /* Se place DERRIÈRE le texte */
-    
-    /* L'angle de l'animation */
+    background-color: #0071e3;
+    z-index: -1;
     transform: skewX(-20deg);
-    
-    /* Fluidité de l'animation */
     transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
@@ -275,7 +249,6 @@ p.form-group span {
 #traitement-text {
     color: #000;
 }
-
 
 .form-control.is-invalid {
     border-color: #dc3545 !important;

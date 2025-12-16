@@ -1,11 +1,7 @@
 document.addEventListener("DOMContentLoaded", function () {
-  /* =========================================
-     1. GESTION DES BOUTONS SPECS (ACCORDÉON)
-     ========================================= */
   const toggles = document.querySelectorAll(".toggle-specs-btn");
 
   toggles.forEach((btn) => {
-    // Nettoyage initial du texte si nécessaire
     if (btn.textContent.trim() === "") btn.textContent = ""; 
     
     const headerRow = btn.closest(".specs-header-row");
@@ -31,9 +27,6 @@ document.addEventListener("DOMContentLoaded", function () {
     });
   });
 
-  /* =========================================
-     2. CAROUSEL SIMPLE (Track Scroll - Accessoires)
-     ========================================= */
   const trackSimple = document.querySelector(".st-carousel-track");
   const btnLeft = document.querySelector(".st-btn-left");
   const btnRight = document.querySelector(".st-btn-right");
@@ -52,9 +45,6 @@ document.addEventListener("DOMContentLoaded", function () {
     btnRight.addEventListener("click", () => scrollCarousel("right"));
   }
 
-  /* =========================================
-     3. CAROUSEL PRINCIPAL (Slides + Dots)
-     ========================================= */
   const track = document.querySelector(".carousel-track");
   if (track && track.children.length > 1) {
     const slides = Array.from(track.children);
@@ -138,9 +128,6 @@ document.addEventListener("DOMContentLoaded", function () {
     });
   }
 
-  /* =========================================
-     4. GESTION VISUELLE BOUTONS TAILLE
-     ========================================= */
   const sizeSelectors = document.querySelectorAll(".size-btn");
   const btnPanier = document.getElementById("btn-panier");
 
@@ -160,9 +147,6 @@ document.addEventListener("DOMContentLoaded", function () {
     });
   });
 
-  /* =========================================
-     5. 3D VIEWER
-     ========================================= */
   const openBtn = document.getElementById("open-3d-btn");
   const closeBtn = document.getElementById("close-3d-btn");
   const lightbox = document.getElementById("lightbox-3d");
@@ -172,7 +156,6 @@ document.addEventListener("DOMContentLoaded", function () {
     const extension = ".webp";
     const totalImages = 20;
 
-    // Vérifier si le modèle existe
     const testImageSrc = `${folderPath}01${extension}`;
     const tester = new Image();
     tester.onload = () => { openBtn.style.display = "flex"; };
@@ -204,7 +187,6 @@ document.addEventListener("DOMContentLoaded", function () {
     }
   }
 
-  // Fonction interne pour charger le viewer
   function init3DViewer(folderPath, extension, totalImages) {
     const sensitivity = 10;
     const viewer = document.getElementById("product-viewer");
@@ -218,7 +200,6 @@ document.addEventListener("DOMContentLoaded", function () {
 
     if (loaderWrapper) loaderWrapper.style.display = "flex";
 
-    // Préchargement
     for (let i = 1; i <= totalImages; i++) {
         const imageNumber = i.toString().padStart(2, "0");
         const imgSrc = `${folderPath}${imageNumber}${extension}`;
@@ -250,7 +231,6 @@ document.addEventListener("DOMContentLoaded", function () {
          }
       });
       
-      // Touch events
       newViewer.addEventListener("touchstart", (e) => { isDragging = true; startX = e.touches[0].pageX; }, { passive: false });
       window.addEventListener("touchend", () => { isDragging = false; });
       window.addEventListener("touchmove", (e) => {
@@ -272,12 +252,6 @@ document.addEventListener("DOMContentLoaded", function () {
   }
 });
 
-
-/* =========================================
-   FONCTIONS GLOBALES (ACCESSIBLES PAR LE HTML)
-   ========================================= */
-
-// --- 1. ZOOM ---
 window.openZoom = function() {
   const overlay = document.getElementById("zoomModalOverlay");
   const zoomImg = document.getElementById("zoomImageFull");
@@ -355,7 +329,6 @@ window.toggleZoomState = function(e) {
   }
 };
 
-// --- 2. SÉLECTION TAILLE (CORRIGÉ & GLOBAL) ---
 window.selectionnerTaille = function(tailleNom, qtyWeb, qtyGlobal, qtyLocal, isStoreSelected) {
   
   const inputTaille = document.getElementById("input-taille-selected");
@@ -370,7 +343,6 @@ window.selectionnerTaille = function(tailleNom, qtyWeb, qtyGlobal, qtyLocal, isS
   const dotMagasin = document.getElementById("dot-magasin");
   const textMagasin = document.getElementById("text-magasin");
 
-  // A. GESTION STOCK WEB
   if (qtyWeb > 0) {
     if(formPanier) formPanier.style.display = "inline-block";
     if(dotWeb) { dotWeb.style.backgroundColor = "#28a745"; textWeb.textContent = "Disponible en ligne"; textWeb.style.color = "#333"; }
@@ -379,35 +351,45 @@ window.selectionnerTaille = function(tailleNom, qtyWeb, qtyGlobal, qtyLocal, isS
     if(dotWeb) { dotWeb.style.backgroundColor = "#dc3545"; textWeb.textContent = "Indisponible en ligne"; textWeb.style.color = "#6b7280"; }
   }
 
-  // B. GESTION STOCK MAGASIN
   if (btnMagasin) btnMagasin.style.display = "inline-block"; 
 
-  if (isStoreSelected) {
-    if (qtyLocal > 0) {
+  if (isStoreSelected) 
+  {
+    if (qtyLocal > 0) 
+    {
       if(dotMagasin) { dotMagasin.style.backgroundColor = "#28a745"; textMagasin.textContent = "Disponible dans votre magasin"; }
-    } else if (qtyGlobal > 0) {
+    } 
+    else if (qtyGlobal > 0) 
+    {
       if(dotMagasin) { dotMagasin.style.backgroundColor = "#ffc107"; textMagasin.textContent = "Disponible dans d'autres magasins"; }
-    } else {
+    } 
+    else 
+    {
       if(dotMagasin) { dotMagasin.style.backgroundColor = "#dc3545"; textMagasin.textContent = "Indisponible dans votre magasin"; }
     }
-  } else {
-    // Mode visiteur global
-    if (qtyGlobal > 0) {
+  } 
+  else 
+  {
+    if (qtyGlobal > 0) 
+    {
       if(dotMagasin) { dotMagasin.style.backgroundColor = "#28a745"; textMagasin.textContent = "Disponible en magasin"; }
-    } else {
+    } 
+    else 
+    {
       if(dotMagasin) { dotMagasin.style.backgroundColor = "#dc3545"; textMagasin.textContent = "Indisponible en magasin"; }
     }
   }
 
-  // C. MESSAGE INDISPONIBLE GLOBAL
-  if (qtyWeb <= 0 && qtyGlobal <= 0) {
+  if (qtyWeb <= 0 && qtyGlobal <= 0) 
+  {
     if(msgIndispo) msgIndispo.style.display = "block";
-  } else {
+  } 
+  else 
+  {
     if(msgIndispo) msgIndispo.style.display = "none";
   }
 };
 
-// --- 3. AJOUT PANIER AJAX ---
 window.addToCartAjax = function() {
   const form = document.getElementById("form-ajout-panier");
   if(!form) return;
@@ -465,7 +447,6 @@ window.fillAndOpenModal = function(data) {
   modal.style.display = "flex";
 };
 
-// --- 4. FERMETURE MODALE PANIER ---
 window.closeModalAndRefresh = function() {
     const modal = document.getElementById('cartModal');
     if (modal) modal.style.display = 'none';

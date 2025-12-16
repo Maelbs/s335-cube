@@ -1,14 +1,12 @@
-/* Container global */
 .cube-checkout-container {
     display: flex;
     max-width: 1200px;
     margin: 40px auto;
     gap: 40px;
-    font-family: "Damas Font", "Helvetica Neue", Helvetica, Arial, sans-serif; /* Police proche de Cube */
+    font-family: "Damas Font", sans-serif;
     color: #333;
 }
 
-/* --- Colonne Gauche --- */
 .checkout-main {
     flex: 2;
 }
@@ -17,7 +15,6 @@
     margin-bottom: 30px;
 }
 
-/* Étapes complétées */
 .checkout-step.completed .step-header {
     display: flex;
     justify-content: space-between;
@@ -32,9 +29,11 @@
     text-decoration: none;
     font-size: 12px;
 }
-.edit-link:hover { text-decoration: underline; }
 
-/* Étape Active (Paiement) */
+.edit-link:hover {
+    text-decoration: underline;
+}
+
 .step-title {
     font-size: 16px;
     font-weight: normal;
@@ -46,10 +45,9 @@
 .payment-box {
     background: #fff;
     padding: 20px;
-    border: 1px solid #f1f1f1; /* Bordure très légère comme sur l'image */
+    border: 1px solid #f1f1f1;
 }
 
-/* Options de paiement */
 .payment-option {
     display: flex;
     align-items: center;
@@ -60,7 +58,7 @@
 .cube-radio {
     transform: scale(1.5);
     margin-right: 15px;
-    accent-color: #333; /* Couleur du point radio */
+    accent-color: #333;
 }
 
 .payment-label {
@@ -81,8 +79,13 @@
     width: auto;
 }
 
-.paypal-logo { height: 20px; }
-.oney-logo { height: 18px; }
+.paypal-logo {
+    height: 20px;
+}
+
+.oney-logo {
+    height: 18px;
+}
 
 .card-logos img {
     height: 20px;
@@ -91,7 +94,7 @@
 }
 
 .oney-badge {
-    background-color: #8bc53f; /* Vert Oney */
+    background-color: #8bc53f;
     color: white;
     font-weight: bold;
     border-radius: 50%;
@@ -104,7 +107,6 @@
     margin-left: 5px;
 }
 
-/* Conditions Générales (Zone Grise) */
 .terms-box {
     background-color: #f5f5f5;
     padding: 15px;
@@ -121,11 +123,10 @@
 }
 
 .terms-box a {
-    color: #e30613; /* Rouge Cube */
+    color: #e30613;
     text-decoration: none;
 }
 
-/* Bouton Payer */
 .btn-cube-pay {
     background-color: #444;
     color: #fff;
@@ -149,17 +150,16 @@
     background-color: #000;
 }
 
-/* --- Colonne Droite (Sidebar) --- */
 .checkout-sidebar {
     flex: 1;
     min-width: 300px;
 }
 
-.summary-box, .promo-box {
+.summary-box,
+.promo-box {
     background: #fff;
     padding: 20px;
     margin-bottom: 20px;
-    /* Ombre légère optionnelle si souhaitée, l'image semble plate */
 }
 
 .checkout-sidebar h3 {
@@ -207,7 +207,6 @@
     text-align: right;
 }
 
-/* Code Promo */
 .promo-form {
     display: flex;
 }
@@ -229,7 +228,6 @@
     cursor: pointer;
 }
 
-/* Responsive */
 @media (max-width: 768px) {
     .cube-checkout-container {
         flex-direction: column;

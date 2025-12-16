@@ -130,7 +130,6 @@ class AuthController extends Controller
         $regData = $request->session()->get('reg_data');
         $deliveryData = $request->session()->get('reg_delivery');
         $billingData = $request->session()->get('reg_billing');
-        // $sameAddress n'est plus nécessaire ici car on insère toujours deux adresses distinctes
         
         if (!$regData || !$deliveryData || !$billingData) {
             return redirect()->route('register.form')
@@ -145,7 +144,6 @@ class AuthController extends Controller
 
         DB::beginTransaction();
         try {
-            // 1. Création de l'adresse de LIVRAISON
             $adresseLivraison = Adresse::create([
                 'rue' => $deliveryData['rue'],
                 'code_postal' => $deliveryData['zipcode'],
@@ -153,7 +151,6 @@ class AuthController extends Controller
                 'pays' => $deliveryData['country'],
             ]);
 
-            // 2. Création de l'adresse de FACTURATION (Séparée, même si les données sont identiques)
             $adresseFacturation = Adresse::create([
                 'rue' => $billingData['rue'],
                 'code_postal' => $billingData['zipcode'],
@@ -163,7 +160,6 @@ class AuthController extends Controller
             
             $idAdresseFacturation = $adresseFacturation->id_adresse;
 
-            // 3. Création du Client avec l'adresse de facturation
             $client = Client::create([
                 'id_adresse_facturation' => $idAdresseFacturation,
                 'nom_client' => $regData['lastname'],
@@ -175,7 +171,6 @@ class AuthController extends Controller
                 'date_naissance' => $regData['birthday'],
             ]);
 
-            // 4. Liaison adresse de livraison via la table pivot
             DB::table('adresse_livraison')->insert([
                 'id_client' => $client->id_client,
                 'id_adresse' => $adresseLivraison->id_adresse,

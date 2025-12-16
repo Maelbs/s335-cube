@@ -117,7 +117,6 @@ class PanierController extends Controller
     }
     
     if (Auth::check()) {
-        /** @var \App\Models\Client $client */
         $client = Auth::user(); 
 
         
@@ -370,22 +369,14 @@ class PanierController extends Controller
 
     private function calculerStockMax($reference, $tailleNom)
     {
-        // ---------------------------------------------------------
-        // ETAPE 1 : Identifier le magasin cible
-        // ---------------------------------------------------------
         $idMagasinCible = null;
 
         if (Auth::check()) {
-            // Si le client est connecté, on utilise SON magasin favori enregistré en BDD
             $idMagasinCible = Auth::user()->id_magasin; 
         } else {
-            // Si c'est un invité, on regarde s'il en a choisi un temporairement (Session)
             $idMagasinCible = Session::get('selected_store_id');
         }
 
-        // ---------------------------------------------------------
-        // ETAPE 2 : Retrouver l'ID de la taille (inchangé)
-        // ---------------------------------------------------------
         $idTaille = null;
         if ($tailleNom && $tailleNom !== 'Non renseigné' && $tailleNom !== 'Unique') {
             $tailleObj = Taille::where('taille', $tailleNom)->first();
@@ -394,9 +385,6 @@ class PanierController extends Controller
             }
         }
 
-        // ---------------------------------------------------------
-        // ETAPE 3 : Calcul du stock (Web + Magasin Cible)
-        // ---------------------------------------------------------
         $query = DB::table('article_inventaire')
             ->where('reference', $reference);
 
@@ -408,21 +396,14 @@ class PanierController extends Controller
         $totalStock = 0;
 
         foreach ($inventaires as $inv) {
-            // A. Stock Web (Généralement toujours dispo, sauf si vous voulez l'exclure aussi)
             $stockWeb = $inv->quantite_stock_en_ligne ?? 0;
             
-            // B. Stock Magasin
             $queryMagasin = DB::table('inventaire_magasin')
                 ->where('id_article_inventaire', $inv->id_article_inventaire);
 
-            // C'est ICI que le filtrage se fait
             if ($idMagasinCible) {
-                // On ne prend QUE le stock du magasin du client
                 $queryMagasin->where('id_magasin', $idMagasinCible);
             } 
-            // NOTE : Si $idMagasinCible est null (ex: invité sans choix), 
-            // le code fera la somme de TOUS les magasins. 
-            // Si vous voulez qu'il y ait 0 stock magasin par défaut, ajoutez un 'else' ici.
 
             $stockMagasins = $queryMagasin->sum('quantite_stock_magasin');
 

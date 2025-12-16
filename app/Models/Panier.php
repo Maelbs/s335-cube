@@ -47,6 +47,13 @@ class Panier extends Model
         return $this->hasOne(Commande::class, 'id_panier', 'id_panier');
     }
 
+    public function isAccessoiresOnly(): bool
+    {
+        return !$this->lignesPanier()
+            ->whereHas('article.varianteVelo')
+            ->exists();
+    }    
+
     public function __toString()
     {
         return sprintf(

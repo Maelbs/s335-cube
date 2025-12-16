@@ -1,19 +1,16 @@
 document.addEventListener("DOMContentLoaded", function () {
     
-  // Fonction d'autocomplétion API Gouv
   function setupAddressAutocomplete(rueId, zipId, cityId, countryId) {
     const rueInput = document.getElementById(rueId);
     const zipcodeInput = document.getElementById(zipId);
     const cityInput = document.getElementById(cityId);
     const countryInput = document.getElementById(countryId);
 
-    if (!rueInput) return; // Si le champ n'existe pas sur la page, on arrête
+    if (!rueInput) return; 
 
-    // Création de la liste de suggestions
     const suggestionBox = document.createElement("div");
     suggestionBox.classList.add("suggestion-adresse");
     
-    // Style inline pour que la liste s'affiche correctement sous le champ
     suggestionBox.style.position = "absolute";
     suggestionBox.style.zIndex = "1000";
     suggestionBox.style.width = "100%";
@@ -62,10 +59,10 @@ document.addEventListener("DOMContentLoaded", function () {
               div.addEventListener("mouseleave", () => (div.style.backgroundColor = "white"));
 
               div.addEventListener("click", function () {
-                rueInput.value = props.name;       // Rue
-                zipcodeInput.value = props.postcode; // Code Postal
-                cityInput.value = props.city;      // Ville
-                if(countryInput) countryInput.value = "France"; // Pays
+                rueInput.value = props.name;      
+                zipcodeInput.value = props.postcode; 
+                cityInput.value = props.city;      
+                if(countryInput) countryInput.value = "France"; 
                 
                 suggestionBox.style.display = "none";
               });
@@ -82,7 +79,6 @@ document.addEventListener("DOMContentLoaded", function () {
       }, 300);
     });
 
-    // Fermeture au clic extérieur
     document.addEventListener("click", function (e) {
       if (e.target !== rueInput) {
         suggestionBox.style.display = "none";

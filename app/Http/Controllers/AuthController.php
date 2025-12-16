@@ -91,7 +91,6 @@ class AuthController extends Controller
             'country' => $request->country
         ];
 
-        // Préparation des données de facturation (soit copie, soit spécifiques)
         if ($request->has('use_same_address')) {
             $billingData = $deliveryData; 
             $sameAddress = true;
@@ -131,7 +130,6 @@ class AuthController extends Controller
         $regData = $request->session()->get('reg_data');
         $deliveryData = $request->session()->get('reg_delivery');
         $billingData = $request->session()->get('reg_billing');
-        // $sameAddress n'est plus utilisé pour conditionner la création, on crée toujours 2 adresses.
 
         if (!$regData || !$deliveryData || !$billingData) {
             return redirect()->route('register.form')
@@ -162,7 +160,6 @@ class AuthController extends Controller
 
             $idAdresseFacturation = $adresseFacturation->id_adresse;
 
-            // 3. Création du Client lié à l'adresse de facturation
             $client = Client::create([
                 'id_adresse_facturation' => $idAdresseFacturation,
                 'nom_client' => $regData['lastname'],
@@ -174,7 +171,6 @@ class AuthController extends Controller
                 'date_naissance' => $regData['birthday'],
             ]);
 
-            // 4. Liaison du Client à l'adresse de livraison (table pivot)
             DB::table('adresse_livraison')->insert([
                 'id_client' => $client->id_client,
                 'id_adresse' => $adresseLivraison->id_adresse,

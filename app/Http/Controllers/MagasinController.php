@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use App\Models\User; // Ou App\Models\Client selon votre setup
+use App\Models\User; 
 
 class MagasinController extends Controller
 {
@@ -17,7 +17,6 @@ class MagasinController extends Controller
         $idMagasin = $validated['id_magasin'];
 
         if (Auth::check()) {
-            /** @var \App\Models\User $user */
             $user = Auth::user();
             
             $user->id_magasin = $idMagasin;
