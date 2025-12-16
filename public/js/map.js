@@ -1,19 +1,14 @@
-/* public/js/map.js */
-
 if (typeof window.mapScriptLoaded === "undefined") {
   window.mapScriptLoaded = true;
 
-  // --- VARIABLES GLOBALES ---
   var mapInitialized = false;
   var map = null;
   var markersLayer = null;
-  var userCoords = null; // Stocke {lat, lng} de l'utilisateur
+  var userCoords = null; 
   var storeLocatorTimeout = null;
 
-  // Stocke l'ID de la taille sélectionnée
   window.currentTailleId = null;
 
-  // --- 1. DÉFINITION DES ICÔNES ---
   var greenIcon = new L.Icon({
     iconUrl: "https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-green.png",
     shadowUrl: "https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png",
@@ -41,9 +36,8 @@ if (typeof window.mapScriptLoaded === "undefined") {
     shadowSize: [41, 41],
   });
 
-  // --- FONCTIONS UTILITAIRES ---
   window.getDistanceFromLatLonInKm = function (lat1, lon1, lat2, lon2) {
-    var R = 6371; // Rayon de la terre en km
+    var R = 6371; 
     var dLat = deg2rad(lat2 - lat1);
     var dLon = deg2rad(lon2 - lon1);
     var a =
@@ -60,9 +54,6 @@ if (typeof window.mapScriptLoaded === "undefined") {
     return deg * (Math.PI / 180);
   };
 
-  /**
-   * Vérifie la disponibilité d'un magasin selon la taille sélectionnée
-   */
   function checkAvailability(cardElement) {
     var rawJson = cardElement.getAttribute("data-stock-details");
     var stockGlobal = cardElement.getAttribute("data-stock-global") === "1";
@@ -81,7 +72,6 @@ if (typeof window.mapScriptLoaded === "undefined") {
     }
   }
 
-  // --- GESTION DE L'AFFICHAGE LISTE ---
   window.refreshStoreDisplay = function () {
     var onlyStock = document.getElementById("stockToggle")
       ? document.getElementById("stockToggle").checked
@@ -112,11 +102,9 @@ if (typeof window.mapScriptLoaded === "undefined") {
       }
     });
 
-    // On recharge les marqueurs (et donc les distances)
     window.loadStoresOnMap();
   };
 
-  // --- INITIALISATION CARTE ---
   window.initMap = function () {
     if (typeof L === "undefined" || map) return;
 
@@ -127,7 +115,6 @@ if (typeof window.mapScriptLoaded === "undefined") {
 
     markersLayer = L.layerGroup().addTo(map);
 
-    // Fonction interne pour définir la position et lancer le calcul
     function setUserLocation(lat, lng, label) {
       console.log("📍 Position utilisateur fixée :", lat, lng);
       userCoords = { lat: lat, lng: lng };
@@ -138,12 +125,9 @@ if (typeof window.mapScriptLoaded === "undefined") {
         .openPopup();
 
       map.setView([lat, lng], 10);
-
-      // IMPORTANT : Une fois la position connue, on recalcule les distances
       window.loadStoresOnMap();
     }
 
-    // Fonction pour demander la géolocalisation navigateur (GPS)
     function useBrowserGeolocation() {
       if (navigator.geolocation) {
         navigator.geolocation.getCurrentPosition(
@@ -156,7 +140,6 @@ if (typeof window.mapScriptLoaded === "undefined") {
           },
           function (error) {
             console.warn("⚠️ Géolocalisation refusée ou erreur.", error);
-            // On affiche quand même la liste sans distance
             window.refreshStoreDisplay();
           }
         );
@@ -166,7 +149,6 @@ if (typeof window.mapScriptLoaded === "undefined") {
       }
     }
 
-    // Fonction principale : Essai Adresse DB, sinon GPS
     function useDatabaseAddress() {
       if (window.userAddress && window.userAddress.trim() !== "") {
         console.log("📍 Adresse client trouvée en DB :", window.userAddress);
@@ -182,7 +164,6 @@ if (typeof window.mapScriptLoaded === "undefined") {
           .then((data) => {
             if (data.features && data.features.length > 0) {
               var c = data.features[0].geometry.coordinates;
-              // c[1] = lat, c[0] = lng
               setUserLocation(c[1], c[0], "Votre adresse");
             } else {
               console.warn("⚠️ Adresse DB non trouvée par l'API. Essai GPS...");
@@ -199,11 +180,9 @@ if (typeof window.mapScriptLoaded === "undefined") {
       }
     }
 
-    // LANCEMENT
     useDatabaseAddress();
   };
 
-  // --- CHARGEMENT DES MARQUEURS ET CALCUL DES DISTANCES ---
   window.loadStoresOnMap = function () {
     if (!window.magasinsData) return;
     if (markersLayer) markersLayer.clearLayers();
@@ -215,15 +194,12 @@ if (typeof window.mapScriptLoaded === "undefined") {
     var searchText = searchInput ? searchInput.value.toLowerCase().trim() : "";
 
     window.magasinsData.forEach(function (mag) {
-      // 1. Récup carte DOM pour vérifier dispo
       var domCard = document.querySelector(
         '.sl-card[data-id="' + mag.id + '"]'
       );
       
-      // Note: mag.stock est un boolean PHP, checkAvailability recalcule selon la taille JS
       var isAvailable = domCard ? checkAvailability(domCard) : mag.stock;
 
-      // 2. Filtres (Stock et Recherche)
       if (onlyStock && !isAvailable) return;
       
       var magSearchString = (
@@ -233,10 +209,8 @@ if (typeof window.mapScriptLoaded === "undefined") {
       if (searchText !== "" && magSearchString.indexOf(searchText) === -1)
         return;
 
-      // 3. Calcul coordonnées magasin (API Gouv)
       if (mag.adresse) {
         var query = encodeURIComponent(mag.adresse);
-        // Timeout pour ne pas spammer l'API si beaucoup de magasins
         setTimeout(function () {
           fetch(
             "https://api-adresse.data.gouv.fr/search/?q=" + query + "&limit=1"
@@ -249,7 +223,6 @@ if (typeof window.mapScriptLoaded === "undefined") {
                 var lng = coords[0];
 
                 if (map && markersLayer) {
-                  // --- GESTION MARQUEUR CARTE ---
                   var iconToUse = blueIcon;
                   if (mag.selected) {
                     iconToUse = greenIcon;
@@ -257,16 +230,13 @@ if (typeof window.mapScriptLoaded === "undefined") {
 
                   var marker = L.marker([lat, lng], { icon: iconToUse });
 
-                  // --- MODIFICATION ICI ---
                   var stockHtml = "";
                   
-                  // On affiche le statut SEULEMENT si on est sur une page produit (checkStock est true)
                   if (window.checkStock) {
                       stockHtml = isAvailable
                         ? '<div style="color:green;">🟢 Disponible</div>'
                         : '<div style="color:red;">🔴 Indisponible</div>';
                   }
-                  // ------------------------
                     
                   var btnHtml = mag.selected
                     ? '<button class="btn-skew-black" style="background:#28a745; width:100%; cursor:default;">DÉJÀ SÉLECTIONNÉ</button>'
@@ -278,9 +248,7 @@ if (typeof window.mapScriptLoaded === "undefined") {
                   markersLayer.addLayer(marker);
                 }
 
-                // --- CALCUL ET AFFICHAGE DISTANCE DANS LA LISTE ---
                 if (window.userCoords && domCard) {
-                  // 1. Calcul mathématique
                   var dist = window.getDistanceFromLatLonInKm(
                     window.userCoords.lat,
                     window.userCoords.lng,
@@ -288,10 +256,8 @@ if (typeof window.mapScriptLoaded === "undefined") {
                     lng
                   );
 
-                  // 2. Mise à jour attribut data (pour le tri)
                   domCard.setAttribute("data-distance", dist);
 
-                  // 3. Mise à jour visuelle du <p class="sl-distance">
                   var distanceP = domCard.querySelector(".sl-distance");
                   if (distanceP) {
                     distanceP.innerText = dist.toFixed(1) + " km";
@@ -301,15 +267,13 @@ if (typeof window.mapScriptLoaded === "undefined") {
               }
             })
             .catch((err) => console.log("Erreur fetch adresse magasin", err));
-        }, Math.random() * 500); // Petit délai aléatoire
+        }, Math.random() * 500); 
       }
     });
 
-    // On lance le tri après un délai pour laisser le temps aux fetchs de finir
     setTimeout(window.sortStoreList, 2500);
   };
 
-  // --- ÉCOUTEURS DOM ET TOGGLE ---
   document.addEventListener("DOMContentLoaded", function () {
     var overlay = document.getElementById("store-locator-overlay");
     if (overlay)
@@ -353,9 +317,8 @@ if (typeof window.mapScriptLoaded === "undefined") {
         overlay.classList.add("visible");
       });
       
-      // Si on ouvre directement, on peut initier la carte/GPS si pas encore fait
       if (!mapInitialized) {
-         window.switchView("list"); // Par défaut on reste sur liste, mais on init la map en background
+         window.switchView("list"); 
          window.initMap();
          mapInitialized = true;
       }
@@ -377,7 +340,6 @@ if (typeof window.mapScriptLoaded === "undefined") {
       tabs[1].classList.toggle("active", viewName === "map");
     }
     
-    // Initialisation au premier clic sur "Vue Carte" si pas fait avant
     if (viewName === "map") {
       if (!mapInitialized) {
         window.initMap();
@@ -410,7 +372,6 @@ if (typeof window.mapScriptLoaded === "undefined") {
   };
 }
 
-// Fonction appelée par le clic bouton taille (Page produit)
 window.updateStoreLocatorStocks = function (idInventaire) {
   window.currentTailleId = idInventaire;
   
@@ -428,7 +389,6 @@ window.updateStoreLocatorStocks = function (idInventaire) {
       ? "Indisponible (Taille sélectionnée)"
       : "Indisponible";
 
-    // HTML simplifié
     displayDiv.innerHTML = isAvailable
       ? `<div class="sl-stock-status status-dispo"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#00AEEF" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg> ${message}</div>`
       : `<div class="sl-stock-status status-indispo" style="color: #999;"><span style="font-size:12px;">✖</span> ${message}</div>`;

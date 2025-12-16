@@ -26,14 +26,13 @@ class PaymentController extends Controller
             $magasin = MagasinPartenaire::with('adresses')->find(session('id_magasin_choisi'));
         }
 
-        $uniquementAccessoire = $panier->articles->exists('')
+        $uniquementAccessoire = $panier->articles->exists('');
 
         return view('commande', compact('client', 'adresses', 'magasin'));
     }
 
     private function getInfosLivraison($requestAdresseId)
     {
-        // CORRECTION ICI
         if (session()->has('id_magasin_choisi')) {
             $magasin = MagasinPartenaire::with('adresses')->find(session('id_magasin_choisi'));
             $adresseMagasin = $magasin ? $magasin->adresses->first() : null;
@@ -123,7 +122,6 @@ class PaymentController extends Controller
     
     public function paymentPaypal(Request $request)
     {
-        // CORRECTION ICI
         if (!session()->has('id_magasin_choisi')) {
             $request->validate([
                 'id_adresse' => 'required|exists:adresse,id_adresse', 
@@ -203,7 +201,6 @@ class PaymentController extends Controller
                 LignePanier::where('id_panier', $panier->id_panier)->delete();
             }
 
-            // CORRECTION ICI : on nettoie la bonne clé
             session()->forget('id_magasin_choisi');
 
             return redirect()->route('client.commandes.show', $commande->id_commande)
@@ -215,7 +212,6 @@ class PaymentController extends Controller
 
     public function paymentStripe(Request $request)
     {
-        // CORRECTION ICI
         if (!session()->has('id_magasin_choisi')) {
             $request->validate([
                 'id_adresse' => 'required|exists:adresse,id_adresse',
@@ -277,7 +273,6 @@ class PaymentController extends Controller
             LignePanier::where('id_panier', $panier->id_panier)->delete();
         }
 
-        // CORRECTION ICI : on nettoie la bonne clé
         session()->forget('id_magasin_choisi');
 
         return redirect()->route('client.commandes.show', $commande->id_commande)
