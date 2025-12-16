@@ -40,7 +40,6 @@
                                             autorisés.</small>
                                     </div>
 
-                                    {{-- Prénom --}}
                                     <div class="form-group firstname">
                                         <label class="required" for="firstname">Prénom</label>
                                         <input class="form-control @error('firstname') error-border @enderror"
@@ -49,17 +48,14 @@
                                         @error('firstname') <div class="error-text">{{ $message }}</div> @enderror
                                     </div>
 
-                                    {{-- Email --}}
                                     <div class="form-group email">
                                         <label class="required" for="email">E-mail</label>
                                         <input class="form-control @error('email') error-border @enderror" name="email"
                                             type="email" value="{{ old('email') }}" id="email" required
                                             autocomplete="email">
-                                        {{-- C'est ici que l'erreur "Email déjà pris" s'affichera --}}
                                         @error('email') <div class="error-text">{{ $message }}</div> @enderror
                                     </div>
 
-                                    {{-- Mot de passe (L'utilisateur DOIT le retaper, c'est normal) --}}
                                     <div class="form-group password">
                                         <label class="required" for="password">Mot de passe</label>
                                         <div class="input-group js-parent-focus">
@@ -72,7 +68,6 @@
                                         <small class="form-text text-muted">Au moins 5 caractères</small>
                                     </div>
 
-                                    {{-- Confirmation (À retaper aussi) --}}
                                     <div class="form-group">
                                         <label class="required" for="password_confirmation">Confirmer le mot de
                                             passe</label>
@@ -80,7 +75,6 @@
                                             id="password_confirmation" required>
                                     </div>
 
-                                    {{-- Tel --}}
                                     <div class="form-group phone">
                                         <label class="required" for="tel">Téléphone</label>
                                         <input class="form-control @error('tel') error-border @enderror" name="tel"
@@ -88,7 +82,6 @@
                                         @error('tel') <div class="error-text">{{ $message }}</div> @enderror
                                     </div>
 
-                                    {{-- Date de naissance --}}
                                     <div class="form-group birthday">
                                         <label class="required" for="birthday">Date de naissance</label>
                                         <input class="form-control @error('birthday') error-border @enderror"
@@ -96,7 +89,6 @@
                                             required max="{{ date('Y-m-d') }}"  autocomplete="bday">
                                         @error('birthday') <div class="error-text">{{ $message }}</div> @enderror
                                     </div>
-                                    {{-- Newsletter --}}
                                     <div class="form-group newsletter">
                                         <div class="custom-control custom-checkbox">
                                             <input name="newsletter" type="checkbox" value="1" id="newsletter"
@@ -119,7 +111,6 @@
                                         </div>
                                 </section>
 
-                                {{-- Footer du formulaire --}}
                                 <footer class="form-footer">
                                     <input type="hidden" name="submitCreate" value="1">
                                     <button class="btn-valider" type="submit" data-link-action="save-customer">

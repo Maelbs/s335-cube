@@ -42,9 +42,8 @@
                     </thead>
                     <tbody>
                         
-                        {{-- 1. ADRESSE DE FACTURATION (EN PREMIER) --}}
                         @if($adresseFacturation)
-                            <tr class="cube-row" style="border-left: 4px solid #ffd700;"> {{-- Colonne Type avec TAG --}}
+                            <tr class="cube-row" style="border-left: 4px solid #ffd700;">
                                 <td class="cube-td" data-label="Type">
                                     <span class="cube-tag tag-billing">
                                         <i class="fa-solid fa-file-invoice-dollar"></i> Facturation
@@ -80,11 +79,9 @@
                             </tr>
                         @endif
 
-                        {{-- 2. ADRESSES DE LIVRAISON (BOUCLE) --}}
                         @foreach($adressesLivraison as $adresse)
                             <tr class="cube-row">
                                 
-                                {{-- Colonne Type avec TAG --}}
                                 <td class="cube-td" data-label="Type">
                                     <span class="cube-tag tag-shipping">
                                         <i class="fa-solid fa-truck"></i> Livraison

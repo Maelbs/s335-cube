@@ -16,7 +16,6 @@
 
     <div class="cube-container">
 
-        {{-- Fil d'ariane retour --}}
         <a href="{{ route('client.commandes') }}" class="cube-back-link">Retour à mes commandes</a>
 
         <div class="cube-header" style="text-align: left; margin-bottom: 30px;">
@@ -29,7 +28,6 @@
                     </p>
                 </div>
 
-                {{-- Badge de statut en haut à droite --}}
                 @php
                     $statusRaw = strtolower($commande->statut_livraison ?? '');
                     $statusClass = match ($statusRaw) {
@@ -53,31 +51,20 @@
 
         <div class="cube-details-grid">
 
-            {{-- COLONNE GAUCHE : LISTE DES ARTICLES --}}
             <div class="cube-card">
                 <h2 class="cube-card-title">Articles commandés</h2>
 
                 @foreach($commande->articles as $article)
                     <div class="cube-item-row">
                         @php
-                            // On nettoie la référence (enlève les espaces du CHAR(10))
                             $refClean = trim($article->reference);
-
-                            // D'après vos données : Accessoires = 5 chiffres, Vélos = 6 chiffres
                             $isAccessoire = strlen($refClean) === 5;
-
-                            // Construction du chemin
                             $dossier = $isAccessoire ? 'ACCESSOIRES' : 'VELOS';
                             $cheminImage = 'images/' . $dossier . '/' . $refClean . '/image_1.jpg';
-
-                            // Image par défaut si le fichier n'existe pas (optionnel mais recommandé)
-                            // Vous pouvez mettre une image placeholder.jpg dans public/images/
                             $imageFinale = file_exists(public_path($cheminImage)) ? asset($cheminImage) : 'https://placehold.co/100x80?text=No+Image';
                         @endphp
 
-                        {{-- Affichage de l'image --}}
                         <img src="{{ $imageFinale }}" alt="{{ $article->nom_article }}" class="cube-item-image">
-
 
                         <div class="cube-item-details">
                             <span class="cube-item-name">{{ $article->nom_article }}</span>
@@ -100,25 +87,14 @@
                 @endforeach
             </div>
 
-            {{-- COLONNE DROITE : RÉSUMÉ & ACTIONS --}}
             <div>
-                {{-- Bloc Résumé Financier --}}
                 <div class="cube-card" style="margin-bottom: 30px;">
                     <h2 class="cube-card-title">Récapitulatif</h2>
 
-                    {{-- Sous-total (identique au total pour l'instant) --}}
                     <div class="cube-summary-row">
                         <span>Sous-total</span>
                         <span>{{ number_format($commande->montant_total_commande, 2, ',', ' ') }} €</span>
                     </div>
-
-                    {{-- Frais de port (Masqués ou à 0 pour l'instant comme demandé) --}}
-                    {{--
-                    <div class="cube-summary-row">
-                        <span>Livraison</span>
-                        <span>0,00 €</span>
-                    </div>
-                    --}}
 
                     <div class="cube-summary-total">
                         <span>TOTAL</span>
@@ -130,29 +106,23 @@
                     </div>
                 </div>
 
-                {{-- Bloc Informations (Livraison, Facturation, Paiement) --}}
                 <div class="cube-card" style="margin-bottom: 30px;">
                     <h2 class="cube-card-title">Informations</h2>
 
-                    {{-- Adresse de Livraison --}}
                     <div class="cube-info-block">
                         <span class="cube-info-label">Adresse de livraison</span>
                         <div class="cube-info-value">
                             @if($commande->adresse)
 
                                 @if($commande->id_type_livraison == 2)
-                                    {{-- CAS 1 : Retrait en Magasin --}}
-                                    {{-- On récupère le premier magasin lié à cette adresse --}}
                                     <strong>
                                         <i class="fa-solid fa-shop"></i>
                                         {{ $commande->adresse->magasins->first()->nom_magasin ?? 'Magasin Partenaire' }}
                                     </strong><br>
                                 @else
-                                    {{-- CAS 2 : Livraison Domicile (Nom du client) --}}
                                     {{ $commande->client->prenom_client }} {{ $commande->client->nom_client }}<br>
                                 @endif
 
-                                {{-- Adresse commune aux deux cas --}}
                                 {{ $commande->adresse->rue }}<br>
                                 {{ $commande->adresse->code_postal }} {{ $commande->adresse->ville }}<br>
                                 {{ $commande->adresse->pays }}
@@ -163,10 +133,8 @@
                         </div>
                     </div>
 
-                    {{-- Séparateur discret --}}
                     <hr style="border: 0; border-top: 1px solid #eee; margin: 20px 0;">
 
-                    {{-- Adresse de Facturation (Nouvel ajout) --}}
                     <div class="cube-info-block">
                         <span class="cube-info-label">Adresse de facturation</span>
                         <div class="cube-info-value">
@@ -184,7 +152,6 @@
 
                     <hr style="border: 0; border-top: 1px solid #eee; margin: 20px 0;">
 
-                    {{-- Paiement --}}
                     <div class="cube-info-block">
                         <span class="cube-info-label">Moyen de paiement</span>
                         <div class="cube-info-value">
@@ -193,15 +160,12 @@
                     </div>
                 </div>
 
-                {{-- Bloc Actions --}}
                 <div>
-                    {{-- Bouton Facture --}}
                     <a href="{{ url('/commandes') . '/' . $commande->id_commande . '/' . 'facture' }}"
                         class="cube-btn-action cube-btn-primary">
                         <span style="margin-right: 10px">📄</span> Télécharger la facture
                     </a>
 
-                    {{-- Bouton Retour --}}
                     <a href="{{ url('/commandes') }}" class="cube-btn-action cube-btn-outline">
                         Retourner un article
                     </a>

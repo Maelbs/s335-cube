@@ -57,7 +57,6 @@
 </div>
 
 <style>
-/* --- Styles Généraux --- */
 @font-face {
   font-family: 'Damas Font';
   src: url('../font/font.woff2');
@@ -83,13 +82,12 @@
     align-items: flex-start;
 }
 
-/* --- Colonne Visuelle (SVG) --- */
 .col-visual {
     flex: 1;
     min-width: 300px;
     display: flex;
     flex-direction: column;
-    align-items: center; /* Centre le SVG */
+    align-items: center; 
 }
 
 .section-title {
@@ -103,35 +101,32 @@
 .silhouette-wrapper {
     position: relative;
     width: 100%;
-    max-width: 250px; /* Largeur max pour que le bonhomme ne soit pas géant */
+    max-width: 250px;
 }
 
 .silhouette-svg {
     width: 100%;
     height: auto;
     display: block;
-    overflow: visible; /* Important pour que les inputs ne soient pas coupés */
+    overflow: visible; 
 }
 
-/* --- Inputs Flottants (CORRECTION ICI) --- */
 .input-overlay {
     position: absolute;
     background: transparent;
     width: 110px;
-    /* S'assure que tout le bloc est bien au-dessus du SVG */
+
     z-index: 10; 
 }
 
 .input-overlay label {
-    display: inline-block; /* Nécessaire pour que le background fonctionne sur le texte */
+    display: inline-block;
     font-size: 11px;
     color: #333;
     margin-bottom: 2px;
-    
-    /* --- LE FIX --- */
-    background-color: #fff; /* Fond blanc pour masquer la ligne derrière */
-    padding: 2px 4px;       /* Petit espace autour du texte */
-    border-radius: 3px;     /* Coins légèrement arrondis */
+    background-color: #fff; 
+    padding: 2px 4px;    
+    border-radius: 3px;
 }
 
 .input-flex {
@@ -158,23 +153,16 @@
     padding-left: 4px;
 }
 
-/* --- POSITIONNEMENT PRÉCIS SUR LE SVG --- */
-/* Basé sur le viewBox de ton SVG (0 0 200 500) */
-
-/* Position Taille (Haut du SVG) */
 .input-pos-height {
-    top: 2%;       /* Tout en haut */
-    left: 85%;     /* Juste à droite de la ligne verticale */
+    top: 2%;       
+    left: 85%;     
 }
 
-/* Position Entrejambe (Vers y=290 dans le SVG) */
 .input-pos-inseam {
-    top: 58%;      /* Hauteur de la ligne d'entrejambe */
-    left: 85%;     /* Juste à droite de la ligne horizontale */
+    top: 58%;      
+    left: 85%;     
 }
 
-
-/* --- Colonne Droite --- */
 .col-action {
     flex: 1;
     min-width: 300px;
@@ -207,7 +195,6 @@
     background-color: #339aa9;
 }
 
-/* --- Résultat --- */
 .result-box {
     margin-top: 20px;
 }
@@ -232,10 +219,9 @@
     line-height: 1.5;
 }
 
-/* Responsive Mobile */
 @media (max-width: 600px) {
     .silhouette-wrapper {
-        max-width: 200px; /* Plus petit sur mobile */
+        max-width: 200px; 
     }
     .input-overlay {
         width: 90px;
@@ -247,7 +233,6 @@
     .col-visual, .col-action {
         width: 100%;
     }
-    /* Ajustement position mobile pour éviter que ça sorte de l'écran */
     .input-pos-height, .input-pos-inseam {
         left: 75%; 
     }
@@ -261,7 +246,6 @@ document.addEventListener('DOMContentLoaded', function() {
     const resultValue = document.getElementById('cube-frame-result');
     const resultLabel = document.getElementById('result-title-text');
 
-    // CORRECTION ICI : Les IDs doivent correspondre à votre HTML (sans le -img)
     const heightInput = document.getElementById('cube-height');
     const inseamInput = document.getElementById('cube-inseam');
 
@@ -270,41 +254,30 @@ document.addEventListener('DOMContentLoaded', function() {
     form.addEventListener('submit', function(e) {
         e.preventDefault(); 
 
-        // Récupération des valeurs
         const height = parseInt(heightInput.value);
         const inseam = parseInt(inseamInput.value);
 
-        // Reset style
         resultArea.style.display = 'none';
         
-        // On remet le style par défaut (titre noir, pas de bordure rouge)
         if(resultLabel) {
-            resultLabel.innerText = "Ta dimension"; // Texte par défaut
+            resultLabel.innerText = "Ta dimension"; 
             resultLabel.style.color = "#000";
         }
-        // On enlève le style d'erreur potentiellement resté
         resultArea.style.borderLeft = "none"; 
         resultArea.style.backgroundColor = "transparent";
 
-        // --- VALIDATIONS ---
-        
-        // 1. Champs vides
         if (!height || !inseam) return;
 
-        // 2. Cohérence Taille
         if (height < 120 || height > 230) {
             displayError("La taille semble incorrecte.");
             return;
         }
 
-        // 3. Cohérence Entrejambe
         if (inseam < 50 || inseam > 120 || inseam >= height) {
             displayError("L'entrejambe semble incorrect.");
             return;
         }
 
-        // --- CALCUL ---
-        // Formule exemple (à adapter selon vos besoins exacts)
         let sizeInch = (inseam * 0.226).toFixed(1);
         
         let label = "M";
@@ -314,10 +287,8 @@ document.addEventListener('DOMContentLoaded', function() {
         else if (sizeInch < 21) label = "L";
         else label = "XL";
 
-        // Affichage Résultat
-        resultValue.innerHTML = `${label}`; // Affiche juste la taille en gros
+        resultValue.innerHTML = `${label}`; 
         
-        // On affiche le bloc
         resultArea.style.display = 'block';
     });
 

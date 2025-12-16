@@ -7,19 +7,17 @@
     <title>Paiement Sécurisé | Cube Bikes</title>
 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Fira+Sans:ital,wght@0,300;0,400;0,600;0,800;1,800&display=swap"
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Sans:ital,wght@0,300;0,400;0,600;0,800&display=swap"
         rel="stylesheet">
 
     <link rel="stylesheet" href="{{ asset('css/header.css') }}">
     <link rel="stylesheet" href="{{ asset('css/commande.css') }}">
 
     <style>
-        /* Style spécifique pour l'encadré magasin */
         .magasin-info-card {
             background-color: #f8f9fa;
             border: 1px solid #ddd;
             border-left: 5px solid #333;
-            /* Noir Cube */
             padding: 20px;
             border-radius: 5px;
             display: flex;
@@ -49,7 +47,6 @@
             margin-top: 10px;
             font-size: 13px;
             color: #28a745;
-            /* Vert pour rassurer */
             font-weight: 600;
         }
     </style>

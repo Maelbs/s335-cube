@@ -10,7 +10,6 @@
 
     <link rel="stylesheet" href="{{ asset('css/header.css') }}">
     <link rel="stylesheet" href="{{ asset('css/vizualizeArticle.css') }}">
-    {{-- Leaflet pour la carte --}}
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 </head>
@@ -18,13 +17,11 @@
 <body>
     @include('layouts.header')
 
-    {{-- MODALE PANIER --}}
     <div id="cartModal" class="modal-overlay">
         <div class="modal-content">
             <button class="modal-close" onclick="closeModalAndRefresh()">×</button>
             <div class="modal-header">PRODUIT AJOUTÉ AU PANIER AVEC SUCCÈS</div>
             <div class="modal-body">
-                {{-- Partie Gauche --}}
                 <div class="modal-product">
                     <div class="modal-img">
                         <div id="modalImg">
@@ -46,7 +43,6 @@
                                 style="font-weight:bold; color:black;"></span></div>
                     </div>
                 </div>
-                {{-- Partie Droite --}}
                 <div class="modal-summary">
                     <div style="margin-bottom: 15px; font-size: 0.9rem; color:#555;">
                         Il y a <span id="cartCount" style="font-weight:bold;"></span> articles dans votre panier.
@@ -68,7 +64,6 @@
     <div class="page-product-container">
 
         <div class="left-column-wrapper">
-            {{-- 1. HERO IMAGE --}}
             <div class="product-hero-section" id="mainCarousel">
                 <button class="zoom-trigger-btn" onclick="openZoom()">
                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
@@ -123,7 +118,6 @@
                     </button>
                 </div>
 
-                {{-- LIGHTBOX 3D --}}
                 <div id="lightbox-3d" class="lightbox-overlay">
                     <div class="lightbox-content">
                         <button type="button" id="close-3d-btn" class="lightbox-close">&times;</button>
@@ -151,7 +145,6 @@
             </div>
 
             <div class="specs-column">
-                {{-- 2. FICHE TECHNIQUE --}}
                 <div class="each-specs-column">
                     <div class="specs-header-row">
                         <h2>FICHE TECHNIQUE</h2>
@@ -185,7 +178,6 @@
                     </div>
                 </div>
 
-                {{-- 3. GÉOMÉTRIE --}}
                 @if($typeVue === 'velo' && $tailleGeometrie)
                     <div class="geo-section each-specs-column">
                         <div class="specs-header-row">
@@ -231,7 +223,6 @@
                     </div>
                 @endif
 
-                {{-- 4. DESCRIPTION & RESUME --}}
                 @if($typeVue === 'velo')
                     <div class="each-specs-column">
                         <div class="specs-header-row">
@@ -253,7 +244,6 @@
             </div>
         </div>
 
-        {{-- COLONNE DROITE (PRIX, STOCK, ACTIONS) --}}
         <div class="sidebar-column">
 
             <div class="badges">
@@ -283,37 +273,24 @@
             @endphp
 
             @if($typeVue === 'velo')
-                {{-- === VUE VÉLO === --}}
                 <div class="size-selector">
                     <p class="size-label">TAILLE</p>
                     <div class="sizes-grid">
                         @php $stockWebVelo = 0 @endphp
                         @foreach ($stock as $inventaire)
                             @php
-                                // On s'assure que ce sont des nombres (0 si null)
                                 $stockWeb = $inventaire->quantite_stock_en_ligne ?? 0;
-
-                                // Calcul du stock global
                                 $stockGlobal = $inventaire->magasins->sum('pivot.quantite_stock_magasin') ?? 0;
-
-                                // Calcul du stock magasin
                                 $stockMonMagasin = 0;
                                 if ($hasMagasin) {
                                     $stockMonMagasin = $inventaire->magasins
                                         ->where('id_magasin', $idMagasinSelect)
                                         ->sum('pivot.quantite_stock_magasin') ?? 0;
                                 }
-
                                 $classeCss = ($stockWeb <= 0) ? 'out-of-stock' : '';
                                 $stockWebVelo += $stockWeb;
                             @endphp
 
-                            {{--
-                            CORRECTION ICI :
-                            1. J'ai tout mis sur une ligne pour éviter les erreurs d'espaces
-                            2. J'ai ajouté '?? 0' pour éviter les trous dans les arguments
-                            3. J'ai ajouté addslashes() sur le nom de la taille au cas où elle contiendrait une apostrophe
-                            --}}
                             <button class="size-btn {{ $classeCss }}" onclick="handleSizeSelection(
                                             {{ $inventaire->id_inventaire ?? $inventaire->id_taille ?? 0 }}, 
                                             '{{ addslashes($inventaire->taille->taille) }}', 
@@ -347,7 +324,6 @@
                 </div>
 
             @else
-                {{-- === VUE ACCESSOIRE === --}}
                 @php
                     $stockWeb = $stock->sum('quantite_stock_en_ligne') > 0;
                     $stockGlobal = $stock->flatMap->magasins->sum('pivot.quantite_stock_magasin') > 0;
@@ -409,7 +385,6 @@
                             <p>Cet accessoire est en rupture de stock</p>
                         @endif
                     @else
-                        {{-- Pour les vélos, géré par JS --}}
                         <button type="button" onclick="addToCartAjax()" id="btn-panier" class="btn-skew"
                             style="display: none;">
                             <span class="btn-content-unskew">
@@ -419,7 +394,6 @@
                     @endif
                 </form>
 
-                {{-- BOUTON CONTACTER / CHANGER --}}
                 <button id="btn-contact-magasin" class="btn-skew" style="display: inline-block;"
                     onclick="toggleStoreLocator()">
                     <span class="btn-content-unskew">
@@ -498,13 +472,10 @@
 
         </div>
     </div>
+    @if(!$isAccessoire)
+        @include('layouts.bikeSizing')
+    @endif
 
-    @include('layouts.bikeSizing')
-
-    {{-- CROSS SELL ET PRODUITS SIMILAIRES (CODE IDENTIQUE A VOTRE ORIGINAL) --}}
-    {{-- ============================================= --}}
-    {{-- 1. SECTION ACCESSOIRES (Cross-Selling) --}}
-    {{-- ============================================= --}}
     @if(!$isAccessoire)
         <section class="st-similar-section section-grey">
             <div class="st-section-header" style="text-align: center; margin-bottom: 20px;">
@@ -520,13 +491,11 @@
                 <div class="st-carousel-track">
                     @foreach ($article->varianteVelo->accessoires as $accessoire)
                         <div class="st-card-item">
-                            {{-- Attention : adaptez la route si vous avez une route différente pour les accessoires --}}
                             <a href="{{ route('velo.show', $accessoire->reference) }}" class="st-card-link">
 
-                                {{-- Gestion de l'image de l'accessoire --}}
                                 <div class="st-img-box">
                                     @php
-                                        $prefix = 5; // Les ref accessoires font souvent 5 chars
+                                        $prefix = 5;
                                         $folder = substr($accessoire->reference, 0, $prefix);
                                         $imgPath = 'images/ACCESSOIRES/' . $folder . '/image_1.jpg';
                                     @endphp
@@ -557,10 +526,6 @@
         </section>
     @endif
 
-
-    {{-- ============================================= --}}
-    {{-- 2. SECTION ARTICLES SIMILAIRES --}}
-    {{-- ============================================= --}}
     @if($articlesSimilaires->isNotEmpty())
         <section class="st-similar-section">
             <h2 class="st-section-title">ARTICLES SIMILAIRES</h2>
@@ -573,10 +538,8 @@
                         <div class="st-card-item">
                             <a href="{{ route('velo.show', $similaire->reference) }}" class="st-card-link">
 
-                                {{-- Gestion de l'image (Velo ou Accessoire selon le contexte actuel) --}}
                                 <div class="st-img-box">
                                     @php
-                                        // On détermine le dossier en fonction du type de l'article actuel
                                         $simPrefix = $isAccessoire ? 5 : 6;
                                         $simFolder = substr($similaire->reference, 0, $simPrefix);
                                         $dossierRacineSim = $isAccessoire ? 'images/ACCESSOIRES/' : 'images/VELOS/';
@@ -609,7 +572,6 @@
         </section>
     @endif
 
-    {{-- MODALES --}}
     <div id="zoomModalOverlay" class="zoom-overlay">
         <button class="zoom-close-btn" onclick="closeZoom(event)">×</button>
         <button class="zoom-nav zoom-prev" onclick="changeZoomImage(-1)">❮</button>
@@ -619,16 +581,6 @@
         </div>
     </div>
 
-    {{--
-    =======================================================
-    INCLUDE DU STORE LOCATOR (MODIFICATION IMPORTANTE)
-    C'est ici que le fichier store-locator.blade.php est injecté
-    =======================================================
-    --}}
-    {{-- @include('store-locator', ['stock' => $stock, 'tousLesMagasins' => $tousLesMagasins]) --}}
-
-
-    {{-- SCRIPTS --}}
     <script src="{{ asset('js/vizualizeArticle.js') }}" defer></script>
     <script>
         function closeModalAndRefresh() {
@@ -637,23 +589,13 @@
             location.reload();
         }
 
-        /**
-         * Fonction intermédiaire (Pont)
-         * Elle déclenche la mise à jour de l'UI classique (vizualizeArticle.js)
-         * ET la mise à jour du Store Locator
-         */
         function handleSizeSelection(idInventaire, tailleNom, stockWeb, stockGlobal, stockLocal, hasMagasin) {
-
-            // 1. Mettre à jour le Store Locator (Fonction définie dans store-locator.blade.php ou son script associé)
-            // On vérifie qu'elle existe pour éviter une erreur JS
             if (typeof updateStoreLocatorStocks === 'function') {
                 updateStoreLocatorStocks(idInventaire);
             } else {
                 console.warn("La fonction updateStoreLocatorStocks n'est pas définie.");
             }
 
-            // 2. Appeler la fonction originale pour mettre à jour la page (Prix, Pastilles, Bouton panier...)
-            // Cette fonction est supposée être dans vizualizeArticle.js
             if (typeof selectionnerTaille === 'function') {
                 selectionnerTaille(tailleNom, stockWeb, stockGlobal, stockLocal, hasMagasin);
             }

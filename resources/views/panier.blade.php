@@ -22,7 +22,6 @@
         @else
             <div class="cart-grid">
 
-                {{-- COLONNE GAUCHE : ITEMS --}}
                 <div class="cart-items-section">
                     <h2 class="section-title">PANIER (<span id="cart-count">{{ count($cart) }}</span>)</h2>
 
@@ -84,23 +83,19 @@
                     </div>
                 </div>
 
-                {{-- COLONNE DROITE : RÉSUMÉ & PROMO --}}
                 <div class="cart-summary-section">
                     <h2 class="section-title">RÉCAPITULATIF</h2>
 
                     <div class="summary-card">
                         <div class="summary-row">
                             <span>Panier (<span id="summary-count-txt">{{ count($cart) }}</span>)</span>
-                            {{-- Affichage du Sous-total --}}
                             <span>{{ number_format($subTotal ?? 0, 2, ',', ' ') }} €</span>
                         </div>
 
-                        {{-- LIGNE DE RÉDUCTION SI ACTIVE --}}
                         @if(isset($discountAmount) && $discountAmount > 0)
                             <div class="summary-row promo-active-row">
                                     <div class="promo-label-group">
                                         <span>Réduction ({{ $promoCode }})</span>
-                                        {{-- Le bouton croix pour supprimer --}}
                                         <button type="button" id="btn-remove-promo" class="btn-remove-promo" title="Retirer le code">
                                             &times;
                                         </button>
@@ -132,7 +127,6 @@
                         </div>
                     </div>
 
-                    {{-- BLOC CODE PROMO (Style Image) --}}
                     <div class="promo-container">
                         <h3 class="promo-title">CODE PROMO</h3>
                         
@@ -152,7 +146,6 @@
         @endif
     </div>
 
-    {{-- SCRIPT JS --}}
     <script>
         document.addEventListener('DOMContentLoaded', function () {
             const formatMoney = (amount) => {
@@ -163,12 +156,6 @@
                 }).format(amount);
             };
 
-            // --- GESTION QUANTITÉ & MISE A JOUR ---
-            // Note: Comme on reload pour la promo, on garde ici la logique simple
-            // Pour être parfait, chaque changement de quantité devrait recharger la page 
-            // OU refaire un appel API qui renvoie tous les nouveaux totaux (promo incluse).
-            // Pour simplifier ici, on update juste la quantité en base.
-            
             const saveQuantityToServer = (rowId, newQty) => {
                 fetch('{{ route("cart.update") }}', {
                     method: 'POST',
@@ -181,8 +168,6 @@
                 .then(response => response.json())
                 .then(data => {
                     if (data.success) {
-                        // Idéalement : window.location.reload(); pour recalculer la promo
-                        // Sinon les totaux JS ne seront pas exacts avec la promo.
                         window.location.reload(); 
                     }
                 })
@@ -280,7 +265,7 @@
                     .then(response => response.json())
                     .then(data => {
                         if (data.success) {
-                            window.location.reload(); // On recharge pour recalculer les prix
+                            window.location.reload();
                         }
                     })
                     .catch(error => console.error('Erreur:', error));

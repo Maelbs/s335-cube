@@ -1,14 +1,10 @@
-{{-- 1. SÉCURISATION DES DONNÉES (PHP) --}}
 @php
-    // On crée une variable locale sûre. Si $stock n'existe pas (Accueil), elle vaut null.
     $stockLocal = isset($stock) ? $stock : null;
 
-    // Préparation du JSON pour la Map (JS)
     $jsonMagasins = $tousLesMagasins->map(function ($magasin) use ($stockLocal, $magasinHeader) {
         $ad = $magasin->adresses->first();
 
         $enStock = false;
-        // On utilise $stockLocal qui est sûr (soit null, soit la collection)
         if ($stockLocal) {
             $enStock = $stockLocal->flatMap->magasins->where('id_magasin', $magasin->id_magasin)->count() > 0;
         }
@@ -24,11 +20,9 @@
     })->values();
 @endphp
 
-{{-- 2. STRUCTURE DE LA MODALE (Overlay + Panel) --}}
 <div id="store-locator-overlay" class="sl-overlay">
     <div class="sl-panel">
 
-        {{-- HEADER DU PANEL --}}
         <div class="sl-header">
             <h2>CHOISIR UN MAGASIN</h2>
             <button onclick="toggleStoreLocator()" class="sl-close-btn">
@@ -41,7 +35,6 @@
         </div>
 
         <div class="sl-content">
-            {{-- RECHERCHE --}}
             <div class="sl-search-box">
                 <input type="text" id="storeSearchInput" placeholder="Saisir une adresse, un code postal...">
                 <svg class="search-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
@@ -51,7 +44,6 @@
                 </svg>
             </div>
 
-            {{-- SWITCH STOCK (Affiché uniquement si on est sur une page produit) --}}
             @if($stockLocal)
                 <div class="sl-toggle-row">
                     <label class="sl-switch">
@@ -62,7 +54,6 @@
                 </div>
             @endif
 
-            {{-- ONGLETS LISTE / CARTE --}}
             <div class="sl-tabs">
                 <button class="sl-tab active" onclick="switchView('list')">VUE LISTE</button>
                 <button class="sl-tab" onclick="switchView('map')">VUE CARTE</button>
@@ -73,29 +64,22 @@
 
             <div class="sl-views-wrapper" style="position: relative; flex-grow: 1; overflow: hidden;">
 
-                {{-- VUE 1 : LISTE --}}
                 <div id="view-list" class="sl-list-container custom-scroll">
-                    {{-- DANS store-locator.blade.php --}}
 
                     @foreach($tousLesMagasins as $magasin)
                         @php
                             $adresse = $magasin->adresses->first();
                             $searchString = strtolower($magasin->nom_magasin . ' ' . ($adresse ? $adresse->ville . ' ' . $adresse->code_postal : ''));
 
-                            // --- 1. PRÉPARATION DES DONNÉES DE STOCK (JSON) ---
                             $stockMap = [];
                             $enStockGlobal = false;
 
-                            // On vérifie si la variable $stock existe (cas Page Produit)
                             if (isset($stock) && $stock) {
                                 foreach ($stock as $inventaire) {
-                                    // On cherche si ce magasin possède cette déclinaison (taille)
-                                    // $inventaire->magasins est la relation chargée via le Controller
                                     $pivot = $inventaire->magasins->firstWhere('id_magasin', $magasin->id_magasin);
 
                                     $qty = $pivot ? $pivot->pivot->quantite_stock_magasin : 0;
 
-                                    // CLÉ = ID de l'inventaire (ex: 145), VALEUR = Quantité
                                     $stockMap[$inventaire->id_taille] = $qty;
 
                                     if ($qty > 0)
@@ -104,11 +88,6 @@
                             }
                         @endphp
 
-                        {{--
-                        --- 2. ATTRIBUTS HTML POUR LE JS ---
-                        data-stock-details : Contient l'objet JSON { "id_taille": quantite, ... }
-                        data-stock-global : État par défaut (si aucune taille n'est sélectionnée)
-                        --}}
                         <div class="sl-card store-item js-store-card" 
                             data-id="{{ $magasin->id_magasin }}" 
                             data-search-string="{{ $searchString }}"
@@ -128,13 +107,9 @@
                             <div class="sl-card-body">
                                 <div class="sl-card-info">
 
-                                    {{-- N'affiche le statut de stock que si on est sur une page produit ($stock existe)
-                                    --}}
                                     @if(isset($stock))
                                         <div class="sl-stock-status-container">
-                                            {{-- CIBLE JS : class="js-stock-display" --}}
                                             <div class="js-stock-display">
-                                                {{-- ÉTAT INITIAL (CHARGEMENT PHP) --}}
                                                 @if($enStockGlobal)
                                                     <div class="sl-stock-status status-dispo">
                                                         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#00AEEF"
@@ -158,7 +133,6 @@
                                 </div>
 
                                 <div class="sl-card-action">
-                                    {{-- Tes boutons Choisir / Sélectionné --}}
                                     @if(isset($magasinHeader) && $magasinHeader && $magasinHeader->id_magasin == $magasin->id_magasin)
                                         <button type="button" class="btn-skew-black"
                                             style="background-color: #28a745; cursor: default; border-color: #28a745;">
@@ -179,7 +153,6 @@
                     @endforeach
                 </div>
 
-                {{-- VUE 2 : CARTE (Manquait dans votre fichier) --}}
                 <div id="view-map" style="display: none; height: 100%; width: 100%;">
                     <div id="sl-map" style="height: 100%; width: 100%; background: #eee;"></div>
                 </div>
@@ -195,12 +168,7 @@
     window.magasinsData = @json($jsonMagasins);
     window.csrfToken = "{{ csrf_token() }}";
     window.routeDefinirMagasin = "{{ route('magasin.definir') }}";
-    
-    // --- AJOUTEZ CETTE LIGNE ICI ---
-    // Si la variable $stock existe (page produit), ceci vaudra true. Sinon false.
     window.checkStock = @json(isset($stock)); 
-    // -------------------------------
-
     window.userAddress = null;
 
     @auth
@@ -223,7 +191,6 @@
     @endauth
 </script>
 
-{{-- Gardez le style --}}
 <style>
     .btn-skew-grey {
         background: #e0e0e0;
@@ -235,7 +202,6 @@
         display: inline-block;
     }
 
-    /* Style pour le popup Leaflet */
     .leaflet-popup-content-wrapper {
         border-radius: 0;
         padding: 0;

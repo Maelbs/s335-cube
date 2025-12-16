@@ -86,7 +86,6 @@
                                 $routeParams = ['type' => $type];
                                 $isActive = false;
 
-                                // --- CAS 1 : VÉLOS ---
                                 if(!$isAccessoire) {
                                     if ($hierarchyLevel === 'root') {
                                         $routeParams['cat_id'] = $item->id;
@@ -104,23 +103,17 @@
                                         $isActive = ($model_id == $item->id);
                                     }
                                 } 
-                                // --- CAS 2 : ACCESSOIRES ---
                                 else {
                                     if ($hierarchyLevel === 'root') {
-                                        // On est à la racine, on clique pour aller au niveau 1 (cat_id)
                                         $routeParams['cat_id'] = $item->id;
                                         $isActive = ($cat_id == $item->id);
                                     }
                                     elseif ($hierarchyLevel === 'sub') {
-                                        // On est au niveau 1, on clique pour aller au niveau 2 (sub_id)
-                                        // On doit garder le cat_id parent
                                         $routeParams['cat_id'] = $cat_id; 
                                         $routeParams['sub_id'] = $item->id;
                                         $isActive = ($sub_id == $item->id);
                                     }
                                     elseif ($hierarchyLevel === 'model') {
-                                        // On est au niveau 2, on clique pour aller au niveau 3 (model_id)
-                                        // On garde cat_id et sub_id
                                         $routeParams['cat_id'] = $cat_id;
                                         $routeParams['sub_id'] = $sub_id;
                                         $routeParams['model_id'] = $item->id;
@@ -166,7 +159,6 @@
                     </div>
                 </div>
  
-                {{-- FILTRE TAILLE (Désormais pour Vélos ET Accessoires) --}}
                 @if($availableTailles->isNotEmpty())
                     <div class="filter-section">
                         <div class="filter-header" onclick="toggleSection(this)"><h3>TAILLE</h3><i class="fas fa-chevron-up"></i></div>
@@ -194,7 +186,6 @@
                     </div>
                 @endif
 
-                {{-- FILTRE COULEUR (Uniquement pour les vélos car les accessoires n'ont pas d'id_couleur) --}}
                 @if(!$isAccessoire)
                     <div class="filter-section">
                         <div class="filter-header" onclick="toggleSection(this)"><h3>COULEUR</h3><i class="fas fa-chevron-up"></i></div>
@@ -281,26 +272,20 @@
                                     $dispoMag = false;
                                     if ($isAccessoire) {
                                         $invs = $article->inventaires;
-                                        // Disponibilité Accessoires (Booléens simples)
                                         $dispoLigne = $invs->sum('quantite_stock_en_ligne');
                                         $dispoMag = $invs->flatMap->magasins->sum('pivot.quantite_stock_magasin') > 0;
                                     } else {
-                                        // Disponibilité Vélos (Via inventaires)
                                         $filtreTailles = request('tailles');
-                                        // Relation 'inventaires' héritée de Article (hasMany ArticleInventaire)
                                         $invs = $article->inventaires;
                                         
                                         if ($filtreTailles && is_array($filtreTailles)) {
                                             $invs = $invs->filter(fn($i) => in_array(trim($i->taille->taille), $filtreTailles));
                                         }
 
-                                        // Calcul Dispo Ligne
                                         $stockLigne = $invs->sum('quantite_stock_en_ligne');
                                         $dispoLigne = ($stockLigne > 0);
                                         
-                                        // Calcul Dispo Magasin (Somme Pivot via ArticleInventaire -> magasins)
                                         $stockMag = 0;
-                                            // 'magasins' est la relation belongsToMany dans ArticleInventaire
                                             $stockMag = $invs->flatMap->magasins->sum('pivot.quantite_stock_magasin');
                                         $dispoMag = ($stockMag > 0);
                                     }
