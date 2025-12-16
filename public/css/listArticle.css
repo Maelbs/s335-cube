@@ -1,16 +1,14 @@
-/* =========================================
-   CUBE BIKES STYLE - LISTING PAGE (AIRY)
-   ========================================= */
 @font-face {
-  font-family: 'Damas Font';
-  src: url('../font/font.woff2');
+    font-family: 'Damas Font';
+    src: url('../font/font.woff2');
 }
+
 :root {
     --c-black: #000000;
     --c-dark: #333333;
     --c-grey: #666666;
     --c-light-grey: #e5e5e5;
-    --c-lighter-grey: #f9f9f9; /* Nouveau gris très clair pour le fond */
+    --c-lighter-grey: #f9f9f9;
     --c-green: #78be20;
     --c-red: #e30613;
     --c-orange: #ff9900;
@@ -23,15 +21,15 @@ body {
     margin: 0;
 }
 
-a { text-decoration: none; color: inherit; }
+a { 
+    text-decoration: none; 
+    color: inherit; 
+}
 
-/* =========================================
-   HERO SECTION
-   ========================================= */
 .hero-section {
     position: relative;
     width: 100%;
-    height: 100vh; /* Un peu moins haut pour inviter au scroll */
+    height: 100vh;
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
@@ -39,7 +37,7 @@ a { text-decoration: none; color: inherit; }
     align-items: center;
     justify-content: center;
     background-color: #1a1a1a;
-    margin-bottom: 0; /* Collé au contenu */
+    margin-bottom: 0;
 }
 
 .hero-overlay {
@@ -68,103 +66,78 @@ a { text-decoration: none; color: inherit; }
     text-shadow: 0 10px 30px rgba(0,0,0,0.5);
 }
 
-/* BOUTON CUBE (Biseau Gauche + Arrondi Droite) */
 .btn-scroll-down {
-    /* On rend le fond transparent car ce sont les pseudo-éléments qui font le blanc */
     background: transparent;
     border: none;
     color: #000;
-    
-    /* Typographie */
-    font-size: 12px; /* Texte assez gros */
-    font-weight: 900; /* Très gras */
-    font-style: italic; /* Italique comme sur la photo */
+    font-size: 12px;
+    font-weight: 900;
+    font-style: italic;
     text-transform: uppercase;
-    
-    /* Espacement (Plus d'espace à gauche pour compenser le biseau) */
     padding: 15px 30px 15px 40px;
-    
     cursor: pointer;
     position: relative;
     z-index: 1;
     display: inline-flex;
     align-items: center;
-    gap: 15px; /* Espace entre flèche et texte */
+    gap: 15px;
     transition: transform 0.3s ease;
     margin-top: 30px;
 }
 
-/* PARTIE GAUCHE (Biseau / Inclinée) */
 .btn-scroll-down::before {
     content: '';
     position: absolute;
     top: 0; bottom: 0;
     left: 0;
-    width: 60%; /* Occupe la moitié gauche */
+    width: 60%;
     background: #fff;
-    transform: skewX(-20deg); /* L'inclinaison vers la droite */
+    transform: skewX(-20deg);
     z-index: -1;
-    border-radius: 2px 0 0 2px; /* Légère douceur sur la pointe */
+    border-radius: 2px 0 0 2px;
 }
 
-/* PARTIE DROITE (Arrondie / Pillule) */
 .btn-scroll-down::after {
     content: '';
     position: absolute;
     top: 0; bottom: 0;
     right: 0;
-    width: 50%; /* Occupe la moitié droite (chevauche la gauche) */
+    width: 50%;
     background: #fff;
-    /* L'arrondi parfait style pillule */
     border-top-right-radius: 2px; 
     border-bottom-right-radius: 2px;
     z-index: -1;
 }
 
-/* Interaction au survol */
 .btn-scroll-down:hover {
     transform: translateY(2px);
-    /* Optionnel : changer la couleur du texte ou du fond au survol */
 }
 
-/* Style de l'icône double flèche */
 .btn-scroll-down i {
     font-size: 14px;
     font-weight: 900;
     color: #000;
 }
 
-/* =========================================
-   LAYOUT PRINCIPAL (AÉRÉ)
-   ========================================= */
 .main-container {
     display: flex;
-    max-width: 1800px; /* Plus large pour laisser respirer */
+    max-width: 1800px;
     margin: 0 auto;
-    /* Gros padding sur les côtés et en haut */
     padding: 80px 60px; 
-    /* Grand espace entre la sidebar et les vélos */
     gap: 60px; 
     scroll-margin-top: 20px;
 }
 
-/* =========================================
-   SIDEBAR (STYLE "BOX" MARQUÉ)
-   ========================================= */
 .filters-sidebar {
-    width: 280px; /* Un peu plus large */
+    width: 280px;
     flex-shrink: 0;
-    
-    /* Le style "Marqué" demandé */
     background-color: #fff;
-    padding: 30px; /* Espace intérieur */
-    /* Ombre douce pour détacher la colonne */
+    padding: 30px;
     box-shadow: 5px 0 30px -5px rgba(0,0,0,0.08); 
-    border-radius: 4px; /* Optionnel, très léger */
-    height: fit-content; /* S'arrête à la fin du contenu */
+    border-radius: 4px;
+    height: fit-content;
 }
 
-/* Reset Button Top */
 .btn-reset-top {
     display: block;
     text-align: center;
@@ -173,32 +146,36 @@ a { text-decoration: none; color: inherit; }
     text-transform: uppercase;
     font-weight: 700;
     color: #999;
-    margin-bottom: 30px; /* Plus d'espace */
+    margin-bottom: 30px;
     cursor: pointer;
     transition: color 0.3s;
 }
-.btn-reset-top:hover { color: var(--c-black); }
 
-/* Sections de filtres aérées */
-.filter-section {
-    margin-bottom: 35px; /* Espace entre les blocs */
-    border-bottom: 1px solid #f0f0f0;
-    padding-bottom: 25px; /* Espace avant la ligne */
+.btn-reset-top:hover { 
+    color: var(--c-black); 
 }
 
-.filter-section:last-child { border-bottom: none; }
+.filter-section {
+    margin-bottom: 35px;
+    border-bottom: 1px solid #f0f0f0;
+    padding-bottom: 25px;
+}
+
+.filter-section:last-child { 
+    border-bottom: none; 
+}
 
 .filter-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 20px; /* Espace sous le titre */
+    margin-bottom: 20px;
     cursor: pointer;
     user-select: none;
 }
 
 .filter-header h3 {
-    font-size: 15px; /* Un poil plus gros */
+    font-size: 15px;
     font-weight: 900;
     text-transform: uppercase;
     margin: 0;
@@ -206,37 +183,48 @@ a { text-decoration: none; color: inherit; }
     font-style: italic;
 }
 
-/* Animation Accordéon */
-.filter-header i { transition: transform 0.3s ease; }
-.filter-section.closed .filter-header i { transform: rotate(180deg); }
+.filter-header i { 
+    transition: transform 0.3s ease; 
+}
+
+.filter-section.closed .filter-header i { 
+    transform: rotate(180deg); 
+}
+
 .filter-section.closed .filter-content,
 .filter-section.closed .price-inputs,
-.filter-section.closed .price-slider-mock { display: none; }
+.filter-section.closed .price-slider-mock { 
+    display: none; 
+}
 
-/* Custom Checkboxes */
 .filter-content {
     display: flex;
     flex-direction: column;
-    gap: 12px; /* Espace entre les lignes de checkbox */
+    gap: 12px;
 }
 
 .cube-checkbox {
     display: flex;
     align-items: center;
-    gap: 15px; /* Espace entre carré et texte */
+    gap: 15px;
     font-size: 14px;
     color: var(--c-dark);
     cursor: pointer;
     transition: color 0.2s;
 }
 
-.cube-checkbox:hover { color: var(--c-black); }
-.cube-checkbox input { display: none; }
+.cube-checkbox:hover { 
+    color: var(--c-black); 
+}
+
+.cube-checkbox input { 
+    display: none; 
+}
 
 .cube-checkbox .box {
     width: 18px;
     height: 18px;
-    border: 2px solid #e0e0e0; /* Bordure un peu plus épaisse */
+    border: 2px solid #e0e0e0;
     display: inline-block;
     position: relative;
     transition: all 0.2s;
@@ -248,10 +236,9 @@ a { text-decoration: none; color: inherit; }
     border-color: var(--c-black);
 }
 
-/* =========================================
-   GRID PRODUITS
-   ========================================= */
-.products-grid-wrapper { flex-grow: 1; }
+.products-grid-wrapper { 
+    flex-grow: 1; 
+}
 
 .top-bar {
     display: flex;
@@ -260,9 +247,9 @@ a { text-decoration: none; color: inherit; }
     font-size: 13px;
     font-weight: 700;
     text-transform: uppercase;
-    margin-bottom: 40px; /* Espace sous la barre de tri */
+    margin-bottom: 40px;
     padding-bottom: 15px;
-    border-bottom: 2px solid #f0f0f0; /* Ligne un peu plus marquée */
+    border-bottom: 2px solid #f0f0f0;
     position: relative;
     z-index: 20;
 }
@@ -270,19 +257,14 @@ a { text-decoration: none; color: inherit; }
 .products-grid {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
-    /* Ajout d'un GAP pour aérer les cartes entre elles */
     gap: 40px; 
-    border: none; /* On enlève les bordures du conteneur pour ce style aéré */
+    border: none;
 }
 
-/* =========================================
-   CARTE PRODUIT
-   ========================================= */
 .product-card {
     background: #fff;
-    /* Bordure très légère individuelle */
     border: 1px solid #f0f0f0; 
-    padding: 30px; /* Plus d'espace interne */
+    padding: 30px;
     position: relative;
     display: flex;
     flex-direction: column;
@@ -291,7 +273,6 @@ a { text-decoration: none; color: inherit; }
 }
 
 .product-card:hover {
-    /* Ombre forte au survol pour détacher */
     box-shadow: 0 20px 40px rgba(0,0,0,0.08);
     transform: translateY(-5px);
     border-color: transparent;
@@ -308,50 +289,33 @@ a { text-decoration: none; color: inherit; }
     font-style: italic;
     z-index: 5;
 }
-/* =========================================
-   CARTE PRODUIT (Mise à jour pour les images)
-   ========================================= */
 
 .product-image {
-    height: 260px; /* Hauteur fixe de la zone */
-    width: 100%;   /* Prend toute la largeur disponible */
-    
+    height: 260px;
+    width: 100%;
     display: flex;
     align-items: center;
     justify-content: center;
-    
     margin-bottom: 30px;
-    
-    /* MODIFICATION ICI : */
-    overflow: hidden; /* Coupe tout ce qui oserait dépasser */
-    padding: 20px;    /* Ajoute une "marge de sécurité" interne. 
-                         Ça réduit légèrement l'image pour qu'elle ne touche pas les bords. 
-                         Très utile pour les roues/cranks qui remplissent tout le carré. */
-    box-sizing: border-box; /* S'assure que le padding est inclus dans la taille */
+    overflow: hidden;
+    padding: 20px;
+    box-sizing: border-box;
 }
 
 .product-image img {
-    /* On force l'image à respecter les limites */
     max-width: 100%; 
     max-height: 100%;
-    
-    /* L'image garde ses proportions et ne sera jamais coupée/déformée */
     object-fit: contain; 
-    
     transition: transform 0.5s ease;
-    
-    /* Optionnel : permet un meilleur rendu si tes images ne sont pas détourées parfaitement */
     display: block; 
 }
 
-/* L'effet de zoom reste, mais à l'intérieur du cadre grâce au overflow:hidden */
 .product-card:hover .product-image img { 
     transform: scale(1.08); 
 }
 
-
 .product-title {
-    font-size: 18px; /* Titre plus gros */
+    font-size: 18px;
     font-weight: 900;
     text-transform: uppercase;
     margin: 0 0 10px 0;
@@ -360,89 +324,94 @@ a { text-decoration: none; color: inherit; }
     min-height: 45px;
 }
 
-.product-title a { transition: color 0.2s; }
-.product-card:hover .product-title a { color: var(--c-grey); }
+.product-title a { 
+    transition: color 0.2s; 
+}
+
+.product-card:hover .product-title a { 
+    color: var(--c-grey); 
+}
 
 .availability {
     font-size: 12px; color: #777; margin-bottom: 25px;
 }
-.status-line { display: flex; align-items: center; margin-bottom: 8px; }
-.dot { width: 8px; height: 8px; border-radius: 50%; margin-right: 10px; display: inline-block; }
+
+.status-line { 
+    display: flex; 
+    align-items: center; 
+    margin-bottom: 8px; 
+}
+
+.dot { 
+    width: 8px; 
+    height: 8px; 
+    border-radius: 50%; 
+    margin-right: 10px; 
+    display: inline-block; 
+}
+
 .dot.green { background-color: var(--c-green); }
 .dot.red { background-color: var(--c-red); }
 .dot.orange { background-color: var(--c-orange); }
 
 .price {
-    font-size: 22px; /* Prix plus gros */
+    font-size: 22px;
     font-weight: 900;
     color: var(--c-black);
 }
 
-/* 1. Conteneur global */
-/* ESPACE GLOBAL DU SLIDER */
 .price-filter-container {
-    padding: 35px 15px 5px 15px; /* Espace en haut pour les textes */
+    padding: 35px 15px 5px 15px;
     height: auto;
 }
 
-/* 1. LA BARRE (TRACK) - Ultra fine */
 .noUi-target {
-    background: #e0e0e0; /* Gris clair pour le fond inactif */
+    background: #e0e0e0;
     border: none;
     border-radius: 0;
     box-shadow: none;
-    height: 2px; /* Épaisseur exacte du trait sur la photo */
+    height: 2px;
     margin-top: 10px;
 }
 
-/* 2. LA PARTIE ACTIVE (CONNECT) - Noire */
 .noUi-connect {
     background: #000;
 }
 
-/* 3. LES POIGNÉES (HANDLES) - Petits points noirs */
 .noUi-horizontal .noUi-handle {
-    width: 12px;      /* Diamètre très petit */
+    width: 12px;
     height: 12px;
-    right: -6px;      /* Pour centrer : moitié de la largeur */
-    top: -5px;        /* Pour centrer verticalement sur le trait de 2px */
-    
-    background: #000; /* Noir pur */
-    border: none;     /* Pas de bordure blanche */
-    border-radius: 50%; /* Rond parfait */
-    box-shadow: none; /* Pas d'ombre */
+    right: -6px;
+    top: -5px;
+    background: #000;
+    border: none;
+    border-radius: 50%;
+    box-shadow: none;
     cursor: pointer;
 }
 
-/* Suppression des traits gris moches à l'intérieur des ronds */
 .noUi-handle:before, .noUi-handle:after {
     display: none;
 }
 
-/* 4. LES TEXTES (TOOLTIPS) - Brut sans cadre */
 .noUi-tooltip {
     display: block;
     position: absolute;
     border: none;
-    background: transparent; /* Fond transparent */
+    background: transparent;
     color: #000;
     padding: 0;
-    
-    /* Typographie CUBE */
     font-family: 'Fira Sans', sans-serif;
     font-size: 13px;
-    font-weight: 800;     /* Gras */
-    font-style: italic;   /* Italique comme sur la photo */
-    
-    bottom: 18px; /* Positionné juste au-dessus du point */
+    font-weight: 800;
+    font-style: italic;
+    bottom: 18px;
     left: 50%;
     transform: translateX(-50%);
 }
 
-/* BOUTON BISEAUTÉ */
 .btn-skew {
     position: absolute; bottom: 30px; right: 30px;
-    
     background: #000; color: #fff;
     padding: 12px 25px 12px 35px;
     font-size: 12px; font-weight: 800;
@@ -450,52 +419,94 @@ a { text-decoration: none; color: inherit; }
     clip-path: polygon(15px 0, 100% 0, 100% 100%, 0% 100%);
     transition: background 0.3s; font-style: italic;
 }
-.btn-skew:hover { background: #333; }
 
-/* DROPDOWN MENU */
-.custom-dropdown { position: relative; display: inline-block; }
+.btn-skew:hover { 
+    background: #333; 
+}
+
+.custom-dropdown { 
+    position: relative; 
+    display: inline-block; 
+}
+
 .dropdown-btn {
     background: none; border: none; cursor: pointer;
     font-family: inherit; font-weight: 700; font-size: 13px;
     text-transform: uppercase; color: var(--c-black);
     display: flex; align-items: center; gap: 10px;
 }
+
 .dropdown-content {
     display: none; position: absolute; right: 0; top: 30px;
     background-color: #fff; min-width: 240px;
     box-shadow: 0 10px 30px rgba(0,0,0,0.15);
     z-index: 50; border: 1px solid #eee; text-align: left;
 }
-.custom-dropdown.active .dropdown-content { display: block; }
+
+.custom-dropdown.active .dropdown-content { 
+    display: block; 
+}
+
 .dropdown-content div {
     color: black; padding: 15px 20px;
     cursor: pointer; font-weight: 600; font-size: 12px;
     border-bottom: 1px solid #f5f5f5; transition: background 0.2s;
 }
-.dropdown-content div:hover { background-color: #f9f9f9; color: var(--c-green); }
 
-/* PAGINATION */
-.pagination-wrapper { margin-top: 80px; display: flex; justify-content: center; }
-.pagination { display: flex; list-style: none; padding: 0; margin: 0; gap: 15px; }
+.dropdown-content div:hover { 
+    background-color: #f9f9f9; 
+    color: var(--c-green); 
+}
+
+.pagination-wrapper { 
+    margin-top: 80px; 
+    display: flex; 
+    justify-content: center; 
+}
+
+.pagination { 
+    display: flex; 
+    list-style: none; 
+    padding: 0; 
+    margin: 0; 
+    gap: 15px; 
+}
+
 .page-item .page-link {
     display: flex; align-items: center; justify-content: center;
     width: 45px; height: 45px; border: 1px solid #e0e0e0;
     color: #000; background-color: #fff; font-weight: 800; font-size: 14px;
     transition: all 0.2s ease; cursor: pointer;
 }
-.page-item .page-link:hover { border-color: #000; background-color: #f9f9f9; }
-.page-item.active .page-link { background-color: #000; border-color: #000; color: #fff; z-index: 1; }
-.page-item.disabled .page-link { color: #ccc; border-color: #eee; pointer-events: none; }
 
-/* RESPONSIVE */
+.page-item .page-link:hover { 
+    border-color: #000; 
+    background-color: #f9f9f9; 
+}
+
+.page-item.active .page-link { 
+    background-color: #000; 
+    border-color: #000; 
+    color: #fff; 
+    z-index: 1; 
+}
+
+.page-item.disabled .page-link { 
+    color: #ccc; 
+    border-color: #eee; 
+    pointer-events: none; 
+}
+
 @media (max-width: 1400px) {
     .main-container { padding: 40px 20px; gap: 40px; }
     .products-grid { gap: 20px; }
 }
+
 @media (max-width: 1200px) {
     .products-grid { grid-template-columns: repeat(2, 1fr); }
     .hero-title { font-size: 3rem; }
 }
+
 @media (max-width: 900px) {
     .main-container { flex-direction: column; }
     .filters-sidebar { width: 100%; margin-bottom: 40px; box-shadow: none; padding: 0; }

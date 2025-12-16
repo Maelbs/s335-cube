@@ -1,5 +1,3 @@
-
-
 @font-face {
     font-family: 'Damas Font';
     src: url('../font/font.woff2');
@@ -12,17 +10,16 @@
     --cube-light-grey: #f8f9fa;
     --cube-border: #e0e0e0;
     
-    /* Couleurs de Status "Tech" */
-    --status-delivered-bg: #00e699; /* Vert Acide CUBE */
+    --status-delivered-bg: #00e699;
     --status-delivered-text: #000000;
     
-    --status-pending-bg: #ffcc00; /* Jaune Signal */
+    --status-pending-bg: #ffcc00;
     --status-pending-text: #000000;
     
-    --status-shipped-bg: #0099ff; /* Bleu Electrique */
+    --status-shipped-bg: #0099ff;
     --status-shipped-text: #ffffff;
     
-    --status-canceled-bg: #e30613; /* Rouge CUBE */
+    --status-canceled-bg: #e30613;
     --status-canceled-text: #ffffff;
     
     --status-default-bg: #dcdcdc;
@@ -45,13 +42,12 @@ header img {
     margin: 60px auto;
     margin-top: 150px;
     padding: 0 20px;
-    font-family: 'Damas Font'; /* Police condensée */
+    font-family: 'Damas Font';
     color: var(--cube-black);
 }
 
-/* --- TITRES --- */
 .cube-header {
-    text-align: center; /* Centré comme demandé */
+    text-align: center;
     margin-bottom: 50px;
     position: relative;
 }
@@ -66,7 +62,6 @@ header img {
     line-height: 1;
 }
 
-/* Petit trait rouge décoratif sous le titre */
 .cube-title::after {
     content: '';
     display: block;
@@ -83,17 +78,15 @@ header img {
     font-weight: 400;
 }
 
-/* --- TABLEAU --- */
 .cube-table {
     width: 100%;
     border-collapse: separate;
-    border-spacing: 0 15px; /* Espace entre les lignes (cartes) */
+    border-spacing: 0 15px;
     overflow: auto;
 }
 
-/* En-têtes */
 .cube-th {
-    text-align: center; /* Centré */
+    text-align: center;
     font-weight: 700;
     text-transform: uppercase;
     font-size: 0.9rem;
@@ -102,30 +95,27 @@ header img {
     letter-spacing: 0.5px;
 }
 
-/* Lignes (Cartes) */
 .cube-row {
     background-color: white;
-    box-shadow: 0 2px 10px rgba(0,0,0,0.05); /* Ombre douce */
+    box-shadow: 0 2px 10px rgba(0,0,0,0.05);
     transition: transform 0.2s, box-shadow 0.2s;
 }
 
 .cube-row:hover {
-    transform: translateY(-2px); /* Léger soulèvement au survol */
+    transform: translateY(-2px);
     box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-    border-left: 4px solid var(--cube-red); /* Marqueur visuel au survol */
+    border-left: 4px solid var(--cube-red);
 }
 
-/* Cellules */
 .cube-td {
     padding: 25px 20px;
     vertical-align: middle;
-    text-align: center; /* Tout le contenu centré */
+    text-align: center;
     font-size: 1.05rem;
     border-top: 1px solid var(--cube-border);
     border-bottom: 1px solid var(--cube-border);
 }
 
-/* Bords arrondis/fermés pour la ligne */
 .cube-td:first-child {
     border-left: 1px solid var(--cube-border);
     border-top-left-radius: 4px;
@@ -138,9 +128,6 @@ header img {
     border-bottom-right-radius: 4px;
 }
 
-/* --- CONTENU SPÉCIFIQUE --- */
-
-/* ID de commande : Style "Plaque d'immatriculation" */
 .cube-id {
     font-weight: 900;
     font-size: 1.1rem;
@@ -169,7 +156,6 @@ header img {
     font-style: italic;
 }
 
-/* --- BADGES ÉTAT (Nouveau Design) --- */
 .cube-badge {
     display: inline-flex;
     align-items: center;
@@ -178,10 +164,10 @@ header img {
     font-weight: 800;
     font-size: 0.85rem;
     text-transform: uppercase;
-    border-radius: 2px; /* Coins un peu carrés pour le style technique */
+    border-radius: 2px;
     min-width: 140px;
     letter-spacing: 0.5px;
-    box-shadow: 2px 2px 0 rgba(0,0,0,0.1); /* Effet "Sticker" */
+    box-shadow: 2px 2px 0 rgba(0,0,0,0.1);
 }
 
 .status-livre { background-color: var(--status-delivered-bg); color: var(--status-delivered-text); }
@@ -191,7 +177,6 @@ header img {
 .status-annule { background-color: var(--status-canceled-bg); color: var(--status-canceled-text); }
 .status-unknown { background-color: var(--status-default-bg); color: var(--status-default-text); }
 
-/* --- BOUTON DÉTAILS --- */
 .cube-btn-details {
     display: inline-block;
     padding: 10px 25px;
@@ -212,7 +197,6 @@ header img {
     transform: translateY(-2px);
 }
 
-/* --- EMPTY STATE --- */
 .cube-empty {
     text-align: center;
     background-color: white;
@@ -221,7 +205,6 @@ header img {
     color: #777;
 }
 
-/* Responsive Mobile */
 @media (max-width: 768px) {
     .cube-header { text-align: left; }
     .cube-title::after { margin: 15px 0 0; }
@@ -229,7 +212,7 @@ header img {
     .cube-table, .cube-tbody, .cube-row, .cube-td {
         display: block;
         width: 100%;
-        text-align: left; /* Retour à gauche sur mobile pour lisibilité */
+        text-align: left;
     }
     .cube-th { display: none; }
     
@@ -241,14 +224,13 @@ header img {
     .cube-td {
         border: none;
         border-bottom: 1px solid #eee;
-        text-align: right; /* Labels à gauche (via ::before), contenu à droite */
+        text-align: right;
         padding: 15px;
         display: flex;
         justify-content: space-between;
         align-items: center;
     }
     
-    /* Labels automatiques sur mobile */
     .cube-td::before {
         content: attr(data-label);
         font-weight: 700;
@@ -260,20 +242,6 @@ header img {
     .cube-td:last-child { border-bottom: none; justify-content: center; }
 }
 
-
-
-
-
-
-
-
-
-
-
-
-/* --- PAGE DÉTAIL COMMANDE (ADD-ON) --- */
-
-/* Bouton Retour (Flèche) */
 .cube-back-link {
     display: inline-flex;
     align-items: center;
@@ -296,7 +264,6 @@ header img {
     font-size: 1.2rem;
 }
 
-/* Layout Grille : Produits à gauche, Info à droite */
 .cube-details-grid {
     display: grid;
     grid-template-columns: 1fr 380px;
@@ -304,12 +271,11 @@ header img {
     align-items: start;
 }
 
-/* Section Blanche (Carte) */
 .cube-card {
     background: white;
     padding: 30px;
     box-shadow: 0 5px 20px rgba(0,0,0,0.05);
-    border-top: 4px solid var(--cube-black); /* Touche Cube */
+    border-top: 4px solid var(--cube-black);
 }
 
 .cube-card-title {
@@ -322,7 +288,6 @@ header img {
     border-bottom: 1px solid var(--cube-border);
 }
 
-/* Liste des produits */
 .cube-item-row {
     display: flex;
     align-items: center;
@@ -337,7 +302,7 @@ header img {
 .cube-item-image {
     width: 100px;
     height: 80px;
-    object-fit: contain; /* Garde les proportions du vélo */
+    object-fit: contain;
     background-color: #fff;
     margin-right: 20px;
     padding: 5px;
@@ -369,7 +334,6 @@ header img {
     min-width: 100px;
 }
 
-/* Sidebar Info */
 .cube-summary-row {
     display: flex;
     justify-content: space-between;
@@ -408,7 +372,6 @@ header img {
     line-height: 1.4;
 }
 
-/* Boutons d'action */
 .cube-btn-action {
     display: block;
     width: 100%;
@@ -444,7 +407,6 @@ header img {
     background-color: #f9f9f9;
 }
 
-/* Mobile */
 @media (max-width: 900px) {
     .cube-details-grid {
         grid-template-columns: 1fr;
@@ -453,6 +415,6 @@ header img {
         flex-wrap: wrap;
     }
     .cube-item-price {
-        margin-left: auto; /* Pousse le prix à droite */
+        margin-left: auto;
     }
 }
