@@ -6,7 +6,6 @@ body {
     font-family: 'Damas Font', sans-serif;
     margin: 0;
     padding: 0;
-    /* Ton image de fond */
     background: linear-gradient(rgba(10, 20, 30, 0.5), rgba(10, 20, 30, 0.7)), url('../images/connexionBackground.jpg');
     background-size: cover;
     background-position: center;
@@ -18,19 +17,15 @@ body {
     color: #333;
 }
 
-/* Le conteneur principal */
 .auth-wrapper {
     flex: 1;
     display: flex;
-    justify-content: center; /* Centre horizontalement */
-    
-    /* Tes réglages de positionnement validés */
+    justify-content: center;
     align-items: flex-start; 
     padding-top: 20vh; 
     backdrop-filter: blur(4px);
 }
 
-/* La carte du formulaire */
 .login-form {
     background-color: rgba(255, 255, 255, 0.75);
     padding: 50px 40px;
@@ -41,16 +36,13 @@ body {
     position: relative;
     overflow: hidden;
     margin-top: 20px;
-
-    /* --- ANIMATION D'APPARITION RÉINTÉGRÉE --- */
     animation: slideUp 0.6s ease-out;
 }
 
-/* Définition de l'animation vers le haut */
 @keyframes slideUp {
     from { 
         opacity: 0; 
-        transform: translateY(30px); /* Part de plus bas */
+        transform: translateY(30px);
     }
     to { 
         opacity: 1; 
@@ -58,7 +50,6 @@ body {
     }
 }
 
-/* Petite barre BLEUE déco en haut */
 .login-form::before {
     content: '';
     position: absolute;
@@ -85,7 +76,6 @@ h2 {
     color: #0f172a;
 }
 
-/* Style des champs (Inputs) */
 .form-group {
     margin-bottom: 20px;
     position: relative;
@@ -109,7 +99,7 @@ input[type="password"] {
     font-size: 15px;
     color: #333;
     box-sizing: border-box;
-    transition: all 0.3s ease; /* Animation fluide input */
+    transition: all 0.3s ease;
     font-family: 'Damas Font', sans-serif;
 }
 
@@ -129,7 +119,6 @@ small.text-muted {
     text-align: right;
 }
 
-/* --- LE BOUTON PREMIUM --- */
 button.btn-primary {
     position: relative;
     width: 100%;
@@ -173,7 +162,6 @@ button.btn-primary:hover {
     transform: translateY(-2px);
 }
 
-/* Liens en bas */
 .no-account {
     margin-top: 25px;
     text-align: center;
@@ -200,20 +188,15 @@ button.btn-primary:hover {
     margin-bottom: 20px;
 }
 
-/* --- FEEDBACK ERREURS SIMPLE --- */
 .invalid-feedback {
-    color: #dc2626; /* Rouge standard simple */
+    color: #dc2626;
     font-size: 13px;
     font-weight: 500;
     margin-top: 5px;
-    /* On cache le conteneur vide par défaut pour éviter un espace blanc moche */
     display: none; 
-    
-    /* Animation de secousse en cas d'erreur */
     animation: shake 0.3s ease-in-out;
 }
 
-/* On affiche seulement quand il y a du texte dedans (géré par Laravel ou JS) */
 .invalid-feedback:not(:empty) {
     display: block;
 }

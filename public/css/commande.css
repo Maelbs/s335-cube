@@ -1,10 +1,8 @@
-/* --- Base --- */
 body {
-    background-color: #f1f5f9; /* Gris clair moderne */
+    background-color: #f1f5f9;
     font-family: 'Fira Sans', sans-serif;
     color: #333;
     margin: 0;
-    /* overflow: hidden; */
 }
 
 header {
@@ -21,7 +19,7 @@ filter: brightness(0) !important;
 .checkout-wrapper {
     display: flex;
     justify-content: center;
-    padding: 120px 20px 60px 20px; /* Marge pour le header fixed */
+    padding: 120px 20px 60px 20px;
     margin: auto;
 }
 
@@ -34,7 +32,6 @@ filter: brightness(0) !important;
     box-shadow: 0 10px 30px rgba(0,0,0,0.05);
 }
 
-/* --- Header de la carte --- */
 .card-header {
     text-align: center;
     margin-bottom: 40px;
@@ -57,7 +54,6 @@ filter: brightness(0) !important;
     margin: 0;
 }
 
-/* --- Sections du formulaire --- */
 .form-section {
     margin-bottom: 35px;
 }
@@ -74,10 +70,9 @@ filter: brightness(0) !important;
 }
 
 .form-section h2 i {
-    color: #d32f2f; /* Rouge Cube */
+    color: #d32f2f;
 }
 
-/* --- Select Adresse --- */
 .select-wrapper {
     position: relative;
 }
@@ -89,7 +84,7 @@ filter: brightness(0) !important;
     border: 1px solid #ddd;
     border-radius: 4px;
     background-color: #f9f9f9;
-    appearance: none; /* Cache la flèche par défaut */
+    appearance: none;
     cursor: pointer;
     font-family: 'Fira Sans', sans-serif;
     transition: all 0.3s ease;
@@ -120,7 +115,6 @@ filter: brightness(0) !important;
     font-weight: 600;
 }
 
-/* --- Options de Paiement (Cartes Radio) --- */
 .payment-options {
     display: grid;
     grid-template-columns: 1fr 1fr;
@@ -133,7 +127,7 @@ filter: brightness(0) !important;
 }
 
 .payment-option input {
-    display: none; /* On cache le bouton radio moche */
+    display: none;
 }
 
 .option-box {
@@ -176,7 +170,6 @@ filter: brightness(0) !important;
     margin-top: 5px;
 }
 
-/* Indicateur de sélection (coche) */
 .check-circle {
     position: absolute;
     top: 10px;
@@ -193,7 +186,6 @@ filter: brightness(0) !important;
     transition: all 0.3s ease;
 }
 
-/* --- États Sélectionnés --- */
 .payment-option input:checked + .option-box {
     border-color: #0b0b0b;
     background-color: #fcfcfc;
@@ -201,10 +193,9 @@ filter: brightness(0) !important;
 }
 
 .payment-option input:checked + .option-box .check-circle {
-    background-color: #d32f2f; /* Rouge quand actif */
+    background-color: #d32f2f;
 }
 
-/* --- Bouton Payer --- */
 .form-footer {
     margin-top: 100px;
     text-align: center;
@@ -243,10 +234,9 @@ filter: brightness(0) !important;
     gap: 5px;
 }
 
-/* Responsive Mobile */
 @media (max-width: 600px) {
     .payment-options {
-        grid-template-columns: 1fr; /* Une seule colonne sur mobile */
+        grid-template-columns: 1fr;
     }
     
     .checkout-card {

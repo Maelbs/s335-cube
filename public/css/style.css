@@ -1,587 +1,516 @@
-/* =========================================
-   1. RESET & CONFIGURATION GLOBALE
-   ========================================= */
 @font-face {
   font-family: 'Damas Font';
   src: url('../font/font.woff2');
 }
 
-
 * {
-    box-sizing: border-box;
-    margin: 0;
-    padding: 0;
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
 }
 
 html {
-    scroll-behavior: smooth;
-    font-family: "Damas Font", sans-serif;
+  scroll-behavior: smooth;
+  font-family: "Damas Font", sans-serif;
 }
 
 body {
-    background-color: #fff;
-    color: #333;
-    overflow-x: hidden;
-    margin: 0;
-    transition: all ease 0.3s;
-    background-repeat: no-repeat;
+  background-color: #fff;
+  color: #333;
+  overflow-x: hidden;
+  margin: 0;
+  transition: all ease 0.3s;
+  background-repeat: no-repeat;
 }
-  
-  
-  /* =========================================
-     2. TYPOGRAPHYÉ
-     ========================================= */
-  h1 {
 
-    font-weight: 900;
-    font-size: 60px;
-    margin-top: 20px;
-    text-align: center;
-  }
-  
-  h2 {
-    font-weight: 800;
-    font-size: 40px;
-    text-align: center;
-  }
-  
-  a {
-    text-decoration: none;
-    color: inherit;
-    transition: color 0.2s ease;
+h1 {
+  font-weight: 900;
+  font-size: 60px;
+  margin-top: 20px;
+  text-align: center;
+}
+
+h2 {
+  font-weight: 800;
+  font-size: 40px;
+  text-align: center;
+}
+
+a {
+  text-decoration: none;
+  color: inherit;
+  transition: color 0.2s ease;
 }
 
 ul {
-    list-style: none;
+  list-style: none;
 }
 
-/* =========================================
-   2. HEADER TRANSPARENT (Style CUBE)
-   ========================================= */
 header {
-    display: flex ;
-    justify-content: space-between;
-    position: absolute; /* Ou 'fixed' si tu veux un header qui reste tout le temps */
-    padding:  0px 40px 0px 40px;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100px;
-    z-index: 10000; /* Ton Z-index est bon */
-    background-color: rgba(0, 0, 0, 0.3);
-    border-bottom: 1px solid rgba(255, 255, 255, 0.2);
-    backdrop-filter: blur(1px);
-    transition: all 0.5s ease;
-    color: #fff;
+  display: flex;
+  justify-content: space-between;
+  position: absolute;
+  padding: 0px 40px 0px 40px;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100px;
+  z-index: 10000;
+  background-color: rgba(0, 0, 0, 0.3);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+  backdrop-filter: blur(1px);
+  transition: all 0.5s ease;
+  color: #fff;
 }
 
-/* Le header devient blanc au survol ou si un menu est ouvert */
-header:hover, 
+header:hover,
 header.menu-open {
-    background-color: #fff;
-    color: #000;
-    border-bottom: 1px solid #eee;
-    box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+  background-color: #fff;
+  color: #000;
+  border-bottom: 1px solid #eee;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
 }
 
 nav {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    height: 100%;
-    padding: 0 30px;
-    max-width: 1800px;
-    margin: 0 auto;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  height: 100%;
+  padding: 0 30px;
+  max-width: 1800px;
+  margin: 0 auto;
 }
 
-/* --- LOGO --- */
 .menu-category {
-    display: flex;
-    align-items: center;
-    height: 100%;
+  display: flex;
+  align-items: center;
+  height: 100%;
 }
 
 .logo {
-    display: flex;
-    align-items: center;
-    height: 70px;
-    margin-right: 40px;
-    transition: transform 0.3s;
+  display: flex;
+  align-items: center;
+  height: 70px;
+  margin-right: 40px;
+  transition: transform 0.3s;
 }
 
 .logo img {
-    height: 100%;
-    width: auto;
-    filter: brightness(0) invert(1); /* Blanc par défaut */
-    transition: filter 0.3s;
+  height: 100%;
+  width: auto;
+  filter: brightness(0) invert(1);
+  transition: filter 0.3s;
 }
 
 header:hover .logo img {
-    filter: brightness(0); /* Noir au survol */
+  filter: brightness(0);
 }
 
-/* --- NAVIGATION --- */
 .nav-list {
-    display: flex;
-    height: 100%;
-    align-items: center;
+  display: flex;
+  height: 100%;
+  align-items: center;
 }
 
 .nav-item {
-    height: 100%;
-    display: flex;
-    align-items: center;
-    position: static; /* TRES IMPORTANT : Permet au menu absolute de se référer au Header, pas au bouton */
+  height: 100%;
+  display: flex;
+  align-items: center;
+  position: static;
 }
 
 .link_category {
-    padding: 0 25px;
-    height: 100%;
-    display: flex;
-    align-items: center;
-    font-size: 1.05rem;
-    font-style: italic;
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-    position: relative;
-    color: inherit;
-    cursor: pointer;
+  padding: 0 25px;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  font-size: 1.05rem;
+  font-style: italic;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  position: relative;
+  color: inherit;
+  cursor: pointer;
 }
 
-/* Ligne bleue au survol */
 .link_category::after {
-    content: '';
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    width: 0;
-    height: 4px;
-    background-color: #00b0f0;
-    transition: width 0.3s ease;
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 0;
+  height: 4px;
+  background-color: #00b0f0;
+  transition: width 0.3s ease;
 }
-
-/* */
 
 .nav-item:hover .link_category::after {
-    width: 100%;
+  width: 100%;
 }
 
-/* --- USER & ICONES --- */
 .menu-user {
-    display: flex;
-    align-items: center;
-    white-space: nowrap;
-    font-weight: 700;
-    font-size: 13px;
-    text-transform: uppercase;
+  display: flex;
+  align-items: center;
+  white-space: nowrap;
+  font-weight: 700;
+  font-size: 13px;
+  text-transform: uppercase;
 }
 
 #magasin {
-    margin-right: 25px;
-    text-decoration: underline;
-    text-underline-offset: 4px;
+  margin-right: 25px;
+  text-decoration: underline;
+  text-underline-offset: 4px;
 }
 
 .icone {
-    display: flex;
-    gap: 20px;
-    align-items: center;
-    padding-left: 20px;
+  display: flex;
+  gap: 20px;
+  align-items: center;
+  padding-left: 20px;
 }
 
 .menu-user svg {
-    fill: none;
-    stroke: currentColor;
-    stroke-width: 2;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2;
 }
 
 .mega-menu-dropdown {
-  /* 1. POSITIONNEMENT */
-  display: block; 
-  position: absolute; /* CORRECTION : Absolute pour scroller avec le header */
-  top: 100px; /* Pile sous le header (100% de la hauteur du header) */
+  display: block;
+  position: absolute;
+  top: 100px;
   left: 0;
   width: 100%;
-  
-  /* 2. STYLE */
   background: #fff;
   border-top: 1px solid #e5e5e5;
-  box-shadow: 0 15px 40px rgba(0,0,0,0.1);
-  z-index: 999; /* En dessous du header (10000) */
+  box-shadow: 0 15px 40px rgba(0, 0, 0, 0.1);
+  z-index: 999;
   color: #333;
-
-  /* 3. ÉTAT INVISIBLE (DÉPART) */
   opacity: 0;
   visibility: hidden;
   pointer-events: none;
-  
-  /* On décale le menu légèrement vers le HAUT (-10px) pour qu'il descende à l'apparition */
-  transform: translateY(-2px); 
-  
-  /* 4. TRANSITION */
+  transform: translateY(-2px);
   transition: opacity 0.3s ease, transform 0.3s ease, visibility 0.3s linear;
 }
 
-/* ÉTAT VISIBLE (AU SURVOL) */
 .nav-item:hover .mega-menu-dropdown {
   opacity: 1;
   visibility: visible;
   pointer-events: auto;
-  
-  /* Le menu revient à sa place normale (top: 100px + 0 translation) */
-  transform: translateY(0); 
+  transform: translateY(0);
 }
 
-/* Applique ceci aux 3 colonnes pour être sûr */
-.col-roots, 
-.col-subs-wrapper, 
+.col-roots,
+.col-subs-wrapper,
 .col-models-wrapper {
-    /* On garde le scroll si nécessaire */
-    overflow-y: auto;
-    
-    /* On empêche le scroll horizontal (qui apparait à cause de l'animation translateX) */
-    overflow-x: hidden; 
-
-    /* Cacher la scrollbar (Firefox) */
-    scrollbar-width: none; 
-    
-    /* Pour éviter les saccades lors du scroll */
-    -webkit-overflow-scrolling: touch;
+  overflow-y: auto;
+  overflow-x: hidden;
+  scrollbar-width: none;
+  -webkit-overflow-scrolling: touch;
 }
 
-/* Cacher la scrollbar (Chrome, Safari, Edge, Opera) */
-.col-roots::-webkit-scrollbar, 
-.col-subs-wrapper::-webkit-scrollbar, 
+.col-roots::-webkit-scrollbar,
+.col-subs-wrapper::-webkit-scrollbar,
 .col-models-wrapper::-webkit-scrollbar {
-    display: none; /* La barre disparait totalement */
+  display: none;
 }
 
 .mega-menu-wrapper {
-    display: flex;
-    max-width: 1400px;
-    margin: 0 auto;
-    height: 550px;
-    background: #fff;
-    transition: all 0.5s ease;
+  display: flex;
+  max-width: 1400px;
+  margin: 0 auto;
+  height: 550px;
+  background: #fff;
+  transition: all 0.5s ease;
 }
 
-/* COLONNE 1 : Racines */
 .col-roots {
-    width: 260px;
-    background-color: #f7f7f7;
-    border-right: 1px solid #eee;
-    padding: 30px 0;
-    overflow-y: auto;
+  width: 260px;
+  background-color: #f7f7f7;
+  border-right: 1px solid #eee;
+  padding: 30px 0;
+  overflow-y: auto;
 }
 
-/* COLONNE 2 : Sous-Catégories */
 .col-subs-wrapper {
-    width: 260px;
-    background-color: #fff;
-    border-right: 1px solid #eee;
-    overflow-y: auto;
+  width: 260px;
+  background-color: #fff;
+  border-right: 1px solid #eee;
+  overflow-y: auto;
 }
 
 .subs-container {
-    padding: 30px 0;
-    height: 100%;
+  padding: 30px 0;
+  height: 100%;
 }
 
-/* COLONNE 3 : Modèles */
 .col-models-wrapper {
-    flex: 1;
-    background-color: #fff;
-    padding: 40px 50px;
-    overflow-y: auto;
+  flex: 1;
+  background-color: #fff;
+  padding: 40px 50px;
+  overflow-y: auto;
 }
 
-/* ITEMS DU MENU */
 .menu-item {
-    padding: 12px 30px;
-    cursor: pointer;
-    font-size: 14px;
-    font-weight: 800;
-    text-transform: uppercase;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    transition: all 0.2s;
-    color: #000;
+  padding: 12px 30px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 800;
+  text-transform: uppercase;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  transition: all 0.2s;
+  color: #000;
 }
 
 .menu-item span {
-    font-size: 18px;
-    font-weight: 300;
-    color: #ccc;
+  font-size: 18px;
+  font-weight: 300;
+  color: #ccc;
 }
 
-.menu-item:hover, 
+.menu-item:hover,
 .menu-item.active {
-    color: #00b0f0;
-    background-color: #fff;
+  color: #00b0f0;
+  background-color: #fff;
 }
 
 .menu-item.active {
-    border-left: 4px solid #00b0f0;
-    padding-left: 26px;
+  border-left: 4px solid #00b0f0;
+  padding-left: 26px;
 }
 
-/* Style Sous-Catégories (Italique) */
 .col-subs-wrapper .menu-item {
-    font-weight: 700;
-    font-style: italic;
-    color: #444;
+  font-weight: 700;
+  font-style: italic;
+  color: #444;
 }
 
 .col-subs-wrapper .menu-item.active {
-    color: #00b0f0;
+  color: #00b0f0;
 }
 
-/* Modèles Grid */
 .col-models-wrapper h3 {
-    font-size: 24px;
-    font-weight: 900;
-    text-transform: uppercase;
-    margin-bottom: 30px;
-    padding-bottom: 10px;
-    border-bottom: 2px solid #00b0f0;
-    display: inline-block;
+  font-size: 24px;
+  font-weight: 900;
+  text-transform: uppercase;
+  margin-bottom: 30px;
+  padding-bottom: 10px;
+  border-bottom: 2px solid #00b0f0;
+  display: inline-block;
 }
 
 .model-grid {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 15px 40px;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 15px 40px;
 }
 
 .model-link {
-    font-size: 14px;
-    color: #555;
-    font-weight: 500;
-    padding: 5px 0;
-    display: block;
-    transition: transform 0.2s, color 0.2s;
+  font-size: 14px;
+  color: #555;
+  font-weight: 500;
+  padding: 5px 0;
+  display: block;
+  transition: transform 0.2s, color 0.2s;
 }
 
 .model-link:hover {
-    color: #00b0f0;
-    transform: translateX(5px);
+  color: #00b0f0;
+  transform: translateX(5px);
 }
 
-/* Utilitaires JS */
-.d-none { display: none !important; }
-.d-block { display: block !important; }
+.d-none {
+  display: none !important;
+}
 
+.d-block {
+  display: block !important;
+}
 
-
-/* 1. On définit l'animation de glissement */
 @keyframes slideInRight {
-    from {
-        opacity: 0;
-        transform: translateX(5px); /* Part de 20px vers la gauche */
-    }
-    to {
-        opacity: 1;
-        transform: translateX(0); /* Arrive à sa place normale */
-    }
+  from {
+    opacity: 0;
+    transform: translateX(5px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
 }
 
-/* 2. On applique l'animation aux conteneurs de Sous-catégories */
 .subs-container {
-    /* L'animation se lance dès que la classe d-none est retirée par le JS */
-    animation: slideInRight 0.4s ease-out forwards;
+  animation: slideInRight 0.4s ease-out forwards;
 }
 
-/* 3. On applique la MÊME animation aux conteneurs de Modèles */
 .models-container {
-    animation: slideInRight 0.4s ease-out forwards;
+  animation: slideInRight 0.4s ease-out forwards;
 }
 
-/* =========================================
-   4. CAROUSEL & HERO
-   ========================================= */
 .intro-carousel {
-    position: relative;
-    width: 100%;
-    height: 100vh;
-    overflow: hidden;
+  position: relative;
+  width: 100%;
+  height: 100vh;
+  overflow: hidden;
 }
 
 .carousel {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    z-index: 0;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 0;
 }
 
 .carousel-image {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    position: absolute;
-    opacity: 0;
-    transition: opacity 1s ease-in-out;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  position: absolute;
+  opacity: 0;
+  transition: opacity 1s ease-in-out;
 }
 
 .carousel-image.active {
-    opacity: 1;
+  opacity: 1;
 }
 
-/* =========================================
-   5. CONTENU PRINCIPAL & CARTES
-   ========================================= */
 .intro-text {
-    position: relative;
-    z-index: 2;
-    background: #fff;
-    padding: 80px 20px;
-    text-align: center;
+  position: relative;
+  z-index: 2;
+  background: #fff;
+  padding: 80px 20px;
+  text-align: center;
 }
 
 .intro-text h1 {
-    font-size: 48px;
-    font-weight: 900;
-    text-transform: uppercase;
-    margin-bottom: 10px;
+  font-size: 48px;
+  font-weight: 900;
+  text-transform: uppercase;
+  margin-bottom: 10px;
 }
 
 .Univers {
-    background-color: #f4f4f4;
-    padding: 60px 0;
+  background-color: #f4f4f4;
+  padding: 60px 0;
 }
 
 .univers-cards {
-    display: flex;
-    justify-content: center;
-    gap: 30px;
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 0 20px;
-    flex-wrap: wrap; /* Allow wrapping for better responsiveness */
+  display: flex;
+  justify-content: center;
+  gap: 30px;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 20px;
+  flex-wrap: wrap;
 }
 
 .card {
-    background: #fff;
-    height: 500px;
-    width: 600px;
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-    transition: transform 0.3s, box-shadow 0.3s;
-    border-radius: 15px; /* Rounded corners for a modern look */
-    overflow: hidden; /* Ensure content stays within the card */
-    max-width: 1000px; /* Limit card width for better alignment */
+  background: #fff;
+  height: 500px;
+  width: 600px;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s, box-shadow 0.3s;
+  border-radius: 15px;
+  overflow: hidden;
+  max-width: 1000px;
 }
 
-
-
 .card:hover {
-    transform: translateY(-10px);
-    box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+  transform: translateY(-10px);
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
 }
 
 .card-image img {
-    width: 100%;
-    height: 100%; /* Adjusted height for consistency */
-
-
+  width: 100%;
+  height: 100%;
 }
 
 .card-text {
-    padding: 20px;
-    text-align: center;
+  padding: 20px;
+  text-align: center;
 }
 
 .card-text h3 {
-    font-size: 22px;
-    font-weight: 800;
-    text-transform: uppercase;
-    margin-bottom: 15px;
+  font-size: 22px;
+  font-weight: 800;
+  text-transform: uppercase;
+  margin-bottom: 15px;
 }
 
 .card-text p {
-    font-size: 14px;
-    color: #666;
-    margin-bottom: 20px;
+  font-size: 14px;
+  color: #666;
+  margin-bottom: 20px;
 }
 
-/* Button placement adjustment */
 .card .btn {
-    align-self: center; /* Center the button horizontally */
-    margin-top: 10px; /* Add spacing above the button */
-    margin-bottom: 20px; /* Add spacing below the button */
+  align-self: center;
+  margin-top: 10px;
+  margin-bottom: 20px;
 }
 
 #first-p {
-    margin-bottom: 35px; /* Increased spacing below the first paragraph */
+  margin-bottom: 35px;
 }
 
-/* =========================================
-   6. BOUTONS
-   ========================================= */
-button, .btn {
-    display: inline-block;
-    background-color: #00b0f0;
-    color: #fff;
-    border: none;
-    border-radius: 40px;
-    padding: 12px 30px;
-    font-size: 14px;
-    font-weight: 700;
-    text-transform: uppercase;
-    cursor: pointer;
-    transition: all 0.3s ease;
-
+button,
+.btn {
+  display: inline-block;
+  background-color: #00b0f0;
+  color: #fff;
+  border: none;
+  border-radius: 40px;
+  padding: 12px 30px;
+  font-size: 14px;
+  font-weight: 700;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: all 0.3s ease;
 }
 
-button:hover, .btn:hover {
-    background-color: #008cb0;
-    transform: translateY(-2px);
+button:hover,
+.btn:hover {
+  background-color: #008cb0;
+  transform: translateY(-2px);
 }
 
-/* =========================================
-   7. FOOTER
-   ========================================= */
 footer {
-    background: #111;
-    color: #fff;
-    padding: 40px;
-    text-align: center;
-    font-size: 14px;
-    text-transform: uppercase;
-    letter-spacing: 1px;
+  background: #111;
+  color: #fff;
+  padding: 40px;
+  text-align: center;
+  font-size: 14px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
 }
 
-/* =========================================
-   8. ACCESSOIRES
-   ========================================= */
 .accessoires {
-    padding: 60px 20px;
-    background-color: #fff;
-    text-align: center;
+  padding: 60px 20px;
+  background-color: #fff;
+  text-align: center;
 }
 
 .accessoires h2 {
-    margin-bottom: 40px;
-    font-size: 32px;
-    text-transform: uppercase;
+  margin-bottom: 40px;
+  font-size: 32px;
+  text-transform: uppercase;
 }
 
-/* =========================================
-   10. COOKIE BANNER (Style CUBE Premium)
-   ========================================= */
-
-/* L'arrière-plan flouté */
 .cookie-banner {
   position: fixed;
-  inset: 0; /* Prend tout l'écran */
-  background: rgba(0, 0, 0, 0.6); /* Fond sombre */
-  backdrop-filter: blur(5px); /* Effet de flou moderne */
-  z-index: 99999; /* Au-dessus de TOUT (même du header) */
+  inset: 0;
+  background: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(5px);
+  z-index: 99999;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -590,38 +519,33 @@ footer {
   transition: opacity 0.3s ease;
 }
 
-/* Classe pour afficher la bannière via JS */
 .cookie-banner.show {
   opacity: 1;
   pointer-events: auto;
 }
 
-/* La carte principale */
 .cookie-content {
   background: #fff;
   width: 90%;
   max-width: 800px;
   display: flex;
-  box-shadow: 0 20px 50px rgba(0,0,0,0.2);
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.2);
   overflow: hidden;
   position: relative;
-  /* Pas de border-radius ou très léger pour le style Cube "carré" */
-  border-radius: 2px; 
+  border-radius: 2px;
 }
 
-/* Partie Image (Gauche) */
 .cookie-img-container {
   width: 40%;
   background-color: #f4f4f4;
   position: relative;
   overflow: hidden;
-  display: none; /* Caché sur mobile par défaut */
+  display: none;
 }
 
-/* Afficher l'image sur écran large */
 @media (min-width: 768px) {
   .cookie-img-container {
-      display: block;
+    display: block;
   }
 }
 
@@ -629,10 +553,9 @@ footer {
   width: 100%;
   height: 100%;
   object-fit: cover;
-  filter: grayscale(100%); /* Style noir et blanc chic */
+  filter: grayscale(100%);
 }
 
-/* Logo superposé sur l'image */
 .cookie-icon-container {
   position: absolute;
   top: 20px;
@@ -646,7 +569,6 @@ footer {
   height: auto;
 }
 
-/* Partie Texte (Droite) */
 .cookie-text {
   padding: 40px;
   width: 100%;
@@ -657,7 +579,7 @@ footer {
 
 @media (min-width: 768px) {
   .cookie-text {
-      width: 60%;
+    width: 60%;
   }
 }
 
@@ -668,7 +590,6 @@ footer {
   margin: 20px 0;
 }
 
-/* Boutons */
 .cookie-buttons {
   display: flex;
   gap: 15px;
@@ -676,7 +597,9 @@ footer {
   margin-top: 10px;
 }
 
-.btn-accept, .btn-customize, .btn-decline {
+.btn-accept,
+.btn-customize,
+.btn-decline {
   padding: 12px 25px;
   font-size: 13px;
   font-weight: 800;
@@ -686,7 +609,6 @@ footer {
   border: 1px solid transparent;
 }
 
-/* Bouton Accepter (Bleu Cube) */
 .btn-accept {
   background-color: #00b0f0;
   color: #fff;
@@ -698,7 +620,6 @@ footer {
   background-color: #008cb0;
 }
 
-/* Bouton Personnaliser (Contour Noir) */
 .btn-customize {
   background-color: transparent;
   color: #333;
@@ -710,7 +631,6 @@ footer {
   background-color: #fff;
 }
 
-/* Lien "Continuer sans accepter" discret */
 .btn-decline {
   background: none;
   border: none;
@@ -726,15 +646,12 @@ footer {
   color: #333;
 }
 
-/* =========================================
- 11. MODAL DE PRÉFÉRENCES (Le détail)
- ========================================= */
 .cookie-modal {
   position: fixed;
   inset: 0;
-  background: rgba(0,0,0,0.7);
+  background: rgba(0, 0, 0, 0.7);
   z-index: 100000;
-  display: none; /* Caché via JS */
+  display: none;
   align-items: center;
   justify-content: center;
   padding: 20px;
@@ -751,10 +668,9 @@ footer {
   max-height: 90vh;
   display: flex;
   flex-direction: column;
-  box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
 }
 
-/* Header du Modal */
 .cookie-modal-header {
   padding: 20px 30px;
   border-bottom: 1px solid #eee;
@@ -780,7 +696,6 @@ footer {
   color: #333;
 }
 
-/* Corps du Modal (Scrollable) */
 .cookie-modal-body {
   padding: 30px;
   overflow-y: auto;
@@ -792,7 +707,6 @@ footer {
   margin-bottom: 20px;
 }
 
-/* Catégories de cookies */
 .cookie-category {
   border: 1px solid #eee;
   padding: 15px;
@@ -836,7 +750,6 @@ footer {
   margin: 0;
 }
 
-/* Footer du Modal */
 .cookie-modal-footer {
   padding: 20px 30px;
   border-top: 1px solid #eee;
@@ -871,89 +784,67 @@ footer {
   color: #555;
 }
 
-/* =========================================
-   SECTION ACCESSOIRES
-   ========================================= */
+.accessoires {
+  padding: 60px 20px;
+  background-color: #fff;
+  text-align: center;
+}
 
-   .accessoires {
-    padding: 60px 20px;
-    background-color: #fff; /* Fond blanc pour détacher du gris d'avant */
-    text-align: center;
-  }
-  
-  .accessoires h2 {
-    margin-bottom: 40px;
-  }
-  
-  /* Le conteneur Flex pour aligner les 3 blocs */
-  .accessoires-cards {
-    display: flex;
-    justify-content: center;
-    gap: 30px; /* Espace entre les cartes */
-    flex-wrap: wrap; /* Passe à la ligne sur mobile */
-  }
-  
-  /* La carte individuelle */
-  .accessoire-card {
-    flex: 1; /* Les cartes prennent la même largeur */
-    min-width: 250px; /* Pas trop petit sur mobile */
-    max-width: 350px; /* Pas trop large sur grand écran */
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-  }
-  
-  /* La boîte carrée avec l'image */
-  .accessoire-image {
-    width: 100%;
-    aspect-ratio: 1 / 1; /* LA formule magique pour faire un carré */
-    background-size: cover;
-    background-position: center;
-    border-radius: 15px; /* Coins arrondis sympas */
-    
-    /* Flexbox pour centrer le titre H3 au milieu du carré */
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    
-    margin-bottom: 20px; /* Espace avant le bouton */
-    box-shadow: inset 0 0 0 1000px rgba(0, 0, 0, 0.3); /* Un filtre sombre pour lire le texte */
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
-  }
-  
-  /* Le titre dans l'image */
-  .accessoire-image h3 {
-    color: #fff;
-    font-size: 28px;
-    text-transform: uppercase;
-    text-shadow: 0 2px 4px rgba(0,0,0,0.6); /* Ombre portée pour lisibilité max */
-    margin: 0;
-  }
-  
-  /* Petit effet au survol */
-  .accessoire-card:hover .accessoire-image {
-    transform: translateY(-5px); /* Le carré remonte un peu */
-    box-shadow: inset 0 0 0 1000px rgba(0, 0, 0, 0.1); /* L'image s'éclaircit un peu */
-  }
-  
-  /* Ajustement du bouton pour qu'il ne soit pas trop collé */
-  .accessoire-card .btn {
-    margin-top: auto;
-  }
+.accessoires h2 {
+  margin-bottom: 40px;
+}
 
+.accessoires-cards {
+  display: flex;
+  justify-content: center;
+  gap: 30px;
+  flex-wrap: wrap;
+}
 
-  /* =========================================
-     9. FOOTER
-     ========================================= */
-  footer {
-    background-color: #333;
-    color: #fff;
-    text-align: center;
-    padding: 10px 0;
-    width: 100%;
-  }
+.accessoire-card {
+  flex: 1;
+  min-width: 250px;
+  max-width: 350px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
 
+.accessoire-image {
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  background-size: cover;
+  background-position: center;
+  border-radius: 15px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 20px;
+  box-shadow: inset 0 0 0 1000px rgba(0, 0, 0, 0.3);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
 
+.accessoire-image h3 {
+  color: #fff;
+  font-size: 28px;
+  text-transform: uppercase;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.6);
+  margin: 0;
+}
 
+.accessoire-card:hover .accessoire-image {
+  transform: translateY(-5px);
+  box-shadow: inset 0 0 0 1000px rgba(0, 0, 0, 0.1);
+}
 
-  
+.accessoire-card .btn {
+  margin-top: auto;
+}
+
+footer {
+  background-color: #333;
+  color: #fff;
+  text-align: center;
+  padding: 10px 0;
+  width: 100%;
+}

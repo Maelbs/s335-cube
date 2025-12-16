@@ -1,7 +1,4 @@
-/* =========================================
-   1. VARIABLES
-   ========================================= */
-   :root {
+:root {
     --primary-dark: #0f1623;
     --input-bg: #f1f5f9;
     --input-border: #dae1e7;
@@ -9,9 +6,6 @@
     --text-color: #333;
 }
 
-/* =========================================
-   2. BADGES & SOUS-TITRE
-   ========================================= */
 .cube-subtitle {
     font-size: 1.1rem;
     color: #666;
@@ -23,11 +17,6 @@
     letter-spacing: 0.5px;
 }
 
-/* =========================================
-   3. MISE EN PAGE DU FORMULAIRE
-   ========================================= */
-
-/* IMPORTANT : On cible uniquement le formulaire DANS le container principal */
 .cube-container form {
     display: grid;
     grid-template-columns: 1fr 1fr;
@@ -37,15 +26,13 @@
     padding: 30px;
     border-radius: 8px;
     border: 1px solid #eee;
-    box-shadow: 0 5px 15px rgba(0,0,0,0.03); /* Petite ombre esthétique */
+    box-shadow: 0 5px 15px rgba(0,0,0,0.03); 
 }
 
-/* Le bouton prend toute la largeur */
 .cube-container form button {
     grid-column: 1 / -1;
 }
 
-/* Responsive Mobile */
 @media (max-width: 768px) {
     .cube-container form {
         grid-template-columns: 1fr;
@@ -53,9 +40,6 @@
     }
 }
 
-/* =========================================
-   4. STYLES DES CHAMPS
-   ========================================= */
 .form-group {
     display: flex;
     flex-direction: column;
@@ -90,9 +74,6 @@
     outline: none;
 }
 
-/* =========================================
-   5. BOUTON VALIDER
-   ========================================= */
 .cube-btn-primary {
     position: relative;
     display: block;
@@ -135,9 +116,6 @@
     color: white;
 }
 
-/* =========================================
-   6. AUTOCOMPLETION
-   ========================================= */
 .suggestion-adresse {
     position: absolute;
     border: 1px solid #ddd;
