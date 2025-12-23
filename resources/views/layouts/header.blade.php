@@ -201,6 +201,10 @@
                     </div>
                 </div>
             </li>
+            {{-- 4. MENU AIDE & FAQ --}}
+            <li class="nav-item">
+                <a href="{{ route('aide') }}" class="link_category">AIDE & FAQ</a>
+            </li>
         </ul>
     </div>
     
