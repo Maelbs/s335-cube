@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use App\Models\AdresseLivraison;
 
 class Adresse extends Model
 {
@@ -24,9 +25,11 @@ class Adresse extends Model
         return $this->belongsToMany(MagasinPartenaire::class, 'adresse_magasin', 'id_adresse', 'id_magasin');
     }
 
-    public function clientsLivraison(): BelongsToMany
+    public function clientsLivraison()
     {
-        return $this->belongsToMany(Client::class, 'adresse_livraison', 'id_adresse', 'id_client');
+        return $this->belongsToMany(Client::class, 'adresse_livraison', 'id_adresse', 'id_client')
+            ->using(AdresseLivraison::class)
+            ->withPivot('nom_destinataire', 'prenom_destinataire');
     }
 
     public function commandes(): HasMany

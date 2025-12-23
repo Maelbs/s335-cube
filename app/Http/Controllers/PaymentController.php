@@ -24,87 +24,90 @@ class PaymentController extends Controller
         $client = Auth::user();
         $adresses = $client->adressesLivraison()->get();
 
-        $magasin = null;
-        if (session()->has('id_magasin_choisi')) {
-            $magasin = MagasinPartenaire::with('adresses')->find(session('id_magasin_choisi'));
-        }
+        $magasin = MagasinPartenaire::with('adresses')->find($client->id_magasin);
+
 
         $contientVelo = LignePanier::where('id_panier', Panier::where('id_client', Auth::id())->value('id_panier'))
-        ->whereIn('reference', VarianteVelo::select('reference'))
-        ->exists();
-        
+            ->whereIn('reference', VarianteVelo::select('reference'))
+            ->exists();
+
         return view('commande', compact('client', 'adresses', 'magasin', 'contientVelo'));
     }
 
-    /**
-     * Logique centrale pour récupérer ou créer l'adresse de livraison
-     */
     private function getOrCreateAddress(Request $request)
     {
-        // 1. Si retrait magasin (session active), on retourne null ici (sera géré par getInfosLivraison)
-        if (session()->has('id_magasin_choisi')) {
-            return null; 
-        }
+        $mode = $request->input('delivery_mode');
+        if ($mode === 'magasin')
+            return null;
 
-        // 2. Si c'est une adresse existante (ID numérique)
+        $contientVelo = LignePanier::where('id_panier', Panier::where('id_client', Auth::id())->value('id_panier'))
+            ->whereIn('reference', VarianteVelo::select('reference'))
+            ->exists();
+        if ($contientVelo && session()->has('id_magasin_choisi'))
+            return null;
+
         if ($request->id_adresse && $request->id_adresse !== 'new') {
-            // Petite validation de sécurité pour vérifier que l'adresse appartient bien au client ou existe
-            $request->validate([
-                'id_adresse' => 'exists:adresse,id_adresse' // Assurez-vous que votre table s'appelle 'adresse' ou 'adresses'
-            ]);
+            $request->validate(['id_adresse' => 'exists:adresse,id_adresse']);
+
             return $request->id_adresse;
         }
 
-        // 3. Si c'est une nouvelle adresse ("new" coché ou implicite)
-        // On valide les champs du formulaire
         $validator = Validator::make($request->all(), [
             'rue' => 'required|string|max:255',
             'zipcode' => 'required|string|max:20',
             'city' => 'required|string|max:255',
             'country' => 'required|string|max:255',
+            'nom_destinataire' => 'nullable|string|max:100',
+            'prenom_destinataire' => 'nullable|string|max:100',
         ]);
 
         if ($validator->fails()) {
-            // On renvoie une exception qui sera attrapée dans les méthodes de paiement
             throw new \Illuminate\Validation\ValidationException($validator);
         }
 
-        // Création de l'adresse
         $adresse = new Adresse();
-        $adresse->id_client = Auth::id();
         $adresse->rue = $request->rue;
         $adresse->code_postal = $request->zipcode;
         $adresse->ville = $request->city;
         $adresse->pays = $request->country;
-        // Vous pouvez gérer le nom de l'adresse ici si vous avez un champ pour ça (ex: 'Domicile')
-        
-        // NOTE: Même si "save_address" n'est pas coché, on doit créer l'adresse en BDD 
-        // pour lier la commande. Si vous voulez gérer le "non-enregistrement", 
-        // il faudrait un champ "is_temporary" dans votre table, mais pour l'instant on sauvegarde tout.
         $adresse->save();
+
+        $client = Auth::user();
+
+        $pivotData = [
+            'nom_destinataire' => $request->filled('nom_destinataire') ? $request->nom_destinataire : null,
+            'prenom_destinataire' => $request->filled('prenom_destinataire') ? $request->prenom_destinataire : null,
+        ];
+
+        $client->adressesLivraison()->attach($adresse->id_adresse, $pivotData);
 
         return $adresse->id_adresse;
     }
 
     private function getInfosLivraison($adresseId)
     {
-        // Priorité au Magasin si en session
+        if ($adresseId) {
+            return [
+                'id_adresse' => $adresseId,
+                'id_type_livraison' => 1
+            ];
+        }
+
         if (session()->has('id_magasin_choisi')) {
             $magasin = MagasinPartenaire::with('adresses')->find(session('id_magasin_choisi'));
             $adresseMagasin = $magasin ? $magasin->adresses->first() : null;
-            
+
             if ($adresseMagasin) {
                 return [
                     'id_adresse' => $adresseMagasin->id_adresse,
-                    'id_type_livraison' => 2 // 2 = Retrait Magasin
+                    'id_type_livraison' => 2
                 ];
             }
         }
 
-        // Sinon Livraison Domicile standard
         return [
-            'id_adresse' => $adresseId,
-            'id_type_livraison' => 1 // 1 = Domicile
+            'id_adresse' => null,
+            'id_type_livraison' => 1
         ];
     }
 
@@ -148,7 +151,7 @@ class PaymentController extends Controller
         if (!$panier) {
             return null;
         }
-    
+
         $commande = Commande::create([
             'id_adresse' => $idAdresse,
             'id_client' => $clientId,
@@ -162,7 +165,7 @@ class PaymentController extends Controller
         ]);
 
         $panierItems = LignePanier::where('id_panier', $panier->id_panier)->with(['article'])->get();
-    
+
         foreach ($panierItems as $item) {
             if ($item->article) {
                 LigneCommande::create([
@@ -176,7 +179,7 @@ class PaymentController extends Controller
         }
         return $commande;
     }
-    
+
     public function paymentPaypal(Request $request)
     {
         // 1. Récupération ou Création de l'adresse
@@ -191,19 +194,19 @@ class PaymentController extends Controller
         if ($total <= 0) {
             return redirect()->route('cart.index')->with('error', 'Votre panier est vide.');
         }
-    
+
         $totalFormatted = number_format($total, 2, '.', '');
-        
+
         // 3. Récupération infos finales (Type livraison + ID final)
         $infosLivraison = $this->getInfosLivraison($idAdresseResolue);
         // On utilisera cet ID pour le retour success
         $idAdresseFinale = $infosLivraison['id_adresse'];
-    
+
         // 4. Appel API PayPal
         $provider = new PayPalClient;
         $provider->setApiCredentials(config('paypal'));
         $provider->getAccessToken();
-    
+
         $response = $provider->createOrder([
             "intent" => "CAPTURE",
             "application_context" => [
@@ -227,10 +230,10 @@ class PaymentController extends Controller
                 }
             }
         }
-    
+
         return redirect()->route('paypal.cancel')->with('error', 'Erreur lors de la création du paiement PayPal.');
     }
-    
+
     public function successPaypal(Request $request)
     {
         $request->validate([
@@ -244,13 +247,13 @@ class PaymentController extends Controller
         $response = $provider->capturePaymentOrder($request['token']);
 
         if (isset($response['status']) && $response['status'] == 'COMPLETED') {
-            
+
             $idAdresse = $request->query('id_adresse');
 
             $infosLivraison = $this->getInfosLivraison($idAdresse);
 
             $commande = $this->insertionCommande($idAdresse, 'Paypal', $infosLivraison['id_type_livraison']);
-            
+
             if (!$commande) {
                 return redirect()->route('cart.index')->with('error', 'Erreur lors de la création de la commande.');
             }
@@ -265,9 +268,9 @@ class PaymentController extends Controller
             session()->forget('id_magasin_choisi');
 
             return redirect()->route('client.commandes.show', $commande->id_commande)
-                            ->with('success', 'Paiement PayPal validé ! Merci pour votre achat.');
-        } 
-        
+                ->with('success', 'Paiement PayPal validé ! Merci pour votre achat.');
+        }
+
         return redirect()->route('paypal.cancel')->with('error', 'Le paiement PayPal a échoué.');
     }
 
@@ -296,16 +299,18 @@ class PaymentController extends Controller
         // 4. Session Stripe
         $session = StripeSession::create([
             'payment_method_types' => ['card'],
-            'line_items' => [[
-                'price_data' => [
-                    'currency' => 'eur',
-                    'product_data' => [
-                        'name' => 'Achat panier Cube',
+            'line_items' => [
+                [
+                    'price_data' => [
+                        'currency' => 'eur',
+                        'product_data' => [
+                            'name' => 'Achat panier Cube',
+                        ],
+                        'unit_amount' => intval($total * 100),
                     ],
-                    'unit_amount' => intval($total * 100), 
-                ],
-                'quantity' => 1,
-            ]],
+                    'quantity' => 1,
+                ]
+            ],
             'mode' => 'payment',
             'success_url' => route('stripe.success') . '?session_id={CHECKOUT_SESSION_ID}&id_adresse=' . $idAdresseFinale,
             'cancel_url' => route('stripe.cancel'),
@@ -324,14 +329,14 @@ class PaymentController extends Controller
         $idAdresse = $request->query('id_adresse');
 
         $infosLivraison = $this->getInfosLivraison($idAdresse);
-    
+
         $commande = $this->insertionCommande($idAdresse, 'CB', $infosLivraison['id_type_livraison']);
 
         if (!$commande) {
             return redirect()->route('cart.index')->with('error', 'Erreur lors de la création de la commande.');
         }
 
-        $this->finaliserCodePromo(Auth::id()); 
+        $this->finaliserCodePromo(Auth::id());
 
         $panier = Panier::where('id_client', Auth::id())->first();
         if ($panier) {
@@ -341,7 +346,7 @@ class PaymentController extends Controller
         session()->forget('id_magasin_choisi');
 
         return redirect()->route('client.commandes.show', $commande->id_commande)
-                        ->with('success', 'Paiement Stripe validé !');
+            ->with('success', 'Paiement Stripe validé !');
     }
 
     public function cancelPayment()
@@ -355,7 +360,7 @@ class PaymentController extends Controller
         $client = Auth::user();
 
         if ($panier && $panier->code_promo) {
-        
+
             if (!$client->codesPromoUtilises()->where('utilisation_code_promo.id_codepromo', $panier->code_promo)->exists()) {
                 $client->codesPromoUtilises()->attach($panier->code_promo);
             }

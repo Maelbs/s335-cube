@@ -113,16 +113,29 @@
                         <span class="cube-info-label">Adresse de livraison</span>
                         <div class="cube-info-value">
                             @if($commande->adresse)
-
                                 @if($commande->id_type_livraison == 2)
                                     <strong>
                                         <i class="fa-solid fa-shop"></i>
                                         {{ $commande->adresse->magasins->first()->nom_magasin ?? 'Magasin Partenaire' }}
                                     </strong><br>
                                 @else
-                                    {{ $commande->client->prenom_client }} {{ $commande->client->nom_client }}<br>
-                                @endif
+                                    @php
+                                        $adressePivot = $commande->client->adressesLivraison
+                                            ->where('id_adresse', $commande->adresse->id_adresse)
+                                            ->first();
+                                    @endphp
 
+                                    @if($adressePivot && !empty($adressePivot->pivot->nom_destinataire))
+                                        <strong style="color: #d9534f;">
+                                            <i class="fa-solid fa-gift"></i>
+                                            {{ $adressePivot->pivot->prenom_destinataire }}
+                                            {{ $adressePivot->pivot->nom_destinataire }}
+                                        </strong><br>
+                                    @else
+                                        {{ $commande->client->prenom_client }} {{ $commande->client->nom_client }}<br>
+                                    @endif
+
+                                @endif
                                 {{ $commande->adresse->rue }}<br>
                                 {{ $commande->adresse->code_postal }} {{ $commande->adresse->ville }}<br>
                                 {{ $commande->adresse->pays }}
