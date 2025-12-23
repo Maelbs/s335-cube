@@ -243,3 +243,223 @@ filter: brightness(0) !important;
         padding: 20px;
     }
 }
+
+
+.form-section {
+    background: #fff;
+    padding: 25px;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+    margin-bottom: 30px;
+}
+
+.form-section h2 {
+    font-size: 1.2rem;
+    color: #333;
+    margin-bottom: 20px;
+    border-bottom: 2px solid #333;
+    padding-bottom: 10px;
+    text-transform: uppercase;
+    font-weight: 700;
+}
+
+.delivery-choices .form-check {
+    padding: 0;
+    margin-bottom: 15px;
+}
+
+.delivery-choices .form-check-input {
+    position: absolute;
+    opacity: 0;
+    cursor: pointer;
+    height: 0;
+    width: 0;
+}
+
+.delivery-choices .form-check-label {
+    display: block;
+    padding: 15px 20px;
+    background-color: #fff;
+    border: 2px solid #e9ecef;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    color: #555;
+    position: relative;
+    margin-left: 0 !important; 
+}
+
+.delivery-choices .form-check-label:hover {
+    border-color: #ccc;
+    background-color: #f8f9fa;
+}
+
+.delivery-choices .form-check-input:checked + .form-check-label {
+    border-color: #fa3c3c;
+    background-color: #e69191;
+    color: #ffffff;
+}
+
+.delivery-choices .form-check-label i {
+    margin-right: 10px;
+    font-size: 1.2em;
+}
+
+.form-group {
+    margin-bottom: 1.5rem;
+    position: relative;
+}
+
+.form-group label.required:after {
+    content: " *";
+    color: #e02b2b;
+
+}
+
+#new-address-form {
+    border-left: none !important;
+    padding-left: 0 !important;
+}
+
+.form-control {
+    display: block;
+    width: 90%;
+    padding: 0.5rem 1rem;
+    font-size: 1rem;
+    font-weight: 400;
+    line-height: 1.5;
+    color: #495057;
+    background-color: #fff;
+    background-clip: padding-box;
+    border: 1px solid #ced4da;
+    border-radius: 0.25rem;
+    transition: border-color .15s ease-in-out,box-shadow .15s ease-in-out;
+    margin-top: 5px;
+}
+
+p {
+    font-size: 0.9em;
+}
+
+.form-control:focus {
+    color: #495057;
+    background-color: #fff;
+    border-color: #80bdff;
+    outline: 0;
+    box-shadow: 0 0 0 0.2rem rgba(0,123,255,.25);
+}
+
+/* Champs en lecture seule (Grisés) */
+.form-control[readonly], .form-control:disabled {
+    background-color: #e9ecef;
+    opacity: 1;
+    cursor: not-allowed;
+}
+
+/* --- 4. LISTE DE SUGGESTIONS (API GOUV) --- */
+#adresse-suggestions {
+    position: absolute;
+    top: 100%; /* Juste en dessous de l'input */
+    left: 0;
+    right: 0;
+    z-index: 1000;
+    background: white;
+    border: 1px solid #ddd;
+    border-top: none;
+    border-radius: 0 0 6px 6px;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    max-height: 200px;
+    overflow-y: auto;
+}
+
+#adresse-suggestions li {
+    padding: 10px 15px;
+    border-bottom: 1px solid #eee;
+    cursor: pointer;
+    font-size: 0.95rem;
+}
+
+#adresse-suggestions li:last-child {
+    border-bottom: none;
+}
+
+#adresse-suggestions li:hover {
+    background-color: #f1f1f1;
+    color: #000;
+}
+
+/* --- STYLE DU TOGGLE SWITCH --- */
+
+/* Conteneur global (Label) */
+.custom-toggle-container {
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    user-select: none; /* Évite de sélectionner le texte quand on clique vite */
+    margin-top: 15px;
+}
+
+/* La zone du switch (largeur/hauteur) */
+.toggle-switch {
+    position: relative;
+    display: inline-block;
+    width: 50px;
+    height: 26px;
+    margin-right: 10px;
+    flex-shrink: 0; /* Empêche le switch de s'écraser si le texte est long */
+}
+
+/* On cache la checkbox native moche */
+.toggle-switch input { 
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+/* La barre de fond (le "rail") */
+.slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #ccc; /* Gris = Pas coché */
+    transition: .4s;
+    border-radius: 34px;
+}
+
+/* Le petit rond blanc (le "bouton") */
+.slider:before {
+    position: absolute;
+    content: "";
+    height: 18px;
+    width: 18px;
+    left: 4px;
+    bottom: 4px;
+    background-color: white;
+    transition: .4s;
+    border-radius: 50%;
+}
+
+/* --- ÉTAT COCHÉ (CHECKED) --- */
+
+/* Le fond devient noir (ou ta couleur primaire) */
+input:checked + .slider {
+    background-color: #333; 
+}
+
+/* Le rond se déplace vers la droite */
+input:checked + .slider:before {
+    transform: translateX(24px);
+}
+
+/* Style du texte à côté */
+.toggle-label {
+    font-weight: 500;
+    color: #333;
+    font-size: 0.95rem;
+}
