@@ -68,7 +68,7 @@ return [
             'url' => env('DATABASE_URL'),
             'host' => env('DB_HOST', '127.0.0.1'),
             'port' => env('DB_PORT', '5432'),
-            'database' => env('DB_DATABASE', 'sae_cube_bdd'),
+            'database' => env('DB_DATABASE', 'z'),
             'username' => env('DB_USERNAME', 's335-cube'),
             'password' => env('DB_PASSWORD', 'vbawpfcube67'),
             'charset' => 'utf8',

@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\CommercialController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ArticleSimilaireController;
 use App\Http\Controllers\InfoArticleController;
@@ -86,6 +87,24 @@ Route::middleware('auth')->group(function () {
     Route::post('paypal/payment', [PaymentController::class, 'paymentPaypal'])->name('paypal.payment');    
     Route::get('paypal/success', [PaymentController::class, 'successPaypal'])->name('paypal.success');
     Route::get('paypal/cancel', [PaymentController::class, 'cancelPayment'])->name('paypal.cancel');
+
+
+    Route::middleware(['commercial'])->group(function () {
+        Route::get('/commercial/dashboard', [CommercialController::class, 'dashboard'])
+             ->name('commercial.dashboard');
+
+             // Dans le groupe middleware('commercial') ...
+
+        Route::get('/commercial/modifier-article', function() { dd('Page modifier article (Recherche)'); })->name('commercial.edit.article');
+            Route::get('/commercial/modifier-article', [CommercialController::class, 'articleList'])
+                ->name('commercial.edit.article');
+                
+            Route::delete('/commercial/article/{reference}', [CommercialController::class, 'destroy'])
+                ->name('commercial.article.destroy');
+        Route::get('/commercial/ajouter-categorie', function() { dd('Page ajout catégorie'); })->name('commercial.add.categorie');
+        Route::get('/commercial/ajouter-modele', function() { dd('Page ajout modèle'); })->name('commercial.add.modele');
+        Route::get('/commercial/ajouter-velo', function() { dd('Page ajout vélo'); })->name('commercial.add.velo');
+    });
 });
 
 Route::get('/panier', [PanierController::class, 'index'])->name('cart.index');
