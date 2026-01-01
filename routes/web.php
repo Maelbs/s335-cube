@@ -101,8 +101,21 @@ Route::middleware('auth')->group(function () {
                 
             Route::delete('/commercial/article/{reference}', [CommercialController::class, 'destroy'])
                 ->name('commercial.article.destroy');
-        Route::get('/commercial/ajouter-categorie', function() { dd('Page ajout catégorie'); })->name('commercial.add.categorie');
-        Route::get('/commercial/ajouter-modele', function() { dd('Page ajout modèle'); })->name('commercial.add.modele');
+
+        // Affichage du formulaire
+        Route::get('/commercial/ajouter-categorie', [CommercialController::class, 'addCategorie'])
+            ->name('commercial.add.categorie');
+
+        // Traitement du formulaire
+        Route::post('/commercial/ajouter-categorie', [CommercialController::class, 'storeCategorie'])
+            ->name('commercial.store.categorie');
+
+        Route::get('/commercial/ajouter-modele', [CommercialController::class, 'addModele'])
+            ->name('commercial.add.modele');
+
+        Route::post('/commercial/ajouter-modele', [CommercialController::class, 'storeModele'])
+            ->name('commercial.store.modele');
+            
         Route::get('/commercial/ajouter-velo', function() { dd('Page ajout vélo'); })->name('commercial.add.velo');
     });
 });

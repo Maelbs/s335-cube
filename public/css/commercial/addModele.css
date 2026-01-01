@@ -1,0 +1,72 @@
+@font-face {
+    font-family: 'Damas Font';
+    src: url('../font/font.woff2');
+}
+* {
+    font-family: Damas Font, sans-serif;
+}
+/* STYLE CUBE FORM */
+.form-container {
+    max-width: 800px;
+    margin: 50px auto;
+    padding: 40px;
+    background: white;
+    border: 1px solid #e0e0e0;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+    border-top: 5px solid #e30613;
+}
+.form-title {
+    text-align: center; 
+    font-size: 1.8rem; 
+    font-weight: 900;
+    text-transform: uppercase; 
+    font-style: italic; 
+    margin-bottom: 30px; 
+    color: #1a1a1a;
+}
+.form-row { display: flex; gap: 20px; margin-bottom: 20px; }
+.form-col { flex: 1; }
+
+.form-group { margin-bottom: 20px; }
+.form-label {
+    display: block; font-weight: 700; text-transform: uppercase;
+    font-size: 0.85rem; margin-bottom: 8px; color: #555;
+}
+.form-select, .form-input, .form-textarea {
+    width: 100%; padding: 12px; border: 2px solid #eee;
+    border-radius: 4px; font-size: 1rem; transition: border-color 0.3s;
+    background: #fafafa;
+}
+.form-select:focus, .form-input:focus, .form-textarea:focus { border-color: #1a1a1a; outline: none; background: white; }
+
+.btn-submit {
+    width: 100%; padding: 15px; background-color: #1a1a1a;
+    color: white; border: none; font-weight: 800; text-transform: uppercase;
+    cursor: pointer; transition: background-color 0.3s; margin-top: 20px;
+}
+.btn-submit:hover { background-color: #e30613; }
+hr {
+    border:0; 
+    border-top:1px solid #eee; 
+    margin: 30px 0;
+}
+.error-container {
+    background-color: #fee2e2; 
+    border: 1px solid #ef4444; 
+    color: #b91c1c; 
+    padding: 15px; 
+    margin-bottom: 20px; 
+    border-radius: 4px;
+}
+.error-list {
+    list-style-type: disc; 
+    padding-left: 20px;
+}
+.but-annuler {
+    text-align:center; 
+    margin-top:20px;
+}
+.link-annuler {
+    color:#666; 
+    text-decoration:none;
+}
