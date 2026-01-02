@@ -95,9 +95,14 @@ Route::middleware('auth')->group(function () {
 
              // Dans le groupe middleware('commercial') ...
 
-        Route::get('/commercial/modifier-article', function() { dd('Page modifier article (Recherche)'); })->name('commercial.edit.article');
-            Route::get('/commercial/modifier-article', [CommercialController::class, 'articleList'])
-                ->name('commercial.edit.article');
+        Route::get('/commercial/modifier-article', [CommercialController::class, 'articleList'])->name('commercial.edit.article');
+            // Formulaire de modification (Affichage)
+            Route::get('/commercial/modifier-article/{reference}', [CommercialController::class, 'editArticle'])
+                ->name('commercial.article.edit');
+
+            // Traitement de la modification (Mise à jour BDD)
+            Route::put('/commercial/modifier-article/{reference}', [CommercialController::class, 'updateArticle'])
+                ->name('commercial.article.update');
                 
             Route::delete('/commercial/article/{reference}', [CommercialController::class, 'destroy'])
                 ->name('commercial.article.destroy');

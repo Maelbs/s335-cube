@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Resume;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
 use App\Models\VarianteVelo;
@@ -46,6 +47,86 @@ class CommercialController extends Controller
         $accessoires = Accessoire::with(['photos'])->get();
 
         return view('commercial.modifierArticle', compact('velosMusculaires', 'velosElectriques', 'accessoires'));
+    }
+
+    public function editArticle($reference)
+    {
+        // A. Vérification : Est-ce un Vélo ? (Si oui, on refuse)
+        $isVelo = VarianteVelo::where('reference', $reference)->exists();
+        if ($isVelo) {
+            return back()->with('error', 'La modification des Vélos/VAE n\'est pas encore disponible. Uniquement les accessoires.');
+        }
+
+        // B. Récupération de l'Accessoire avec son Article parent et le Résumé
+        // On utilise 'with' pour charger les relations définies dans le Modèle
+        $accessoire = Accessoire::with('parent.resume')
+                        ->where('reference', $reference)
+                        ->firstOrFail();
+
+        return view('commercial.editAccessoire', compact('accessoire'));
+    }
+
+    // 2. ENREGISTRER LES MODIFICATIONS (UPDATE)
+    public function updateArticle(Request $request, $reference)
+    {
+        // Validation des données
+        $request->validate([
+            'nom_article' => 'required|string|max:50',
+            'prix'        => 'required|numeric|min:0',
+            'poids'       => 'required|numeric|min:0',
+            'materiau'    => 'required|string|max:50',
+            'description' => 'required|string|max:5000',
+        ], [
+            'nom_article.required' => 'Le nom de l\'article est obligatoire.',
+            'prix.required'        => 'Le prix est obligatoire.',
+            'prix.numeric'         => 'Le prix doit être un nombre valide.',
+            'poids.required'       => 'Le poids est obligatoire.',
+            'materiau.required'    => 'Le matériau est obligatoire.',
+            'description.required' => 'La description est obligatoire.',
+        ]);
+
+        try {
+            DB::transaction(function () use ($request, $reference) {
+                
+                // 1. Récupérer l'accessoire
+                $accessoire = Accessoire::where('reference', $reference)->firstOrFail();
+
+                // 2. Mise à jour de la table ACCESSOIRE
+                $accessoire->update([
+                    'nom_article' => $request->nom_article,
+                    'prix'        => $request->prix,
+                    'poids'       => $request->poids,
+                    'materiau'    => $request->materiau,
+                ]);
+
+                // 3. Mise à jour de la table ARTICLE (Parent)
+                // Il faut garder la cohérence entre les deux tables qui ont des colonnes communes
+                $article = Article::where('reference', $reference)->first();
+                if ($article) {
+                    $article->update([
+                        'nom_article' => $request->nom_article,
+                        'prix'        => $request->prix,
+                        'poids'       => $request->poids,
+                    ]);
+
+                    // 4. Mise à jour de la table RESUME (Liée à Article)
+                    // On récupère le modèle Resume via l'ID stocké dans Article
+                    $resume = Resume::find($article->id_resume);
+                    if ($resume) {
+                        $resume->update([
+                            'contenu_resume' => $request->description
+                        ]);
+                    }
+                }
+            });
+
+            return redirect()->route('commercial.edit.article') // Retour à la liste
+                             ->with('success', 'L\'accessoire a été modifié avec succès.');
+
+        } catch (\Exception $e) {
+            return back()->withErrors(['error' => 'Erreur lors de la modification : ' . $e->getMessage()])
+                         ->withInput();
+        }
     }
 
     public function destroy($reference)

@@ -129,7 +129,7 @@
     </div>
 
     <div class="card-actions">
-        <a href="#" class="btn-action btn-edit">
+        <a href="{{ route('commercial.article.edit', trim($article->reference)) }}" class="btn-action btn-edit">
             Modifier
         </a>
 
