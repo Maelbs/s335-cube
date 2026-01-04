@@ -214,9 +214,10 @@ class AuthController extends Controller
             }
 
             $this->fusionnerPanier($client->id_client);
+            
             return redirect()->route('home');
         }
-
+        
         return back()->withErrors(['email' => 'Identifiants incorrects.']);
     }
 

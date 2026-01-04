@@ -10,6 +10,9 @@ class Client extends Authenticatable
 {
     use HasFactory, Notifiable;
 
+    const ROLE_CLIENT = 'client';
+    const ROLE_COMMERCIAL = 'commercial';
+
     protected $table = 'client';
     protected $primaryKey = 'id_client';
     public $timestamps = false;
@@ -23,7 +26,8 @@ class Client extends Authenticatable
         'tel',
         'date_inscription',
         'date_naissance',
-        'id_magasin'
+        'id_magasin',
+        'role'
     ];
 
     protected $hidden = [
@@ -76,6 +80,16 @@ class Client extends Authenticatable
             'id_client',                
             'id_codepromo'             
         );
+    }
+
+    public function isCommercial(): bool
+    {
+        return $this->role === self::ROLE_COMMERCIAL;
+    }
+
+    public function isClient(): bool
+    {
+        return $this->role === self::ROLE_CLIENT;
     }
 
     public function magasin() {
