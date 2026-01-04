@@ -214,10 +214,14 @@ class AuthController extends Controller
             }
 
             $this->fusionnerPanier($client->id_client);
-            
+
+            if ($client->role === 'commercial') {
+                return redirect()->route('commercial.dashboard');
+            }
+
             return redirect()->route('home');
         }
-        
+
         return back()->withErrors(['email' => 'Identifiants incorrects.']);
     }
 
