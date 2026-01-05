@@ -1,10 +1,4 @@
-<<<<<<< HEAD
-document.addEventListener("DOMContentLoaded", function() {
-    const overlay = document.getElementById('cookieOverlay');
-    // Vérification du cookie existant
-    if (localStorage.getItem('cubeCookiesChoice')) {
-        overlay.style.display = 'none';
-=======
+
 document.addEventListener('DOMContentLoaded', function() {
     
     const cookieBanner = document.getElementById('cookieBanner');
@@ -23,12 +17,9 @@ document.addEventListener('DOMContentLoaded', function() {
         setTimeout(() => {
             cookieBanner.classList.add('show');
         }, 500);
->>>>>>> 8cc6d8c48b1f2b681dcf198559f2e430d24362b0
     }
 });
 
-<<<<<<< HEAD
-/* --- NAVIGATION --- */
 
 function goToStep2() {
     document.getElementById('step1-container').style.display = 'none';
@@ -146,7 +137,7 @@ function updateParentState(childBtn) {
     } else {
         // Si tout est refusé OU mélange -> Global Refuser (Par défaut dans les CMP)
         globalBtns[0].classList.add('selected');
-=======
+    }
     function closeBanner() {
         cookieBanner.classList.remove('show');
     }
@@ -209,6 +200,5 @@ function updateParentState(childBtn) {
         btnSavePreferences.addEventListener('click', () => {
             saveAndClose('custom');
         });
->>>>>>> 8cc6d8c48b1f2b681dcf198559f2e430d24362b0
     }
 }
