@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\MagasinPartenaire;
 use Illuminate\Http\Request;
 use App\Models\Article;
 
@@ -15,7 +16,8 @@ class InfoArticleController extends Controller
             'caracteristiques.typeCaracteristique',
             'photos',
             'resume',
-            'inventaires.taille'
+            'inventaires.taille',
+            'inventaires.magasins' 
         ];
 
         if ($this->estUnVelo($article)) {
@@ -58,6 +60,8 @@ class InfoArticleController extends Controller
             ->distinct()
             ->get();
 
+        $tousLesMagasins = MagasinPartenaire::with('adresses')->get();
+
         return view('vizualizeArticle', compact(
             'article',
             'stock',
@@ -65,7 +69,8 @@ class InfoArticleController extends Controller
             'specifications',
             'articlesSimilaires',
             'typeVue',
-            'isAccessoire'
+            'isAccessoire',
+            'tousLesMagasins' 
         ));
     }
     private function estUnVelo($article)

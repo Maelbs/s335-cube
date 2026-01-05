@@ -1,28 +1,21 @@
 document.addEventListener("DOMContentLoaded", function () {
-  // 1. GESTION DE L'AFFICHAGE CONDITIONNEL
   const checkbox = document.getElementById("use_same_address");
   const billingWrapper = document.getElementById("billing-address-wrapper");
-  // Sélectionner tous les inputs DANS le wrapper facturation
   const billingInputs = billingWrapper.querySelectorAll("input");
   const body = document.querySelector("body");
   function toggleBilling() {
     if (checkbox.checked) {
-      // Si coché (Même adresse) -> On cache la facturation
       billingWrapper.classList.remove("visible");
-      // On retire l'attribut required pour ne pas bloquer le formulaire
       billingInputs.forEach((input) => (input.required = false));
     } else {
-      // Si décoché (Adresses différentes) -> On affiche
       billingWrapper.classList.add("visible");
       billingInputs.forEach((input) => (input.required = true));
     }
   }
 
   checkbox.addEventListener("change", toggleBilling);
-  // Appel initial pour régler l'état au chargement de la page
   toggleBilling();
 
-  // 2. AUTOCOMPLETION API GOUV (Fonction réutilisable)
   function setupAddressAutocomplete(rueId, zipId, cityId, countryId) {
     const rueInput = document.getElementById(rueId);
     const zipcodeInput = document.getElementById(zipId);
@@ -68,7 +61,7 @@ document.addEventListener("DOMContentLoaded", function () {
               div.style.padding = "10px";
               div.style.cursor = "pointer";
               div.style.borderBottom = "1px solid #eee";
-              div.style.backgroundColor = "white"; // Fond blanc pour les suggestions
+              div.style.backgroundColor = "white"; 
 
               div.addEventListener(
                 "mouseenter",

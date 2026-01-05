@@ -117,7 +117,6 @@ class PanierController extends Controller
     }
     
     if (Auth::check()) {
-        /** @var \App\Models\Client $client */
         $client = Auth::user(); 
 
         
@@ -370,6 +369,14 @@ class PanierController extends Controller
 
     private function calculerStockMax($reference, $tailleNom)
     {
+        $idMagasinCible = null;
+
+        if (Auth::check()) {
+            $idMagasinCible = Auth::user()->id_magasin; 
+        } else {
+            $idMagasinCible = Session::get('selected_store_id');
+        }
+
         $idTaille = null;
         if ($tailleNom && $tailleNom !== 'Non renseigné' && $tailleNom !== 'Unique') {
             $tailleObj = Taille::where('taille', $tailleNom)->first();
@@ -390,13 +397,37 @@ class PanierController extends Controller
 
         foreach ($inventaires as $inv) {
             $stockWeb = $inv->quantite_stock_en_ligne ?? 0;
-            $stockMagasins = DB::table('inventaire_magasin')
-                ->where('id_article_inventaire', $inv->id_article_inventaire)
-                ->sum('quantite_stock_magasin');
+            
+            $queryMagasin = DB::table('inventaire_magasin')
+                ->where('id_article_inventaire', $inv->id_article_inventaire);
+
+            if ($idMagasinCible) {
+                $queryMagasin->where('id_magasin', $idMagasinCible);
+            } 
+
+            $stockMagasins = $queryMagasin->sum('quantite_stock_magasin');
 
             $totalStock += ($stockWeb + $stockMagasins);
         }
 
         return $totalStock;
+    }
+    public function removePromo()
+    {
+        if (Auth::check()) {
+            $panier = Panier::where('id_client', Auth::id())->first();
+            if ($panier) {
+                $panier->code_promo = null; 
+                $panier->save();
+            }
+        } else {
+            
+            session()->forget('promo');
+        }
+
+        return response()->json([
+            'success' => true, 
+            'message' => 'Code promo retiré.'
+        ]);
     }
 }

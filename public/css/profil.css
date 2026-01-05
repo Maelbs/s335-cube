@@ -7,131 +7,40 @@ body {
     font-family: 'Damas Font', sans-serif;
     margin: 0;
     padding: 0;
-    background-color: #f0f0f0; /* Fond gris clair pour la partie droite */
+    background-color: #f0f0f0;
     color: #333;
     overflow: hidden;
 }
 
+.main-content.scrollable {
+    overflow-y: auto;
+    height: calc(100vh - 100px);
+}
+
+
 header {
-background-color: #ffffff !important;
-border-bottom: 1px solid #e5e5e5;
-color: #000000 !important;
-box-shadow: 0 2px 10px rgba(0,0,0,0.03);
+    background-color: #ffffff !important;
+    border-bottom: 1px solid #e5e5e5;
+    color: #000000 !important;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.03);
 }
 
 .logo img {
-filter: brightness(0) !important;
+    filter: brightness(0) !important;
 }
 
-/* --- Layout Principal --- */
 .dashboard-container {
     display: flex;
-    min-height: 100vh; /* Prend toute la hauteur de l'écran */
-    margin-top: 100px; /* Ajustez selon la hauteur de votre header 'layouts.header' */
+    min-height: 100vh;
+
 }
 
-/* --- Sidebar (Gauche) --- */
-.sidebar {
-    width: 350px; /* Largeur fixe */
-    background-color: #0b0b0b; /* Noir profond */
-    color: #fff;
-    display: flex;
-    flex-direction: column;
-    justify-content: center; /* CENTRE VERTICALEMENT LES ÉLÉMENTS */
-    padding: 40px;
-    position: relative;
-    flex-shrink: 0;
-}
-
-.sidebar-content {
-    /* Conteneur pour centrer le bloc */
-    transform: translateY(-50px); /* Léger décalage vers le haut pour l'esthétique */
-}
-
-.user-greeting {
-    margin-bottom: 60px;
-}
-
-.welcome-label {
-    font-style: italic;
-    font-size: 14px;
-    color: #ccc;
-    display: block;
-    margin-bottom: 5px;
-}
-
-.user-name {
-    margin: 0;
-    font-size: 28px;
-    font-weight: 800;
-    text-transform: lowercase; /* Comme sur l'image */
-    font-style: italic;
-    line-height: 1.1;
-}
-
-.logout-link {
-    background: none;
-    border: none;
-    color: #777;
-    font-family: 'Damas Font', sans-serif;
-    font-style: italic;
-    font-size: 13px;
-    cursor: pointer;
-    padding: 0;
-    margin-top: 10px;
-    text-decoration: none;
-    transition: color 0.3s;
-}
-
-.logout-link:hover {
-    color: #fff;
-}
-
-/* Navigation Latérale */
-.sidebar-nav ul {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-}
-
-.sidebar-nav li {
-    margin-bottom: 25px;
-}
-
-.sidebar-nav .nav-item {
-    text-decoration: none;
-    color: #fff;
-    font-weight: 800;
-    font-size: 20px;
-    font-style: italic;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-    transition: color 0.3s, padding-left 0.3s;
-    position: relative;
-}
-
-.sidebar-nav .nav-item:hover {
-    padding-left: 10px;
-}
-
-/* Style pour l'élément actif (ROUGE) */
-.sidebar-nav .nav-item.active {
-    color: #d32f2f; /* Rouge Cube */
-}
-
-.sidebar-nav .nav-item.active::after {
-    content: '>';
-    position: absolute;
-    right: -20px;
-    font-size: 14px;
-    top: 2px;
-}
-
-/* --- Main Content (Droite) --- */
 .main-content {
     flex-grow: 1;
     background-color: #f1f1f1;
     padding: 40px 60px;
+    margin-top: 100px;
+
 }
 
 .breadcrumb {
@@ -148,17 +57,16 @@ filter: brightness(0) !important;
     color: #999;
 }
 
-/* --- Grille des Cartes --- */
 .dashboard-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(400px, 1fr)); /* Responsive grid */
+    grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
     gap: 30px;
 }
 
 .dashboard-card {
     background: #fff;
     padding: 40px;
-    box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
     transition: transform 0.3s ease;
     min-height: 200px;
     display: flex;
@@ -167,7 +75,7 @@ filter: brightness(0) !important;
 
 .dashboard-card:hover {
     transform: translateY(-5px);
-    box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
 }
 
 .card-header h2 {
@@ -218,7 +126,6 @@ filter: brightness(0) !important;
     text-decoration: underline;
 }
 
-/* Styles pour les cartes centrées (comme Commandes/Vélos) */
 .centered-content {
     display: flex;
     flex-direction: column;
@@ -239,7 +146,7 @@ filter: brightness(0) !important;
     font-weight: 800;
     text-decoration: none;
     color: #000;
-    border-bottom: 2px solid #d32f2f; /* Souligné rouge */
+    border-bottom: 2px solid #d32f2f;
     padding-bottom: 2px;
 }
 
@@ -253,12 +160,129 @@ filter: brightness(0) !important;
     flex-direction: column;
 }
 
-/* Responsive Mobile */
+.main-content {
+    flex-grow: 1;
+    background-color: #f1f1f1;
+    padding: 40px 60px;
+}
+
+.breadcrumb {
+    font-size: 10px;
+    font-weight: 700;
+    text-transform: uppercase;
+    color: #333;
+    margin-bottom: 40px;
+    letter-spacing: 1px;
+}
+
+.breadcrumb .separator {
+    margin: 0 5px;
+    color: #999;
+}
+
+.sidebar {
+    width: 350px;
+    background-color: #0b0b0b;
+    color: #fff;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 40px;
+    position: relative;
+    flex-shrink: 0;
+    height: 100vh;
+}
+
+.sidebar-content {
+    transform: translateY(-50px);
+}
+
+.user-greeting {
+    margin-bottom: 60px;
+}
+
+.welcome-label {
+    font-style: italic;
+    font-size: 14px;
+    color: #ccc;
+    display: block;
+    margin-bottom: 5px;
+}
+
+.user-name {
+    margin: 0;
+    font-size: 28px;
+    font-weight: 800;
+    text-transform: lowercase;
+    font-style: italic;
+    line-height: 1.1;
+}
+
+.logout-link {
+    background: none;
+    border: none;
+    color: #777;
+    font-family: 'Damas Font', sans-serif;
+    font-style: italic;
+    font-size: 13px;
+    cursor: pointer;
+    padding: 0;
+    margin-top: 10px;
+    text-decoration: none;
+    transition: color 0.3s;
+}
+
+.logout-link:hover {
+    color: #fff;
+}
+
+.sidebar-nav ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.sidebar-nav li {
+    margin-bottom: 25px;
+}
+
+.sidebar-nav .nav-item {
+    text-decoration: none;
+    color: #fff;
+    font-weight: 800;
+    font-size: 20px;
+    font-style: italic;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    transition: color 0.3s, padding-left 0.3s;
+    position: relative;
+}
+
+.sidebar-nav .nav-item:hover {
+    padding-left: 10px;
+}
+
+.sidebar-nav .nav-item.active {
+    color: #d32f2f;
+}
+
+.sidebar-nav .nav-item.active::after {
+    content: '>';
+    position: absolute;
+    right: -20px;
+    font-size: 14px;
+    top: 2px;
+}
+
+.cube-header {
+    margin-top: -100px;
+}
+
 @media (max-width: 900px) {
     .dashboard-container {
         flex-direction: column;
     }
-    
+
     .sidebar {
         width: 100%;
         padding: 20px;

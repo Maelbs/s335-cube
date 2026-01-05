@@ -12,6 +12,7 @@
     <title>CUBE Bikes France</title>
 </head>
 <body>
+<<<<<<< HEAD
 <div class="cookie-overlay" id="cookieOverlay">
     <div class="cookie-modal" id="cookieModal">
         
@@ -148,6 +149,8 @@
 
     </div>
 </div>
+=======
+>>>>>>> 8cc6d8c48b1f2b681dcf198559f2e430d24362b0
     @include('layouts.header')
 
     <main>
@@ -227,7 +230,6 @@
                 </div>
             </div>
         </section>
-
         <section class="accessoires" id="accessoires">
             <h2>Accessoires indispensables pour votre vélo</h2> 
             <div class="accessoires-cards">
@@ -258,7 +260,7 @@
           <img src="{{ asset('images/3.jpg') }}" alt="Image 3" class="carousel-image">
         </div>
     </main>
-
+    
     <footer>
         <p>&copy; 2025 CUBE Bikes France</p>
     </footer>

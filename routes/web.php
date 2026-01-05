@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\CommercialController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ArticleSimilaireController;
 use App\Http\Controllers\InfoArticleController;
@@ -13,14 +14,27 @@ use App\Http\Controllers\ProfilController;
 use App\Http\Controllers\PanierController;
 use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\MagasinController;
-
 use App\Http\Controllers\CommandeController;
+use App\Http\Controllers\AdresseController;
 
-/*
-|--------------------------------------------------------------------------
-| Web Routes
-|--------------------------------------------------------------------------
-*/
+use App\Http\Controllers\ContactController; 
+
+/* ... TOUTES VOS AUTRES ROUTES ... */
+
+// Route boutique
+Route::get('/boutique/{type}/{cat_id?}/{sub_id?}/{model_id?}', [BoutiqueController::class, 'index'])
+    ->name('boutique.index')
+    ->where('type', 'Musculaire|Electrique|Accessoires');
+
+
+// ------------------------------------
+// PARTIE AIDE ET CONTACT
+// ------------------------------------
+
+Route::view('/aide', 'aide')->name('aide');
+
+Route::get('/contact', [ContactController::class, 'show'])->name('contact');
+Route::post('/contact', [ContactController::class, 'submit'])->name('contact.submit');
 
 Route::get('/', [CategorieArticleController::class, 'index'])->name('home');
 
@@ -45,6 +59,7 @@ Route::middleware('guest')->group(function () {
 
     Route::get('/verification', function() { return view('verification'); })->name('verification.form');
     Route::post('/verification', [AuthController::class, 'verifyCode'])->name('verification.check');
+
 });
 
 Route::middleware('auth')->group(function () {
@@ -53,6 +68,12 @@ Route::middleware('auth')->group(function () {
     Route::get('/commandes', [CommandeController::class, 'index'])->name('client.commandes');
     Route::get('/commandes/{id}', [CommandeController::class, 'show'])->name('client.commandes.show');
     Route::get('/commandes/{id}/facture', [CommandeController::class, 'downloadInvoice'])->name('client.commandes.facture');
+
+    Route::get('/adresses', [AdresseController::class, 'index'])->name('client.adresses');
+    Route::get('/adresses/create', [AdresseController::class, 'createAdresse'])->name('adresses.create.show');
+    Route::post('/adresses/create/Nouvelle-Adresse', [AdresseController::class, 'create'])->name('adresses.create');
+    Route::get('/adresses/{id}/edit', [AdresseController::class, 'editAdresse'])->name('adresses.edit');
+    Route::post('/adresses/{id}/update', [AdresseController::class, 'update'])->name('adresses.update');
 
     Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
@@ -66,6 +87,42 @@ Route::middleware('auth')->group(function () {
     Route::post('paypal/payment', [PaymentController::class, 'paymentPaypal'])->name('paypal.payment');    
     Route::get('paypal/success', [PaymentController::class, 'successPaypal'])->name('paypal.success');
     Route::get('paypal/cancel', [PaymentController::class, 'cancelPayment'])->name('paypal.cancel');
+
+
+    Route::middleware(['commercial'])->group(function () {
+        Route::get('/commercial/dashboard', [CommercialController::class, 'dashboard'])
+             ->name('commercial.dashboard');
+
+             // Dans le groupe middleware('commercial') ...
+
+        Route::get('/commercial/modifier-article', [CommercialController::class, 'articleList'])->name('commercial.edit.article');
+            // Formulaire de modification (Affichage)
+            Route::get('/commercial/modifier-article/{reference}', [CommercialController::class, 'editArticle'])
+                ->name('commercial.article.edit');
+
+            // Traitement de la modification (Mise à jour BDD)
+            Route::put('/commercial/modifier-article/{reference}', [CommercialController::class, 'updateArticle'])
+                ->name('commercial.article.update');
+                
+            Route::delete('/commercial/article/{reference}', [CommercialController::class, 'destroy'])
+                ->name('commercial.article.destroy');
+
+        // Affichage du formulaire
+        Route::get('/commercial/ajouter-categorie', [CommercialController::class, 'addCategorie'])
+            ->name('commercial.add.categorie');
+
+        // Traitement du formulaire
+        Route::post('/commercial/ajouter-categorie', [CommercialController::class, 'storeCategorie'])
+            ->name('commercial.store.categorie');
+
+        Route::get('/commercial/ajouter-modele', [CommercialController::class, 'addModele'])
+            ->name('commercial.add.modele');
+
+        Route::post('/commercial/ajouter-modele', [CommercialController::class, 'storeModele'])
+            ->name('commercial.store.modele');
+            
+        Route::get('/commercial/ajouter-velo', function() { dd('Page ajout vélo'); })->name('commercial.add.velo');
+    });
 });
 
 Route::get('/panier', [PanierController::class, 'index'])->name('cart.index');
@@ -74,7 +131,14 @@ Route::delete('/panier/supprimer/{key}', [PanierController::class, 'remove'])->n
 Route::post('/panier/update', [PanierController::class, 'updateQuantity'])->name('cart.update');
 Route::post('/panier/ajouter-accessoire/{reference}', [PanierController::class, 'addAccessoire'])->name('cart.addAccessoire');
 Route::post('/panier/apply-promo', [PanierController::class, 'applyPromo'])->name('cart.applyPromo');
+Route::post('/panier/remove-promo', [PanierController::class, 'removePromo'])->name('cart.removePromo');
 
 Route::get('/boutique/{type}/{cat_id?}/{sub_id?}/{model_id?}', [BoutiqueController::class, 'index'])
     ->name('boutique.index')
     ->where('type', 'Musculaire|Electrique|Accessoires');
+
+
+
+Route::view('/aide', 'aide')->name('aide');
+
+

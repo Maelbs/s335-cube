@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rule; 
 use App\Models\Client;
+use App\Http\Controllers\CommandeController;
 
 class ProfilController extends Controller
 {
@@ -42,6 +43,8 @@ class ProfilController extends Controller
             'tel' => $request->tel,
             'date_naissance' => $request->birthday,
         ]);
+
+        
     
         if ($request->filled('password')) {
             $user->mdp = Hash::make($request->password); 

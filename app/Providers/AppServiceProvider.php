@@ -27,7 +27,6 @@ class AppServiceProvider extends ServiceProvider
 
         View::composer('*', function ($view) {
         
-            // 1. Logique Header (Déjà fait - on garde)
             $magasinHeader = null;
             if (Auth::check() && Auth::user()->id_magasin) {
                 $magasinHeader = MagasinPartenaire::with('adresses')->find(Auth::user()->id_magasin);
@@ -35,9 +34,7 @@ class AppServiceProvider extends ServiceProvider
                 $magasinHeader = MagasinPartenaire::with('adresses')->find(Session::get('id_magasin_choisi'));
             }
             $view->with('magasinHeader', $magasinHeader);
-    
-            // 2. NOUVEAU : On envoie la liste complète des magasins pour le menu déroulant
-            // On utilise 'remember' pour mettre en cache et éviter de faire la requête SQL à chaque clic
+
             $tousLesMagasins = \Illuminate\Support\Facades\Cache::remember('list_magasins_global', 60, function () {
                 return MagasinPartenaire::with('adresses')->get();
             });

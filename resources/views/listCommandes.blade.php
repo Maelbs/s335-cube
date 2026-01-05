@@ -6,13 +6,15 @@
     <title>Mes commandes | Cube Bikes</title>
     <link rel="stylesheet" href="{{ asset('css/header.css') }}">
     <link rel="stylesheet" href="{{ asset('css/listCommandes.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/profil.css') }}">  
 </head>
 <body>
     @include('layouts.header')
 
-
-<div class="cube-container">
-    
+<div class="dashboard-container">
+    @include('layouts.sideBar')
+    <main class="main-content scrollable">
+    <div class="cube-container">
     <div class="cube-header">
         <h1 class="cube-title">MES COMMANDES</h1>
         <p class="cube-subtitle">
@@ -40,39 +42,32 @@
                 <tbody>
                     @foreach($commandes as $commande)
                         <tr class="cube-row">
-                            {{-- Numéro --}}
                             <td class="cube-td" data-label="N° Commande">
                                 <span class="cube-id">#{{ $commande->id_commande }}</span>
                             </td>
 
-                            {{-- Date --}}
                             <td class="cube-td" data-label="Date">
                                 <span class="cube-date">
                                     {{ $commande->date_commande ? $commande->date_commande->format('d/m/Y') : '-' }}
                                 </span>
                             </td>
 
-                            {{-- Prix --}}
                             <td class="cube-td" data-label="Prix total">
                                 <span class="cube-price">
                                     {{ number_format($commande->montant_total_commande, 2, ',', ' ') }} €
                                 </span>
                             </td>
 
-                            {{-- Paiement --}}
                             <td class="cube-td" data-label="Paiement">
                                 <span class="cube-payment">
-                                    {{-- Si 'None', on affiche un tiret pour faire plus propre --}}
                                     {{ ($commande->type_paiement && $commande->type_paiement !== 'None') ? $commande->type_paiement : '-' }}
                                 </span>
                             </td>
 
-                            {{-- État (Logique de couleur améliorée) --}}
                             <td class="cube-td" data-label="État">
                                 @php
                                     $statusRaw = strtolower($commande->statut_livraison ?? '');
                                     
-                                    // Détermine la classe CSS
                                     $statusClass = match($statusRaw) {
                                         'livre', 'livré', 'domicile' => 'status-livre',
                                         'livré à domicile' => 'status-domicile',
@@ -82,7 +77,6 @@
                                         default => 'status-unknown',
                                     };
 
-                                    // Formate le texte pour l'affichage
                                     $statusLabel = match($statusRaw) {
                                         'livre', 'domicile' => 'LIVRÉ',
                                         'expedie' => 'EXPÉDIÉ',
@@ -98,13 +92,11 @@
                                 </span>
                             </td>
 
-                            {{-- Colonne Facture avec icône PDF --}}
                             <td class="cube-td" data-label="Facture">
                                 <a href="{{  url('/commandes') . '/' . $commande->id_commande . '/' . 'facture' }}" 
                                 target="_blank" 
                                 title="Télécharger la facture PDF"
                                 style="text-decoration: none;">
-                                    {{-- Icône PDF SVG Bleue --}}
                                     <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#0099ff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                                         <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
                                         <polyline points="14 2 14 8 20 8"></polyline>
@@ -116,7 +108,6 @@
                                 </a>
                             </td>
 
-                            {{-- Bouton --}}
                             <td class="cube-td">
                                 <a href="{{ url('/commandes') . '/' . $commande->id_commande }}" class="cube-btn-details">
                                     Détails
@@ -127,6 +118,8 @@
                 </tbody>
             </table>
         @endif
-    </div>
+    </main>
+</div>
+</div>
 </body>
 </html>

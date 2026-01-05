@@ -51,9 +51,7 @@ class AuthController extends Controller
         $client = Client::where('email_client', $request->email)->first();
 
         if ($client) {
-            return back()
-                ->withErrors(['email' => 'Cette adresse email est déjà utilisée.'])
-                ->withInput();
+            return back()->withErrors(['email' => 'Cette adresse email est déjà utilisée.'])->withInput();
         }
 
         $request->session()->put('reg_data', $request->only([
@@ -94,7 +92,7 @@ class AuthController extends Controller
         ];
 
         if ($request->has('use_same_address')) {
-            $billingData = $deliveryData; // Copie
+            $billingData = $deliveryData; 
             $sameAddress = true;
         } else {
             $billingData = [
@@ -116,8 +114,7 @@ class AuthController extends Controller
 
         Mail::to($regData['email'])->send(new VerificationCodeMail($code));
 
-        return redirect()->route('verification.form')
-            ->with('success', 'Un code de vérification a été envoyé à votre adresse email.');
+        return redirect()->route('verification.form')->with('success', 'Un code de vérification a été envoyé à votre adresse email.');
     }
 
     public function verifyCode(Request $request)
@@ -133,7 +130,6 @@ class AuthController extends Controller
         $regData = $request->session()->get('reg_data');
         $deliveryData = $request->session()->get('reg_delivery');
         $billingData = $request->session()->get('reg_billing');
-        $sameAddress = $request->session()->get('reg_same_address');
 
         if (!$regData || !$deliveryData || !$billingData) {
             return redirect()->route('register.form')
@@ -155,17 +151,14 @@ class AuthController extends Controller
                 'pays' => $deliveryData['country'],
             ]);
 
-            if ($sameAddress) {
-                $idAdresseFacturation = $adresseLivraison->id_adresse;
-            } else {
-                $adresseFacturation = Adresse::create([
-                    'rue' => $billingData['rue'],
-                    'code_postal' => $billingData['zipcode'],
-                    'ville' => $billingData['city'],
-                    'pays' => $billingData['country'],
-                ]);
-                $idAdresseFacturation = $adresseFacturation->id_adresse;
-            }
+            $adresseFacturation = Adresse::create([
+                'rue' => $billingData['rue'],
+                'code_postal' => $billingData['zipcode'],
+                'ville' => $billingData['city'],
+                'pays' => $billingData['country'],
+            ]);
+
+            $idAdresseFacturation = $adresseFacturation->id_adresse;
 
             $client = Client::create([
                 'id_adresse_facturation' => $idAdresseFacturation,
@@ -207,8 +200,6 @@ class AuthController extends Controller
 
         $client = Client::where('email_client', $request->email)->first();
 
-        //dd('Session Magasin:', session('id_magasin_choisi'), 'Client ID Magasin:', $client->id_magasin);
-
         if ($client && Hash::check($request->password, $client->mdp)) {
             Auth::login($client);
             $request->session()->regenerate();
@@ -223,6 +214,11 @@ class AuthController extends Controller
             }
 
             $this->fusionnerPanier($client->id_client);
+
+            if ($client->role === 'commercial') {
+                return redirect()->route('commercial.dashboard');
+            }
+
             return redirect()->route('home');
         }
 

@@ -8,7 +8,6 @@ document.addEventListener('DOMContentLoaded', function () {
     form.addEventListener('submit', function (event) {
         let isValid = true;
 
-        // 1. Nettoyage des erreurs visuelles
         const inputsError = form.querySelectorAll('.error-border');
         inputsError.forEach(el => el.classList.remove('error-border'));
         const msgs = form.querySelectorAll('.error-text');
@@ -32,9 +31,11 @@ document.addEventListener('DOMContentLoaded', function () {
             else if (input.name === 'tel' && input.value.trim() !== "" && !phoneRegex.test(input.value)) {
                 errorMsg = "Numéro invalide (ex: 0612345678).";
             }
+            if(!modifierProfil) {
+                if (input.name === 'password' && input.value.length < 5) {
+                    errorMsg = "Le mot de passe doit contenir au moins 5 caractères.";
+                }
 
-            else if (input.name === 'password' && input.value.length < 5) {
-                errorMsg = "Le mot de passe doit contenir au moins 5 caractères.";
             }
             
             else if (input.name === 'birthday' && !(((calculerAge(input.value)) >= 18) && calculerAge(input.value) <= 125)) {

@@ -138,35 +138,23 @@ class BoutiqueController extends Controller
             ->with(['parent', 'modele', 'couleur', 'parent.photos', 'batterie', 'fourche', 'inventaires.taille', 'inventaires.magasins']);
 
         if ($isSearchMode) {
-            // 1. Nettoyage et découpage de la recherche
             $rawSearch = strtolower(trim($request->search));
             
-            // On sépare les mots par les espaces (et on filtre les vides)
             $words = array_filter(explode(' ', $rawSearch));
 
-            // 2. On boucle sur chaque mot trouvé
             foreach ($words as $word) {
                 $term = '%' . $word . '%';
-
-                // On utilise 'where' ici pour forcer le fait que CHAQUE mot doit trouver une correspondance
-                // (Logique : Mot1 DOIT matcher ET Mot2 DOIT matcher)
                 $query->where(function($group) use ($term, $word) {
-                    
-                    // --- Bloc de recherche pour UN mot (Ton ancienne logique) ---
-
-                    // A. Recherche dans le Modèle
                     $group->whereHas('modele', function($q) use ($term, $word) {
                         $q->whereRaw('LOWER(nom_modele) LIKE ?', [$term])
                         ->orWhereRaw('levenshtein(LOWER(nom_modele)::text, ?::text) <= 2', [$word]);
                     })
                     
-                    // B. OU Recherche dans le Parent (Nom Article)
                     ->orWhereHas('parent', function($q) use ($term, $word) {
                         $q->whereRaw('LOWER(nom_article) LIKE ?', [$term])
                         ->orWhereRaw('levenshtein(LOWER(nom_article)::text, ?::text) <= 2', [$word]);
                     })
                     
-                    // C. OU Recherche dans la Catégorie
                     ->orWhereHas('modele.categorie', function($q) use ($term, $word) {
                         $q->where(function($subQ) use ($term, $word) {
                             $subQ->whereRaw('LOWER(nom_categorie) LIKE ?', [$term])

@@ -13,10 +13,10 @@ class CommandeController extends Controller
         $client = Auth::user();
         
         $commandes = $client->commandes()
-                            ->orderBy('date_commande', 'desc')
+                            ->orderBy('id_commande', 'desc')
                             ->get();
     
-            return view('listCommandes', compact('commandes'));;
+            return view('listCommandes', compact('commandes', 'client'));;
     }
 
     public function show($id)
@@ -35,16 +35,13 @@ class CommandeController extends Controller
     {
         $client = Auth::user();
 
-        // On récupère la commande avec toutes les infos (y compris l'adresse de facturation)
         $commande = $client->commandes()
             ->with(['articles', 'adresse', 'client.adresseFacturation'])
             ->where('id_commande', $id)
             ->firstOrFail();
 
-        // On charge la vue 'client.commandes.invoice' avec les données
         $pdf = Pdf::loadView('invoice', compact('commande'));
 
-        // On télécharge le fichier avec un nom propre
         return $pdf->download('facture-cube-' . $commande->id_commande . '.pdf');
     }
 }

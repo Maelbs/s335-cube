@@ -9,10 +9,8 @@
     @section('content')
     <div class="cube-checkout-container">
         
-        {{-- COLONNE GAUCHE : ÉTAPES ET PAIEMENT --}}
         <div class="checkout-main">
             
-            {{-- Étapes précédentes (Visuel seulement pour l'immersion) --}}
             <div class="checkout-step completed">
                 <div class="step-header">
                     <span>1 - INFORMATIONS PERSONNELLES</span>
@@ -32,7 +30,6 @@
                 </div>
             </div>
 
-            {{-- Étape 4 : PAIEMENT (Active) --}}
             <div class="checkout-step active">
                 <h2 class="step-title">4 - PAIEMENT</h2>
 
@@ -40,7 +37,6 @@
                     <form action="{{ route('checkout.process') }}" method="POST" id="payment-form">
                         @csrf
 
-                        {{-- Option 1 : PayPal --}}
                         <div class="payment-option">
                             <input type="radio" name="payment_method" id="payment_paypal" value="paypal" class="cube-radio" required>
                             <label for="payment_paypal" class="payment-label">
@@ -49,7 +45,6 @@
                             </label>
                         </div>
 
-                        {{-- Option 2 : Carte Bancaire --}}
                         <div class="payment-option">
                             <input type="radio" name="payment_method" id="payment_card" value="card" class="cube-radio">
                             <label for="payment_card" class="payment-label">
@@ -57,12 +52,11 @@
                                 <div class="card-logos">
                                     <img src="https://upload.wikimedia.org/wikipedia/commons/5/5e/Visa_Inc._logo.svg" alt="Visa">
                                     <img src="https://upload.wikimedia.org/wikipedia/commons/2/2a/Mastercard-logo.svg" alt="Mastercard">
-                                    <img src="https://upload.wikimedia.org/wikipedia/commons/b/b7/MasterCard_Logo.svg" alt="CB" style="opacity:0.6"> {{-- Exemple CB --}}
+                                    <img src="https://upload.wikimedia.org/wikipedia/commons/b/b7/MasterCard_Logo.svg" alt="CB" style="opacity:0.6">
                                 </div>
                             </label>
                         </div>
 
-                        {{-- Option 3 : Oney (Optionnel, pour coller à l'image) --}}
                         <div class="payment-option">
                             <input type="radio" name="payment_method" id="payment_oney3" value="oney3" class="cube-radio">
                             <label for="payment_oney3" class="payment-label">
@@ -72,7 +66,6 @@
                             </label>
                         </div>
 
-                        {{-- Conditions Générales --}}
                         <div class="terms-box">
                             <input type="checkbox" name="cgv" id="cgv" required>
                             <label for="cgv">
@@ -80,7 +73,6 @@
                             </label>
                         </div>
 
-                        {{-- Bouton Payer --}}
                         <button type="submit" class="btn-cube-pay">
                             <span>&#9658;</span> Payer
                         </button>
@@ -89,7 +81,6 @@
             </div>
         </div>
 
-        {{-- COLONNE DROITE : RÉCAPITULATIF --}}
         <div class="checkout-sidebar">
             <div class="summary-box">
                 <h3>RÉCAPITULATIF</h3>
