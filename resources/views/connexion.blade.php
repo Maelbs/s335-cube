@@ -49,9 +49,14 @@
                     <button class="btn btn-primary" id="submit-login" type="submit">
                         Se connecter
                     </button>
+
                 </footer>
             </form>
-
+            
+            <button class="btn btn-primary" id="submit-login" type="submit">
+                Continuer avec google
+            </button>
+            
             <div class="no-account">
                 <a href="{{ url('/inscription') }}">Pas encore de compte ? <strong>Inscrivez-vous</strong></a>
             </div>
