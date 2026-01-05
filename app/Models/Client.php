@@ -25,7 +25,10 @@ class Client extends Authenticatable
         'tel',
         'date_inscription',
         'date_naissance',
-        'id_magasin'
+        'id_magasin',
+        'role',
+        'google_id',
+        'double_auth'
     ];
 
     protected $hidden = [
@@ -35,7 +38,7 @@ class Client extends Authenticatable
     protected $casts = [
         'date_inscription' => 'date',
         'date_naissance' => 'date',
-
+        'double_auth' => 'bool',
     ];
 
     public function getAuthPassword()
@@ -51,7 +54,7 @@ class Client extends Authenticatable
     public function adressesLivraison()
     {
         return $this->belongsToMany(Adresse::class, 'adresse_livraison', 'id_client', 'id_adresse')
-            ->using(AdresseLivraison::class) // <--- C'est ici que la magie opère
+            ->using(AdresseLivraison::class) 
             ->withPivot('nom_destinataire', 'prenom_destinataire');
     }
 
@@ -91,11 +94,12 @@ class Client extends Authenticatable
     public function __toString()
     {
         return sprintf(
-            "Client [%d] : %s %s (%s)",
+            "Client [%d] : %s %s (%s) [%s]",
             $this->id_client,
             $this->prenom_client,
             $this->nom_client,
-            $this->email_client
+            $this->email_client,
+            $this->role
         );
     }
 
