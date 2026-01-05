@@ -18,6 +18,7 @@ use App\Models\PhotoArticle;
 use App\Models\TypeCaracteristique;
 use App\Models\Caracteristique;
 use App\Models\ACaracteristique; 
+use App\Models\ArticleInventaire; 
 
 class CommercialController extends Controller
 {
@@ -135,15 +136,41 @@ class CommercialController extends Controller
         }
     }
 
-    public function destroy($reference)
-    {
+    public function destroy($reference) {
+        // Démarrer la transaction
+        DB::beginTransaction();
+    
         try {
-            Article::where('reference', $reference)->delete();
+            $isVelo = VarianteVelo::where('reference', $reference)->exists();
+            
+            if ($isVelo) {
+                // Suppression pour le cas VarianteVelo
+                ArticleInventaire::where('reference', $reference)->delete();
+                ACaracteristique::where('reference', $reference)->delete();
+                PhotoArticle::where('reference', $reference)->delete();
+                VarianteVelo::where('reference', $reference)->delete();
+                Article::where('reference', $reference)->delete();
+            } else {
+                // Suppression pour le cas Accessoire
+                ArticleInventaire::where('reference', $reference)->delete();
+                ACaracteristique::where('reference', $reference)->delete();
+                PhotoArticle::where('reference', $reference)->delete();
+                Accessoire::where('reference', $reference)->delete();
+                Article::where('reference', $reference)->delete();
+            }
+    
+            // Commit la transaction, c'est-à-dire applique les suppressions
+            DB::commit();
+    
             return back()->with('success', 'Article supprimé avec succès.');
         } catch (\Exception $e) {
+            // Si une erreur survient, annule les changements (rollback)
+            DB::rollBack();
+            
             return back()->with('error', 'Impossible de supprimer cet article (il est peut-être lié à une commande).');
         }
     }
+    
 
     // 1. Afficher le formulaire
     public function addCategorie()
