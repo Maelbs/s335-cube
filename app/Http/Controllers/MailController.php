@@ -5,9 +5,6 @@ namespace App\Http\Controllers;
 class MailController extends Controllers{
 
     public function sendMail(){
-        
-
-        
         $to_email = "maelbouviersobrino@hotmail.com";
         $subject_prefix = "Nouveau message depuis le formulaire de contact";
          
