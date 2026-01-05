@@ -17,6 +17,7 @@ use App\Http\Controllers\MagasinController;
 use App\Http\Controllers\CommandeController;
 use App\Http\Controllers\AdresseController;
 
+
 use App\Http\Controllers\ContactController; 
 
 /* ... TOUTES VOS AUTRES ROUTES ... */
@@ -76,6 +77,7 @@ Route::middleware('auth')->group(function () {
     Route::post('/adresses/{id}/update', [AdresseController::class, 'update'])->name('adresses.update');
 
     Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
+    Route::delete('/profil/destroy', [ProfilController::class, 'destroy'])->name('profil.destroy');
 
     Route::get('/profil/modifier', [ProfilController::class, 'showUpdateForm'])->name('profil.update.form');
     Route::put('/profil/modifier', [ProfilController::class, 'update'])->name('profil.update'); 
@@ -121,7 +123,29 @@ Route::middleware('auth')->group(function () {
         Route::post('/commercial/ajouter-modele', [CommercialController::class, 'storeModele'])
             ->name('commercial.store.modele');
             
-        Route::get('/commercial/ajouter-velo', function() { dd('Page ajout vélo'); })->name('commercial.add.velo');
+        Route::get('/commercial/ajouter-velo', [CommercialController::class, 'addVelo'])
+            ->name('commercial.add.velo');
+
+        Route::post('/commercial/ajouter-velo', [CommercialController::class, 'storeVelo'])
+            ->name('commercial.store.velo');
+
+        Route::get('/commercial/choix-ajouter-image-modele', [CommercialController::class, 'articleListImage'])
+            ->name('commercial.choix.imageModele');
+
+        Route::get('/commercial/ajouter-image-modele/{reference}', [CommercialController::class, 'addImageModele'])
+            ->name('commercial.add.imageModele');
+
+        Route::post('/commercial/ajouter-image-modele', [CommercialController::class, 'storeImageModele'])
+            ->name('commercial.store.imageModele');
+
+        Route::get('/commercial/choix-caracteristiques', [CommercialController::class, 'articleListCaracteristique'])
+            ->name('commercial.choix.caracteristique');
+
+        Route::get('/commercial/ajouter-caracteristique/{reference}', [CommercialController::class, 'addCaracteristique'])
+            ->name('commercial.add.caracteristique');
+
+        Route::post('/commercial/store-caracteristique', [CommercialController::class, 'storeCaracteristique'])
+            ->name('commercial.store.caracteristique');
     });
 });
 
@@ -140,5 +164,3 @@ Route::get('/boutique/{type}/{cat_id?}/{sub_id?}/{model_id?}', [BoutiqueControll
 
 
 Route::view('/aide', 'aide')->name('aide');
-
-

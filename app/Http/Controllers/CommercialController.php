@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\Support\Facades\File;
+
 use App\Models\Resume;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
@@ -12,6 +14,10 @@ use App\Models\CategorieVelo;
 use App\Models\CategorieAccessoire;
 use App\Models\Modele;
 use App\Models\Description;
+use App\Models\PhotoArticle;
+use App\Models\TypeCaracteristique;
+use App\Models\Caracteristique;
+use App\Models\ACaracteristique; 
 
 class CommercialController extends Controller
 {
@@ -291,6 +297,425 @@ class CommercialController extends Controller
             
             return back()->withErrors(['error' => 'Une erreur est survenue lors de l\'enregistrement : ' . $e->getMessage()])
                         ->withInput(); // Garde les champs remplis pour ne pas tout retaper
+        }
+    }
+
+    // --- GESTION DES VÉLOS (US40) ---
+
+    // 1. AFFICHER LE FORMULAIRE DE CRÉATION DE VÉLO
+    public function addVelo()
+    {
+        // On récupère les données pour remplir les <select> du formulaire
+        $modeles  = Modele::all(); // Pour choisir "Pi-pop" (ou le créer avant si besoin)
+        $couleurs = \App\Models\Couleur::all(); // Pour choisir "Rouge"
+        $fourches = \App\Models\Fourche::all(); // Obligatoire selon le SQL (not null)
+        $tailles  = \App\Models\Taille::whereNotNull('taille_min')->get();
+        $batteries= \App\Models\Batterie::all(); // Optionnel (pour VAE)
+
+        return view('commercial.addVelo', compact('modeles', 'couleurs', 'fourches', 'tailles', 'batteries'));
+    }
+
+    // 2. ENREGISTRER LE VÉLO (TRANSACTION COMPLEXE)
+    public function storeVelo(Request $request)
+    {
+        // 1. Validation des données communes
+        $rules = [
+            'nom_article' => 'required|string|max:50',
+            'prix'        => 'required|numeric|min:0',
+            'poids'       => 'required|numeric|min:0',
+            'id_modele'   => 'required|exists:modele,id_modele',
+            'id_couleur'  => 'required|exists:couleur,id_couleur',
+            'id_fourche'  => 'required|exists:fourche,id_fourche',
+            'description' => 'required|string',
+            'tailles'     => 'required|array|min:1',
+            'tailles.*'   => 'exists:taille,id_taille',
+            // On valide le tableau des stocks
+            'stock'       => 'array',
+            'stock.*'     => 'integer|min:0',
+            // On autorise la batterie à être vide ou un ID valide
+            'id_batterie' => 'nullable|integer|exists:batterie,id_batterie', 
+        ];
+
+        // 2. Logique spécifique pour la Référence
+        // Si l'utilisateur a entré une ref, on la valide strictement
+        if ($request->filled('reference')) {
+            $rules['reference'] = 'digits:6|unique:article,reference';
+        } 
+        // Si vide, pas de validation "required", on la générera plus tard
+
+        $request->validate($rules, [
+            'reference.digits' => 'La référence doit comporter exactement 6 chiffres.',
+            'reference.unique' => 'Cette référence existe déjà dans la base de données.',
+            'tailles.required' => 'Veuillez cocher au moins une taille.',
+        ]);
+
+        try {
+            DB::transaction(function () use ($request) {
+                
+                // --- A. GESTION DE LA RÉFÉRENCE (Check & Random) ---
+                $referenceFinale = null;
+
+                if ($request->filled('reference')) {
+                    // Cas 1 : L'utilisateur a fourni une référence (déjà validée unique ci-dessus)
+                    $referenceFinale = $request->reference;
+                } else {
+                    // Cas 2 : Génération aléatoire d'une référence libre (6 chiffres)
+                    do {
+                        // Génère un nombre entre 100000 et 999999
+                        $randomRef = (string) mt_rand(100000, 999999);
+                        // Vérifie si elle existe déjà
+                        $exists = Article::where('reference', $randomRef)->exists();
+                    } while ($exists); // Recommence tant qu'on trouve un doublon
+                    
+                    $referenceFinale = $randomRef;
+                }
+
+                // --- B. GESTION DE LA BATTERIE (Null handling) ---
+                // Si le champ est vide, on force NULL, sinon on prend la valeur
+                $batterieId = $request->filled('id_batterie') ? $request->id_batterie : null;
+
+
+                // --- C. INSERTIONS EN BASE ---
+
+                // 1. Création du Résumé
+                $resume = Resume::create([
+                    'contenu_resume' => $request->description
+                ]);
+
+                // 2. Création de l'Article (Parent)
+                Article::create([
+                    'reference'   => $referenceFinale,
+                    'id_resume'   => $resume->id_resume,
+                    'nom_article' => $request->nom_article,
+                    'prix'        => $request->prix,
+                    'poids'       => $request->poids,
+                ]);
+
+                // 3. Création de la Variante Vélo (Enfant)
+                VarianteVelo::create([
+                    'reference'   => $referenceFinale,
+                    'id_modele'   => $request->id_modele,
+                    'id_fourche'  => $request->id_fourche,
+                    'id_couleur'  => $request->id_couleur,
+                    'id_batterie' => $batterieId, // Sera NULL ou un ID
+                    'nom_article' => $request->nom_article,
+                    'prix'        => $request->prix,
+                    'poids'       => $request->poids,
+                ]);
+
+                // 4. Gestion du Stock par Taille (US40)
+                foreach ($request->tailles as $idTaille) {
+                    
+                    // On récupère la quantité saisie pour cette taille précise
+                    // $request->stock est un tableau associatif : [50 => 10, 55 => 0, ...]
+                    $quantite = isset($request->stock[$idTaille]) ? intval($request->stock[$idTaille]) : 0;
+
+                    // CONDITION : Si quantité > 0, on insère.
+                    // Si quantité = 0, on considère que le vélo n'est pas dispo dans cette taille
+                    if ($quantite > 0) {
+                        DB::table('article_inventaire')->insert([
+                            'reference' => $referenceFinale,
+                            'id_taille' => $idTaille,
+                            'quantite_stock_en_ligne' => $quantite
+                        ]);
+                    }
+                }
+
+                // 5. Photo Placeholder (Optionnel)
+                DB::table('photo_article')->insert([
+                    'reference' => $referenceFinale,
+                    'url_photo' => 'https://placehold.co/600x400?text=Velo+' . $referenceFinale,
+                    'est_principale' => true
+                ]);
+            });
+
+            // Succès : on redirige vers le dashboard avec un message
+            // Note: On peut récupérer la ref générée via une variable de session flash si on veut l'afficher
+            return redirect()->route('commercial.dashboard')
+                             ->with('success', 'Vélo créé avec succès ! Référence enregistrée.');
+
+        } catch (\Exception $e) {
+            return back()->withErrors(['error' => 'Erreur technique : ' . $e->getMessage()])
+                         ->withInput();
+        }
+    }
+
+    public function addImageModele($reference)
+    {
+        $isVelo = VarianteVelo::where('reference', $reference)->exists();
+
+        if (!$isVelo) {
+            return back()->with('error', 'La modification des accessoires n\'est pas encore disponible. Uniquement les Vélos/VAE.');
+        }
+
+        $article = VarianteVelo::with('parent.resume')->where('reference', $reference)->firstOrFail();
+
+        return view('commercial.addImageModele', compact('article'));
+    }
+
+    // 2. Enregistrer les photos (Dossier + BDD)
+public function storeImageModele(Request $request)
+    {
+        $request->validate([
+            'reference' => 'required|exists:article,reference',
+            'photos'    => 'required|array',
+            'photos.*'  => 'image|mimes:jpeg,png,jpg,webp|max:10240',
+            'est_principale' => 'nullable|boolean'
+        ]);
+
+        $reference = $request->reference;
+
+        // Chemins IUT (Adaptés à ton serveur)
+        $pathImages = public_path('images');
+        $pathVelos  = public_path('images/VELOS');
+        $pathCible  = public_path('images/VELOS/' . $reference);
+
+        // Création des dossiers (Sécurité IUT)
+        if (!file_exists($pathImages)) { mkdir($pathImages, 0777, true); @chmod($pathImages, 0777); }
+        if (!file_exists($pathVelos))  { mkdir($pathVelos, 0777, true);  @chmod($pathVelos, 0777); }
+        if (!file_exists($pathCible))  { mkdir($pathCible, 0777, true);  @chmod($pathCible, 0777); }
+
+        try {
+            DB::transaction(function () use ($request, $pathCible, $reference) {
+                
+                // 1. Récupérer les photos existantes pour savoir où on en est
+                // On utilise la BDD comme référence
+                $existingPhotos = DB::table('photo_article')
+                                    ->where('reference', $reference)
+                                    ->get();
+                
+                // Trouver le numéro le plus élevé (ex: si image_5.jpg existe, max = 5)
+                $maxNum = 0;
+                foreach($existingPhotos as $p) {
+                    if(preg_match('/image_(\d+)\.jpg$/', $p->url_photo, $matches)) {
+                        $num = (int)$matches[1];
+                        if($num > $maxNum) $maxNum = $num;
+                    }
+                }
+
+                $isMainChecked = $request->has('est_principale');
+
+                // --- LOGIQUE DE DÉCALAGE (SHIFT) ---
+                // Si on veut mettre la nouvelle en n°1, il faut pousser toutes les autres
+                if ($isMainChecked && $maxNum > 0) {
+                    
+                    // On trie les photos existantes par numéro décroissant (pour renommer 3->4 avant 2->3)
+                    $sortedPhotos = $existingPhotos->sort(function($a, $b) {
+                        preg_match('/image_(\d+)\.jpg$/', $a->url_photo, $m_a);
+                        preg_match('/image_(\d+)\.jpg$/', $b->url_photo, $m_b);
+                        return ((int)($m_b[1] ?? 0)) <=> ((int)($m_a[1] ?? 0));
+                    });
+
+                    foreach ($sortedPhotos as $photo) {
+                        if(preg_match('/image_(\d+)\.jpg$/', $photo->url_photo, $matches)) {
+                            $currentNum = (int)$matches[1];
+                            $newNum = $currentNum + 1; // On décale de +1
+                            
+                            $oldFilename = 'image_' . $currentNum . '.jpg';
+                            $newFilename = 'image_' . $newNum . '.jpg';
+                            
+                            $oldPath = $pathCible . '/' . $oldFilename;
+                            $newPath = $pathCible . '/' . $newFilename;
+
+                            // 1. Renommer le fichier physique
+                            if (file_exists($oldPath)) {
+                                rename($oldPath, $newPath);
+                            }
+
+                            // 2. Mettre à jour la BDD
+                            DB::table('photo_article')
+                                ->where('id_photo', $photo->id_photo)
+                                ->update([
+                                    'url_photo' => 'images/VELOS/' . $reference . '/' . $newFilename,
+                                    'est_principale' => false // L'ancienne principale ne l'est plus
+                                ]);
+                        }
+                    }
+                    // Le max a augmenté de 1 car tout a bougé
+                    $maxNum++;
+                }
+
+                // --- TRAITEMENT DES NOUVELLES IMAGES ---
+                foreach ($request->file('photos') as $index => $file) {
+                    
+                    if ($isMainChecked && $index === 0) {
+                        // C'est LA photo principale : elle prend la place n°1 (libérée par le décalage)
+                        $filename = 'image_1.jpg';
+                        $isMain = true;
+                    } else {
+                        // Les autres s'ajoutent à la suite
+                        $maxNum++; 
+                        $filename = 'image_' . $maxNum . '.jpg';
+                        $isMain = false;
+                    }
+
+                    $fullPath = $pathCible . '/' . $filename;
+
+                    $sourceImage = null;
+                    $extension = strtolower($file->getClientOriginalExtension());
+
+                    if ($extension === 'jpg' || $extension === 'jpeg') {
+                        $sourceImage = imagecreatefromjpeg($file->getRealPath());
+                    } elseif ($extension === 'png') {
+                        $sourceImage = imagecreatefrompng($file->getRealPath());
+                    } elseif ($extension === 'webp') {
+                        $sourceImage = imagecreatefromwebp($file->getRealPath());
+                    }
+
+                    if ($sourceImage) {
+                        $width  = imagesx($sourceImage);
+                        $height = imagesy($sourceImage);
+                        $outputImage = imagecreatetruecolor($width, $height);
+                        $white = imagecolorallocate($outputImage, 255, 255, 255);
+                        imagefilledrectangle($outputImage, 0, 0, $width, $height, $white);
+                        imagecopy($outputImage, $sourceImage, 0, 0, 0, 0, $width, $height);
+                        
+                        // Sauvegarde
+                        imagejpeg($outputImage, $fullPath, 90);
+                        imagedestroy($sourceImage);
+                        imagedestroy($outputImage);
+                    } else {
+                        // Fallback
+                        $file->move($pathCible, $filename);
+                    }
+
+                    // Permissions
+                    @chmod($fullPath, 0644);
+
+                    // Insertion BDD
+                    $dbUrl = 'images/VELOS/' . $reference . '/' . $filename;
+
+                    DB::table('photo_article')->insert([
+                        'reference'      => $reference,
+                        'url_photo'      => $dbUrl,
+                        'est_principale' => $isMain
+                    ]);
+                }
+            });
+
+            return redirect()->route('commercial.dashboard')
+                             ->with('success', 'Images sauvegardées et numérotées correctement !');
+
+        } catch (\Exception $e) {
+            dd("Erreur traitement image : " . $e->getMessage());
+        }
+    }
+
+    public function articleListImage()
+    {
+        // 1. Récupérer les Vélos MUSCULAIRES
+        // On utilise 'whereHas' pour filtrer directement sur la table liée 'modele'
+        $velosMusculaires = VarianteVelo::with(['modele', 'photos'])
+            ->whereHas('modele', function ($query) {
+                $query->where('type_velo', 'musculaire');
+            })
+            ->orderBy('reference', 'desc') // Trie par référence décroissante (optionnel)
+            ->get();
+
+        // 2. Récupérer les Vélos ÉLECTRIQUES
+        $velosElectriques = VarianteVelo::with(['modele', 'photos'])
+            ->whereHas('modele', function ($query) {
+                $query->where('type_velo', 'electrique');
+            })
+            ->orderBy('reference', 'desc')
+            ->get();
+
+        // 3. Récupérer les ACCESSOIRES
+        // On charge aussi les photos pour l'affichage des miniatures
+        $accessoires = Accessoire::with(['photos'])->orderBy('reference', 'desc')->get();
+
+        return view('commercial.modifierArticleImage', compact('velosMusculaires', 'velosElectriques', 'accessoires'));
+    }
+
+// --- US42 : GESTION DES CARACTÉRISTIQUES ---
+
+// 1. LISTE DES ARTICLES POUR CARACTÉRISTIQUES
+    public function articleListCaracteristique()
+    {
+        // 1. Récupérer les Vélos MUSCULAIRES
+        $velosMusculaires = VarianteVelo::with('modele')
+            ->whereHas('modele', function ($query) {
+                $query->where('type_velo', 'musculaire');
+            })
+            ->orderBy('reference', 'desc')
+            ->get();
+
+        // 2. Récupérer les Vélos ÉLECTRIQUES
+        $velosElectriques = VarianteVelo::with('modele')
+            ->whereHas('modele', function ($query) {
+                $query->where('type_velo', 'electrique');
+            })
+            ->orderBy('reference', 'desc')
+            ->get();
+
+        // 3. Récupérer les ACCESSOIRES
+        // La vue attend la variable $accessoires, même si on ne met pas souvent de fiche technique dessus
+        $accessoires = Accessoire::orderBy('reference', 'desc')->get();
+
+        // On passe les 3 variables à la vue pour éviter l'erreur "count(null)"
+        return view('commercial.modifierArticleCaracteristique', compact('velosMusculaires', 'velosElectriques', 'accessoires'));
+    }
+
+    // 2. AFFICHER LE FORMULAIRE
+    public function addCaracteristique($reference)
+    {
+        $velo = VarianteVelo::where('reference', $reference)->firstOrFail();
+
+        // CORRECTION ICI : On trie par 'id_caracteristique' ascendant
+        $toutesLesCaracs = Caracteristique::orderBy('id_caracteristique', 'asc')->get();
+
+        $valeursExistantes = DB::table('a_caracteristique')
+                                ->where('reference', $reference)
+                                ->pluck('valeur_caracteristique', 'id_caracteristique')
+                                ->toArray();
+
+        return view('commercial.addCaracteristique', compact('velo', 'toutesLesCaracs', 'valeursExistantes'));
+    }
+
+    // 3. ENREGISTRER
+    public function storeCaracteristique(Request $request)
+    {
+        $request->validate([
+            'reference' => 'required|exists:article,reference',
+            'caracs'    => 'array', // Tableau [id => valeur]
+            'caracs.*'  => 'nullable|string|max:150'
+        ]);
+
+        try {
+            DB::transaction(function () use ($request) {
+                $reference = $request->reference;
+
+                // On parcourt chaque champ du formulaire
+                foreach ($request->caracs as $idCarac => $valeur) {
+                    
+                    // Si vide => On supprime la ligne (Nettoyage)
+                    if (is_null($valeur) || trim($valeur) === '') {
+                        DB::table('a_caracteristique')
+                            ->where('reference', $reference)
+                            ->where('id_caracteristique', $idCarac)
+                            ->delete();
+                    } 
+                    // Si rempli => On Insère ou on Met à jour
+                    else {
+                        DB::table('a_caracteristique')->updateOrInsert(
+                            [
+                                'reference' => $reference, 
+                                'id_caracteristique' => $idCarac
+                            ],
+                            [
+                                // Attention à l'orthographe de ta colonne en BDD ici !
+                                'valeur_caracteristique' => trim($valeur) 
+                            ]
+                        );
+                    }
+                }
+            });
+
+            return redirect()->route('commercial.choix.caracteristique')
+                             ->with('success', 'Fiche technique mise à jour pour le vélo ' . $request->reference);
+
+        } catch (\Exception $e) {
+            return back()->with('error', 'Erreur sauvegarde : ' . $e->getMessage());
         }
     }
 }

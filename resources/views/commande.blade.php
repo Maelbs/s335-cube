@@ -260,7 +260,6 @@
                         <i class="fa-solid fa-lock"></i> Paiement 100% sécurisé crypté SSL
                     </div>
                 </div>
-
             </form>
         </div>
     </div>

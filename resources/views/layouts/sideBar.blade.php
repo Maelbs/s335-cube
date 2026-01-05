@@ -1,7 +1,20 @@
 <style>
-    .logout-form {
-        
-    }
+.btn-delete-account {
+    width: 100%;
+    background-color: #e53935;
+    color: #fff;
+    border: none;
+    padding: 10px 12px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 14px;
+    position: absolute;
+    bottom: 100;
+}
+
+.btn-delete-account:hover {
+    background-color: #c62828;
+}
 </style>
 <aside class="sidebar">
     <div class="sidebar-content">
@@ -56,5 +69,6 @@
                 </li>
             </ul>
         </nav>
+        {{-- SECTION BASSE : SUPPRESSION DE COMPTE (US48) --}} <div class="delete-account-section"> <form action="{{ route('profil.destroy') }}" method="POST" onsubmit="return confirm('⚠️ ATTENTION ⚠️\n\nÊtes-vous sûr de vouloir supprimer votre compte définitivement ?\n\nCette action est irréversible et effacera vos données personnelles.');"> @csrf @method('DELETE') <button type="submit" class="btn-delete-account"> <i class="fa-solid fa-trash-can"></i> Supprimer mon compte </button> </form> </div>
     </div>
 </aside>

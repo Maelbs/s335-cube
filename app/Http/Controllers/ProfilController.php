@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rule; 
+use Illuminate\Support\Facades\DB;
 use App\Models\Client;
 use App\Http\Controllers\CommandeController;
 
@@ -44,13 +45,79 @@ class ProfilController extends Controller
             'date_naissance' => $request->birthday,
         ]);
 
-        
-    
         if ($request->filled('password')) {
             $user->mdp = Hash::make($request->password); 
             $user->save();
         }
     
         return redirect()->route('profil')->with('success', 'Vos informations ont été mises à jour avec succès.');
+    }
+
+// --- US48 : SUPPRESSION DE COMPTE (SECURE) ---
+public function destroy(Request $request)
+    {
+        $user = \Illuminate\Support\Facades\Auth::user();
+
+        try {
+            DB::transaction(function () use ($user) {
+                
+                $aCommandes = $user->commandes()->exists();
+
+                // --- CORRECTION DU BUG SQL ICI ---
+                // 1. On identifie les paniers liés à une commande (Intouchables)
+                $paniersLies = DB::table('commande')
+                                ->where('id_client', $user->id_client)
+                                ->pluck('id_panier')
+                                ->toArray();
+
+                // 2. On supprime SEULEMENT les paniers qui NE SONT PAS dans cette liste (Paniers abandonnés)
+                DB::table('panier')
+                    ->where('id_client', $user->id_client)
+                    ->whereNotIn('id_panier', $paniersLies)
+                    ->delete();
+                // ----------------------------------
+
+                $user->velosEnregistres()->delete();
+                $user->codesPromoUtilises()->detach();
+
+                if ($aCommandes) {
+                    // --- ANONYMISATION ---
+                    $fakeEmail = 'del_' . $user->id_client . '_' . time() . '@anonyme.cube';
+
+                    DB::table('client')
+                        ->where('id_client', $user->id_client)
+                        ->update([
+                            'nom_client'    => 'UTILISATEUR',
+                            'prenom_client' => 'SUPPRIMÉ',
+                            'email_client'  => $fakeEmail, 
+                            'tel'           => '0000000000',      
+                            'date_naissance'=> '1900-01-01', // Date valide pour éviter l'erreur NULL
+                            'mdp'           => bcrypt(\Illuminate\Support\Str::random(60)), 
+                        ]);
+
+                    DB::table('adresse_livraison')
+                        ->where('id_client', $user->id_client)
+                        ->update([
+                            'nom_destinataire'    => 'SUPPRIMÉ',
+                            'prenom_destinataire' => 'SUPPRIMÉ',
+                        ]);
+
+                } else {
+                    // --- SUPPRESSION TOTALE ---
+                    $user->adressesLivraison()->detach();
+                    $user->delete();
+                }
+            });
+
+            \Illuminate\Support\Facades\Auth::logout();
+            $request->session()->invalidate();
+            $request->session()->regenerateToken();
+
+            return redirect()->route('home')->with('success', 'Compte supprimé avec succès.');
+
+        } catch (\Exception $e) {
+            // Affiche l'erreur si ça plante encore
+            dd("ERREUR : " . $e->getMessage());
+        }
     }
 }
