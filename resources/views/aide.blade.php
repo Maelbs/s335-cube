@@ -9,6 +9,8 @@
     {{-- Polices et Icônes comme sur votre autre page --}}
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Fira+Sans:ital,wght@0,300;0,400;0,600;0,800;1,800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ asset('css/styleBody.css') }}">
+    <
 
     {{-- CSS du Header --}}
     <link rel="stylesheet" href="{{ asset('css/header.css') }}">
@@ -385,6 +387,8 @@
 
     {{-- Script pour le header --}}
     <script src="{{ asset('js/header.js') }}"></script>
+
+    @include('layouts.footer')
 
 </body>
 

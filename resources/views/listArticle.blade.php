@@ -319,9 +319,7 @@
         </main>
     </div>
    
-    <footer>
-        <p>&copy; 2025 CUBE Bikes France</p>
-    </footer>
+    @include('layouts.footer')
  
     <script src="{{ asset('js/header.js') }}" defer></script>
  

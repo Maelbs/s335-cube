@@ -33,6 +33,7 @@ Route::get('/boutique/{type}/{cat_id?}/{sub_id?}/{model_id?}', [BoutiqueControll
 // ------------------------------------
 
 Route::view('/aide', 'aide')->name('aide');
+Route::view('/politique-confidentialite', 'privacy-policy')->name('privacy.policy');
 
 Route::get('/contact', [ContactController::class, 'show'])->name('contact');
 Route::post('/contact', [ContactController::class, 'submit'])->name('contact.submit');
