@@ -6,180 +6,269 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Aide & FAQ | Cube Bikes</title>
 
-    {{-- Polices et Icônes comme sur votre autre page --}}
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Fira+Sans:ital,wght@0,300;0,400;0,600;0,800;1,800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ asset('css/styleBody.css') }}">
+    <
 
-    {{-- CSS du Header --}}
     <link rel="stylesheet" href="{{ asset('css/header.css') }}">
 
-    {{-- CSS Spécifique pour la FAQ --}}
     <style>
-        /* On remet la police spécifique que tu voulais pour le corps de page */
         @font-face {
             font-family: 'Damas Font';
-            src: url('../font/font.woff2'); /* Assurez-vous que le chemin est bon depuis /aide */
+            src: url('../font/font.woff2');
         }
 
         body {
             font-family: 'Damas Font', sans-serif;
-            background-color: #fff;
-            color: #333;
+            background-color: #ffffff;
+            color: #222;
             margin: 0;
+            line-height: 1.5;
         }
 
         .faq-wrapper {
-            max-width: 900px;
-            margin: 140px auto 60px; /* Marge top pour compenser le header fixed */
-            padding: 0 20px;
+            max-width: 850px;
+            margin: 160px auto 100px;
+            padding: 0 25px;
         }
 
         .faq-intro {
             text-align: center;
-            margin-bottom: 60px;
+            margin-bottom: 80px;
         }
 
         .faq-intro h1 {
-            font-size: 48px;
+            font-size: 42px;
             font-weight: 900;
             text-transform: uppercase;
-            margin-bottom: 20px;
-            color: #333;
+            letter-spacing: -1px;
+            margin-bottom: 15px;
         }
 
         .faq-intro p {
             font-size: 18px;
-            color: #666;
-            max-width: 600px;
+            color: #777;
+            max-width: 650px;
             margin: 0 auto;
-            line-height: 1.6;
         }
 
         .faq-section {
-            margin-bottom: 40px;
+            margin-bottom: 60px;
         }
 
         .faq-section h2 {
-            font-size: 24px;
+            font-size: 20px;
             font-weight: 800;
-            color: #00b0f0; /* Bleu CUBE */
+            color: #00b0f0;
             text-transform: uppercase;
-            text-align: left;
-            padding-bottom: 10px;
-            border-bottom: 2px solid #eee;
-            margin-bottom: 20px;
-        }
-
-        /* Style de l'accordéon */
-        details {
-            background: #fff;
-            border: 1px solid #e5e5e5;
-            margin-bottom: 10px;
-            border-radius: 4px;
-            overflow: hidden;
-            transition: all 0.3s ease;
-        }
-
-        details:hover {
-            border-color: #ccc;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.05);
-        }
-
-        details[open] {
-            border-color: #00b0f0;
-            box-shadow: 0 4px 15px rgba(0,176,240,0.1);
-        }
-
-        summary {
-            padding: 18px 25px;
-            cursor: pointer;
-            font-weight: 700;
-            font-size: 16px;
-            color: #333;
-            position: relative;
-            list-style: none; /* Cache la flèche par défaut */
+            letter-spacing: 1px;
+            margin-bottom: 25px;
             display: flex;
-            justify-content: space-between;
             align-items: center;
         }
 
-        summary::-webkit-details-marker {
-            display: none;
+        .faq-section h2::after {
+            content: "";
+            flex: 1;
+            height: 1px;
+            background: #eee;
+            margin-left: 20px;
         }
 
-        /* L'icône + / - */
+        /* Accordéon Style */
+        details {
+            border: none;
+            border-bottom: 1px solid #f0f0f0;
+            transition: all 0.3s ease;
+        }
+
+        details:last-child {
+            border-bottom: none;
+        }
+
+        summary {
+            padding: 22px 0;
+            cursor: pointer;
+            font-weight: 700;
+            font-size: 17px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            list-style: none;
+            outline: none;
+        }
+
+        summary::-webkit-details-marker { display: none; }
+
         summary::after {
-            content: '+';
-            font-size: 20px;
-            color: #00b0f0;
+            content: '\f078'; 
+            font-family: 'Font Awesome 6 Free';
             font-weight: 900;
-            transition: transform 0.3s ease;
+            font-size: 14px;
+            color: #ccc;
+            transition: transform 0.3s, color 0.3s;
         }
 
         details[open] summary::after {
-            content: '-';
             transform: rotate(180deg);
-            color: #333;
+            color: #00b0f0;
         }
 
         .faq-content {
-            padding: 0 25px 25px 25px;
+            padding: 0 0 30px 0;
             color: #555;
-            font-size: 15px;
-            line-height: 1.6;
-            border-top: 1px solid transparent;
-            animation: slideDown 0.3s ease-out;
-        }
-
-        details[open] .faq-content {
-            border-top: 1px solid #f0f0f0;
+            font-size: 16px;
+            line-height: 1.8;
+            animation: fadeIn 0.4s ease;
         }
 
         .faq-content ul {
-            margin-top: 10px;
             padding-left: 20px;
-            list-style-type: disc;
+            margin-top: 15px;
+            list-style-type: none;
         }
 
         .faq-content li {
-            margin-bottom: 8px;
+            position: relative;
+            margin-bottom: 12px;
+            padding-left: 20px;
         }
 
-        .faq-content strong {
-            color: #333;
+        .faq-content li::before {
+            content: "•";
+            color: #00b0f0;
+            position: absolute;
+            left: 0;
+            font-weight: bold;
         }
 
-        @keyframes slideDown {
-            from { opacity: 0; transform: translateY(-5px); }
+        .dev-alert {
+            display: inline-block;
+            margin-top: 15px;
+            background: #fff4f4;
+            color: #d9534f;
+            padding: 5px 15px;
+            border-radius: 5px;
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-10px); }
             to { opacity: 1; transform: translateY(0); }
         }
 
-        /* Lien contact en bas */
         .faq-contact {
             text-align: center;
-            margin-top: 60px;
-            padding: 40px;
-            background: #f9f9f9;
-            border-radius: 10px;
+            margin-top: 40px;
+            padding: 50px;
+            background: #fafafa;
+            border-radius: 15px;
         }
-        
-        /* Bouton contact */
+
         .btn-contact {
             display: inline-block;
             background-color: #00b0f0;
             color: #fff;
-            padding: 12px 30px;
-            border-radius: 40px;
+            padding: 14px 40px;
+            border-radius: 50px;
             text-decoration: none;
             font-weight: 700;
             text-transform: uppercase;
+            font-size: 14px;
             margin-top: 20px;
-            transition: background 0.3s;
+            transition: transform 0.2s, background 0.3s;
         }
-        
+
         .btn-contact:hover {
-            background-color: #008cb0;
+            background-color: #000;
+            transform: translateY(-2px);
         }
+
+        /* --- STYLE DES BULLES INFO (FIX LISIBILITÉ) --- */
+        .info-bubble {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 20px;
+            height: 20px;
+            background: linear-gradient(135deg, #00ecff, #00b4d8);
+            color: #000 !important;
+            border-radius: 50%;
+            text-align: center;
+            font-size: 11px;
+            font-weight: 900;
+            margin-left: 10px;
+            cursor: help;
+            position: relative;
+            box-shadow: 0 2px 5px rgba(0, 236, 255, 0.3);
+            transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            vertical-align: middle;
+            font-style: normal !important;
+            text-transform: none !important;
+            letter-spacing: normal !important;
+        }
+
+        .info-bubble::after {
+            content: attr(data-tooltip);
+            position: absolute;
+            bottom: 150%; 
+            left: 50%;
+            transform: translateX(-50%) translateY(10px);
+            width: 240px;
+            padding: 12px 16px;
+            background-color: rgba(15, 15, 15, 0.98); 
+            color: #ffffff !important;
+            border-radius: 8px;
+            z-index: 9999;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            pointer-events: none;
+            visibility: hidden;
+            opacity: 0;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+
+            /* On force la lisibilité ici pour contrer l'héritage du H2 */
+            font-family: 'Arial', sans-serif !important;
+            font-size: 13px !important;
+            font-weight: 400 !important;
+            line-height: 1.5 !important;
+            text-transform: none !important;
+            font-style: normal !important;
+            letter-spacing: normal !important;
+            text-align: left;
+            white-space: normal;
+        }
+
+        .info-bubble::before {
+            content: "";
+            position: absolute;
+            bottom: 130%;
+            left: 50%;
+            transform: translateX(-50%);
+            border-width: 8px;
+            border-style: solid;
+            border-color: rgba(15, 15, 15, 0.98) transparent transparent transparent;
+            visibility: hidden;
+            opacity: 0;
+            z-index: 9999;
+        }
+
+        .info-bubble:hover::after, 
+        .info-bubble:hover::before {
+            visibility: visible;
+            opacity: 1;
+            transform: translateX(-50%) translateY(0);
+        }
+
+        @keyframes bubble-pulse {
+            0% { box-shadow: 0 0 0 0 rgba(0, 236, 255, 0.5); }
+            70% { box-shadow: 0 0 0 8px rgba(0, 236, 255, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(0, 236, 255, 0); }
+        }
+
+        .info-bubble { animation: bubble-pulse 2s infinite; }
     </style>
 </head>
 
@@ -189,35 +278,33 @@
 
     <div class="faq-wrapper">
 
-        {{-- EN-TÊTE --}}
         <div class="faq-intro">
-            <h1>Aide & FAQ - CUBE France</h1>
-            <p>Bienvenue dans l'univers CUBE.<br>
-            Vous avez fait le choix d'une mobilité plus douce et durable, et nous sommes là pour vous accompagner.</p>
+            <h1>GUIDE D’UTILISATION - CUBE France</h1>
+            <p>Bienvenue dans l'univers CUBE. Vous avez fait le choix d'une mobilité plus douce et durable, et nous sommes là pour vous accompagner.</p>
         </div>
 
         {{-- SECTION 1 --}}
         <div class="faq-section">
-            <h2>1. Choisir son vélo électrique</h2>
+            <h2>1. Choisir son vélo électrique <span class="info-bubble" data-tooltip="Trouvez le modèle parfait selon votre usage : ville, montagne ou chemin.">?</span></h2>
 
             <details>
                 <summary>Comment trouver le vélo idéal rapidement ?</summary>
                 <div class="faq-content">
-                    Utilisez nos filtres ! Dans la section "Vélos Électriques", filtrez par "Usage" (Ville, Vélotaf, Sport) ou par "Prix". Cela vous permet de voir uniquement les modèles adaptés à votre trajet quotidien.
+                    Utilisez nos filtres ! Dans la section "Vélos Électriques", filtrez par "Catégories" (VTT, ville & campagne, Gravel) ou par "Prix". Cela vous permet de voir uniquement les modèles adaptés à votre trajet quotidien.
                 </div>
             </details>
 
             <details>
                 <summary>Comment être sûr de choisir la bonne taille ?</summary>
                 <div class="faq-content">
-                    Pour un confort optimal lors de vos trajets quotidiens, la taille est primordiale. Sur chaque fiche produit, cliquez sur le lien "Quelle est ma taille de cadre ?". Il vous suffit de renseigner votre taille et votre entrejambe (en cm) pour obtenir la recommandation idéale. Si vous êtes entre deux tailles, l'outil vous l'indiquera pour vous guider.
+                    Pour un confort optimal lors de vos trajets quotidiens, la taille est primordiale. Sur chaque fiche produit, cliquez sur le lien "Quelle est ma taille de cadre ?". Il vous suffit de renseigner votre taille et votre longueur de pas (en cm) pour obtenir la recommandation idéale. Si vous êtes entre deux tailles, l'outil vous l'indiquera pour vous guider.
                 </div>
             </details>
 
             <details>
                 <summary>Je cherche un vélo pour mes trajets domicile-travail, comment m'assurer de l'autonomie ?</summary>
                 <div class="faq-content">
-                    L'autonomie dépend de nombreux facteurs (poids, dénivelé, mode d'assistance). Pour éviter la panne sèche, consultez l'Assistant d'Autonomie Bosch disponible sur les fiches de nos vélos électriques. Il vous permet de simuler votre parcours pour choisir la batterie adaptée à votre usage.
+                    L'autonomie dépend de nombreux facteurs (poids, dénivelé, mode d'assistance). Pour éviter la panne sèche, consultez la fiche technique sur l’assistance électrique disponible sur les fiches de nos vélos électriques.
                 </div>
             </details>
 
@@ -242,7 +329,7 @@
 
         {{-- SECTION 2 --}}
         <div class="faq-section">
-            <h2>2. Commande et Paiement</h2>
+            <h2>2. Commande et Paiement <span class="info-bubble" data-tooltip="Toutes les infos sur nos méthodes de paiement sécurisées.">?</span></h2>
 
             <details>
                 <summary>Quels sont les moyens de paiement acceptés ?</summary>
@@ -284,7 +371,7 @@
             </details>
 
             <details>
-                <summary>J'ai choisi PayPal mais je n'ai pas finalisé le paiement tout de suite, ma commande est-elle validée ?</summary>
+                <summary>J'ai choisi PayPal mais je n'ai pas finalisé le paiement, ma commande est-elle validée ?</summary>
                 <div class="faq-content">
                     Attention, une fois la commande validée sur le site, vous disposez de 5 minutes pour effectuer le règlement sur l'interface PayPal. Passé ce délai, la commande est automatiquement annulée par notre système.
                 </div>
@@ -293,7 +380,7 @@
 
         {{-- SECTION 3 --}}
         <div class="faq-section">
-            <h2>3. Livraison et Réception</h2>
+            <h2>3. Livraison et Réception <span class="info-bubble" data-tooltip="Le Click & Collect assure un vélo prêt à rouler dès la sortie du magasin.">?</span></h2>
 
             <details>
                 <summary>Puis-je me faire livrer mon vélo à domicile ?</summary>
@@ -310,7 +397,7 @@
             </details>
 
             <details>
-                <summary>J'ai commandé seulement des accessoires (antivol, lumières), dois-je aller en magasin ?</summary>
+                <summary>J'ai commandé seulement des accessoires, dois-je aller en magasin ?</summary>
                 <div class="faq-content">
                     Pas obligatoirement. Si votre panier ne contient que des accessoires, vous pouvez choisir la livraison Express à domicile. Des frais de port s'appliqueront en fonction du montant de la commande.
                 </div>
@@ -333,12 +420,12 @@
 
         {{-- SECTION 4 --}}
         <div class="faq-section">
-            <h2>4. Votre Espace Client et SAV</h2>
+            <h2>4. Votre Espace Client et SAV <span class="info-bubble" data-tooltip="Suivez vos factures et accédez au support technique ici.">?</span></h2>
 
             <details>
                 <summary>Comment retrouver mes factures et suivre ma commande ?</summary>
                 <div class="faq-content">
-                    Tout se passe dans votre compte client. La rubrique "Mes Commandes" vous permet de suivre l'état de votre achat (Validé, Expédié, Livré) et de télécharger vos factures.
+                    Tout se passe dans votre compte client. La rubrique "Mes Commandes" vous permet de suivre l'état de votre achat (Préparé, Expédié, Livré, etc.) et de télécharger vos factures.
                 </div>
             </details>
 
@@ -346,6 +433,7 @@
                 <summary>Avez-vous un programme d'enregistrement de vélo ?</summary>
                 <div class="faq-content">
                     Oui, et nous vous le recommandons ! Dans la rubrique "Mes Vélos" de votre compte, vous pouvez enregistrer votre modèle. Cela facilite le suivi en cas de besoin technique ou de garantie.
+                    <br><span class="dev-alert">La fonctionnalité est en cours de développement</span>
                 </div>
             </details>
 
@@ -374,18 +462,50 @@
             </details>
         </div>
 
+        {{-- SECTION 5 --}}
+        <div class="faq-section">
+            <h2>5. Conseil écoresponsable <span class="info-bubble" data-tooltip="Nos engagements pour une mobilité propre et durable.">?</span></h2>
+
+            <details>
+                <summary>Vous cherchez un vélo avec un impact écologique réduit ?</summary>
+                <div class="faq-content">
+                    Nous vous invitons à consulter les <strong>fiches techniques</strong> de nos modèles. Vous y trouverez le détail des matériaux et des composants utilisés. En privilégiant des vélos robustes et facilement réparables, vous agissez directement pour limiter votre empreinte carbone sur le long terme. S'il s'agit d'un vélo électrique, vous pouvez également vous informer sur la batterie dans la section assistance.
+                </div>
+            </details>
+
+            <details>
+                <summary>Comment prolonger la vie de mon vélo ?</summary>
+                <div class="faq-content">
+                    Dans la section <strong>Accessoires -> Entretien & réparation</strong>, vous avez accès à toutes les pièces détachées nécessaires. Entretenir et réparer son vélo plutôt que de le remplacer, c'est le geste le plus efficace pour la planète. Un vélo qui dure, c'est un vélo propre !
+                </div>
+            </details>
+
+            <details>
+                <summary>Pourquoi ne vendez-vous pas de vêtements ?</summary>
+                <div class="faq-content">
+                    En nous concentrant uniquement sur le matériel technique et en supprimant les collections de vêtements, nous limitons la surproduction textile. On se focalise sur l'essentiel : votre mobilité et la durabilité du matériel.
+                </div>
+            </details>
+
+            <details>
+                <summary>Pourquoi le Click & Collect ?</summary>
+                <div class="faq-content">
+                    En récupérant votre vélo chez un revendeur de proximité, vous soutenez le commerce local et réduisez les emballages inutiles. De plus, vous bénéficiez d'un montage professionnel qui garantit la longévité de votre matériel.
+                </div>
+            </details>
+        </div>
+
         <div class="faq-contact">
             <h3>Vous ne trouvez pas votre réponse ?</h3>
             <p>Notre équipe est à votre disposition.</p>
-           
-            <a href="{{ route('contact') }}" class="btn-contact">Nous contacter</a>
+            <a href="{{ route('contact') }}" class="btn-contact">Contactez-nous</a>
         </div>
 
     </div>
 
-    {{-- Script pour le header --}}
     <script src="{{ asset('js/header.js') }}"></script>
 
-</body>
+    @include('layouts.footer')
 
+</body>
 </html>

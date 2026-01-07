@@ -9,9 +9,9 @@
     <link rel="stylesheet" href="{{ asset('css/styleBody.css') }}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/noUiSlider/15.7.1/nouislider.min.css">
-   
+    
     <script src="https://cdnjs.cloudflare.com/ajax/libs/noUiSlider/15.7.1/nouislider.min.js"></script>
-   
+    
     <script>
         function scrollToListing() {
             document.getElementById('listing-anchor').scrollIntoView({ behavior: 'smooth' });
@@ -77,7 +77,9 @@
                 @if($hierarchyItems->isNotEmpty())
                     <div class="filter-section">
                         <div class="filter-header" onclick="toggleSection(this)">
-                            <h3>{{ $hierarchyTitle }}</h3><i class="fas fa-chevron-up"></i>
+                            <h3>{{ $hierarchyTitle }}</h3>
+                            <span class="info-bubble" data-tooltip="Catégorie : Choisissez selon vos besoins (VTT, Ville, Gravel...)">?</span>
+                            <i class="fas fa-chevron-up"></i>
                         </div>
                         <div class="filter-content">
                         @foreach($hierarchyItems as $item)
@@ -134,7 +136,11 @@
                 @endif
  
                 <div class="filter-section">
-                    <div class="filter-header" onclick="toggleSection(this)"><h3>DISPONIBILITÉ</h3><i class="fas fa-chevron-up"></i></div>
+                    <div class="filter-header" onclick="toggleSection(this)">
+                        <h3>DISPONIBILITÉ</h3>
+                        <span class="info-bubble" data-tooltip="Vérifiez si l'article est prêt à être expédié ou disponible chez un partenaire.">?</span>
+                        <i class="fas fa-chevron-up"></i>
+                    </div>
                     <div class="filter-content">
                         <label class="cube-checkbox">
                             <input type="checkbox" name="dispo_ligne" value="1" class="auto-submit" {{ request('dispo_ligne') ? 'checked' : '' }}>
@@ -149,7 +155,9 @@
  
                 <div class="filter-section">
                     <div class="filter-header" onclick="toggleSection(this)">
-                        <h3>PRIX</h3><i class="fas fa-chevron-up"></i>
+                        <h3>PRIX</h3>
+                        <span class="info-bubble" data-tooltip="Prix : Ajustez les bornes selon votre budget maximal.">?</span>
+                        <i class="fas fa-chevron-up"></i>
                     </div>
                    
                     <div class="filter-content price-filter-container">
@@ -161,7 +169,11 @@
  
                 @if($availableTailles->isNotEmpty())
                     <div class="filter-section">
-                        <div class="filter-header" onclick="toggleSection(this)"><h3>TAILLE</h3><i class="fas fa-chevron-up"></i></div>
+                        <div class="filter-header" onclick="toggleSection(this)">
+                            <h3>TAILLE</h3>
+                            <span class="info-bubble" data-tooltip="Taille : Calculez votre taille idéale avec notre outil sur la fiche produit.">?</span>
+                            <i class="fas fa-chevron-up"></i>
+                        </div>
                         <div class="filter-content">
                             @foreach($availableTailles as $taille)
                                 <label class="cube-checkbox">
@@ -319,9 +331,13 @@
         </main>
     </div>
    
+<<<<<<< HEAD
+    @include('layouts.footer')
+=======
     <footer>
-        <p>&copy; 2025 CUBE Bikes France</p>
+        <p>&copy; 2026 CUBE Bikes France</p>
     </footer>
+>>>>>>> af1c590583c17add1f2ecbe99b6f243f3ef975be
  
     <script src="{{ asset('js/header.js') }}" defer></script>
  
