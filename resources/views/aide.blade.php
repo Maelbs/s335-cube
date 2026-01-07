@@ -159,6 +159,7 @@
             to { opacity: 1; transform: translateY(0); }
         }
 
+        /* --- TON CSS DE CONTACTER-NOUS --- */
         .faq-contact {
             text-align: center;
             margin-top: 40px;
@@ -186,7 +187,7 @@
             transform: translateY(-2px);
         }
 
-        /* --- STYLE DES BULLES INFO (FIX LISIBILITÉ) --- */
+        /* --- STYLE DES BULLES INFO --- */
         .info-bubble {
             display: inline-flex;
             align-items: center;
@@ -225,18 +226,14 @@
             box-shadow: 0 10px 30px rgba(0,0,0,0.5);
             border: 1px solid rgba(255, 255, 255, 0.15);
             pointer-events: none;
-            visibility: hidden;
-            opacity: 0;
+            visibility: hidden; opacity: 0;
             transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-
-            /* On force la lisibilité ici pour contrer l'héritage du H2 */
             font-family: 'Arial', sans-serif !important;
             font-size: 13px !important;
             font-weight: 400 !important;
             line-height: 1.5 !important;
             text-transform: none !important;
             font-style: normal !important;
-            letter-spacing: normal !important;
             text-align: left;
             white-space: normal;
         }
@@ -244,22 +241,17 @@
         .info-bubble::before {
             content: "";
             position: absolute;
-            bottom: 130%;
-            left: 50%;
+            bottom: 130%; left: 50%;
             transform: translateX(-50%);
             border-width: 8px;
             border-style: solid;
             border-color: rgba(15, 15, 15, 0.98) transparent transparent transparent;
-            visibility: hidden;
-            opacity: 0;
+            visibility: hidden; opacity: 0;
             z-index: 9999;
         }
 
-        .info-bubble:hover::after, 
-        .info-bubble:hover::before {
-            visibility: visible;
-            opacity: 1;
-            transform: translateX(-50%) translateY(0);
+        .info-bubble:hover::after, .info-bubble:hover::before {
+            visibility: visible; opacity: 1; transform: translateX(-50%) translateY(0);
         }
 
         @keyframes bubble-pulse {
@@ -267,7 +259,6 @@
             70% { box-shadow: 0 0 0 8px rgba(0, 236, 255, 0); }
             100% { box-shadow: 0 0 0 0 rgba(0, 236, 255, 0); }
         }
-
         .info-bubble { animation: bubble-pulse 2s infinite; }
     </style>
 </head>
@@ -285,12 +276,19 @@
 
         {{-- SECTION 1 --}}
         <div class="faq-section">
-            <h2>1. Choisir son vélo électrique <span class="info-bubble" data-tooltip="Trouvez le modèle parfait selon votre usage : ville, montagne ou chemin.">?</span></h2>
+            <h2>1. Choisir son vélo électrique <span class="info-bubble" data-tooltip="Toutes les clés pour trouver le vélo adapté à votre morphologie et vos besoins.">?</span></h2>
 
             <details>
                 <summary>Comment trouver le vélo idéal rapidement ?</summary>
                 <div class="faq-content">
                     Utilisez nos filtres ! Dans la section "Vélos Électriques", filtrez par "Catégories" (VTT, ville & campagne, Gravel) ou par "Prix". Cela vous permet de voir uniquement les modèles adaptés à votre trajet quotidien.
+                </div>
+            </details>
+
+            <details>
+                <summary>Comment s'organise la recherche sur le site ?</summary>
+                <div class="faq-content">
+                    Le site est structuré par une arborescence simple : vélos, vélos électriques et accessoires. Chaque catégorie dispose de sous-catégories pour cibler précisément votre recherche. Si vous avez une question spécifique ou un projet de collaboration, un onglet de contact est à votre disposition.
                 </div>
             </details>
 
@@ -304,7 +302,7 @@
             <details>
                 <summary>Je cherche un vélo pour mes trajets domicile-travail, comment m'assurer de l'autonomie ?</summary>
                 <div class="faq-content">
-                    L'autonomie dépend de nombreux facteurs (poids, dénivelé, mode d'assistance). Pour éviter la panne sèche, consultez la fiche technique sur l’assistance électrique disponible sur les fiches de nos vélos électriques.
+                    L'autonomie dépend de nombreux facteurs (poids, dénivelé, mode d'assistance). Pour éviter la panne sèche, consultez la fiche technique sur l’assistance électrique disponible sur les fiches de nos vélos électriques. Il faut donc comparer avec vos besoins quotidiens (distance, durée, etc.).
                 </div>
             </details>
 
@@ -329,7 +327,7 @@
 
         {{-- SECTION 2 --}}
         <div class="faq-section">
-            <h2>2. Commande et Paiement <span class="info-bubble" data-tooltip="Toutes les infos sur nos méthodes de paiement sécurisées.">?</span></h2>
+            <h2>2. Commande et Paiement <span class="info-bubble" data-tooltip="Informations sur la gestion de votre panier et la sécurité de vos paiements.">?</span></h2>
 
             <details>
                 <summary>Quels sont les moyens de paiement acceptés ?</summary>
@@ -364,6 +362,13 @@
             </details>
 
             <details>
+                <summary>Comment retirer un article de mon panier ?</summary>
+                <div class="faq-content">
+                    C'est très simple : dans votre panier, cliquez sur le bouton "Supprimer" situé en bas à gauche de chaque article sélectionné pour l'enlever de votre liste.
+                </div>
+            </details>
+
+            <details>
                 <summary>Que se passe-t-il si mon paiement par carte est refusé ?</summary>
                 <div class="faq-content">
                     En cas d'échec de paiement par carte bancaire, notre système sécurisé vous permet de réaliser jusqu'à 2 nouvelles tentatives (avec la même carte ou une autre). Si le paiement échoue au bout de ces 3 essais, la commande sera automatiquement annulée.
@@ -380,7 +385,7 @@
 
         {{-- SECTION 3 --}}
         <div class="faq-section">
-            <h2>3. Livraison et Réception <span class="info-bubble" data-tooltip="Le Click & Collect assure un vélo prêt à rouler dès la sortie du magasin.">?</span></h2>
+            <h2>3. Livraison et Réception <span class="info-bubble" data-tooltip="Tout savoir sur les délais et les modalités de retrait en magasin Click & Collect.">?</span></h2>
 
             <details>
                 <summary>Puis-je me faire livrer mon vélo à domicile ?</summary>
@@ -420,7 +425,28 @@
 
         {{-- SECTION 4 --}}
         <div class="faq-section">
-            <h2>4. Votre Espace Client et SAV <span class="info-bubble" data-tooltip="Suivez vos factures et accédez au support technique ici.">?</span></h2>
+            <h2>4. Votre Espace Client et SAV <span class="info-bubble" data-tooltip="Gérez vos données personnelles, vos commandes et vos demandes de partenariat.">?</span></h2>
+
+            <details>
+                <summary>Comment créer un compte ?</summary>
+                <div class="faq-content">
+                    Cliquez sur l'icône "Profil", puis en bas de la page, cliquez sur "Inscrivez-vous". Il vous suffit ensuite de suivre le formulaire. Vos données seront protégées et sécurisées.
+                </div>
+            </details>
+
+            <details>
+                <summary>Comment modifier mon mot de passe ou faire face à un oubli ?</summary>
+                <div class="faq-content">
+                    Rendez-vous dans la section Compte -> Mon Profil. Vous pourrez y créer un nouveau mot de passe et le confirmer. Note : Si vous utilisez la connexion via Google, le changement de mot de passe doit se faire directement sur votre interface Google.
+                </div>
+            </details>
+
+            <details>
+                <summary>Comment supprimer mon compte et qu'en est-il de mes données ?</summary>
+                <div class="faq-content">
+                    Pour toute demande de suppression, nous vérifions votre historique : si vous avez des commandes passées, votre compte sera anonymisé pour respecter les obligations légales tout en protégeant votre identité. Si vous n'avez aucune commande, le compte sera purement supprimé. L'objectif final reste l'anonymat complet. Vous y trouverez le bouton de suppression en bas de la section « Compte ».
+                </div>
+            </details>
 
             <details>
                 <summary>Comment retrouver mes factures et suivre ma commande ?</summary>
@@ -433,7 +459,7 @@
                 <summary>Avez-vous un programme d'enregistrement de vélo ?</summary>
                 <div class="faq-content">
                     Oui, et nous vous le recommandons ! Dans la rubrique "Mes Vélos" de votre compte, vous pouvez enregistrer votre modèle. Cela facilite le suivi en cas de besoin technique ou de garantie.
-                    <br><span class="dev-alert">La fonctionnalité est en cours de développement</span>
+                    <br><span class="dev-alert">La fonctionnalité est en cours de développement !!</span>
                 </div>
             </details>
 
@@ -444,6 +470,13 @@
                         <li><strong>Une question rapide ?</strong> Utilisez notre Chatbot disponible en bas de page pour une réponse immédiate.</li>
                         <li><strong>Un problème avec une commande ?</strong> Utilisez le formulaire de contact dans votre espace client ou sur la page de détail de la commande.</li>
                     </ul>
+                </div>
+            </details>
+
+            <details>
+                <summary>Comment proposer une collaboration ou un partenariat ?</summary>
+                <div class="faq-content">
+                    C'est avec plaisir que nous étudions vos propositions ! Pour cela, rendez-vous sur notre onglet "Contactez-nous". Il vous suffit de remplir le formulaire en sélectionnant le sujet spécifique <strong>"Demande de partenariat / collaboration"</strong>.
                 </div>
             </details>
 
@@ -464,26 +497,26 @@
 
         {{-- SECTION 5 --}}
         <div class="faq-section">
-            <h2>5. Conseil écoresponsable <span class="info-bubble" data-tooltip="Nos engagements pour une mobilité propre et durable.">?</span></h2>
+            <h2>5. Conseil écoresponsable <span class="info-bubble" data-tooltip="En savoir plus sur nos engagements pour une mobilité durable et la longévité de nos produits.">?</span></h2>
 
             <details>
                 <summary>Vous cherchez un vélo avec un impact écologique réduit ?</summary>
                 <div class="faq-content">
-                    Nous vous invitons à consulter les <strong>fiches techniques</strong> de nos modèles. Vous y trouverez le détail des matériaux et des composants utilisés. En privilégiant des vélos robustes et facilement réparables, vous agissez directement pour limiter votre empreinte carbone sur le long terme. S'il s'agit d'un vélo électrique, vous pouvez également vous informer sur la batterie dans la section assistance.
+                    Nous vous invitons à consulter les fiches techniques de nos modèles. Vous y trouverez le détail des matériaux et des composants utilisés. En privilégiant des vélos robustes et facilement réparables, vous agissez directement pour limiter votre empreinte carbone sur le long terme. Vous pouvez également vous informez sur la batterie sur l’assistance électrique s’il s’agit d’un vélo.
                 </div>
             </details>
 
             <details>
                 <summary>Comment prolonger la vie de mon vélo ?</summary>
                 <div class="faq-content">
-                    Dans la section <strong>Accessoires -> Entretien & réparation</strong>, vous avez accès à toutes les pièces détachées nécessaires. Entretenir et réparer son vélo plutôt que de le remplacer, c'est le geste le plus efficace pour la planète. Un vélo qui dure, c'est un vélo propre !
+                    Dans la section Accessoires -> Entretien & réparation, vous avez accès à toutes les pièces détachées nécessaires. Entretenir et réparer son vélo plutôt que de le remplacer, c'est le geste le plus efficace pour la planète.
                 </div>
             </details>
 
             <details>
                 <summary>Pourquoi ne vendez-vous pas de vêtements ?</summary>
                 <div class="faq-content">
-                    En nous concentrant uniquement sur le matériel technique et en supprimant les collections de vêtements, nous limitons la surproduction textile. On se focalise sur l'essentiel : votre mobilité et la durabilité du matériel.
+                    En nous concentrant uniquement sur le matériel technique et en supprimant les collections de vêtements, nous limitons la surproduction textile. On se focalise sur l'essentiel : votre mobilité.
                 </div>
             </details>
 
@@ -508,4 +541,5 @@
     @include('layouts.footer')
 
 </body>
+
 </html>

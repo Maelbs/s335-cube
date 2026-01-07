@@ -259,7 +259,7 @@
                         <option value="" disabled selected>-- Sélectionnez un sujet --</option>
                         <option value="Information Produit">Information sur un vélo / accessoire</option>
                         <option value="Commande">Question sur ma commande</option>
-                        <option value="Partenariat">Demande de partenariat</option>
+                        <option value="Partenariat">Demande de partenariat / collaboration</option>
                         <option value="Autre">Autre demande</option>
                     </select>
                 </div>
