@@ -1,7 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use App\Models\Visit; // <--- IMPORTANT : Pour les stats
+use App\Models\Visit; // Pour les stats admin
 
 // Controllers
 use App\Http\Controllers\CommercialController;
@@ -20,14 +20,15 @@ use App\Http\Controllers\MagasinController;
 use App\Http\Controllers\CommandeController;
 use App\Http\Controllers\AdresseController;
 use App\Http\Controllers\ContactController; 
+use App\Http\Controllers\GoogleAuthController;
+use App\Http\Controllers\ProfileCompletionController;
 
 /* ------------------------------------------------------ */
-/* ROUTES PUBLIQUES                      */
+/* ROUTES PUBLIQUES                                       */
 /* ------------------------------------------------------ */
 
 Route::get('/', [CategorieArticleController::class, 'index'])->name('home');
 
-// Route boutique
 Route::get('/boutique/{type}/{cat_id?}/{sub_id?}/{model_id?}', [BoutiqueController::class, 'index'])
     ->name('boutique.index')
     ->where('type', 'Musculaire|Electrique|Accessoires');
@@ -37,7 +38,11 @@ Route::view('/aide', 'aide')->name('aide');
 Route::get('/contact', [ContactController::class, 'show'])->name('contact');
 Route::post('/contact', [ContactController::class, 'submit'])->name('contact.submit');
 
-// API / AJAX
+// Authentification Google (Accessible sans être connecté)
+Route::get('auth/google', [GoogleAuthController::class, 'redirect'])->name('login.google');
+Route::get('auth/google/callback', [GoogleAuthController::class, 'callback']);
+
+// API / AJAX (Pour les menus déroulants)
 Route::get('/api/categories-accessoires/{id}/subCategories', [CategorieAccessoireController::class, 'getSubCategories']);
 Route::get('/api/categories-velos/{id}/subCategories', [CategorieVeloController::class, 'getSubCategories']);
 Route::get('/api/categories-accessoires/parents', [CategorieAccessoireController::class, 'getParents']);
@@ -49,7 +54,7 @@ Route::get('/accessoire/{reference}', [InfoArticleController::class, 'show'])->n
 Route::post('/choisir-magasin', [MagasinController::class, 'definirMagasin'])->name('magasin.definir');
 
 /* ------------------------------------------------------ */
-/* PANIER                                */
+/* PANIER                                                 */
 /* ------------------------------------------------------ */
 
 Route::get('/panier', [PanierController::class, 'index'])->name('cart.index');
@@ -60,8 +65,9 @@ Route::post('/panier/ajouter-accessoire/{reference}', [PanierController::class, 
 Route::post('/panier/apply-promo', [PanierController::class, 'applyPromo'])->name('cart.applyPromo');
 Route::post('/panier/remove-promo', [PanierController::class, 'removePromo'])->name('cart.removePromo');
 
+
 /* ------------------------------------------------------ */
-/* INVITÉ (GUEST)                        */
+/* INVITÉ (GUEST) - Accessible uniquement si non connecté */
 /* ------------------------------------------------------ */
 
 Route::middleware('guest')->group(function () {
@@ -79,11 +85,15 @@ Route::middleware('guest')->group(function () {
 });
 
 /* ------------------------------------------------------ */
-/* CONNECTÉ (AUTH)                       */
+/* CONNECTÉ (AUTH) - Accessible uniquement si connecté    */
 /* ------------------------------------------------------ */
 
 Route::middleware('auth')->group(function () {
     
+    // Finalisation inscription (Google ou incomplet)
+    Route::get('/finaliser-inscription', [ProfileCompletionController::class, 'showForm'])->name('client.complete_profile');
+    Route::post('/finaliser-inscription', [ProfileCompletionController::class, 'saveDetails'])->name('client.save_profile');
+
     // Profil & Logout
     Route::get('/profil', [ProfilController::class, 'profil'])->name('profil');
     Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
@@ -103,22 +113,25 @@ Route::middleware('auth')->group(function () {
     Route::get('/adresses/{id}/edit', [AdresseController::class, 'editAdresse'])->name('adresses.edit');
     Route::post('/adresses/{id}/update', [AdresseController::class, 'update'])->name('adresses.update');
 
-    // Paiement
-    Route::get('payment', [PaymentController::class, 'paymentShow'])->name('payment.show');
-    Route::post('stripe/payment', [PaymentController::class, 'paymentStripe'])->name('stripe.payment');
-    Route::get('stripe/success', [PaymentController::class, 'successStripe'])->name('stripe.success');
-    Route::get('stripe/cancel', [PaymentController::class, 'cancelPayment'])->name('stripe.cancel');
-    Route::post('paypal/payment', [PaymentController::class, 'paymentPaypal'])->name('paypal.payment');    
-    Route::get('paypal/success', [PaymentController::class, 'successPaypal'])->name('paypal.success');
-    Route::get('paypal/cancel', [PaymentController::class, 'cancelPayment'])->name('paypal.cancel');
+    // Paiement (Vérifie d'abord que l'adresse est remplie)
+    Route::middleware(['ensure.client.address'])->group(function () {
+        Route::get('payment', [PaymentController::class, 'paymentShow'])->name('payment.show');
+        
+        Route::post('stripe/payment', [PaymentController::class, 'paymentStripe'])->name('stripe.payment');
+        Route::get('stripe/success', [PaymentController::class, 'successStripe'])->name('stripe.success');
+        Route::get('stripe/cancel', [PaymentController::class, 'cancelPayment'])->name('stripe.cancel');
+        
+        Route::post('paypal/payment', [PaymentController::class, 'paymentPaypal'])->name('paypal.payment');    
+        Route::get('paypal/success', [PaymentController::class, 'successPaypal'])->name('paypal.success');
+        Route::get('paypal/cancel', [PaymentController::class, 'cancelPayment'])->name('paypal.cancel');
+    });
 
     /* -------------------------------------------------- */
-    /* ESPACE COMMERCIAL                     */
+    /* ESPACE COMMERCIAL                                  */
     /* -------------------------------------------------- */
     
     Route::middleware(['commercial'])->group(function () {
-        Route::get('/commercial/dashboard', [CommercialController::class, 'dashboard'])
-             ->name('commercial.dashboard');
+        Route::get('/commercial/dashboard', [CommercialController::class, 'dashboard'])->name('commercial.dashboard');
 
         // Articles
         Route::get('/commercial/modifier-article', [CommercialController::class, 'articleList'])->name('commercial.edit.article');
@@ -148,7 +161,7 @@ Route::middleware('auth')->group(function () {
 });
 
 /* ------------------------------------------------------ */
-/* STATS ADMIN (SÉCURISÉ PAR .ENV)             */
+/* STATS ADMIN (SÉCURISÉ PAR .ENV)                        */
 /* ------------------------------------------------------ */
 
 Route::get('/admin-logs', function () {
