@@ -360,3 +360,5 @@
 
 <script src="{{ asset('js/header.js') }}" defer></script>
 <script src="{{ asset('js/map.js') }}" defer></script>
+
+@include('layouts.chatbot')

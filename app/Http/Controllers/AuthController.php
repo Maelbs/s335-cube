@@ -281,4 +281,59 @@ class AuthController extends Controller
         $request->session()->regenerateToken();
         return redirect('/');
     }
+
+    public function show2FAForm()
+    {
+        if (!session()->has('2fa_client_id')) {
+            return redirect()->route('login');
+        }
+
+        return view('2fa_verify'); 
+    }
+
+    public function verify2FACode(Request $request)
+    {
+        $request->validate([
+            'code' => ['required', 'numeric', 'digits:6'],
+        ]);
+
+        $clientId = $request->session()->get('2fa_client_id');
+
+        if (!$clientId) {
+            return redirect()->route('login')->withErrors(['email' => 'Session expirée. Veuillez vous reconnecter.']);
+        }
+
+        $cachedCode = Cache::get('login_2fa_' . $clientId);
+
+        if (!$cachedCode || $cachedCode != $request->code) {
+            return back()->withErrors(['code' => 'Code invalide ou expiré.']);
+        }
+        
+        $client = Client::find($clientId);
+
+        if (!$client) {
+            return redirect()->route('login');
+        }
+
+        Auth::login($client);
+        $request->session()->regenerate();
+
+        Cache::forget('login_2fa_' . $clientId);
+        $request->session()->forget('2fa_client_id');
+        
+        if ($request->session()->has('id_magasin_choisi')) {
+            $client->id_magasin = $request->session()->get('id_magasin_choisi');
+            $client->save();
+        } elseif ($client->id_magasin) {
+            $request->session()->put('id_magasin_choisi', $client->id_magasin);
+        }
+
+        $this->fusionnerPanier($client->id_client);
+
+        if ($client->role === 'commercial') {
+            return redirect()->route('commercial.dashboard');
+        }
+
+        return redirect()->route('home');
+    }
 }

@@ -115,6 +115,22 @@
                         @error('birthday') <div class="error-text">{{ $message }}</div> @enderror
                     </div>
 
+                    {{-- AJOUT DE LA CHECKBOX DOUBLE AUTH --}}
+                    <div class="form-group double-auth" style="margin-top: 30px; padding-top: 20px; border-top: 1px solid #eee;">
+                        <label for="double_auth" style="display: flex; align-items: start; cursor: pointer;">
+                            <input type="checkbox" name="double_auth" id="double_auth" value="1"
+                                {{ old('double_auth', $client->double_auth) ? 'checked' : '' }}
+                                style="width: 20px; height: 20px; margin-right: 15px; margin-top: 2px;">
+                            
+                            <div>
+                                <span style="font-weight: bold; color: #333;">Activer la double authentification (2FA)</span>
+                                <p style="font-size: 13px; color: #666; margin-top: 5px; line-height: 1.4;">
+                                    Si vous cochez cette case, un code de vérification vous sera envoyé par email à chaque nouvelle connexion pour sécuriser votre compte.
+                                </p>
+                            </div>
+                        </label>
+                    </div>
+
                 </section>
 
                 <footer class="form-footer" style="margin-top: 40px; text-align: left; padding: 0;">

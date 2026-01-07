@@ -16,8 +16,7 @@ use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\MagasinController;
 use App\Http\Controllers\CommandeController;
 use App\Http\Controllers\AdresseController;
-
-
+use App\Http\Controllers\ChatBotController;
 use App\Http\Controllers\ContactController; 
 
 /* ... TOUTES VOS AUTRES ROUTES ... */
@@ -60,6 +59,9 @@ Route::middleware('guest')->group(function () {
 
     Route::get('/verification', function() { return view('verification'); })->name('verification.form');
     Route::post('/verification', [AuthController::class, 'verifyCode'])->name('verification.check');
+    
+    Route::get('/login/verification-code', [AuthController::class, 'show2FAForm'])->name('login.2fa.form');
+    Route::post('/login/verification-code', [AuthController::class, 'verify2FACode'])->name('login.2fa.verify');
 
 });
 
@@ -157,10 +159,10 @@ Route::post('/panier/ajouter-accessoire/{reference}', [PanierController::class, 
 Route::post('/panier/apply-promo', [PanierController::class, 'applyPromo'])->name('cart.applyPromo');
 Route::post('/panier/remove-promo', [PanierController::class, 'removePromo'])->name('cart.removePromo');
 
+Route::post('/chat/ask', [ChatBotController::class, 'ask']);
+
 Route::get('/boutique/{type}/{cat_id?}/{sub_id?}/{model_id?}', [BoutiqueController::class, 'index'])
     ->name('boutique.index')
     ->where('type', 'Musculaire|Electrique|Accessoires');
-
-
 
 Route::view('/aide', 'aide')->name('aide');

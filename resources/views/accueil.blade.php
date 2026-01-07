@@ -12,7 +12,7 @@
     <title>CUBE Bikes France</title>
 </head>
 <body>
-<<<<<<< HEAD
+
 <div class="cookie-overlay" id="cookieOverlay">
     <div class="cookie-modal" id="cookieModal">
         
@@ -149,8 +149,6 @@
 
     </div>
 </div>
-=======
->>>>>>> 8cc6d8c48b1f2b681dcf198559f2e430d24362b0
     @include('layouts.header')
 
     <main>

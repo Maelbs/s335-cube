@@ -28,11 +28,11 @@
                     <tr>
                         <td class="mobile-padding" style="padding: 40px 50px;">
                             <h1 style="margin: 0 0 20px; font-size: 24px; font-weight: 700; color: #333333; text-align: center; text-transform: uppercase; letter-spacing: 1px;">
-                                Vérifiez votre compte
+                                Code de sécurité
                             </h1>
                             <p style="margin: 0 0 30px; font-size: 16px; line-height: 24px; color: #666666; text-align: center;">
-                                Bonjour et bienvenue chez <strong>Cube Bikes France</strong>.<br>
-                                Pour finaliser votre inscription et accéder à votre espace, veuillez utiliser le code de sécurité ci-dessous :
+                                Bonjour,<br>
+                                Pour <strong>confirmer votre identité</strong> et accéder à votre espace Cube Bikes, veuillez utiliser le code unique ci-dessous :
                             </p>
 
                             <table border="0" cellpadding="0" cellspacing="0" width="100%">
@@ -55,7 +55,7 @@
                                 <tr>
                                     <td style="padding-top: 20px; text-align: center;">
                                         <p style="font-size: 13px; color: #aaaaaa; margin: 0;">
-                                            Si vous n'êtes pas à l'origine de cette demande, vous pouvez ignorer cet email en toute sécurité.
+                                            Si vous n'avez pas demandé ce code (inscription ou connexion), veuillez ignorer cet email et sécuriser votre compte.
                                         </p>
                                     </td>
                                 </tr>
