@@ -30,7 +30,7 @@ class GoogleAuthController extends Controller
     public function callback()
     {
         try {
-            $googleUser = Socialite::driver('google')->user();
+            $googleUser = Socialite::driver('google')->stateless()->user();
 
             $dateNaissance = null;
 
@@ -86,7 +86,7 @@ class GoogleAuthController extends Controller
             return redirect()->route('home');
 
         } catch (\Exception $e) {
-            return redirect()->route('login')->with('error', 'Erreur Google : ' . $e->getMessage());
+            //return redirect()->route('login')->with('error', 'Erreur Google : ' . $e->getMessage());
             //dd($e->getMessage());
         }
     }
