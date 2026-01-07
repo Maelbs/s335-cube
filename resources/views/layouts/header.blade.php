@@ -220,6 +220,10 @@
             <li class="nav-item">
                 <a href="{{ route('aide') }}" class="link_category">AIDE & FAQ</a>
             </li>
+
+            <li class="nav-item">
+                <a href="{{ route('contact') }}" class="link_category">Contactez-nous</a>
+            </li>
         </ul>
     </div>
     
