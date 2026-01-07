@@ -12,7 +12,7 @@
     <title>CUBE Bikes France</title>
 </head>
 <body>
-    @include('layouts.header') 
+
 <div class="cookie-overlay" id="cookieOverlay">
     <div class="cookie-modal" id="cookieModal">
     
@@ -103,6 +103,7 @@
     </div>
 </div>
 </div>
+    @include('layouts.header')
 
     <main>
         <section class="intro-carousel" id="intro-carousel">
@@ -212,9 +213,7 @@
         </div>
     </main>
     
-    <footer>
-        <p>&copy; 2025 CUBE Bikes France</p>
-    </footer>
+    @include('layouts.footer')
 
     <script src="{{ asset('js/caroussel.js') }}" defer></script>
     <script src="{{ asset('js/cookies.js') }}" defer></script>
