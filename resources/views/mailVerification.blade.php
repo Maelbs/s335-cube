@@ -40,7 +40,7 @@
                                     <td align="center">
                                         <div style="background-color: #f8f9fa; border: 2px dashed #cccccc; border-radius: 4px; padding: 20px; display: inline-block; min-width: 200px;">
                                             <span style="font-size: 32px; font-weight: 800; color: #000000; letter-spacing: 8px; font-family: 'Courier New', monospace;">
-                                                {{ $code }}
+                                                {{ $code }} <br>
                                             </span>
                                         </div>
                                     </td>
