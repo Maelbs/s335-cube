@@ -99,9 +99,8 @@
 
         summary::-webkit-details-marker { display: none; }
 
-        /* L'icône flèche */
         summary::after {
-            content: '\f078'; /* Chevron FontAwesome */
+            content: '\f078'; 
             font-family: 'Font Awesome 6 Free';
             font-weight: 900;
             font-size: 14px;
@@ -184,6 +183,90 @@
             background-color: #000;
             transform: translateY(-2px);
         }
+
+        /* --- STYLE DES BULLES INFO (FIX LISIBILITÉ) --- */
+        .info-bubble {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 20px;
+            height: 20px;
+            background: linear-gradient(135deg, #00ecff, #00b4d8);
+            color: #000 !important;
+            border-radius: 50%;
+            text-align: center;
+            font-size: 11px;
+            font-weight: 900;
+            margin-left: 10px;
+            cursor: help;
+            position: relative;
+            box-shadow: 0 2px 5px rgba(0, 236, 255, 0.3);
+            transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            vertical-align: middle;
+            font-style: normal !important;
+            text-transform: none !important;
+            letter-spacing: normal !important;
+        }
+
+        .info-bubble::after {
+            content: attr(data-tooltip);
+            position: absolute;
+            bottom: 150%; 
+            left: 50%;
+            transform: translateX(-50%) translateY(10px);
+            width: 240px;
+            padding: 12px 16px;
+            background-color: rgba(15, 15, 15, 0.98); 
+            color: #ffffff !important;
+            border-radius: 8px;
+            z-index: 9999;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            pointer-events: none;
+            visibility: hidden;
+            opacity: 0;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+
+            /* On force la lisibilité ici pour contrer l'héritage du H2 */
+            font-family: 'Arial', sans-serif !important;
+            font-size: 13px !important;
+            font-weight: 400 !important;
+            line-height: 1.5 !important;
+            text-transform: none !important;
+            font-style: normal !important;
+            letter-spacing: normal !important;
+            text-align: left;
+            white-space: normal;
+        }
+
+        .info-bubble::before {
+            content: "";
+            position: absolute;
+            bottom: 130%;
+            left: 50%;
+            transform: translateX(-50%);
+            border-width: 8px;
+            border-style: solid;
+            border-color: rgba(15, 15, 15, 0.98) transparent transparent transparent;
+            visibility: hidden;
+            opacity: 0;
+            z-index: 9999;
+        }
+
+        .info-bubble:hover::after, 
+        .info-bubble:hover::before {
+            visibility: visible;
+            opacity: 1;
+            transform: translateX(-50%) translateY(0);
+        }
+
+        @keyframes bubble-pulse {
+            0% { box-shadow: 0 0 0 0 rgba(0, 236, 255, 0.5); }
+            70% { box-shadow: 0 0 0 8px rgba(0, 236, 255, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(0, 236, 255, 0); }
+        }
+
+        .info-bubble { animation: bubble-pulse 2s infinite; }
     </style>
 </head>
 
@@ -200,7 +283,7 @@
 
         {{-- SECTION 1 --}}
         <div class="faq-section">
-            <h2>1. Choisir son vélo électrique</h2>
+            <h2>1. Choisir son vélo électrique <span class="info-bubble" data-tooltip="Trouvez le modèle parfait selon votre usage : ville, montagne ou chemin.">?</span></h2>
 
             <details>
                 <summary>Comment trouver le vélo idéal rapidement ?</summary>
@@ -244,7 +327,7 @@
 
         {{-- SECTION 2 --}}
         <div class="faq-section">
-            <h2>2. Commande et Paiement</h2>
+            <h2>2. Commande et Paiement <span class="info-bubble" data-tooltip="Toutes les infos sur nos méthodes de paiement sécurisées.">?</span></h2>
 
             <details>
                 <summary>Quels sont les moyens de paiement acceptés ?</summary>
@@ -286,7 +369,7 @@
             </details>
 
             <details>
-                <summary>J'ai choisi PayPal mais je n'ai pas finalisé le paiement tout de suite, ma commande est-elle validée ?</summary>
+                <summary>J'ai choisi PayPal mais je n'ai pas finalisé le paiement, ma commande est-elle validée ?</summary>
                 <div class="faq-content">
                     Attention, une fois la commande validée sur le site, vous disposez de 5 minutes pour effectuer le règlement sur l'interface PayPal. Passé ce délai, la commande est automatiquement annulée par notre système.
                 </div>
@@ -295,7 +378,7 @@
 
         {{-- SECTION 3 --}}
         <div class="faq-section">
-            <h2>3. Livraison et Réception</h2>
+            <h2>3. Livraison et Réception <span class="info-bubble" data-tooltip="Le Click & Collect assure un vélo prêt à rouler dès la sortie du magasin.">?</span></h2>
 
             <details>
                 <summary>Puis-je me faire livrer mon vélo à domicile ?</summary>
@@ -335,7 +418,7 @@
 
         {{-- SECTION 4 --}}
         <div class="faq-section">
-            <h2>4. Votre Espace Client et SAV</h2>
+            <h2>4. Votre Espace Client et SAV <span class="info-bubble" data-tooltip="Suivez vos factures et accédez au support technique ici.">?</span></h2>
 
             <details>
                 <summary>Comment retrouver mes factures et suivre ma commande ?</summary>
@@ -379,7 +462,7 @@
 
         {{-- SECTION 5 --}}
         <div class="faq-section">
-            <h2>5. Conseil écoresponsable</h2>
+            <h2>5. Conseil écoresponsable <span class="info-bubble" data-tooltip="Nos engagements pour une mobilité propre et durable.">?</span></h2>
 
             <details>
                 <summary>Vous cherchez un vélo avec un impact écologique réduit ?</summary>
@@ -421,5 +504,4 @@
     <script src="{{ asset('js/header.js') }}"></script>
 
 </body>
-
 </html>

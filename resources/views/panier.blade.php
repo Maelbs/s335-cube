@@ -8,6 +8,8 @@
     <link rel="stylesheet" href="{{ asset('css/panier.css') }}">
     <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
     <meta name="csrf-token" content="{{ csrf_token() }}">
+
+
 </head>
 <body>
 
@@ -118,6 +120,7 @@
                         
                         <div class="taxes-info">
                             Taxes incluses : {{ number_format(($total ?? 0) * 0.2, 2, ',', ' ') }} €
+                            <span class="info-bubble" data-tooltip="Le montant de la TVA (20%) est déjà inclus dans le prix total affiché.">?</span>
                         </div>
 
                         <div class="summary-btn-container">
@@ -128,7 +131,10 @@
                     </div>
 
                     <div class="promo-container">
-                        <h3 class="promo-title">CODE PROMO</h3>
+                        <h3 class="promo-title">
+                            CODE PROMO
+                            <span class="info-bubble" data-tooltip="Si vous possédez un code de réduction Cube France, saisissez-le ici pour mettre à jour votre total.">?</span>
+                        </h3>
                         
                         <div class="promo-box">
                             <input type="text" id="promo-input" class="promo-input" placeholder="Code promo" value="{{ $promoCode ?? '' }}">
@@ -148,14 +154,6 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', function () {
-            const formatMoney = (amount) => {
-                return new Intl.NumberFormat('fr-FR', {
-                    style: 'decimal',
-                    minimumFractionDigits: 2,
-                    maximumFractionDigits: 2
-                }).format(amount);
-            };
-
             const saveQuantityToServer = (rowId, newQty) => {
                 fetch('{{ route("cart.update") }}', {
                     method: 'POST',
@@ -212,14 +210,8 @@
             if (btnPromo) {
                 btnPromo.addEventListener('click', function(e) {
                     e.preventDefault();
-                    
                     const code = inputPromo.value.trim();
                     if(!code) return;
-
-                    msgPromo.textContent = "Vérification...";
-                    msgPromo.className = 'promo-msg';
-                    msgPromo.style.color = '#333';
-
                     fetch('{{ route("cart.applyPromo") }}', {
                         method: 'POST',
                         headers: {
@@ -229,10 +221,7 @@
                         },
                         body: JSON.stringify({ code_promo: code })
                     })
-                    .then(response => {
-                        if (!response.ok) { throw new Error('Erreur serveur'); }
-                        return response.json();
-                    })
+                    .then(response => response.json())
                     .then(data => {
                         if(data.success) {
                             window.location.reload();
@@ -242,19 +231,14 @@
                             msgPromo.style.color = '#e02b2b';
                         }
                     })
-                    .catch(error => {
-                        console.error(error);
-                        msgPromo.textContent = "Une erreur est survenue.";
-                        msgPromo.className = 'promo-msg error';
-                        msgPromo.style.color = '#e02b2b';
-                    });
+                    .catch(error => console.error(error));
                 });
             }
 
             const btnRemovePromo = document.getElementById('btn-remove-promo');
-
             if (btnRemovePromo) {
-            btnRemovePromo.addEventListener('click', function(e) {e.preventDefault();
+                btnRemovePromo.addEventListener('click', function(e) {
+                    e.preventDefault();
                     fetch('{{ route("cart.removePromo") }}', {
                         method: 'POST',
                         headers: {
@@ -267,12 +251,10 @@
                         if (data.success) {
                             window.location.reload();
                         }
-                    })
-                    .catch(error => console.error('Erreur:', error));
+                    });
                 });
             }
         });
     </script>
-
 </body>
 </html>

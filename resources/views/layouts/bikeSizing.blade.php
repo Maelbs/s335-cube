@@ -3,7 +3,9 @@
         
         <div class="cube-calc-grid">
             <div class="col-visual">
-                <h2 class="section-title">Trouvez votre taille</h2>
+                <h2 class="section-title">Trouvez votre taille
+                <span class="info-bubble" data-tooltip="Notre algorithme analyse votre taille et votre entrejambe pour vous recommander le cadre le plus ergonomique pour votre morphologie.">?</span>
+                </h2>
                 
                 <div class="silhouette-wrapper">
                     <svg class="silhouette-svg" viewBox="0 0 201.8363365827 501.0700073242">
