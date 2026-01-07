@@ -12,146 +12,97 @@
     <title>CUBE Bikes France</title>
 </head>
 <body>
-<<<<<<< HEAD
+    @include('layouts.header') 
 <div class="cookie-overlay" id="cookieOverlay">
     <div class="cookie-modal" id="cookieModal">
-        
-        <div id="step1-container" style="display: flex; width: 100%; height: 100%;">
-            <div class="cookie-col-left" style="background-image: url('{{ asset('images/cookies-bg.jpg') }}');"></div>
+    
+    <div id="step1-container" style="display: flex; width: 100%; height: 100%;">
+        <div class="cookie-col-left" style="background-image: url('{{ asset('images/cookies-bg.jpg') }}');"></div>
 
-            <div class="cookie-col-right">
-                <div class="cookie-header">
-                    <img src="{{ asset('images/cubelogo.png') }}" alt="CUBE" class="cookie-logo">
-                    <a href="#" class="link-refuse" onclick="refuseCookies()">Continuer sans accepter &rarr;</a>
-                </div>
+        <div class="cookie-col-right">
+            <div class="cookie-header">
+                <img src="{{ asset('images/cubelogo.png') }}" alt="CUBE" class="cookie-logo">
+                <a href="#" class="link-refuse" onclick="refuseCookies()">Continuer sans accepter &rarr;</a>
+            </div>
 
-                <div class="cookie-body">
-                    <p>
-                        Avec votre accord, nous et <a href="#">nos 9 partenaires</a> utilisons des cookies ou technologies similaires pour stocker, consulter et traiter des données personnelles telles que votre visite sur ce site internet, les adresses IP et les identifiants de cookie.
-                    </p>
-                    <p class="cookie-bold-title">Vos données personnelles sont traitées pour les finalités suivantes:</p>
-                    <p class="cookie-small-text">
-                        Comprendre les publics par le biais de statistiques, créer des profils de contenus personnalisés, développer et améliorer les services, mesurer la performance des contenus et des publicités, stocker et/ou accéder à des informations sur un appareil.
-                    </p>
-                </div>
+            <div class="cookie-body">
+                <p>
+                    Nous utilisons des cookies pour assurer le bon fonctionnement du site et, avec votre accord, pour analyser notre trafic anonymement.
+                </p>
+                <p class="cookie-bold-title">Pourquoi ?</p>
+                <p class="cookie-small-text">
+                    Cela nous permet de savoir combien de personnes visitent CUBE Bikes France afin d'améliorer nos services. Aucune donnée n'est revendue à des tiers.
+                </p>
+            </div>
 
-                <div class="cookie-footer">
-                    <button class="btn-cookie btn-grey" onclick="goToStep2()">EN SAVOIR PLUS &rarr;</button>
-                    <button class="btn-cookie btn-blue" onclick="acceptCookies()">ACCEPTER & FERMER</button>
-                </div>
+            <div class="cookie-footer">
+                <button class="btn-cookie btn-grey" onclick="goToStep2()">PERSONNALISER &rarr;</button>
+                <button class="btn-cookie btn-blue" onclick="acceptCookies()">ACCEPTER & FERMER</button>
             </div>
         </div>
-
-        <div id="step2-container" class="step2-wrapper" style="display: none;">
-    
-    <div class="step2-header">
-        <h2 class="step2-title">Bienvenue chez Cube Bikes Gestion du consentement</h2>
-        <span class="step2-close" onclick="closeModal()">&#10005;</span>
     </div>
 
-    <div class="step2-scroll-area">
-        <p class="step2-intro">
-            Nos partenaires et nous déposons des cookies et utilisons des informations non sensibles de votre appareil pour améliorer nos produits et afficher des publicités et contenus personnalisés. Vous pouvez accepter ou refuser ces différentes opérations. Pour en savoir plus sur les cookies, les données que nous utilisons, les traitements que nous réalisons et les partenaires avec qui nous travaillons, vous pouvez consulter notre <a href="#">politique de confidentialité</a>.
-        </p>
+    <div id="step2-container" class="step2-wrapper" style="display: none;">
 
-        <div class="step2-section-label">VOUS AUTORISEZ</div>
+        <div class="step2-header">
+            <h2 class="step2-title">Gestion des cookies</h2>
+            <span class="step2-close" onclick="closeModal()">&#10005;</span>
+        </div>
 
-        <div class="accordion-group">
-            <div class="accordion-header" onclick="toggleAccordion(this)">
-                <span class="acc-title"><span class="icon">+</span> Nécessaires</span>
-                <span class="status-required">REQUIS</span>
-            </div>
-            <div class="accordion-body">
-                <div class="sub-item-row">
-                    <div class="sub-text">Cookies techniques (Session, Sécurité, Panier)</div>
+        <div class="step2-scroll-area">
+            <p class="step2-intro">
+                Vous pouvez choisir d'activer ou non la mesure d'audience. Les cookies nécessaires au fonctionnement technique (panier, session) ne peuvent pas être désactivés.
+            </p>
+
+            <div class="step2-section-label">VOS PRÉFÉRENCES</div>
+
+            <div class="accordion-group">
+                <div class="accordion-header" onclick="toggleAccordion(this)">
+                    <span class="acc-title"><span class="icon">+</span> Nécessaires</span>
                     <span class="status-required">REQUIS</span>
                 </div>
+                <div class="accordion-body">
+                    <div class="sub-item-row">
+                        <div class="sub-text">Cookies techniques (Session, Sécurité)</div>
+                        <span class="status-required">REQUIS</span>
+                    </div>
+                </div>
             </div>
-        </div>
 
-        <div class="accordion-group">
-            <div class="accordion-header" onclick="toggleAccordion(this)">
-                <span class="acc-title"><span class="icon">+</span> Mesure</span>
-                <div class="toggle-container" onclick="event.stopPropagation()">
-                    <button class="toggle-btn" onclick="toggleGlobal(this, 'refuse')">Refuser</button>
-                    <button class="toggle-btn selected" onclick="toggleGlobal(this, 'accept')">Accepter</button>
-                </div>
-            </div>
-            <div class="accordion-body">
-                <p class="section-desc">Cubebikes.fr utilise des traceurs pour mesurer le trafic et analyser le comportement de l'utilisateur afin d'améliorer le Service.</p>
-                
-                <div class="sub-item-row">
-                    <div class="sub-text">Mesurer la performance des contenus</div>
-                    <div class="toggle-container">
-                        <button class="toggle-btn" onclick="toggleOption(this)">Refuser</button>
-                        <button class="toggle-btn selected" onclick="toggleOption(this)">Accepter</button>
+            <div class="accordion-group">
+                <div class="accordion-header" onclick="toggleAccordion(this)">
+                    <span class="acc-title"><span class="icon">+</span> Mesure d'audience</span>
+                    <div class="toggle-container" onclick="event.stopPropagation()">
+                        <button class="toggle-btn" onclick="toggleGlobal(this, 'refuse')">Refuser</button>
+                        <button class="toggle-btn selected" onclick="toggleGlobal(this, 'accept')">Accepter</button>
                     </div>
                 </div>
-                <div class="sub-item-row">
-                    <div class="sub-text">Stocker et/ou accéder à des informations sur un appareil</div>
-                    <div class="toggle-container">
-                        <button class="toggle-btn" onclick="toggleOption(this)">Refuser</button>
-                        <button class="toggle-btn selected" onclick="toggleOption(this)">Accepter</button>
-                    </div>
-                </div>
-                <div class="sub-item-row">
-                    <div class="sub-text">Créer des profils pour la publicité personnalisée</div>
-                    <div class="toggle-container">
-                        <button class="toggle-btn" onclick="toggleOption(this)">Refuser</button>
-                        <button class="toggle-btn selected" onclick="toggleOption(this)">Accepter</button>
+                <div class="accordion-body">
+                    <p class="section-desc">Nous comptabilisons les visites pour améliorer l'expérience utilisateur.</p>
+                    
+                    <div class="sub-item-row">
+                        <div class="sub-text">Statistiques de visite anonymes</div>
+                        <div class="toggle-container">
+                            <button class="toggle-btn" onclick="toggleOption(this)">Refuser</button>
+                            <button class="toggle-btn selected" onclick="toggleOption(this)">Accepter</button>
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
 
-        <div class="accordion-group">
-            <div class="accordion-header" onclick="toggleAccordion(this)">
-                <span class="acc-title"><span class="icon">+</span> Marketing</span>
-                <div class="toggle-container" onclick="event.stopPropagation()">
-                    <button class="toggle-btn selected" onclick="toggleGlobal(this, 'refuse')">Refuser</button>
-                    <button class="toggle-btn" onclick="toggleGlobal(this, 'accept')">Accepter</button>
-                </div>
+            </div> 
+        
+        <div class="step2-footer">
+            <div class="logo-didomi">
+                <span style="font-weight:bold; font-size:10px; color:#555;">PROTECTION VIE PRIVÉE</span>
             </div>
-            <div class="accordion-body">
-                <p class="section-desc">Publicités ciblées et profils marketing.</p>
-                
-                <div class="sub-item-row">
-                    <div class="sub-text">Sélectionner des publicités standard</div>
-                    <div class="toggle-container">
-                        <button class="toggle-btn selected" onclick="toggleOption(this)">Refuser</button>
-                        <button class="toggle-btn" onclick="toggleOption(this)">Accepter</button>
-                    </div>
-                </div>
-                <div class="sub-item-row">
-                    <div class="sub-text">Développer et améliorer les produits</div>
-                    <div class="toggle-container">
-                        <button class="toggle-btn selected" onclick="toggleOption(this)">Refuser</button>
-                        <button class="toggle-btn" onclick="toggleOption(this)">Accepter</button>
-                    </div>
-                </div>
+            <div class="footer-actions">
+                <button class="btn-save-choices" onclick="acceptCookies()">ENREGISTRER</button>
             </div>
-        </div>
-
-        <div class="legal-footer-text">
-            Ce site et ses partenaires pourront également réaliser les traitements de données suivants : <a href="#">Assurer la sécurité, prévenir et détecter la fraude</a>, <a href="#">Relier différents appareils</a>.
-        </div>
-
-    </div> <div class="step2-footer">
-        <div class="logo-didomi">
-            <span style="font-weight:bold; font-size:10px; color:#555;">DIDOMI</span>
-        </div>
-        <div class="footer-actions">
-            <button class="btn-partners">Voir nos partenaires</button>
-            <button class="btn-save-choices" onclick="acceptCookies()">ENREGISTRER</button>
         </div>
     </div>
 </div>
-
-    </div>
 </div>
-=======
->>>>>>> 8cc6d8c48b1f2b681dcf198559f2e430d24362b0
-    @include('layouts.header')
 
     <main>
         <section class="intro-carousel" id="intro-carousel">

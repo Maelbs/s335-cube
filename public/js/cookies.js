@@ -1,204 +1,140 @@
-
 document.addEventListener('DOMContentLoaded', function() {
-    
-    const cookieBanner = document.getElementById('cookieBanner');
-    const cookieModal = document.getElementById('cookieModal');
-    
-    const btnAccept = document.getElementById('acceptCookies');
-    const btnCustomize = document.getElementById('customizeCookies');
-    const btnDecline = document.getElementById('declineCookies');
-    
-    const btnCloseModal = document.getElementById('closeModal');
-    const btnAcceptAllModal = document.getElementById('acceptAllModal');
-    const btnRejectAllModal = document.getElementById('rejectAllModal');
-    const btnSavePreferences = document.getElementById('savePreferences');
-
-    if (!localStorage.getItem('cube_cookies_accepted')) {
+    // Si pas de cookie, on affiche la modale
+    if (!getCookie('cube_consent')) {
         setTimeout(() => {
-            cookieBanner.classList.add('show');
+            document.getElementById('cookieOverlay').style.display = 'flex';
         }, 500);
     }
 });
 
+/* --- UTILITAIRES --- */
+function setCookie(name, valueObject, days) {
+    let expires = "";
+    if (days) {
+        const date = new Date();
+        date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
+        expires = "; expires=" + date.toUTCString();
+    }
+    // MODIFICATION ICI : on ajoute encodeURIComponent
+    const jsonValue = encodeURIComponent(JSON.stringify(valueObject));
+    document.cookie = name + "=" + jsonValue + expires + "; path=/";
+}
+
+function getCookie(name) {
+    const nameEQ = name + "=";
+    const ca = document.cookie.split(';');
+    for(let i=0;i < ca.length;i++) {
+        let c = ca[i];
+        while (c.charAt(0)==' ') c = c.substring(1,c.length);
+        // MODIFICATION ICI : on ajoute decodeURIComponent
+        if (c.indexOf(nameEQ) == 0) return decodeURIComponent(c.substring(nameEQ.length,c.length));
+    }
+    return null;
+}
+/* --- ACTIONS --- */
+
+// Bouton "Tout Accepter" (Step 1) ou "Enregistrer" (Step 2 si tout vert)
+function acceptCookies() {
+    const choices = { analytics: true };
+    setCookie('cube_consent', choices, 365);
+    closeModal();
+}
+
+// Bouton "Continuer sans accepter"
+function refuseCookies() {
+    const choices = { analytics: false };
+    setCookie('cube_consent', choices, 365);
+    closeModal();
+}
+
+// Bouton "Enregistrer" du Step 2 (Mode Custom)
+// IMPORTANT : On a changé la logique ici car on n'a plus que 2 groupes
+function saveCustomPreferences() {
+    const groups = document.querySelectorAll('.accordion-group');
+    
+    // Le groupe "Mesure" est le 2ème (index 1), car le premier (index 0) est "Nécessaires"
+    let analyticsAccepted = false;
+
+    if (groups[1]) {
+        // On regarde le header du groupe Mesure
+        const headerBtns = groups[1].querySelector('.accordion-header .toggle-container').querySelectorAll('.toggle-btn');
+        // Le bouton "Accepter" est le 2ème (index 1)
+        if (headerBtns[1].classList.contains('selected')) {
+            analyticsAccepted = true;
+        }
+    }
+
+    const choices = { analytics: analyticsAccepted };
+    setCookie('cube_consent', choices, 365);
+    closeModal();
+}
+
+
+/* --- INTERFACE (Navigation & Toggles) --- */
 
 function goToStep2() {
     document.getElementById('step1-container').style.display = 'none';
     document.getElementById('step2-container').style.display = 'flex';
-    
-    // Redimensionnement pour l'étape 2 (Format portrait)
     const modal = document.querySelector('.cookie-modal');
-    modal.style.width = '600px';
-    modal.style.height = '650px';
-}
-
-function acceptCookies() {
-    localStorage.setItem('cubeCookiesChoice', 'accepted');
-    closeModal();
-}
-
-function refuseCookies() {
-    localStorage.setItem('cubeCookiesChoice', 'refused');
-    closeModal();
+    modal.style.width = '600px'; 
+    modal.style.height = 'auto';
+    modal.style.maxHeight = '90vh';
+    
+    // On rebranche le bouton ENREGISTRER sur la fonction custom
+    const btnSave = document.querySelector('.btn-save-choices');
+    btnSave.onclick = saveCustomPreferences; 
 }
 
 function closeModal() {
     document.getElementById('cookieOverlay').style.display = 'none';
 }
 
-/* --- LOGIQUE ACCORDÉON --- */
-
 function toggleAccordion(header) {
     const group = header.parentElement;
     group.classList.toggle('active');
-
-    // Changement visuel du + en -
     const icon = header.querySelector('.icon');
-    if(icon) {
-        icon.textContent = group.classList.contains('active') ? '-' : '+';
-    }
+    if(icon) icon.textContent = group.classList.contains('active') ? '-' : '+';
 }
 
-/* --- LOGIQUE DES SWITCHS (C'est ici que ça change) --- */
-
-// 1. Clic sur un bouton INDIVIDUEL (Enfant)
 function toggleOption(btn) {
-    // A. Gestion visuelle du bouton cliqué
     const parent = btn.parentElement;
     const buttons = parent.querySelectorAll('.toggle-btn');
     buttons.forEach(b => b.classList.remove('selected'));
     btn.classList.add('selected');
-
-    // B. Synchronisation remontante (Enfants -> Parent)
     updateParentState(btn);
 }
 
-// 2. Clic sur un bouton GLOBAL (Parent)
 function toggleGlobal(btn, action) {
-    // A. Gestion visuelle du bouton parent
-    // (On utilise toggleOption juste pour le visuel du bouton cliqué)
     const parent = btn.parentElement;
     const buttons = parent.querySelectorAll('.toggle-btn');
     buttons.forEach(b => b.classList.remove('selected'));
     btn.classList.add('selected');
 
-    // B. Synchronisation descendante (Parent -> Enfants)
     const group = btn.closest('.accordion-group');
     const body = group.querySelector('.accordion-body');
-    
-    // Trouver tous les switchs enfants
     const subSwitches = body.querySelectorAll('.toggle-container');
 
     subSwitches.forEach(container => {
         const btns = container.querySelectorAll('.toggle-btn');
         btns.forEach(b => b.classList.remove('selected'));
-
-        // Si action 'accept', on active le 2ème bouton (index 1), sinon le 1er (index 0)
-        if (action === 'accept') {
-            btns[1].classList.add('selected'); 
-        } else {
-            btns[0].classList.add('selected');
-        }
+        if (action === 'accept') { btns[1].classList.add('selected'); } 
+        else { btns[0].classList.add('selected'); }
     });
 }
 
-// 3. Fonction de vérification (Magie Enfants -> Parent)
 function updateParentState(childBtn) {
-    // On remonte au groupe complet
     const group = childBtn.closest('.accordion-group');
     if (!group) return;
-
-    // On récupère le header (pour changer les boutons globaux)
     const headerToggle = group.querySelector('.accordion-header .toggle-container');
-    const globalBtns = headerToggle.querySelectorAll('.toggle-btn'); // [0]=Refuser, [1]=Accepter
-
-    // On récupère tous les choix enfants actuels
-    const body = group.querySelector('.accordion-body');
-    const subContainers = body.querySelectorAll('.toggle-container');
+    const globalBtns = headerToggle.querySelectorAll('.toggle-btn');
+    const subContainers = group.querySelector('.accordion-body').querySelectorAll('.toggle-container');
 
     let allAccepted = true;
-    let allRefused = true;
-
     subContainers.forEach(container => {
-        const btns = container.querySelectorAll('.toggle-btn');
-        // btns[0] est "Refuser", btns[1] est "Accepter"
-        const isRefused = btns[0].classList.contains('selected');
-        const isAccepted = btns[1].classList.contains('selected');
-
-        if (!isAccepted) allAccepted = false; // S'il y en a un qui n'est pas accepté
-        if (!isRefused) allRefused = false;   // S'il y en a un qui n'est pas refusé
+        if (!container.querySelectorAll('.toggle-btn')[1].classList.contains('selected')) allAccepted = false;
     });
 
-    // Mise à jour du bouton Global
     globalBtns.forEach(b => b.classList.remove('selected'));
-
-    if (allAccepted) {
-        // Si TOUT est accepté -> Global Accepter
-        globalBtns[1].classList.add('selected');
-    } else {
-        // Si tout est refusé OU mélange -> Global Refuser (Par défaut dans les CMP)
-        globalBtns[0].classList.add('selected');
-    }
-    function closeBanner() {
-        cookieBanner.classList.remove('show');
-    }
-
-    function openPreferences() {
-        closeBanner();
-        cookieModal.classList.add('active');
-    }
-
-    function closePreferences() {
-        cookieModal.classList.remove('active');
-    }
-
-    function saveAndClose(consentType) {
-        localStorage.setItem('cube_cookies_accepted', 'true');
-        localStorage.setItem('cube_cookie_type', consentType);
-        
-        closeBanner();
-        closePreferences();
-    }
-
-    if(btnAccept) {
-        btnAccept.addEventListener('click', () => {
-            saveAndClose('all');
-        });
-    }
-
-    if(btnCustomize) {
-        btnCustomize.addEventListener('click', openPreferences);
-    }
-
-    if(btnDecline) {
-        btnDecline.addEventListener('click', () => {
-            saveAndClose('necessary');
-        });
-    }
-
-    if(btnCloseModal) {
-        btnCloseModal.addEventListener('click', () => {
-            closePreferences();
-            cookieBanner.classList.add('show');
-        });
-    }
-
-    if(btnAcceptAllModal) {
-        btnAcceptAllModal.addEventListener('click', () => {
-            document.querySelectorAll('.toggle-switch input:not(:disabled)').forEach(input => input.checked = true);
-            saveAndClose('all');
-        });
-    }
-
-    if(btnRejectAllModal) {
-        btnRejectAllModal.addEventListener('click', () => {
-            document.querySelectorAll('.toggle-switch input:not(:disabled)').forEach(input => input.checked = false);
-            saveAndClose('necessary');
-        });
-    }
-
-    if(btnSavePreferences) {
-        btnSavePreferences.addEventListener('click', () => {
-            saveAndClose('custom');
-        });
-    }
+    if (allAccepted) { globalBtns[1].classList.add('selected'); } 
+    else { globalBtns[0].classList.add('selected'); }
 }

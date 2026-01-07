@@ -14,18 +14,20 @@
     @include('layouts.header')
 
     <div class="auth-wrapper">
-        
+
         <section class="login-form">
             <h2>Connexion</h2>
 
             <div class="invalid-feedback js-invalid-feedback-browser"></div>
 
-            <form class="needs-validation" id="login-form" action="{{ route('login.submit') }}" method="post" novalidate autocomplete="off">
+            <form class="needs-validation" id="login-form" action="{{ route('login.submit') }}" method="post" novalidate
+                autocomplete="off">
                 @csrf
 
                 <div class="form-group email">
                     <label for="f-email">Adresse E-mail</label>
-                    <input class="form-control" name="email" type="email" id="f-email" value="{{ old('email') }}" required autocomplete="email" placeholder="Ex: jean.dupont@mail.com">
+                    <input class="form-control" name="email" type="email" id="f-email" value="{{ old('email') }}"
+                        required autocomplete="email" placeholder="Ex: jean.dupont@mail.com">
                     @error('email')
                         <div class="invalid-feedback">{{ $message }}</div>
                     @enderror
@@ -33,15 +35,17 @@
 
                 <div class="form-group password">
                     <label for="f-password">Mot de passe</label>
-                    <input class="form-control" name="password" id="f-password" type="password" required autocomplete="current-password" placeholder="••••••••">
-                    
+                    <input class="form-control" name="password" id="f-password" type="password" required
+                        autocomplete="current-password" placeholder="••••••••">
+
                     @error('password')
                         <div class="invalid-feedback">{{ $message }}</div>
                     @enderror
                 </div>
 
                 <div class="forgot-password">
-                    <a href="https://www.cubebikes.fr/recuperation-mot-de-passe" rel="nofollow">Mot de passe oublié ?</a>
+                    <a href="https://www.cubebikes.fr/recuperation-mot-de-passe" rel="nofollow">Mot de passe oublié
+                        ?</a>
                 </div>
 
                 <footer class="form-footer">
@@ -49,8 +53,16 @@
                     <button class="btn btn-primary" id="submit-login" type="submit">
                         Se connecter
                     </button>
+                    
+                    <a href="{{ route('login.google') }}" class="btn-primary btn-google">
+                        <img src="https://www.svgrepo.com/show/475656/google-color.svg" alt="Google Logo" class="google-icon"
+                            style="width: 20px; height: 20px; margin-right: 10px;">
+                        <span>Continuer avec Google</span>
+                    </a>
                 </footer>
+                
             </form>
+
 
             <div class="no-account">
                 <a href="{{ url('/inscription') }}">Pas encore de compte ? <strong>Inscrivez-vous</strong></a>
@@ -60,4 +72,5 @@
 
     <script src="{{ asset('js/header.js') }}" defer></script>
 </body>
+
 </html>

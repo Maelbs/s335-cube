@@ -118,21 +118,6 @@
                     </button>
                 </div>
 
-                <div id="lightbox-3d" class="lightbox-overlay">
-                    <div class="lightbox-content">
-                        <button type="button" id="close-3d-btn" class="lightbox-close">&times;</button>
-                        <div id="container-3d-viewer">
-                            <div id="loader-wrapper" class="loader-wrapper">
-                                <div class="spinner"></div>
-                                <div id="loader-text" class="loading-text">Chargement 0%</div>
-                            </div>
-                            <div id="product-viewer" style="width: 100%; height: 100%; cursor: grab;">
-                                <img id="bike-image" src="" alt="Vue 360">
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
                 @if(count($validImages) > 1)
                     <button class="carousel-button carousel-button--left">❮</button>
                     <button class="carousel-button carousel-button--right">❯</button>
@@ -148,6 +133,7 @@
                 <div class="each-specs-column">
                     <div class="specs-header-row">
                         <h2>FICHE TECHNIQUE</h2>
+                        <span class="info-bubble" data-tooltip="Retrouvez ici tous les composants techniques. Pour l'assistance électrique, l'autonomie varie selon votre poids, le mode utilisé et le dénivelé.">?</span>
                         <button class="toggle-specs-btn"></button>
                     </div>
 
@@ -182,6 +168,7 @@
                     <div class="geo-section each-specs-column">
                         <div class="specs-header-row">
                             <h2>GÉOMÉTRIE</h2>
+                            <span class="info-bubble" data-tooltip="La géométrie détermine votre position et le comportement du vélo (confort, stabilité ou agilité).">?</span>
                             <button class="toggle-specs-btn"></button>
                         </div>
                         <div class="table-responsive">
@@ -274,7 +261,10 @@
 
             @if($typeVue === 'velo')
                 <div class="size-selector">
-                    <p class="size-label">TAILLE</p>
+                    <p class="size-label">
+                        TAILLE
+                        <span class="info-bubble" data-tooltip="Sélectionnez votre taille. Utilisez notre calculateur en bas de page pour trouver la correspondance idéale selon votre morphologie.">?</span>
+                    </p>
                     <div class="sizes-grid">
                         @php $stockWebVelo = 0 @endphp
                         @foreach ($stock as $inventaire)
@@ -313,6 +303,10 @@
                 </div>
 
                 <div class="dispo-info-container" style="margin-bottom: 15px;">
+                    <p class="size-label" style="font-size: 11px; margin-bottom: 8px;">
+                        LÉGENDE DISPONIBILITÉ 
+                        <span class="info-bubble" data-tooltip="Vert : Disponible immédiatement. Orange : Stock limité ou déporté. Rouge : Actuellement indisponible.">?</span>
+                    </p>
                     <div class="dispo-row">
                         <span id="dot-web" class="status-dot"></span>
                         <span id="text-web" class="dispo-text">Sélectionnez une taille</span>
@@ -479,7 +473,10 @@
     @if(!$isAccessoire)
         <section class="st-similar-section section-grey">
             <div class="st-section-header" style="text-align: center; margin-bottom: 20px;">
-                <h2 class="st-section-title text-section-grey">D’autres cyclistes ont également acheté</h2>
+                <h2 class="st-section-title text-section-grey">
+                    D’autres cyclistes ont également acheté
+                    <span class="info-bubble" data-tooltip="Ces produits sont fréquemment achetés avec ce modèle pour une expérience de conduite optimale.">?</span>
+                </h2>
                 <p class="text-section-grey">
                     Complétez votre équipement avec des accessoires populaires auprès de nos clients.
                 </p>
@@ -586,7 +583,7 @@
         function closeModalAndRefresh() {
             const modal = document.getElementById('cartModal');
             if (modal) modal.style.display = 'none';
-            location.reload();
+            if (typeof location !== 'undefined') location.reload();
         }
 
         function handleSizeSelection(idInventaire, tailleNom, stockWeb, stockGlobal, stockLocal, hasMagasin) {

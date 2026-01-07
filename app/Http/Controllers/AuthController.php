@@ -197,31 +197,41 @@ class AuthController extends Controller
             'email' => ['required', 'email'],
             'password' => ['required'],
         ]);
-
+    
         $client = Client::where('email_client', $request->email)->first();
-
+    
         if ($client && Hash::check($request->password, $client->mdp)) {
+            if ($client->double_auth) {
+                $code = rand(100000, 999999);
+                
+                Cache::put('login_2fa_' . $client->id_client, $code, now()->addMinutes(10));
+    
+                Mail::to($client->email_client)->send(new VerificationCodeMail($code));
+    
+                $request->session()->put('2fa_client_id', $client->id_client);
+    
+                return redirect()->route('login.2fa.form');
+            }
+    
             Auth::login($client);
             $request->session()->regenerate();
-
+    
             if ($request->session()->has('id_magasin_choisi')) {
                 $client->id_magasin = $request->session()->get('id_magasin_choisi');
                 $client->save();
-            } 
-
-            elseif ($client->id_magasin) {
+            } elseif ($client->id_magasin) {
                 $request->session()->put('id_magasin_choisi', $client->id_magasin);
             }
-
+    
             $this->fusionnerPanier($client->id_client);
-
+    
             if ($client->role === 'commercial') {
                 return redirect()->route('commercial.dashboard');
             }
-
+    
             return redirect()->route('home');
         }
-
+    
         return back()->withErrors(['email' => 'Identifiants incorrects.']);
     }
 
