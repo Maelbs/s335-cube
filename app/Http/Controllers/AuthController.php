@@ -14,6 +14,8 @@ use App\Models\Client;
 use App\Models\Adresse;
 use App\Models\Panier;
 use App\Models\LignePanier;
+use Illuminate\Support\Str;
+use App\Mail\ResetPasswordMail;
 
 class AuthController extends Controller
 {
@@ -280,5 +282,81 @@ class AuthController extends Controller
         $request->session()->invalidate();
         $request->session()->regenerateToken();
         return redirect('/');
+    }
+
+
+
+
+    public function showForgotPasswordForm()
+    {
+        return view('formForgotPassword');
+    }
+
+    public function sendResetLinkEmail(Request $request)
+    {
+        $request->validate([
+            'email' => ['required', 'email'],
+        ]);
+
+        $client = Client::where('email_client', $request->email)->first();
+
+        if (!$client) {
+            return back()->with('success', 'Si ce compte existe, un lien de réinitialisation a été envoyé.');
+        }
+
+        $token = Str::random(64);
+
+        DB::table('password_resets')->insert([
+            'email' => $request->email,
+            'token' => $token,
+            'created_at' => now()
+        ]);
+
+        Mail::to($request->email)->send(new ResetPasswordMail($token, $request->email));
+
+        return back()->with('success', 'Un lien de réinitialisation a été envoyé à votre adresse email.');
+    }
+
+    public function showResetForm(Request $request, $token = null)
+    {
+        return view('formResetPassword')->with(['token' => $token, 'email' => $request->email]);
+    }
+
+    public function resetPassword(Request $request)
+    {
+        $request->validate([
+            'email' => ['required', 'email'],
+            'password' => ['required', 'confirmed', 'min:5'],
+            'token' => ['required'],
+        ]);
+
+        $resetRecord = DB::table('password_resets')
+            ->where('email', $request->email)
+            ->where('token', $request->token)
+            ->first();
+
+        if (!$resetRecord) {
+            return back()->withErrors(['email' => 'Ce lien de réinitialisation est invalide ou a expiré.']);
+        }
+
+        // Vérifier si le token n'est pas trop vieux (ex: 60 minutes)
+        if (now()->diffInMinutes($resetRecord->created_at) > 60) {
+            return back()->withErrors(['email' => 'Ce lien a expiré. Veuillez refaire une demande.']);
+        }
+
+        // Mise à jour du client (Table custom)
+        $client = Client::where('email_client', $request->email)->first();
+        
+        if (!$client) {
+            return back()->withErrors(['email' => 'Utilisateur introuvable.']);
+        }
+
+        $client->mdp = Hash::make($request->password);
+        $client->save();
+
+        // Suppression du token utilisé
+        DB::table('password_resets')->where('email', $request->email)->delete();
+
+        return redirect()->route('login')->with('success', 'Votre mot de passe a été modifié avec succès !');
     }
 }
