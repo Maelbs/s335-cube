@@ -43,6 +43,10 @@ class ProfilController extends Controller
             'email_client' => $request->email,
             'tel' => $request->tel,
             'date_naissance' => $request->birthday,
+            
+            // --- AJOUT ICI ---
+            // Si la checkbox est cochée, has() renvoie true, sinon false
+            'double_auth' => $request->has('double_auth') ? true : false,
         ]);
 
         if ($request->filled('password')) {
