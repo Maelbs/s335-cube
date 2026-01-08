@@ -96,7 +96,8 @@ public function destroy(Request $request)
                             'email_client'  => $fakeEmail, 
                             'tel'           => '0000000000',      
                             'date_naissance'=> '1900-01-01', // Date valide pour éviter l'erreur NULL
-                            'mdp'           => bcrypt(\Illuminate\Support\Str::random(60)), 
+                            'mdp'           => bcrypt(\Illuminate\Support\Str::random(60)),
+                            'google_id'     => null,
                         ]);
 
                     DB::table('adresse_livraison')

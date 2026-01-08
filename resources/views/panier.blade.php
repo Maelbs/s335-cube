@@ -8,12 +8,6 @@
     <link rel="stylesheet" href="{{ asset('css/panier.css') }}">
     <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
     <meta name="csrf-token" content="{{ csrf_token() }}">
-<<<<<<< HEAD
-    
-=======
-
-
->>>>>>> af1c590583c17add1f2ecbe99b6f243f3ef975be
 </head>
 <body>
 
@@ -260,9 +254,5 @@
             }
         });
     </script>
-<<<<<<< HEAD
-    
-=======
->>>>>>> af1c590583c17add1f2ecbe99b6f243f3ef975be
 </body>
 </html>
