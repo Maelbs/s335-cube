@@ -205,8 +205,23 @@
                             @foreach($availableCouleurs as $c)
                                 <label class="cube-checkbox">
                                     <input type="checkbox" name="couleurs[]" value="{{ $c->id_couleur }}" class="auto-submit" {{ (is_array(request('couleurs')) && in_array($c->id_couleur, request('couleurs'))) ? 'checked' : '' }}>
-                                    <span class="box"></span>{{ ucfirst(trim($c->nom_couleur)) }}
+                                    <span class="box"></span>
+                                    {{ ucfirst(trim($c->nom_couleur)) }}
+                                    
+                                    <span style="
+                                        display: inline-block; 
+                                        width: 18px; 
+                                        height: 18px; 
+                                        background-color: #{{ $c->hexa_couleur ?? '#ccc' }}; 
+                                        border: 1px solid #ddd; 
+                                        border-radius: 50%; 
+                                        margin: 0 8px;
+                                        box-shadow: inset 0 0 2px rgba(0,0,0,0.1);
+
+                                    "></span>
+
                                 </label>
+                                
                             @endforeach
                         </div>
                     </div>
@@ -330,9 +345,14 @@
             @endif
         </main>
     </div>
+<<<<<<< Updated upstream
 
     @include('layouts.footer')
  
+=======
+    @include('layouts.footer')
+    
+>>>>>>> Stashed changes
     <script src="{{ asset('js/header.js') }}" defer></script>
  
     <script>

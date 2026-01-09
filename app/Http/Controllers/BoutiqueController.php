@@ -180,8 +180,14 @@ class BoutiqueController extends Controller
                 
                 // --- CORRECTION ICI : On réutilise tes requêtes d'origine pour ne choper que ce qui existe ---
                 
-                // 1. Couleurs
-                $data['couleurs'] = Couleur::orderBy('nom_couleur')->get(); // Généralement ok de prendre tout, sinon filtrer comme fourches
+            // 1. Couleurs (Filtrées pour n'afficher que celles qui ont des vélos correspondants)
+            $data['couleurs'] = Couleur::whereHas('varianteVelos.modele', function($q) use ($isSearchMode, $dbType) {
+                if (!$isSearchMode) {
+                    $q->where('type_velo', $dbType);
+                }
+            })
+            ->orderBy('nom_couleur')
+            ->get();
                 
                 // 2. Fourches (Filtré par type de vélo)
                 $data['fourches'] = Fourche::whereHas('varianteVelos.modele', fn($q) => !$isSearchMode ? $q->where('type_velo', $dbType) : $q)
