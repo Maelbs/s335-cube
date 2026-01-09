@@ -8,6 +8,7 @@ use Gemini\Data\Content;
 use Illuminate\Support\Facades\Log;
 use App\Models\CategorieVelo;
 use App\Models\CategorieAccessoire;
+use Illuminate\Support\Facades\Auth;
 use App\Models\Accessoire;
 use App\Models\VarianteVelo;
 use App\Models\MagasinPartenaire;
@@ -28,6 +29,27 @@ class ChatBotController extends Controller
         ];
 
         try {
+            $clientData = null;
+            $user = Auth::user(); 
+
+            if ($user) {
+                $clientData = [
+                    'nom' => $user->nom_client,
+                    'prenom' => $user->prenom_client,
+                    'email' => $user->email_client,
+                    'panier_actuel' => $user->paniers()->whereDoesntHave('commande')->with('articles')->latest('id_panier')->get()->map(fn($p) => [
+                        'total' => $p->montant_total_panier . '€',
+                        'articles' => $p->articles->map(fn($a) => $a->nom_article . ' (Qté: ' . $a->pivot->quantite_article . ')')
+                    ])->first(),
+                    'dernieres_commandes' => $user->commandes()->latest('date_commande')->limit(3)->get()->map(fn($c) => [
+                        'id' => $c->id_commande,
+                        'date' => $c->date_commande->format('d/m/Y'),
+                        'total' => $c->montant_total_commande . '€',
+                        'statut' => $c->statut_livraison
+                    ])
+                ];
+            }
+
             $magasins = MagasinPartenaire::with('adresses')->get()->map(fn($m) => [
                 'nom' => $m->nom_magasin,
                 'villes' => $m->adresses->pluck('ville')->implode(', ')
@@ -68,8 +90,16 @@ class ChatBotController extends Controller
                 1. MAGASINS : Un bouton « Choisir mon magasin » est disponible en haut à droite du site pour localiser les revendeurs. Après clic, l’utilisateur peut choisir un magasin soit depuis une liste verticale de magasins, soit via une carte interactive.
                 2. TAILLE DE CADRE : TAILLE DE CADRE : Chaque page produit vélo (hors accessoires) dispose d’un outil de calcul de taille (« Calculateur de taille ») situé en bas de la page, sous les caractéristiques du vélo.
 
-                CONSIGNE STRICTE : Pour CHAQUE produit mentionné, tu DOIS afficher un bouton de lien HTML.
-                FORMAT DU LIEN : <a href='URL' class='chat-product-link'>👉 Voir le produit</a>
+                ESPACE CLIENT (CONFIDENTIEL) :
+                Utilisateur connecté : " . ($clientData ? json_encode($clientData) : "Aucun utilisateur connecté") . "
+
+                CONSIGNE STRICTE : 
+                
+                - Pour CHAQUE produit mentionné, tu DOIS afficher un bouton de lien HTML : <a href='URL' class='chat-product-link'>👉 Voir le produit</a>
+
+                - Dès que l’utilisateur parle de panier, ajout, suppression ou total, tu DOIS afficher un bouton de lien HTML : <a href='/panier' class='chat-product-link'>🛒 Voir le panier</a>
+
+                - Dès que l’utilisateur parle de commande, paiement, suivi ou historique, tu DOIS afficher un bouton de lien HTML : <a href='/commandes' class='chat-product-link'>📦 Voir mes commandes</a>
 
                 LISTE DES MAGASINS PARTENAIRES : " . json_encode($magasins) . "
 
@@ -80,6 +110,10 @@ class ChatBotController extends Controller
 
                 RÈGLES :
                 - INTERDICTION TOTALE d’utiliser des étoiles (* ou **) ou tout autre format Markdown.
+                - Si l'utilisateur demande 'où en est ma commande', utilise les données 'dernieres_commandes'.
+                - Si l'utilisateur demande 'qu'est-ce que j'ai dans mon panier', utilise 'panier_actuel'.
+                - Salue l'utilisateur par son prénom s'il est connecté.
+                - INTERDICTION de divulguer des mots de passe ou IDs techniques.
                 - Réponds uniquement en texte simple + HTML autorisé pour les liens (<a>).
                 - Ne jamais inventer d’information liée au fonctionnement du site.
                 - Si une question est pertinente pour un site e-commerce (paiement, livraison, garanties, SAV, retours, compte client, etc.) mais que la réponse n’est pas disponible dans les données, indiquer que le bouton « Aide » en haut du site permet d’obtenir l’information.
