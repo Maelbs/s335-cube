@@ -254,9 +254,6 @@
             }
         });
     </script>
-<<<<<<< HEAD
-    
-=======
->>>>>>> af1c590583c17add1f2ecbe99b6f243f3ef975be
+
 </body>
 </html>

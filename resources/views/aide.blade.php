@@ -9,8 +9,6 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Fira+Sans:ital,wght@0,300;0,400;0,600;0,800;1,800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="{{ asset('css/styleBody.css') }}">
-    <
-
     <link rel="stylesheet" href="{{ asset('css/header.css') }}">
 
     <style>
@@ -76,7 +74,6 @@
             margin-left: 20px;
         }
 
-        /* Accordéon Style */
         details {
             border: none;
             border-bottom: 1px solid #f0f0f0;
@@ -159,7 +156,6 @@
             to { opacity: 1; transform: translateY(0); }
         }
 
-        /* --- TON CSS DE CONTACTER-NOUS --- */
         .faq-contact {
             text-align: center;
             margin-top: 40px;
@@ -187,7 +183,6 @@
             transform: translateY(-2px);
         }
 
-        /* --- STYLE DES BULLES INFO --- */
         .info-bubble {
             display: inline-flex;
             align-items: center;
@@ -276,7 +271,7 @@
 
         {{-- SECTION 1 --}}
         <div class="faq-section">
-            <h2>1. Choisir son vélo électrique <span class="info-bubble" data-tooltip="Toutes les clés pour trouver le vélo adapté à votre morphologie et vos besoins.">?</span></h2>
+            <h2>Choisir son vélo électrique <span class="info-bubble" data-tooltip="Toutes les clés pour trouver le vélo adapté à votre morphologie et vos besoins.">?</span></h2>
 
             <details>
                 <summary>Comment trouver le vélo idéal rapidement ?</summary>
@@ -302,14 +297,14 @@
             <details>
                 <summary>Je cherche un vélo pour mes trajets domicile-travail, comment m'assurer de l'autonomie ?</summary>
                 <div class="faq-content">
-                    L'autonomie dépend de nombreux facteurs (poids, dénivelé, mode d'assistance). Pour éviter la panne sèche, consultez la fiche technique sur l’assistance électrique disponible sur les fiches de nos vélos électriques. Il faut donc comparer avec vos besoins quotidiens (distance, durée, etc.).
+                    L'autonomie dépend de nombreux facteurs (poids, dénivelé, mode d'assistance). Pour éviter la panne sèche, consultez la fiche technique sur l’assistance électrique disponible sur les fiches de nos vélos électriques. Il faut donc comparer avec vos besoins quotidiens (distance, durée, etc.)
                 </div>
             </details>
 
             <details>
                 <summary>Vendez-vous des casques ou des vêtements de pluie ?</summary>
                 <div class="faq-content">
-                    Non. CUBE France se concentre désormais exclusivement sur la vente de vélos (musculaires et électriques) et d'accessoires techniques (pièces détachées, antivols, éclairages, sacoches). Nous ne proposons plus d'équipements du cycliste (textile, chaussures, casques).
+                    Non. CUBE France se concentre désormais exclusivement sur la vente de vélos (musculaires et électriques) et d'accessoires techniques (pièces détachées, antivols, éclairages) Nous ne proposons plus d'équipements du cycliste (textile, chaussures, casques).
                 </div>
             </details>
 
@@ -327,7 +322,7 @@
 
         {{-- SECTION 2 --}}
         <div class="faq-section">
-            <h2>2. Commande et Paiement <span class="info-bubble" data-tooltip="Informations sur la gestion de votre panier et la sécurité de vos paiements.">?</span></h2>
+            <h2>Commande et Paiement <span class="info-bubble" data-tooltip="Informations sur la gestion de votre panier et la sécurité de vos paiements.">?</span></h2>
 
             <details>
                 <summary>Quels sont les moyens de paiement acceptés ?</summary>
@@ -376,7 +371,7 @@
             </details>
 
             <details>
-                <summary>J'ai choisi PayPal mais je n'ai pas finalisé le paiement, ma commande est-elle validée ?</summary>
+                <summary>J'ai choisi PayPal mais je n'ai pas finalisé le paiement tout de suite, ma commande est-elle validée ?</summary>
                 <div class="faq-content">
                     Attention, une fois la commande validée sur le site, vous disposez de 5 minutes pour effectuer le règlement sur l'interface PayPal. Passé ce délai, la commande est automatiquement annulée par notre système.
                 </div>
@@ -385,7 +380,7 @@
 
         {{-- SECTION 3 --}}
         <div class="faq-section">
-            <h2>3. Livraison et Réception <span class="info-bubble" data-tooltip="Tout savoir sur les délais et les modalités de retrait en magasin Click & Collect.">?</span></h2>
+            <h2>Livraison et Réception <span class="info-bubble" data-tooltip="Tout savoir sur les délais et les modalités de retrait en magasin Click & Collect.">?</span></h2>
 
             <details>
                 <summary>Puis-je me faire livrer mon vélo à domicile ?</summary>
@@ -402,7 +397,7 @@
             </details>
 
             <details>
-                <summary>J'ai commandé seulement des accessoires, dois-je aller en magasin ?</summary>
+                <summary>J'ai commandé seulement des accessoires (antivol, lumières), dois-je aller en magasin ?</summary>
                 <div class="faq-content">
                     Pas obligatoirement. Si votre panier ne contient que des accessoires, vous pouvez choisir la livraison Express à domicile. Des frais de port s'appliqueront en fonction du montant de la commande.
                 </div>
@@ -425,7 +420,7 @@
 
         {{-- SECTION 4 --}}
         <div class="faq-section">
-            <h2>4. Votre Espace Client et SAV <span class="info-bubble" data-tooltip="Gérez vos données personnelles, vos commandes et vos demandes de partenariat.">?</span></h2>
+            <h2>Votre Espace Client et SAV <span class="info-bubble" data-tooltip="Gérez vos données personnelles, vos commandes et vos demandes de partenariat.">?</span></h2>
 
             <details>
                 <summary>Comment créer un compte ?</summary>
@@ -459,7 +454,7 @@
                 <summary>Avez-vous un programme d'enregistrement de vélo ?</summary>
                 <div class="faq-content">
                     Oui, et nous vous le recommandons ! Dans la rubrique "Mes Vélos" de votre compte, vous pouvez enregistrer votre modèle. Cela facilite le suivi en cas de besoin technique ou de garantie.
-                    <br><span class="dev-alert">La fonctionnalité est en cours de développement !!</span>
+                    <br><span class="dev-alert">!! La fonctionnalité est en cours de développement. !!</span>
                 </div>
             </details>
 
@@ -474,9 +469,16 @@
             </details>
 
             <details>
+                <summary>A quoi me sert le Chatbot et comment l’utiliser ?</summary>
+                <div class="faq-content">
+                    Vous pourraît accéder au Chatbot en cliquant sur le bouton bleu avec une icône de message en bas à droite. Vous pourraît lui poser toutes vos questions sur un vélo recherché, une de vos commandes, un accessoire, etc. Il vous répondra en vous donnant un lien de redirection sur la page souhaité grâce à une IA intégrée.
+                </div>
+            </details>
+
+            <details>
                 <summary>Comment proposer une collaboration ou un partenariat ?</summary>
                 <div class="faq-content">
-                    C'est avec plaisir que nous étudions vos propositions ! Pour cela, rendez-vous sur notre onglet "Contactez-nous". Il vous suffit de remplir le formulaire en sélectionnant le sujet spécifique <strong>"Demande de partenariat / collaboration"</strong>.
+                    C'est avec plaisir que nous étudions vos propositions ! Pour cela, rendez-vous sur notre onglet "Contactez-nous". Il vous suffit de remplir le formulaire en sélectionnant le sujet spécifique "Demande de partenariat / collaboration".
                 </div>
             </details>
 
@@ -484,6 +486,25 @@
                 <summary>Je souhaite retourner un accessoire, comment faire ?</summary>
                 <div class="faq-content">
                     Vous pouvez effectuer une demande de retour directement depuis le détail de votre commande. Un formulaire sera transmis à notre SAV. Pour les vélos récupérés en magasin, le retour se gère directement avec le revendeur.
+                </div>
+            </details>
+
+            <details>
+                <summary>Quelles données sont collectées ?</summary>
+                <div class="faq-content">
+                    Nous collectons uniquement les données strictement nécessaires à notre activité, notamment : 
+                    <ul>
+                        <li><strong>Identité :</strong> Nom, prénom.</li>
+                        <li><strong>Contact :</strong> L’adresse postale pour la livraison ou la localisation de revendeurs, courriel, numéro de téléphone.</li>
+                        <li><strong>Données techniques :</strong> Données de navigation pour garder le panier, données de connexions/déconnexions sur le site à des fins analytiques.</li>
+                    </ul>
+                </div>
+            </details>
+
+            <details>
+                <summary>Comment accéder à la politique de protection des données personnelles et Gestion des cookies ?</summary>
+                <div class="faq-content">
+                    Chez CUBE BIKES France, la confiance est au cœur de la relation que nous entretenons avec vous. Vous retrouverez toutes les informations concernant les données que nous récoltons en cliquant sur le lien en bas de page du site. Cette page a pour but de vous expliquer en toute transparence comment fonctionnent les cookies sur notre site et comment nous protégeons vos données.
                 </div>
             </details>
 
@@ -497,12 +518,12 @@
 
         {{-- SECTION 5 --}}
         <div class="faq-section">
-            <h2>5. Conseil écoresponsable <span class="info-bubble" data-tooltip="En savoir plus sur nos engagements pour une mobilité durable et la longévité de nos produits.">?</span></h2>
+            <h2>Conseil écoresponsable <span class="info-bubble" data-tooltip="En savoir plus sur nos engagements pour une mobilité durable et la longévité de nos produits.">?</span></h2>
 
             <details>
                 <summary>Vous cherchez un vélo avec un impact écologique réduit ?</summary>
                 <div class="faq-content">
-                    Nous vous invitons à consulter les fiches techniques de nos modèles. Vous y trouverez le détail des matériaux et des composants utilisés. En privilégiant des vélos robustes et facilement réparables, vous agissez directement pour limiter votre empreinte carbone sur le long terme. Vous pouvez également vous informez sur la batterie sur l’assistance électrique s’il s’agit d’un vélo.
+                    Nous vous invitons à consulter les fiches techniques de nos modèles. Vous y trouverez le détail des matériaux et des composants utilisés. En privilégiant des vélos robustes et facilement réparables, vous agissez directement pour limiter votre empreinte carbone sur le long terme. Vous pouvez également vous informez sur la batterie sur l’assistance électrique s’il s’agit d’un vélo électrique.
                 </div>
             </details>
 
@@ -523,7 +544,7 @@
             <details>
                 <summary>Pourquoi le Click & Collect ?</summary>
                 <div class="faq-content">
-                    En récupérant votre vélo chez un revendeur de proximité, vous soutenez le commerce local et réduisez les emballages inutiles. De plus, vous bénéficiez d'un montage professionnel qui garantit la longévité de votre matériel.
+                    En récupérant votre vélo chez un revendeur de proximité, vous soutenez le commerce local et bénéficiez d'un montage professionnel qui garantit la longévité de votre matériel.
                 </div>
             </details>
         </div>
