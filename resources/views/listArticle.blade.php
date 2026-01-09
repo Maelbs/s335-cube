@@ -345,9 +345,14 @@
             @endif
         </main>
     </div>
+<<<<<<< Updated upstream
 
     @include('layouts.footer')
  
+=======
+    @include('layouts.footer')
+    
+>>>>>>> Stashed changes
     <script src="{{ asset('js/header.js') }}" defer></script>
  
     <script>
