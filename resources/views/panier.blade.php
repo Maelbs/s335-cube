@@ -8,7 +8,6 @@
     <link rel="stylesheet" href="{{ asset('css/panier.css') }}">
     <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
     <meta name="csrf-token" content="{{ csrf_token() }}">
-
 </head>
 <body>
 
@@ -255,6 +254,5 @@
             }
         });
     </script>
-
 </body>
 </html>

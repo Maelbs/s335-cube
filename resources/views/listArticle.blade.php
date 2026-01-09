@@ -330,14 +330,8 @@
             @endif
         </main>
     </div>
-   
-<<<<<<< HEAD
+
     @include('layouts.footer')
-=======
-    <footer>
-        <p>&copy; 2026 CUBE Bikes France</p>
-    </footer>
->>>>>>> af1c590583c17add1f2ecbe99b6f243f3ef975be
  
     <script src="{{ asset('js/header.js') }}" defer></script>
  

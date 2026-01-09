@@ -85,27 +85,32 @@ public function destroy(Request $request)
                 $user->codesPromoUtilises()->detach();
 
                 if ($aCommandes) {
-                    // --- ANONYMISATION ---
-                    $fakeEmail = 'del_' . $user->id_client . '_' . time() . '@anonyme.cube';
+                    $suffixeUnique = $user->id_client . '_' . time(); 
+                    
+                    $fakeEmail = 'del_' . $suffixeUnique . '@anonyme.cube';
 
+                    $fakeTel = '0000' . str_pad($user->id_client, 6, '0', STR_PAD_LEFT);
+                
                     DB::table('client')
                         ->where('id_client', $user->id_client)
                         ->update([
-                            'nom_client'    => 'UTILISATEUR',
-                            'prenom_client' => 'SUPPRIMÉ',
-                            'email_client'  => $fakeEmail, 
-                            'tel'           => '0000000000',      
-                            'date_naissance'=> '1900-01-01', // Date valide pour éviter l'erreur NULL
-                            'mdp'           => bcrypt(\Illuminate\Support\Str::random(60)), 
+                            'id_adresse_facturation'   => null,
+                            'nom_client'                => 'UTILISATEUR',
+                            'prenom_client'             => 'SUPPRIMÉ',
+                            'email_client'              => $fakeEmail, 
+                            'tel'                       => $fakeTel,
+                            'date_naissance'            => '1900-01-01',
+                            'mdp'                       => bcrypt(\Illuminate\Support\Str::random(60)),
+                            'google_id'                 => null,
                         ]);
-
+                
                     DB::table('adresse_livraison')
                         ->where('id_client', $user->id_client)
                         ->update([
                             'nom_destinataire'    => 'SUPPRIMÉ',
                             'prenom_destinataire' => 'SUPPRIMÉ',
                         ]);
-
+                
                 } else {
                     // --- SUPPRESSION TOTALE ---
                     $user->adressesLivraison()->detach();
