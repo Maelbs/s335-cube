@@ -1,20 +1,59 @@
 <style>
 .btn-delete-account {
-    width: 100%;
-    background-color: #e53935;
-    color: #fff;
-    border: none;
-    padding: 10px 12px;
-    border-radius: 5px;
-    cursor: pointer;
-    font-size: 14px;
-    position: absolute;
-    bottom: 100;
+  position: relative;
+  width: 100%;
+  padding: 16px;
+  background-color:rgb(199, 4, 4);
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  font-family: "Damas Font", sans-serif;
+  font-weight: 700;
+  font-size: 14px;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  cursor: pointer;
+  overflow: hidden;
+  z-index: 1;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+  clip-path: polygon(15px 0, 100% 0, 100% 100%, 0% 100%);
+  border-radius: 0 !important;
+}
+
+.btn-delete-account::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -15px;
+  width: 0%;
+  height: 100%;
+  background-color:rgb(245, 11, 11);
+  z-index: -1;
+  transform: skewX(-20deg);
+  transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.btn-delete-account:hover::before {
+  width: 160%;
 }
 
 .btn-delete-account:hover {
-    background-color: #c62828;
+  box-shadow: 0 8px 25px rgba(0, 113, 227, 0.35);
+  transform: translateY(-2px);
 }
+
+.sidebar-content {
+    position: relative;
+}
+
+.delete-account-section {
+    position: relative;
+    width: 100%;
+    margin-top: 20px;
+}
+
+
 </style>
 <aside class="sidebar">
     <div class="sidebar-content">
@@ -51,7 +90,7 @@
 
                 <li>
                     <a href="{{ route('client.commandes') }}"
-                       class="nav-item {{ request()->routeIs('client.commandes') ? 'active' : '' }}">
+                        class="nav-item {{ request()->routeIs('client.commandes') ? 'active' : '' }}">
                         MES COMMANDES
                     </a>
                 </li>
@@ -69,6 +108,9 @@
                 </li>
             </ul>
         </nav>
-        {{-- SECTION BASSE : SUPPRESSION DE COMPTE (US48) --}} <div class="delete-account-section"> <form action="{{ route('profil.destroy') }}" method="POST" onsubmit="return confirm('⚠️ ATTENTION ⚠️\n\nÊtes-vous sûr de vouloir supprimer votre compte définitivement ?\n\nCette action est irréversible et effacera vos données personnelles.');"> @csrf @method('DELETE') <button type="submit" class="btn-delete-account"> <i class="fa-solid fa-trash-can"></i> Supprimer mon compte </button> </form> </div>
+    </div>
+    <div class="delete-account-section"> 
+        <form action="{{ route('profil.destroy') }}" method="POST" 
+        onsubmit="return confirm('⚠️ ATTENTION ⚠️\n\nÊtes-vous sûr de vouloir supprimer votre compte définitivement ?\n\nCette action est irréversible et effacera vos données personnelles.');"> @csrf @method('DELETE') <button type="submit" class="btn-delete-account"> <i class="fa-solid fa-trash-can"></i> Supprimer mon compte </button> </form> 
     </div>
 </aside>

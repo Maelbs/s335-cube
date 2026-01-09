@@ -44,8 +44,7 @@
                 </div>
 
                 <div class="forgot-password">
-                    <a href="https://www.cubebikes.fr/recuperation-mot-de-passe" rel="nofollow">Mot de passe oublié
-                        ?</a>
+                    <a href="{{ route('password.request') }}">Mot de passe oublié ?</a>
                 </div>
 
                 <footer class="form-footer">

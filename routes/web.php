@@ -76,6 +76,12 @@ Route::middleware('guest')->group(function () {
     Route::get('/connexion', [AuthController::class, 'showLoginForm'])->name('login');
     Route::post('/connexion', [AuthController::class, 'login'])->name('login.submit');
 
+    Route::get('/mot-de-passe-oublie', [AuthController::class, 'showForgotPasswordForm'])->name('password.request');
+    Route::post('/mot-de-passe-oublie', [AuthController::class, 'sendResetLinkEmail'])->name('password.email');
+
+    Route::get('/reinitialisation-mot-de-passe/{token}', [AuthController::class, 'showResetForm'])->name('password.reset');
+    Route::post('/reinitialisation-mot-de-passe', [AuthController::class, 'resetPassword'])->name('password.update');
+
     Route::get('/inscription', [AuthController::class, 'showRegisterForm'])->name('register.form');
     Route::post('/inscription', [AuthController::class, 'checkInscription'])->name('register.check');
 
