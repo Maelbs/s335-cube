@@ -215,7 +215,6 @@ small.text-muted {
 
 .btn-google {
   position: relative;
-  width: 100%;
   background-color: #ffffff;
   color: #0f172a;
   border: none;
@@ -223,7 +222,7 @@ small.text-muted {
   transition: all 0.3s ease;
   margin-top: 25px;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
-  width: 92.5%;
+  width: 100%;
 
   display: flex; 
   justify-content: center;  

@@ -17,6 +17,17 @@
             src: url('../font/font.woff2');
         }
 
+        header {
+            background-color: #ffffff !important;
+            border-bottom: 1px solid #e5e5e5;
+            color: #000000 !important;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.03);
+        }
+
+        .logo img {
+            filter: brightness(0) !important;
+        }
+
         body {
             font-family: 'Damas Font', sans-serif;
             background-color: #ffffff;
