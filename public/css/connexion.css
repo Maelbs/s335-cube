@@ -1,0 +1,260 @@
+@font-face {
+  font-family: "Damas Font";
+  src: url("../font/font.woff2");
+}
+body {
+  font-family: "Damas Font", sans-serif;
+  margin: 0;
+  padding: 0;
+  background: linear-gradient(rgba(10, 20, 30, 0.5), rgba(10, 20, 30, 0.7)),
+    url("../images/connexionBackground.jpg");
+  background-size: cover;
+  background-position: center;
+  background-attachment: fixed;
+
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  color: #333;
+}
+
+.auth-wrapper {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  padding-top: 20vh;
+  backdrop-filter: blur(4px);
+}
+
+.login-form {
+  background-color: rgba(255, 255, 255, 0.75);
+  padding: 30px 40px;
+  width: 100%;
+  max-width: 420px;
+  border-radius: 4px;
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+  position: relative;
+  overflow: hidden;
+  animation: slideUp 0.6s ease-out;
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.login-form::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 4px;
+  background: #0071e3;
+}
+
+.btn-primary {
+  clip-path: polygon(15px 0, 100% 0, 100% 100%, 0% 100%);
+  border-radius: 0 !important;
+}
+
+h2 {
+  text-align: center;
+  font-weight: 800;
+  font-size: 24px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-bottom: 30px;
+  color: #0f172a;
+}
+
+.form-group {
+  margin-bottom: 20px;
+  position: relative;
+}
+
+label {
+  font-size: 13px;
+  font-weight: 700;
+  color: #475569;
+  margin-bottom: 8px;
+  display: block;
+}
+
+input[type="email"],
+input[type="password"] {
+  width: 100%;
+  padding: 14px 16px;
+  background-color: #f1f5f9;
+  border: 1px solid #cbd5e1;
+  border-radius: 4px;
+  font-size: 15px;
+  color: #333;
+  box-sizing: border-box;
+  transition: all 0.3s ease;
+  font-family: "Damas Font", sans-serif;
+}
+
+input[type="email"]:focus,
+input[type="password"]:focus {
+  background-color: #fff;
+  border-color: #0071e3;
+  outline: none;
+  box-shadow: 0 0 0 4px rgba(0, 113, 227, 0.1);
+}
+
+small.text-muted {
+  font-size: 12px;
+  color: #94a3b8;
+  margin-top: 6px;
+  display: block;
+  text-align: right;
+}
+.btn-primary {
+  position: relative;
+  width: 100%;
+  padding: 16px;
+  background-color: #0f172a;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  font-family: "Damas Font", sans-serif;
+  font-weight: 700;
+  font-size: 14px;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  cursor: pointer;
+  overflow: hidden;
+  z-index: 1;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+}
+
+.btn-primary::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -15px;
+  width: 0%;
+  height: 100%;
+  background-color: #0071e3;
+  z-index: -1;
+  transform: skewX(-20deg);
+  transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.btn-primary:hover::before {
+  width: 160%;
+}
+
+.btn-primary:hover {
+  box-shadow: 0 8px 25px rgba(0, 113, 227, 0.35);
+  transform: translateY(-2px);
+}
+
+.no-account {
+  margin-top: 25px;
+  text-align: center;
+  padding-top: 20px;
+  border-top: 1px solid #e2e8f0;
+}
+
+.forgot-password a,
+.no-account a {
+  color: #64748b;
+  text-decoration: none;
+  font-size: 14px;
+  font-weight: 500;
+  transition: color 0.3s;
+}
+
+.forgot-password a:hover,
+.no-account a:hover {
+  color: #0071e3;
+  text-decoration: underline;
+}
+
+.forgot-password {
+  text-align: right;
+  margin-top: -10px;
+  margin-bottom: 20px;
+}
+
+.invalid-feedback {
+  color: #dc2626;
+  font-size: 13px;
+  font-weight: 500;
+  margin-top: 5px;
+  display: none;
+  animation: shake 0.3s ease-in-out;
+}
+
+.invalid-feedback:not(:empty) {
+  display: block;
+}
+
+@keyframes shake {
+  0%,
+  100% {
+    transform: translateX(0);
+  }
+  25% {
+    transform: translateX(-4px);
+  }
+  75% {
+    transform: translateX(4px);
+  }
+}
+
+.btn-google {
+  position: relative;
+  width: 100%;
+  background-color: #ffffff;
+  color: #0f172a;
+  border: none;
+  z-index: 1;
+  transition: all 0.3s ease;
+  margin-top: 25px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+  width: 92.5%;
+
+  display: flex; 
+  justify-content: center;  
+  align-items: center;
+  text-decoration: none;  
+}
+
+/* Le reste ne change pas */
+.btn-google:before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -15px;
+  width: 0%;
+  height: 100%;
+  background-color: #0d2968;
+  z-index: -1;
+  transform: skewX(-20deg);
+  transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.btn-google:hover::before {
+  width: 160%;
+}
+
+.btn-google:hover {
+  box-shadow: 0 8px 25px rgba(0, 113, 227, 0.35);
+  transform: translateY(-2px);
+  color: #fff; /* Force le blanc au survol pour éviter que le lien devienne bleu */
+}
+.google-icon {
+  width: 20px;
+  height: 20px;
+}
