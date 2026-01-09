@@ -4,7 +4,7 @@
 
 <div id="chat-box" class="chat-box">
     <div class="chat-header">
-        <span class="chat-title">Expert CUBE 🚲</span>
+        <span class="chat-title">Expert CUBE</span>
         <button id="clear-chat" class="clear-chat" title="Vider la discussion">🗑️</button>
     </div>
     <div id="chat-content" class="chat-content">
@@ -13,11 +13,10 @@
 </div>
 
 <style>
-    /* La boule de chat */
     .chat-button {
         position: fixed; bottom: 20px; right: 20px;
         width: 60px; height: 60px;
-        background-color: #4CAF50; border-radius: 50%;
+        background-color:rgb(1, 114, 158); border-radius: 50%;
         display: flex; justify-content: center; align-items: center;
         cursor: pointer; box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
         z-index: 10001; transition: transform 0.3s ease;
@@ -25,7 +24,6 @@
     .chat-button:hover { transform: scale(1.1); }
     .chat-icon { font-size: 28px; color: white; }
 
-    /* Boîte de chat */
     .chat-box {
         position: fixed; bottom: 90px; right: 20px;
         width: 350px; height: 450px;
@@ -37,7 +35,7 @@
     }
 
     .chat-header {
-        background-color: #4CAF50; color: white; padding: 15px;
+        background-color: rgb(1, 114, 158); color: white; padding: 15px;
         display: flex; justify-content: space-between; align-items: center;
         font-weight: bold;
     }
