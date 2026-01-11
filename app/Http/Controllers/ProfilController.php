@@ -129,4 +129,9 @@ public function destroy(Request $request)
             dd("ERREUR : " . $e->getMessage());
         }
     }
+    public function show()
+    {
+        $client = Auth::user(); 
+    return view('profil', compact('client'));
+}
 }
