@@ -23,6 +23,7 @@ use App\Http\Controllers\ChatBotController;
 use App\Http\Controllers\ContactController; 
 use App\Http\Controllers\GoogleAuthController;
 use App\Http\Controllers\ProfileCompletionController;
+use App\Http\Controllers\DpoController;
 
 /* ------------------------------------------------------ */
 /* ROUTES PUBLIQUES                                       */
@@ -176,6 +177,13 @@ Route::middleware('auth')->group(function () {
         Route::get('/commercial/choix-caracteristiques', [CommercialController::class, 'articleListCaracteristique'])->name('commercial.choix.caracteristique');
         Route::get('/commercial/ajouter-caracteristique/{reference}', [CommercialController::class, 'addCaracteristique'])->name('commercial.add.caracteristique');
         Route::post('/commercial/store-caracteristique', [CommercialController::class, 'storeCaracteristique'])->name('commercial.store.caracteristique');
+
+
+    });
+
+    Route::middleware(['auth', 'is_dpo'])->group(function () {
+        Route::get('/dpo/anonymiser', [DpoController::class, 'index'])->name('dpo.index');
+        Route::post('/dpo/anonymiser', [DpoController::class, 'anonymize'])->name('dpo.process');
     });
 });
 
