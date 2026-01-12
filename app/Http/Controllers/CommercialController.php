@@ -480,8 +480,7 @@ class CommercialController extends Controller
         return view('commercial.addImageModele', compact('article'));
     }
 
-    // 2. Enregistrer les photos (Dossier + BDD)
-public function storeImageModele(Request $request)
+    public function storeImageModele(Request $request)
     {
         $request->validate([
             'reference' => 'required|exists:article,reference',
@@ -489,144 +488,114 @@ public function storeImageModele(Request $request)
             'photos.*'  => 'image|mimes:jpeg,png,jpg,webp|max:10240',
             'est_principale' => 'nullable|boolean'
         ]);
-
+    
         $reference = $request->reference;
-
-        // Chemins IUT (Adaptés à ton serveur)
-        $pathImages = public_path('images');
-        $pathVelos  = public_path('images/VELOS');
-        $pathCible  = public_path('images/VELOS/' . $reference);
-
-        // Création des dossiers (Sécurité IUT)
-        if (!file_exists($pathImages)) { mkdir($pathImages, 0777, true); @chmod($pathImages, 0777); }
-        if (!file_exists($pathVelos))  { mkdir($pathVelos, 0777, true);  @chmod($pathVelos, 0777); }
-        if (!file_exists($pathCible))  { mkdir($pathCible, 0777, true);  @chmod($pathCible, 0777); }
-
+    
+        $pathCible = public_path('images/VELOS/' . $reference);
+    
+        // Création du dossier si nécessaire
+        if (!file_exists($pathCible)) {
+            mkdir($pathCible, 0777, true);
+            chmod($pathCible, 0777);
+        }
+    
         try {
-            DB::transaction(function () use ($request, $pathCible, $reference) {
-                
-                // 1. Récupérer les photos existantes pour savoir où on en est
-                // On utilise la BDD comme référence
-                $existingPhotos = DB::table('photo_article')
-                                    ->where('reference', $reference)
-                                    ->get();
-                
-                // Trouver le numéro le plus élevé (ex: si image_5.jpg existe, max = 5)
-                $maxNum = 0;
-                foreach($existingPhotos as $p) {
-                    if(preg_match('/image_(\d+)\.jpg$/', $p->url_photo, $matches)) {
-                        $num = (int)$matches[1];
-                        if($num > $maxNum) $maxNum = $num;
+    
+            /* ===============================
+               1. Récupérer les images existantes
+            =============================== */
+            $existingFiles = glob($pathCible . '/image_*.jpg');
+    
+            $maxNum = 0;
+            foreach ($existingFiles as $file) {
+                if (preg_match('/image_(\d+)\.jpg$/', $file, $matches)) {
+                    $num = (int) $matches[1];
+                    if ($num > $maxNum) {
+                        $maxNum = $num;
                     }
                 }
-
-                $isMainChecked = $request->has('est_principale');
-
-                // --- LOGIQUE DE DÉCALAGE (SHIFT) ---
-                // Si on veut mettre la nouvelle en n°1, il faut pousser toutes les autres
-                if ($isMainChecked && $maxNum > 0) {
-                    
-                    // On trie les photos existantes par numéro décroissant (pour renommer 3->4 avant 2->3)
-                    $sortedPhotos = $existingPhotos->sort(function($a, $b) {
-                        preg_match('/image_(\d+)\.jpg$/', $a->url_photo, $m_a);
-                        preg_match('/image_(\d+)\.jpg$/', $b->url_photo, $m_b);
-                        return ((int)($m_b[1] ?? 0)) <=> ((int)($m_a[1] ?? 0));
-                    });
-
-                    foreach ($sortedPhotos as $photo) {
-                        if(preg_match('/image_(\d+)\.jpg$/', $photo->url_photo, $matches)) {
-                            $currentNum = (int)$matches[1];
-                            $newNum = $currentNum + 1; // On décale de +1
-                            
-                            $oldFilename = 'image_' . $currentNum . '.jpg';
-                            $newFilename = 'image_' . $newNum . '.jpg';
-                            
-                            $oldPath = $pathCible . '/' . $oldFilename;
-                            $newPath = $pathCible . '/' . $newFilename;
-
-                            // 1. Renommer le fichier physique
-                            if (file_exists($oldPath)) {
-                                rename($oldPath, $newPath);
-                            }
-
-                            // 2. Mettre à jour la BDD
-                            DB::table('photo_article')
-                                ->where('id_photo', $photo->id_photo)
-                                ->update([
-                                    'url_photo' => 'images/VELOS/' . $reference . '/' . $newFilename,
-                                    'est_principale' => false // L'ancienne principale ne l'est plus
-                                ]);
-                        }
+            }
+    
+            $isMainChecked = $request->has('est_principale');
+    
+            /* ===============================
+               2. Décalage si nouvelle principale
+            =============================== */
+            if ($isMainChecked && $maxNum > 0) {
+    
+                // Trier par numéro décroissant (important)
+                rsort($existingFiles);
+    
+                foreach ($existingFiles as $file) {
+                    if (preg_match('/image_(\d+)\.jpg$/', $file, $matches)) {
+                        $currentNum = (int) $matches[1];
+                        $newNum = $currentNum + 1;
+    
+                        rename(
+                            $pathCible . '/image_' . $currentNum . '.jpg',
+                            $pathCible . '/image_' . $newNum . '.jpg'
+                        );
                     }
-                    // Le max a augmenté de 1 car tout a bougé
+                }
+    
+                $maxNum++;
+            }
+    
+            /* ===============================
+               3. Ajout des nouvelles images
+            =============================== */
+            foreach ($request->file('photos') as $index => $file) {
+    
+                if ($isMainChecked && $index === 0) {
+                    $filename = 'image_1.jpg';
+                } else {
                     $maxNum++;
+                    $filename = 'image_' . $maxNum . '.jpg';
                 }
-
-                // --- TRAITEMENT DES NOUVELLES IMAGES ---
-                foreach ($request->file('photos') as $index => $file) {
-                    
-                    if ($isMainChecked && $index === 0) {
-                        // C'est LA photo principale : elle prend la place n°1 (libérée par le décalage)
-                        $filename = 'image_1.jpg';
-                        $isMain = true;
-                    } else {
-                        // Les autres s'ajoutent à la suite
-                        $maxNum++; 
-                        $filename = 'image_' . $maxNum . '.jpg';
-                        $isMain = false;
+    
+                $fullPath = $pathCible . '/' . $filename;
+    
+                $extension = strtolower($file->getClientOriginalExtension());
+    
+                if (in_array($extension, ['jpg', 'jpeg', 'png', 'webp'])) {
+    
+                    switch ($extension) {
+                        case 'png':
+                            $sourceImage = imagecreatefrompng($file->getRealPath());
+                            break;
+                        case 'webp':
+                            $sourceImage = imagecreatefromwebp($file->getRealPath());
+                            break;
+                        default:
+                            $sourceImage = imagecreatefromjpeg($file->getRealPath());
                     }
-
-                    $fullPath = $pathCible . '/' . $filename;
-
-                    $sourceImage = null;
-                    $extension = strtolower($file->getClientOriginalExtension());
-
-                    if ($extension === 'jpg' || $extension === 'jpeg') {
-                        $sourceImage = imagecreatefromjpeg($file->getRealPath());
-                    } elseif ($extension === 'png') {
-                        $sourceImage = imagecreatefrompng($file->getRealPath());
-                    } elseif ($extension === 'webp') {
-                        $sourceImage = imagecreatefromwebp($file->getRealPath());
-                    }
-
-                    if ($sourceImage) {
-                        $width  = imagesx($sourceImage);
-                        $height = imagesy($sourceImage);
-                        $outputImage = imagecreatetruecolor($width, $height);
-                        $white = imagecolorallocate($outputImage, 255, 255, 255);
-                        imagefilledrectangle($outputImage, 0, 0, $width, $height, $white);
-                        imagecopy($outputImage, $sourceImage, 0, 0, 0, 0, $width, $height);
-                        
-                        // Sauvegarde
-                        imagejpeg($outputImage, $fullPath, 90);
-                        imagedestroy($sourceImage);
-                        imagedestroy($outputImage);
-                    } else {
-                        // Fallback
-                        $file->move($pathCible, $filename);
-                    }
-
-                    // Permissions
-                    @chmod($fullPath, 0644);
-
-                    // Insertion BDD
-                    $dbUrl = 'images/VELOS/' . $reference . '/' . $filename;
-
-                    DB::table('photo_article')->insert([
-                        'reference'      => $reference,
-                        'url_photo'      => $dbUrl,
-                        'est_principale' => $isMain
-                    ]);
+    
+                    $width  = imagesx($sourceImage);
+                    $height = imagesy($sourceImage);
+    
+                    $outputImage = imagecreatetruecolor($width, $height);
+                    $white = imagecolorallocate($outputImage, 255, 255, 255);
+                    imagefilledrectangle($outputImage, 0, 0, $width, $height, $white);
+                    imagecopy($outputImage, $sourceImage, 0, 0, 0, 0, $width, $height);
+    
+                    imagejpeg($outputImage, $fullPath, 90);
+    
+                    imagedestroy($sourceImage);
+                    imagedestroy($outputImage);
+                } else {
+                    $file->move($pathCible, $filename);
                 }
-            });
-
+    
+                chmod($fullPath, 0644);
+            }
+    
             return redirect()->route('commercial.dashboard')
-                             ->with('success', 'Images sauvegardées et numérotées correctement !');
-
+                ->with('success', 'Images sauvegardées uniquement dans les fichiers ✔');
+    
         } catch (\Exception $e) {
             dd("Erreur traitement image : " . $e->getMessage());
         }
-    }
+    }    
 
     public function articleListImage()
     {

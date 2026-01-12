@@ -109,7 +109,14 @@ Route::middleware('auth')->group(function () {
     // Profil & Logout
     Route::get('/profil', [ProfilController::class, 'profil'])->name('profil');
     Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
-    Route::delete('/profil/destroy', [ProfilController::class, 'destroy'])->name('profil.destroy');
+    Route::get('/profil/supprimer', [ProfilController::class, 'destroyShow'])
+        ->name('profil.destroy.show');
+    Route::get('/profil/anonymiser', [ProfilController::class, 'anonymizeShow'])
+        ->name('profil.anonymize.show');
+    Route::delete('/profil/supprimer', [ProfilController::class, 'destroy'])
+        ->name('profil.destroy');
+    Route::post('/profil/anonymiser', [ProfilController::class, 'anonymize'])
+        ->name('profil.anonymize');
     Route::get('/profil/modifier', [ProfilController::class, 'showUpdateForm'])->name('profil.update.form');
     Route::put('/profil/modifier', [ProfilController::class, 'update'])->name('profil.update'); 
 

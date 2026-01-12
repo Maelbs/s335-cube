@@ -57,6 +57,8 @@ class ProfilController extends Controller
         return redirect()->route('profil')->with('success', 'Vos informations ont été mises à jour avec succès.');
     }
 
+
+
 // --- US48 : SUPPRESSION DE COMPTE (SECURE) ---
 public function destroy(Request $request)
     {
@@ -129,4 +131,98 @@ public function destroy(Request $request)
             dd("ERREUR : " . $e->getMessage());
         }
     }
+
+
+    public function anonymize(Request $request)
+    {
+        $user = \Illuminate\Support\Facades\Auth::user();
+
+        try {
+            DB::transaction(function () use ($user) {
+
+                /* ===============================
+                1. Suppression des paniers abandonnés
+                =============================== */
+
+                $paniersLies = DB::table('commande')
+                    ->where('id_client', $user->id_client)
+                    ->pluck('id_panier')
+                    ->toArray();
+
+                DB::table('panier')
+                    ->where('id_client', $user->id_client)
+                    ->whereNotIn('id_panier', $paniersLies)
+                    ->delete();
+
+                /* ===============================
+                2. Nettoyage des données annexes
+                =============================== */
+
+                $user->velosEnregistres()->delete();
+                $user->codesPromoUtilises()->detach();
+
+                /* ===============================
+                3. Anonymisation stricte du client
+                =============================== */
+
+                $suffixeUnique = $user->id_client . '_' . time();
+
+                DB::table('client')
+                    ->where('id_client', $user->id_client)
+                    ->update([
+                        'id_adresse_facturation' => null,
+                        'nom_client'             => 'UTILISATEUR',
+                        'prenom_client'          => 'ANONYME',
+                        'email_client'           => 'anon_' . $suffixeUnique . '@anonyme.cube',
+                        'tel'                    => '0000000000',
+                        'date_naissance'         => '1900-01-01',
+                        'mdp'                    => bcrypt(\Illuminate\Support\Str::random(64)),
+                        'google_id'              => null,
+                        'updated_at'             => now(),
+                    ]);
+
+                /* ===============================
+                4. Anonymisation des adresses
+                =============================== */
+
+                DB::table('adresse_livraison')
+                    ->where('id_client', $user->id_client)
+                    ->update([
+                        'nom_destinataire'    => 'ANONYME',
+                        'prenom_destinataire' => 'ANONYME',
+                    ]);
+            });
+
+            /* ===============================
+            5. Déconnexion forcée
+            =============================== */
+
+            \Illuminate\Support\Facades\Auth::logout();
+            $request->session()->invalidate();
+            $request->session()->regenerateToken();
+
+            return redirect()
+                ->route('home')
+                ->with('success', 'Votre compte a été anonymisé. L’accès est désormais désactivé.');
+
+        } catch (\Exception $e) {
+            dd("ERREUR ANONYMISATION : " . $e->getMessage());
+        }
+    }
+
+    public function anonymizeShow()
+    {
+        return view('anonymiserCompte');
+    }
+
+    public function destroyShow ()
+    {
+        return view('supprimerCompte');
+    }
+
+    public function show()
+    {
+        $client = Auth::user(); 
+    return view('profil', compact('client'));
+}
 }
