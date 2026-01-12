@@ -132,6 +132,7 @@ public function destroy(Request $request)
         }
     }
 
+
     public function anonymize(Request $request)
     {
         $user = \Illuminate\Support\Facades\Auth::user();
@@ -219,4 +220,9 @@ public function destroy(Request $request)
         return view('supprimerCompte');
     }
 
+    public function show()
+    {
+        $client = Auth::user(); 
+    return view('profil', compact('client'));
+}
 }

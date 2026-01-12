@@ -3,7 +3,7 @@
         <div class="flex flex-col md:flex-row justify-between items-center">
             <div class="flex space-x-6 text-sm">
                 
-                <a href="{{ route('privacy.policy') }}" class="hover:text-blue-400 transition underline decoration-blue-500">
+                <a href="{{ route('privacy.policy') }}" class="hover:text-blue-400 transition underline decoration-blue-500" style="text-decoration: underline;">
                     Politique de Protection de données et Cookies
                 </a>
             </div>
