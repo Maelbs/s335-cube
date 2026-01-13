@@ -325,7 +325,7 @@
                                     </div>
                                     <div class="status-line">
                                         <span class="dot {{ $dispoMag ? 'green' : 'red' }}"></span>
-                                        <span class="text">Disponible en magasins <i class="far fa-question-circle info-icon"></i></span>
+                                        <span class="text">Disponible en magasins </span>
                                     </div>
                                 </div>
  
@@ -345,14 +345,11 @@
             @endif
         </main>
     </div>
-<<<<<<< Updated upstream
+
 
     @include('layouts.footer')
  
-=======
-    @include('layouts.footer')
-    
->>>>>>> Stashed changes
+
     <script src="{{ asset('js/header.js') }}" defer></script>
  
     <script>

@@ -149,7 +149,6 @@
             </div>
         @endif
     </div>
-
     <script>
         document.addEventListener('DOMContentLoaded', function () {
             const saveQuantityToServer = (rowId, newQty) => {

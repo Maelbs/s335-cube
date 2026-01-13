@@ -276,7 +276,7 @@ document.addEventListener('DOMContentLoaded', function() {
         }
 
         if (inseam < 50 || inseam > 120 || inseam >= height) {
-            displayError("L'entrejambe semble incorrect.");
+            displayError("La longueur de pas semble incorrecte.");
             return;
         }
 
