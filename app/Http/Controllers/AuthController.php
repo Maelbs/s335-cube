@@ -230,6 +230,10 @@ class AuthController extends Controller
             if ($client->role === 'commercial') {
                 return redirect()->route('commercial.dashboard');
             }
+
+            if ($client->role === 'dpo') {
+                return redirect()->route('dpo.index');
+            }
     
             return redirect()->route('home');
         }

@@ -346,9 +346,8 @@
         </main>
     </div>
 
-
     @include('layouts.footer')
- 
+
 
     <script src="{{ asset('js/header.js') }}" defer></script>
  

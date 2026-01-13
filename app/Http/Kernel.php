@@ -66,6 +66,7 @@ class Kernel extends HttpKernel
         'throttle' => \Illuminate\Routing\Middleware\ThrottleRequests::class,
         'verified' => \Illuminate\Auth\Middleware\EnsureEmailIsVerified::class,
         'commercial' => \App\Http\Middleware\IsCommercial::class,
+        'is_dpo' => \App\Http\Middleware\IsDPO::class,
         'ensure.client.address' => \App\Http\Middleware\EnsureClientAddress::class,
     ];
 }

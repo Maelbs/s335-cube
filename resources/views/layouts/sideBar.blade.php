@@ -21,6 +21,10 @@
   border-radius: 0 !important;
 }
 
+.anonym-button {
+    margin-bottom: 15px;
+}
+
 .btn-delete-account::before {
   content: "";
   position: absolute;
@@ -109,8 +113,22 @@
             </ul>
         </nav>
     </div>
-    <div class="delete-account-section"> 
-        <form action="{{ route('profil.destroy') }}" method="POST" 
-        onsubmit="return confirm('⚠️ ATTENTION ⚠️\n\nÊtes-vous sûr de vouloir supprimer votre compte définitivement ?\n\nCette action est irréversible et effacera vos données personnelles.');"> @csrf @method('DELETE') <button type="submit" class="btn-delete-account"> <i class="fa-solid fa-trash-can"></i> Supprimer mon compte </button> </form> 
-    </div>
+    <div class="delete-account-section">
+
+{{-- ANONYMISER --}}
+<a href="{{ route('profil.anonymize.show') }}"
+   class="btn-delete-account anonym-button">
+    <i class="fa-solid fa-user-secret"></i>
+    Anonymiser mon compte
+</a>
+
+{{-- SUPPRIMER --}}
+<a href="{{ route('profil.destroy.show') }}"
+   class="btn-delete-account">
+    <i class="fa-solid fa-trash-can"></i>
+    Supprimer mon compte
+</a>
+
+</div>
+
 </aside>
