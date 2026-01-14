@@ -10,6 +10,7 @@
         "doctrine/dbal": "^3.5.1",
         "google-gemini-php/laravel": "^2.0",
         "guzzlehttp/guzzle": "^7.2",
+        "intervention/image": "^2",
         "laravel/framework": "^10.10",
         "laravel/sanctum": "^3.3",
         "laravel/socialite": "^5.24",

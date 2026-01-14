@@ -1,10 +1,15 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-    <meta charset="UTF-8">
+    <meta charset="UTF-8" name="description" content="Site non officiel de cube">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>DPO - Anonymisation</title>
     <style>
+        @font-face {
+            font-family: 'Damas Font';
+            src: url('../font/font.woff2');
+            font-display: swap;
+        }
         body {
             margin: 0;
             padding: 0;
@@ -13,7 +18,7 @@
             justify-content: center;
             align-items: center;
             background-color: #f3f4f6;
-            font-family: sans-serif;
+            font-family: 'Damas Font', sans-serif;
         }
         .container {
             background-color: white;

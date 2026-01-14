@@ -1,15 +1,19 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-    <meta charset="UTF-8">
+    <meta charset="UTF-8" name="description" content="Site non officiel de cube">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Mon Compte | Cube Bikes</title>
     <link rel="stylesheet" href="{{ asset('css/header.css') }}">
     <link rel="stylesheet" href="{{ asset('css/profil.css') }}">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     
     <style>
+        @font-face {
+            font-family: 'Damas Font';
+            src: url('../font/font.woff2');
+            font-display: swap;
+        }
         
         .info-bubble {
             display: inline-flex;
@@ -51,7 +55,7 @@
             pointer-events: none;
             visibility: hidden; opacity: 0;
             transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            font-family: sans-serif !important;
+            font-family: 'Damas Font', sans-serif !important;
             font-size: 12px !important;
             font-weight: 400 !important;
             line-height: 1.4 !important;

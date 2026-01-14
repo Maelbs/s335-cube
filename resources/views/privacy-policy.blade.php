@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-    <meta charset="UTF-8">
+    <meta charset="UTF-8" name="description" content="Site non officiel de cube">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Politique de Confidentialité - CUBE BIKES France</title>
     
@@ -10,6 +10,11 @@
     <link rel="stylesheet" href="{{ asset('css/styleBody.css') }}">
 
     <style>
+        @font-face {
+            font-family: 'Damas Font';
+            src: url('../font/font.woff2');
+            font-display: swap;
+        }
         body {
             background-color: #ffffff !important;
             color: #333;

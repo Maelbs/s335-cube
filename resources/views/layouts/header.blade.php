@@ -264,7 +264,7 @@
         </svg>
         
         <div class="icone">
-            <a id="recherche" href="#" onclick="openSearch(event)">
+            <a id="recherche" href="#" onclick="openSearch(event)" aria-label="Search">
                 <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" viewBox="0 0 20 20">
                     <g>
                         <path fill-rule="evenodd" d="M4.828 4.828A5 5 0 1 0 11.9 11.9a5 5 0 0 0-7.07-7.07Zm6.364 6.364a4 4 0 1 1-5.656-5.657a4 4 0 0 1 5.656 5.657Z" clip-rule="evenodd"/>
@@ -274,7 +274,7 @@
             </a>
             
             @auth
-                <a href="{{ url('/profil') }}">
+                <a href="{{ url('/profil') }}" aria-label="Profile">
                     <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" viewBox="0 0 24 24">
                         <g stroke-width="2">
                             <path stroke-linejoin="round" d="M4 18a4 4 0 0 1 4-4h8a4 4 0 0 1 4 4a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2Z"/>
@@ -285,7 +285,7 @@
             @endauth
 
             @guest
-                <a href="{{ url('/connexion') }}">
+                <a href="{{ url('/connexion') }}" aria-label="Connexion">
                     <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" viewBox="0 0 24 24">
                         <g stroke-width="2">
                             <path stroke-linejoin="round" d="M4 18a4 4 0 0 1 4-4h8a4 4 0 0 1 4 4a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2Z"/>
@@ -298,7 +298,7 @@
             {{-- 🛒 MINI PANIER --}}
             
             <div class="cart-dropdown-wrapper">
-                <a id="panier" href="{{ route('cart.index') }}">
+                <a id="panier" href="{{ route('cart.index') }}" aria-label="Cart">
                     <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" viewBox="0 0 48 48">
                         <g><path d="M39 32H13L8 12h36l-5 20Z" /><path stroke-linecap="round" stroke-linejoin="round" stroke-width="4" d="M3 6h3.5L8 12m0 0l5 20h26l5-20H8Z" /><circle cx="13" cy="39" r="3" stroke-linecap="round" stroke-linejoin="round" stroke-width="4" /><circle cx="39" cy="39" r="3" stroke-linecap="round" stroke-linejoin="round" stroke-width="4" /></g>
                     </svg>
