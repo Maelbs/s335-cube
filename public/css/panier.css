@@ -1,3 +1,9 @@
+@font-face {
+    font-family: 'Damas Font';
+    src: url('../font/font.woff2');
+    font-display: swap;
+}
+
 * {
     box-sizing: border-box;
 }
@@ -13,7 +19,7 @@ header .logo {
 
 body {
     margin: 0;
-    font-family: 'Open Sans', Helvetica, Arial, sans-serif;
+    font-family: 'Damas Font', sans-serif;
     background-color: #f0f0f0;
     color: #333;
     padding-top: 120px;

@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-    <meta charset="UTF-8">
+    <meta charset="UTF-8" name="description" content="Site non officiel de cube">
     <title>Caractéristiques - {{ $velo->nom_article }}</title>
     <link rel="stylesheet" href="{{ asset('css/commercial/addModele.css') }}">
     <style>

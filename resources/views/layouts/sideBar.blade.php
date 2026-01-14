@@ -1,4 +1,11 @@
 <style>
+
+@font-face {
+    font-family: 'Damas Font';
+    src: url('../font/font.woff2');
+    font-display: swap;
+}
+
 i{
     margin-right: 10px;
 }

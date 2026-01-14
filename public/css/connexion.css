@@ -1,6 +1,7 @@
 @font-face {
-  font-family: "Damas Font";
-  src: url("../font/font.woff2");
+  font-family: 'Damas Font';
+  src: url('../font/font.woff2');
+  font-display: swap;
 }
 body {
   font-family: "Damas Font", sans-serif;

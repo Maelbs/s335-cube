@@ -1,14 +1,13 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-    <meta charset="UTF-8">
+    <meta charset="UTF-8" name="description" content="Site non officiel de cube">
     <link rel="stylesheet" href="{{ asset('css/header.css') }}">
     <link rel="stylesheet" href="{{ asset('css/styleBody.css') }}">
     <link rel="stylesheet" href="{{ asset('css/cookies.css') }}">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Fira+Sans:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
     <title>CUBE Bikes France</title>
 </head>
 <body>
@@ -16,6 +15,7 @@
 <div class="cookie-overlay" id="cookieOverlay">
     <div class="cookie-modal" id="cookieModal">
     
+<<<<<<< HEAD
     <div class="cookie-col-left">
         <img src="{{ asset('images/cookies-bg.jpg') }}" 
             alt="" 
@@ -24,6 +24,10 @@
             width="400" 
             height="600"> 
     </div>
+=======
+    <div id="step1-container" style="display: flex; width: 100%; height: 100%;">
+        <div class="cookie-col-left" style="background-image: url('{{ asset('images/cookies-bg.webp') }}');"></div>
+>>>>>>> 8c8f1c6fea396bdf7d40caffb3f3a60c678dcd58
 
         <div class="cookie-col-right">
             <div class="cookie-header">
@@ -114,9 +118,9 @@
     <main>
         <section class="intro-carousel" id="intro-carousel">
             <div id="image-carousel" class="carousel">
-                <img src="{{ asset('images/1.png') }}" alt="Image 1" class="carousel-image active">
-                <img src="{{ asset('images/2.jpg') }}" alt="Image 2" class="carousel-image">
-                <img src="{{ asset('images/3.jpg') }}" alt="Image 3" class="carousel-image">
+                <img src="{{ asset('images/1.webp') }}" alt="Image 1" class="carousel-image active">
+                <img src="{{ asset('images/2.webp') }}" alt="Image 2" class="carousel-image">
+                <img src="{{ asset('images/3.webp') }}" alt="Image 3" class="carousel-image">
             </div>
 
             <div class="text-intro">
@@ -148,7 +152,7 @@
                           <a href="{{ url('/boutique/Musculaire/2') }}" class="btn">Voir les vélos de route</a>
                         </div>
                         <div class="card-image">
-                            <img src="{{ asset('images/velo_route.jpg') }}" alt="Vélo de route">
+                            <img src="{{ asset('images/velo_route.webp') }}" alt="Vélo de route">
                         </div>
                                  
                     </div>
@@ -166,7 +170,7 @@
                                   <a href="{{ url('/boutique/Musculaire/1') }}" class="btn">Voir les VTT</a>
                         </div>
                         <div class="card-image">
-                            <img src="{{ asset('images/velo_vtt.jpg') }}" alt="VTT">
+                            <img src="{{ asset('images/velo_vtt.webp') }}" alt="VTT">
                         </div>
                     
                     </div>
@@ -181,7 +185,7 @@
                                    <a href="{{ url('/boutique/Electrique') }}" class="btn">Voir les vélos électriques</a>
                         </div>
                         <div class="card-image">
-                            <img src="{{ asset('images/velo_electrique.jpg') }}" alt="Vélos Électriques">
+                            <img src="{{ asset('images/velo_electrique.webp') }}" alt="Vélos Électriques">
                         </div>
                  
                     </div>
@@ -192,19 +196,19 @@
             <h2>Accessoires indispensables pour votre vélo</h2> 
             <div class="accessoires-cards">
                 <div class="accessoire-card">
-                    <div class="accessoire-image" style="background-image: url('{{ asset('images/selle.jpg') }}');">
+                    <div class="accessoire-image" style="background-image: url('{{ asset('images/selle.webp') }}');">
                         <h3>Selle</h3>
                     </div>
                     <a href="{{ url('/boutique/Accessoires') }}" class="btn">Voir les selles</a>
                 </div>
                 <div class="accessoire-card">
-                    <div class="accessoire-image" style="background-image: url('{{ asset('images/roue.jpg') }}');">
+                    <div class="accessoire-image" style="background-image: url('{{ asset('images/roue.webp') }}');">
                         <h3>Roue</h3>
                     </div>
                     <a href="{{ url('/boutique/Accessoires') }}" class="btn">Voir les roues</a>
                 </div>
                 <div class="accessoire-card">
-                    <div class="accessoire-image" style="background-image: url('{{ asset('images/eclairage.jpg') }}');">
+                    <div class="accessoire-image" style="background-image: url('{{ asset('images/eclairage.webp') }}');">
                         <h3>Éclairages</h3>
                     </div>
                     <a href="{{ url('/boutique/Accessoires') }}" class="btn">Voir les éclairages</a>
@@ -213,9 +217,9 @@
         </section>
     
         <div id="image-carousel-bottom" class="carousel">
-          <img src="{{ asset('images/1.png') }}" alt="Image 1" class="carousel-image active">
-          <img src="{{ asset('images/2.jpg') }}" alt="Image 2" class="carousel-image">
-          <img src="{{ asset('images/3.jpg') }}" alt="Image 3" class="carousel-image">
+          <img src="{{ asset('images/1.webp') }}" alt="Image 1" class="carousel-image active">
+          <img src="{{ asset('images/2.webp') }}" alt="Image 2" class="carousel-image">
+          <img src="{{ asset('images/3.webp') }}" alt="Image 3" class="carousel-image">
         </div>
     </main>
     

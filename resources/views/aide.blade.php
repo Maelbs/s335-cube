@@ -2,12 +2,10 @@
 <html lang="fr">
 
 <head>
-    <meta charset="UTF-8">
+    <meta charset="UTF-8" name="description" content="Site non officiel de cube">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Aide & FAQ | Cube Bikes</title>
 
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Fira+Sans:ital,wght@0,300;0,400;0,600;0,800;1,800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="{{ asset('css/styleBody.css') }}">
     <link rel="stylesheet" href="{{ asset('css/header.css') }}">
 
@@ -15,6 +13,7 @@
         @font-face {
             font-family: 'Damas Font';
             src: url('../font/font.woff2');
+            font-display: swap;
         }
 
         header {
@@ -111,7 +110,7 @@
 
         summary::after {
             content: '\f078'; 
-            font-family: 'Font Awesome 6 Free';
+            font-family: 'Damas Font', sans-serif;
             font-weight: 900;
             font-size: 14px;
             color: #ccc;

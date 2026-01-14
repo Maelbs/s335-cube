@@ -68,7 +68,6 @@
     AddOutputFilterByType DEFLATE text/html text/plain text/xml text/css text/javascript application/javascript application/json application/xml font/ttf application/font-woff application/font-woff2 image/svg+xml
 </IfModule>
 
-
 <IfModule mod_deflate.c>
   # Compresser le HTML, CSS, JavaScript, Textes, XML et polices
   AddOutputFilterByType DEFLATE application/javascript

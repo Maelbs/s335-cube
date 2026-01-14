@@ -2,12 +2,9 @@
 <html lang="fr">
 
 <head>
-    <meta charset="UTF-8">
+    <meta charset="UTF-8" name="description" content="Site non officiel de cube">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Paiement Sécurisé | Cube Bikes</title>
-
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Fira+Sans:ital,wght@0,300;0,400;0,600;0,800&display=swap" rel="stylesheet">
 
     <link rel="stylesheet" href="{{ asset('css/header.css') }}">
     <link rel="stylesheet" href="{{ asset('css/commande.css') }}">
