@@ -9,7 +9,7 @@ if (typeof window.mapScriptLoaded === "undefined") {
 
   window.currentTailleId = null;
 
-  // ... (Tes définitions d'icônes restent identiques, je ne les touche pas) ...
+  // --- Définitions d'icônes ---
   var greenIcon = new L.Icon({
     iconUrl: "https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-green.png",
     shadowUrl: "https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png",
@@ -26,6 +26,7 @@ if (typeof window.mapScriptLoaded === "undefined") {
     iconSize: [25, 41], iconAnchor: [12, 41], popupAnchor: [1, -34], shadowSize: [41, 41],
   });
 
+  // --- Fonctions utilitaires ---
   window.getDistanceFromLatLonInKm = function (lat1, lon1, lat2, lon2) {
     var R = 6371; 
     var dLat = deg2rad(lat2 - lat1);
@@ -169,19 +170,22 @@ if (typeof window.mapScriptLoaded === "undefined") {
     setTimeout(window.sortStoreList, 2500);
   };
 
-  document.addEventListener("DOMContentLoaded", function () {
-    var overlay = document.getElementById("store-locator-overlay");
-    if (overlay) overlay.addEventListener("click", function (e) {
-        if (e.target.id === "store-locator-overlay") window.toggleStoreLocator();
-      });
-    var stockToggle = document.getElementById("stockToggle");
-    if (stockToggle) stockToggle.addEventListener("change", window.refreshStoreDisplay);
-    var searchInput = document.getElementById("storeSearchInput");
-    if (searchInput) searchInput.addEventListener("input", window.refreshStoreDisplay);
+  // --- Initialisation des écouteurs DANS le fichier map.js ---
+  // Puisque ce fichier est chargé tardivement, on attache les événements directement
+  var overlay = document.getElementById("store-locator-overlay");
+  if (overlay) overlay.addEventListener("click", function (e) {
+      if (e.target.id === "store-locator-overlay") window.afficherInterfaceMap();
   });
+  
+  var stockToggle = document.getElementById("stockToggle");
+  if (stockToggle) stockToggle.addEventListener("change", window.refreshStoreDisplay);
+  
+  var searchInput = document.getElementById("storeSearchInput");
+  if (searchInput) searchInput.addEventListener("input", window.refreshStoreDisplay);
 
-  // --- C'EST LA PARTIE QUE J'AI CORRIGÉE POUR LE FLASH ---
-  window.toggleStoreLocator = function () {
+  // --- FONCTION PRINCIPALE RENOMMÉE ---
+  // Cette fonction gère l'affichage/masquage de l'interface (overlay)
+  window.afficherInterfaceMap = function () {
     var overlay = document.getElementById("store-locator-overlay");
     var header = document.querySelector("header");
     var body = document.body;
@@ -200,12 +204,12 @@ if (typeof window.mapScriptLoaded === "undefined") {
       
       // On attend la fin de l'animation (300ms) pour remettre display:none
       storeLocatorTimeout = setTimeout(function () {
-        overlay.style.display = "none"; // <--- REMPLACÉ visibility par display
+        overlay.style.display = "none"; 
       }, 300);
       
     } else {
       // SI LE MENU EST FERMÉ -> ON L'OUVRE
-      overlay.style.display = "flex"; // <--- REMPLACÉ visibility par display
+      overlay.style.display = "flex"; 
       // On force le navigateur à recalculer (reflow) pour que la transition CSS marche
       void overlay.offsetWidth; 
       
@@ -221,8 +225,7 @@ if (typeof window.mapScriptLoaded === "undefined") {
       }
     }
   };
-  // -------------------------------------------------------
-
+  
   window.switchView = function (viewName) {
     var tabs = document.querySelectorAll(".sl-tab");
     var list = document.getElementById("view-list");

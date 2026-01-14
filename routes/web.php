@@ -2,6 +2,8 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Models\Visit; // Pour les stats admin
+use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Response;
 
 // Controllers
 use App\Http\Controllers\CommercialController;

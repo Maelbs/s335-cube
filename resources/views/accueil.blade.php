@@ -16,8 +16,14 @@
 <div class="cookie-overlay" id="cookieOverlay">
     <div class="cookie-modal" id="cookieModal">
     
-    <div id="step1-container" style="display: flex; width: 100%; height: 100%;">
-        <div class="cookie-col-left" style="background-image: url('{{ asset('images/cookies-bg.jpg') }}');"></div>
+    <div class="cookie-col-left">
+        <img src="{{ asset('images/cookies-bg.jpg') }}" 
+            alt="" 
+            fetchpriority="high" 
+            class="cookie-bg-img"
+            width="400" 
+            height="600"> 
+    </div>
 
         <div class="cookie-col-right">
             <div class="cookie-header">

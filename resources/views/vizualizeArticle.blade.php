@@ -569,6 +569,24 @@
         </section>
     @endif
 
+    <div id="lightbox-3d" class="lightbox-3d">
+        <button id="close-3d-btn" class="close-3d-btn">×</button>
+        
+        <div id="loader-wrapper" class="loader-wrapper" style="display: none;">
+            <div class="loader"></div>
+            <p id="loader-text">Chargement 0%</p>
+        </div>
+
+        <div id="product-viewer" class="product-viewer">
+            <img id="bike-image" src="" alt="Vue 3D" draggable="false">
+            
+            <div class="viewer-instruction">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 11V6a2 2 0 0 0-2-2v0a2 2 0 0 0-2 2v0"></path><path d="M14 10V4a2 2 0 0 0-2-2v0a2 2 0 0 0-2 2v2"></path><path d="M10 10.5V6a2 2 0 0 0-2-2v0a2 2 0 0 0-2 2v8"></path><path d="M18 8a2 2 0 1 1 4 0v6a8 8 0 0 1-8 8h-2c-2.8 0-4.5-.86-5.99-2.34l-3.6-3.6a2 2 0 0 1 2.83-2.82L7 15"></path></svg>
+                <span>Faites glisser pour tourner</span>
+            </div>
+        </div>
+    </div>
+
     <div id="zoomModalOverlay" class="zoom-overlay">
         <button class="zoom-close-btn" onclick="closeZoom(event)">×</button>
         <button class="zoom-nav zoom-prev" onclick="changeZoomImage(-1)">❮</button>

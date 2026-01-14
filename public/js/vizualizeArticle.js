@@ -1,9 +1,10 @@
 document.addEventListener("DOMContentLoaded", function () {
+  // --- GESTION DES TOGGLES (Fiche technique, etc.) ---
   const toggles = document.querySelectorAll(".toggle-specs-btn");
 
   toggles.forEach((btn) => {
-    if (btn.textContent.trim() === "") btn.textContent = ""; 
-    
+    if (btn.textContent.trim() === "") btn.textContent = "";
+
     const headerRow = btn.closest(".specs-header-row");
     const content = headerRow.nextElementSibling;
 
@@ -27,6 +28,7 @@ document.addEventListener("DOMContentLoaded", function () {
     });
   });
 
+  // --- CAROUSEL SIMPLE (Accessoires) ---
   const trackSimple = document.querySelector(".st-carousel-track");
   const btnLeft = document.querySelector(".st-btn-left");
   const btnRight = document.querySelector(".st-btn-right");
@@ -45,6 +47,7 @@ document.addEventListener("DOMContentLoaded", function () {
     btnRight.addEventListener("click", () => scrollCarousel("right"));
   }
 
+  // --- CAROUSEL PRINCIPAL (Vélos) ---
   const track = document.querySelector(".carousel-track");
   if (track && track.children.length > 1) {
     const slides = Array.from(track.children);
@@ -128,13 +131,14 @@ document.addEventListener("DOMContentLoaded", function () {
     });
   }
 
+  // --- SÉLECTEURS DE TAILLE ---
   const sizeSelectors = document.querySelectorAll(".size-btn");
   const btnPanier = document.getElementById("btn-panier");
 
   sizeSelectors.forEach((selector) => {
     selector.addEventListener("click", function () {
-      sizeSelectors.forEach(btn => btn.classList.remove('active'));
-      this.classList.add('active');
+      sizeSelectors.forEach((btn) => btn.classList.remove("active"));
+      this.classList.add("active");
 
       if (btnPanier) {
         btnPanier.style.display = "inline-block";
@@ -147,43 +151,50 @@ document.addEventListener("DOMContentLoaded", function () {
     });
   });
 
+  // --- VISIONNEUSE 3D ---
   const openBtn = document.getElementById("open-3d-btn");
   const closeBtn = document.getElementById("close-3d-btn");
   const lightbox = document.getElementById("lightbox-3d");
 
   if (openBtn) {
     const folderPath = openBtn.dataset.folder.trim();
-    const extension = ".webp";
+    // CORRECTION : J'ai mis .jpg par défaut. Remettez .webp si vos images sont des webp
+    const extension = ".jpg"; 
     const totalImages = 20;
 
+    // On vérifie l'image 01 avant d'afficher le bouton
     const testImageSrc = `${folderPath}01${extension}`;
     const tester = new Image();
-    tester.onload = () => { openBtn.style.display = "flex"; };
-    tester.onerror = () => { openBtn.style.display = "none"; };
+    tester.onload = () => {
+      openBtn.style.display = "flex";
+    };
+    tester.onerror = () => {
+      openBtn.style.display = "none";
+    };
     tester.src = testImageSrc;
 
     openBtn.addEventListener("click", () => {
-      if(lightbox) {
-          lightbox.classList.add("active");
-          document.body.classList.add("zoom-is-open");
-          init3DViewer(folderPath, extension, totalImages);
+      if (lightbox) {
+        lightbox.classList.add("active");
+        document.body.classList.add("zoom-is-open");
+        init3DViewer(folderPath, extension, totalImages);
       }
     });
 
     if (closeBtn) {
-        closeBtn.addEventListener("click", () => {
-            lightbox.classList.remove("active");
-            document.body.classList.remove("zoom-is-open");
-        });
+      closeBtn.addEventListener("click", () => {
+        lightbox.classList.remove("active");
+        document.body.classList.remove("zoom-is-open");
+      });
     }
 
     if (lightbox) {
-        lightbox.addEventListener("click", (e) => {
-            if (e.target === lightbox) {
-                lightbox.classList.remove("active");
-                document.body.classList.remove("zoom-is-open");
-            }
-        });
+      lightbox.addEventListener("click", (e) => {
+        if (e.target === lightbox) {
+          lightbox.classList.remove("active");
+          document.body.classList.remove("zoom-is-open");
+        }
+      });
     }
   }
 
@@ -201,58 +212,83 @@ document.addEventListener("DOMContentLoaded", function () {
     if (loaderWrapper) loaderWrapper.style.display = "flex";
 
     for (let i = 1; i <= totalImages; i++) {
-        const imageNumber = i.toString().padStart(2, "0");
-        const imgSrc = `${folderPath}${imageNumber}${extension}`;
-        const img = new Image();
-        img.src = imgSrc;
-        img.onload = () => {
-          loadedCount++;
-          if (loaderText) loaderText.innerText = `Chargement ${Math.floor((loadedCount / totalImages) * 100)}%`;
-          if (loadedCount === totalImages) startViewer();
-        };
-        images.push(imgSrc);
+      const imageNumber = i.toString().padStart(2, "0");
+      const imgSrc = `${folderPath}${imageNumber}${extension}`;
+      const img = new Image();
+      img.src = imgSrc;
+      img.onload = () => {
+        loadedCount++;
+        if (loaderText)
+          loaderText.innerText = `Chargement ${Math.floor(
+            (loadedCount / totalImages) * 100
+          )}%`;
+        if (loadedCount === totalImages) startViewer();
+      };
+      images.push(imgSrc);
     }
 
     function startViewer() {
       if (loaderWrapper) loaderWrapper.style.display = "none";
       updateImage(1);
-      
+
       const newViewer = viewer.cloneNode(true);
       viewer.parentNode.replaceChild(newViewer, viewer);
 
-      newViewer.addEventListener("mousedown", (e) => { isDragging = true; startX = e.pageX; newViewer.style.cursor = "grabbing"; e.preventDefault(); });
-      window.addEventListener("mouseup", () => { isDragging = false; if(newViewer) newViewer.style.cursor = "grab"; });
-      window.addEventListener("mousemove", (e) => {
-         if (!isDragging) return;
-         const change = e.pageX - startX;
-         if (Math.abs(change) > sensitivity) {
-            change > 0 ? prevFrame() : nextFrame();
-            startX = e.pageX;
-         }
+      newViewer.addEventListener("mousedown", (e) => {
+        isDragging = true;
+        startX = e.pageX;
+        newViewer.style.cursor = "grabbing";
+        e.preventDefault();
       });
-      
-      newViewer.addEventListener("touchstart", (e) => { isDragging = true; startX = e.touches[0].pageX; }, { passive: false });
-      window.addEventListener("touchend", () => { isDragging = false; });
+      window.addEventListener("mouseup", () => {
+        isDragging = false;
+        if (newViewer) newViewer.style.cursor = "grab";
+      });
+      window.addEventListener("mousemove", (e) => {
+        if (!isDragging) return;
+        const change = e.pageX - startX;
+        if (Math.abs(change) > sensitivity) {
+          change > 0 ? prevFrame() : nextFrame();
+          startX = e.pageX;
+        }
+      });
+
+      newViewer.addEventListener("touchstart", (e) => {
+          isDragging = true;
+          startX = e.touches[0].pageX;
+        }, { passive: false });
+      window.addEventListener("touchend", () => {
+        isDragging = false;
+      });
       window.addEventListener("touchmove", (e) => {
-         if (!isDragging) return;
-         const change = e.touches[0].pageX - startX;
-         if (Math.abs(change) > sensitivity) {
+          if (!isDragging) return;
+          const change = e.touches[0].pageX - startX;
+          if (Math.abs(change) > sensitivity) {
             change > 0 ? prevFrame() : nextFrame();
             startX = e.touches[0].pageX;
-         }
-      }, { passive: false });
+          }
+        }, { passive: false });
     }
 
-    function nextFrame() { currentFrame++; if (currentFrame > totalImages) currentFrame = 1; updateImage(currentFrame); }
-    function prevFrame() { currentFrame--; if (currentFrame < 1) currentFrame = totalImages; updateImage(currentFrame); }
+    function nextFrame() {
+      currentFrame++;
+      if (currentFrame > totalImages) currentFrame = 1;
+      updateImage(currentFrame);
+    }
+    function prevFrame() {
+      currentFrame--;
+      if (currentFrame < 1) currentFrame = totalImages;
+      updateImage(currentFrame);
+    }
     function updateImage(frame) {
-        const imgEl = document.getElementById("bike-image");
-        if (imgEl) imgEl.src = images[frame - 1];
+      const imgEl = document.getElementById("bike-image");
+      if (imgEl) imgEl.src = images[frame - 1];
     }
   }
 });
 
-window.openZoom = function() {
+// --- ZOOM MODAL ---
+window.openZoom = function () {
   const overlay = document.getElementById("zoomModalOverlay");
   const zoomImg = document.getElementById("zoomImageFull");
   const activeSlide = document.querySelector(".carousel-slide.current-slide img");
@@ -261,30 +297,34 @@ window.openZoom = function() {
     zoomImg.src = activeSlide.src;
     overlay.style.display = "flex";
     document.body.classList.add("zoom-is-open");
-    setTimeout(() => { overlay.classList.add("active"); }, 10);
+    setTimeout(() => {
+      overlay.classList.add("active");
+    }, 10);
   }
 };
 
-window.closeZoom = function(e) {
+window.closeZoom = function (e) {
   if (e) {
     e.stopPropagation();
     if (e.target.id === "zoomImageFull" || e.target.classList.contains("zoom-nav")) return;
   }
   const overlay = document.getElementById("zoomModalOverlay");
   const zoomImg = document.getElementById("zoomImageFull");
-  
+
   if (overlay && zoomImg) {
-      overlay.classList.remove("active");
-      zoomImg.classList.remove("zoomed-in");
-      zoomImg.style.transformOrigin = "center center";
-      document.body.classList.remove("zoom-is-open");
-      setTimeout(() => { overlay.style.display = "none"; }, 300);
+    overlay.classList.remove("active");
+    zoomImg.classList.remove("zoomed-in");
+    zoomImg.style.transformOrigin = "center center";
+    document.body.classList.remove("zoom-is-open");
+    setTimeout(() => {
+      overlay.style.display = "none";
+    }, 300);
   }
 };
 
-window.changeZoomImage = function(direction) {
+window.changeZoomImage = function (direction) {
   const track = document.querySelector(".carousel-track");
-  if(!track) return;
+  if (!track) return;
   const slides = Array.from(track.children);
   const currentSlide = track.querySelector(".current-slide");
   let currentIndex = slides.indexOf(currentSlide);
@@ -301,16 +341,16 @@ window.changeZoomImage = function(direction) {
   targetSlide.classList.add("current-slide");
 
   const zoomImg = document.getElementById("zoomImageFull");
-  if(zoomImg) {
-      zoomImg.style.opacity = 0.5;
-      setTimeout(() => {
-        zoomImg.src = targetSlide.querySelector("img").src;
-        zoomImg.style.opacity = 1;
-      }, 150);
+  if (zoomImg) {
+    zoomImg.style.opacity = 0.5;
+    setTimeout(() => {
+      zoomImg.src = targetSlide.querySelector("img").src;
+      zoomImg.style.opacity = 1;
+    }, 150);
   }
 };
 
-window.toggleZoomState = function(e) {
+window.toggleZoomState = function (e) {
   if (e.target.tagName === "BUTTON") return;
   const img = document.getElementById("zoomImageFull");
   if (img && (e.target === img || e.target.classList.contains("zoom-container"))) {
@@ -329,10 +369,10 @@ window.toggleZoomState = function(e) {
   }
 };
 
-window.selectionnerTaille = function(tailleNom, qtyWeb, qtyGlobal, qtyLocal, isStoreSelected) {
-  
+// --- GESTION STOCK ET PANIER ---
+window.selectionnerTaille = function (tailleNom, qtyWeb, qtyGlobal, qtyLocal, isStoreSelected) {
   const inputTaille = document.getElementById("input-taille-selected");
-  if(inputTaille) inputTaille.value = tailleNom;
+  if (inputTaille) inputTaille.value = tailleNom;
 
   const formPanier = document.getElementById("form-ajout-panier");
   const btnMagasin = document.getElementById("btn-contact-magasin");
@@ -344,55 +384,64 @@ window.selectionnerTaille = function(tailleNom, qtyWeb, qtyGlobal, qtyLocal, isS
   const textMagasin = document.getElementById("text-magasin");
 
   if (qtyWeb > 0) {
-    if(formPanier) formPanier.style.display = "inline-block";
-    if(dotWeb) { dotWeb.style.backgroundColor = "#28a745"; textWeb.textContent = "Disponible en ligne"; textWeb.style.color = "#333"; }
+    if (formPanier) formPanier.style.display = "inline-block";
+    if (dotWeb) {
+      dotWeb.style.backgroundColor = "#28a745";
+      textWeb.textContent = "Disponible en ligne";
+      textWeb.style.color = "#333";
+    }
   } else {
-    if(formPanier) formPanier.style.display = "none";
-    if(dotWeb) { dotWeb.style.backgroundColor = "#dc3545"; textWeb.textContent = "Indisponible en ligne"; textWeb.style.color = "#6b7280"; }
-  }
-
-  if (btnMagasin) btnMagasin.style.display = "inline-block"; 
-
-  if (isStoreSelected) 
-  {
-    if (qtyLocal > 0) 
-    {
-      if(dotMagasin) { dotMagasin.style.backgroundColor = "#28a745"; textMagasin.textContent = "Disponible dans votre magasin"; }
-    } 
-    else if (qtyGlobal > 0) 
-    {
-      if(dotMagasin) { dotMagasin.style.backgroundColor = "#ffc107"; textMagasin.textContent = "Disponible dans d'autres magasins"; }
-    } 
-    else 
-    {
-      if(dotMagasin) { dotMagasin.style.backgroundColor = "#dc3545"; textMagasin.textContent = "Indisponible dans votre magasin"; }
-    }
-  } 
-  else 
-  {
-    if (qtyGlobal > 0) 
-    {
-      if(dotMagasin) { dotMagasin.style.backgroundColor = "#28a745"; textMagasin.textContent = "Disponible en magasin"; }
-    } 
-    else 
-    {
-      if(dotMagasin) { dotMagasin.style.backgroundColor = "#dc3545"; textMagasin.textContent = "Indisponible en magasin"; }
+    if (formPanier) formPanier.style.display = "none";
+    if (dotWeb) {
+      dotWeb.style.backgroundColor = "#dc3545";
+      textWeb.textContent = "Indisponible en ligne";
+      textWeb.style.color = "#6b7280";
     }
   }
 
-  if (qtyWeb <= 0 && qtyGlobal <= 0) 
-  {
-    if(msgIndispo) msgIndispo.style.display = "block";
-  } 
-  else 
-  {
-    if(msgIndispo) msgIndispo.style.display = "none";
+  if (btnMagasin) btnMagasin.style.display = "inline-block";
+
+  if (isStoreSelected) {
+    if (qtyLocal > 0) {
+      if (dotMagasin) {
+        dotMagasin.style.backgroundColor = "#28a745";
+        textMagasin.textContent = "Disponible dans votre magasin";
+      }
+    } else if (qtyGlobal > 0) {
+      if (dotMagasin) {
+        dotMagasin.style.backgroundColor = "#ffc107";
+        textMagasin.textContent = "Disponible dans d'autres magasins";
+      }
+    } else {
+      if (dotMagasin) {
+        dotMagasin.style.backgroundColor = "#dc3545";
+        textMagasin.textContent = "Indisponible dans votre magasin";
+      }
+    }
+  } else {
+    if (qtyGlobal > 0) {
+      if (dotMagasin) {
+        dotMagasin.style.backgroundColor = "#28a745";
+        textMagasin.textContent = "Disponible en magasin";
+      }
+    } else {
+      if (dotMagasin) {
+        dotMagasin.style.backgroundColor = "#dc3545";
+        textMagasin.textContent = "Indisponible en magasin";
+      }
+    }
+  }
+
+  if (qtyWeb <= 0 && qtyGlobal <= 0) {
+    if (msgIndispo) msgIndispo.style.display = "block";
+  } else {
+    if (msgIndispo) msgIndispo.style.display = "none";
   }
 };
 
-window.addToCartAjax = function() {
+window.addToCartAjax = function () {
   const form = document.getElementById("form-ajout-panier");
-  if(!form) return;
+  if (!form) return;
 
   const url = form.dataset.action;
   const formData = new FormData(form);
@@ -422,33 +471,108 @@ window.addToCartAjax = function() {
     });
 };
 
-window.fillAndOpenModal = function(data) {
+window.fillAndOpenModal = function (data) {
   const modal = document.getElementById("cartModal");
-  if(!modal) return;
+  if (!modal) return;
 
   document.getElementById("modalName").textContent = data.product.name;
-  document.getElementById("modalPrice").textContent = new Intl.NumberFormat("fr-FR", {
-    style: "currency", currency: "EUR"
-  }).format(data.product.price) + " TTC";
-  
-  if(document.getElementById("modalImg")) document.getElementById("modalImg").src = data.product.image;
-  if(document.getElementById("modalSize")) document.getElementById("modalSize").textContent = data.product.taille;
-  if(document.getElementById("modalQty")) document.getElementById("modalQty").textContent = data.product.qty;
+  document.getElementById("modalPrice").textContent =
+    new Intl.NumberFormat("fr-FR", {
+      style: "currency",
+      currency: "EUR",
+    }).format(data.product.price) + " TTC";
 
-  if(document.getElementById("cartCount")) document.getElementById("cartCount").textContent = data.cart.count;
-  
-  const formattedTotal = new Intl.NumberFormat("fr-FR", { style: "currency", currency: "EUR" }).format(data.cart.total);
-  const formattedTax = new Intl.NumberFormat("fr-FR", { style: "currency", currency: "EUR" }).format(data.cart.total * 0.2);
+  if (document.getElementById("modalImg"))
+    document.getElementById("modalImg").src = data.product.image;
+  if (document.getElementById("modalSize"))
+    document.getElementById("modalSize").textContent = data.product.taille;
+  if (document.getElementById("modalQty"))
+    document.getElementById("modalQty").textContent = data.product.qty;
 
-  if(document.getElementById("cartSubtotal")) document.getElementById("cartSubtotal").textContent = formattedTotal;
-  if(document.getElementById("cartTotal")) document.getElementById("cartTotal").textContent = formattedTotal;
-  if(document.getElementById("cartTax")) document.getElementById("cartTax").textContent = formattedTax;
+  if (document.getElementById("cartCount"))
+    document.getElementById("cartCount").textContent = data.cart.count;
+
+  const formattedTotal = new Intl.NumberFormat("fr-FR", {
+    style: "currency",
+    currency: "EUR",
+  }).format(data.cart.total);
+  const formattedTax = new Intl.NumberFormat("fr-FR", {
+    style: "currency",
+    currency: "EUR",
+  }).format(data.cart.total * 0.2);
+
+  if (document.getElementById("cartSubtotal"))
+    document.getElementById("cartSubtotal").textContent = formattedTotal;
+  if (document.getElementById("cartTotal"))
+    document.getElementById("cartTotal").textContent = formattedTotal;
+  if (document.getElementById("cartTax"))
+    document.getElementById("cartTax").textContent = formattedTax;
 
   modal.style.display = "flex";
 };
 
-window.closeModalAndRefresh = function() {
-    const modal = document.getElementById('cartModal');
-    if (modal) modal.style.display = 'none';
-    location.reload();
+window.closeModalAndRefresh = function () {
+  const modal = document.getElementById("cartModal");
+  if (modal) modal.style.display = "none";
+  location.reload();
 };
+
+/* ========================================================
+   LAZY LOADING : CHARGEMENT EN CASCADE
+   Leaflet -> puis map.js -> puis ouverture de la carte
+======================================================== */
+let isMapSystemLoaded = false;
+
+window.toggleStoreLocator = function () {
+  // 1. Si tout est déjà chargé, on lance directement l'interface via map.js
+  if (isMapSystemLoaded && typeof window.afficherInterfaceMap === 'function') {
+    window.afficherInterfaceMap(); 
+    return;
+  }
+
+  // 2. Sinon, on lance le chargement
+  console.log("Chargement des ressources cartographiques...");
+
+  // A. CSS
+  const link = document.createElement("link");
+  link.rel = "stylesheet";
+  link.href = "https://unpkg.com/leaflet@1.9.4/dist/leaflet.css";
+  document.head.appendChild(link);
+
+  // B. JS Leaflet
+  const scriptLeaflet = document.createElement("script");
+  scriptLeaflet.src = "https://unpkg.com/leaflet@1.9.4/dist/leaflet.js";
+  scriptLeaflet.async = true;
+  
+  scriptLeaflet.onload = function () {
+    console.log("Leaflet chargé. Chargement de map.js...");
+    chargerMapScript();
+  };
+  
+  document.body.appendChild(scriptLeaflet);
+};
+
+// Fonction interne pour charger votre fichier map.js
+function chargerMapScript() {
+    const scriptMap = document.createElement("script");
+    
+    // IMPORTANT : Vérifiez que le chemin est correct pour votre projet Laravel
+    scriptMap.src = "/js/map.js"; 
+
+    scriptMap.onload = function() {
+        console.log("map.js chargé !");
+        isMapSystemLoaded = true;
+        
+        // On appelle la fonction principale de map.js (qu'on a renommée)
+        if (typeof window.afficherInterfaceMap === 'function') {
+            window.afficherInterfaceMap();
+        } else {
+            console.error("Erreur : La fonction window.afficherInterfaceMap est introuvable.");
+        }
+    };
+    scriptMap.onerror = function() {
+        alert("Erreur lors du chargement de la carte.");
+    };
+
+    document.body.appendChild(scriptMap);
+}
