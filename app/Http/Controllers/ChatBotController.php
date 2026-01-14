@@ -3,10 +3,12 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\File;
 use Gemini\Laravel\Facades\Gemini;
 use Gemini\Data\Content; 
 use Illuminate\Support\Facades\Log;
 use App\Models\CategorieVelo;
+use App\Models\Couleur;
 use App\Models\CategorieAccessoire;
 use Illuminate\Support\Facades\Auth;
 use App\Models\Accessoire;
@@ -21,9 +23,9 @@ class ChatBotController extends Controller
         if (!$userMessage) return response()->json(['reply' => "Besoin d'aide ?"], 200);
 
         $models = [
+            'gemini-2.0-flash-lite',
             'gemini-2.5-flash',   
             'gemini-2.0-flash',  
-            'gemini-2.0-flash-lite',  
             'gemini-3-flash-preview', 
             'gemini-1.5-flash-latest' 
         ];
@@ -66,12 +68,17 @@ class ChatBotController extends Controller
                 'ref' => $v->reference,
                 'nom' => $v->nom_article,
                 'prix' => $v->prix . '€',
+                'poids' => $v->poids,
                 'url' => "/velo/" . $v->reference,
                 'type' => $v->batterie ? 'Électrique' : 'Musculaire',
                 'cadre' => optional($v->modele)->materiau_cadre ?? 'N/A',
                 'categorie' => optional($v->modele)->categorie->nom_categorie ?? 'N/A',
-                'millesime' => optional($v->modele)->millesime_modele ?? 'N/A'
-            ]);
+                'millesime' => optional($v->modele)->millesime_modele ?? 'N/A',
+                'couleur' => $v->couleur ? [
+                    'nom' => $v->couleur->nom_couleur,
+                    'hexa' => $v->couleur->hexa_couleur,
+                ] : null
+            ]);            
 
             $accessoires = Accessoire::with('categorie')
             ->get()
@@ -83,15 +90,59 @@ class ChatBotController extends Controller
                 'categorie' => $a->categorie->nom_categorie_accessoire ?? 'N/A'
             ]);
 
+            $webRoutesPath = base_path('routes/web.php');
+
+            $webRoutesContent = '';
+
+            if (File::exists($webRoutesPath)) {
+                $webRoutesContent = trim(File::get($webRoutesPath));
+            }
+
+            $viewsPath = resource_path('views');
+
+            $bladeFiles = File::allFiles($viewsPath);
+
+            $bladesContent = [];
+
+            foreach ($bladeFiles as $file) {
+                if ($file->getExtension() === 'php') {
+                    $relativePath = str_replace($viewsPath . DIRECTORY_SEPARATOR, '', $file->getPathname());
+
+                    $bladesContent[] = [
+                        'fichier' => $relativePath,
+                        'contenu' => trim(file_get_contents($file->getPathname()))
+                    ];
+                }
+            }
+
+            $cleanBlades = [];
+
+            foreach ($bladesContent as $blade) {
+                $cleanBlades[] = [
+                    'fichier' => $blade['fichier'],
+                    'contenu' => $this->cleanBlade($blade['contenu'])
+                ];
+            }
+
+            $viewsText = "";
+
+            foreach ($cleanBlades as $blade) {
+                $viewsText .= "\nFICHIER: {$blade['fichier']}\n";
+                $viewsText .= "{$blade['contenu']}\n";
+            }
+
             $systemPrompt = "
-                Tu es l'expert CUBE. 
+                Tu es l'expert CUBE.
 
-                INFORMATIONS DU SITE (À UTILISER UNIQUEMENT SI PERTINENT) :
-                1. MAGASINS : Un bouton « Choisir mon magasin » est disponible en haut à droite du site pour localiser les revendeurs. Après clic, l’utilisateur peut choisir un magasin soit depuis une liste verticale de magasins, soit via une carte interactive.
-                2. TAILLE DE CADRE : TAILLE DE CADRE : Chaque page produit vélo (hors accessoires) dispose d’un outil de calcul de taille (« Calculateur de taille ») situé en bas de la page, sous les caractéristiques du vélo.
-
-                ESPACE CLIENT (CONFIDENTIEL) :
-                Utilisateur connecté : " . ($clientData ? json_encode($clientData) : "Aucun utilisateur connecté") . "
+                ROUTES DU SITE (web.php) :
+                $webRoutesContent
+                
+                VUES DU SITE :
+                $viewsText
+                
+                ESPACE CLIENT :
+                " . ($clientData ? json_encode($clientData) : "Aucun utilisateur connecté") . "
+            
 
                 CONSIGNE STRICTE : 
                 
@@ -110,9 +161,13 @@ class ChatBotController extends Controller
 
                 RÈGLES :
                 - INTERDICTION TOTALE d’utiliser des étoiles (* ou **) ou tout autre format Markdown.
+                - Si l'utilisateur demande d’aller sur une page du site, tu dois fournir le lien HTML exact.
                 - Si l'utilisateur demande 'où en est ma commande', utilise les données 'dernieres_commandes'.
                 - Si l'utilisateur demande 'qu'est-ce que j'ai dans mon panier', utilise 'panier_actuel'.
                 - Salue l'utilisateur par son prénom s'il est connecté.
+                - Tu n’as PAS le droit de déduire ou supposer une couleur.
+                - Tu dois afficher UNIQUEMENT la couleur présente dans le champ couleur du vélo.
+                - Si le champ couleur est null, tu dois dire explicitement Couleur non précisée.
                 - INTERDICTION de divulguer des mots de passe ou IDs techniques.
                 - Réponds uniquement en texte simple + HTML autorisé pour les liens (<a>).
                 - Ne jamais inventer d’information liée au fonctionnement du site.
@@ -128,6 +183,7 @@ class ChatBotController extends Controller
             foreach ($models as $modelName) {
                 try {
                     Log::info("Tentative de chat avec : " . $modelName);
+                    Log::info('TAILLE PROMPT', ['chars' => strlen($systemPrompt)]);
                     
                     $result = Gemini::generativeModel(model: $modelName)
                         ->withSystemInstruction(Content::parse($systemPrompt))
@@ -147,4 +203,19 @@ class ChatBotController extends Controller
             return response()->json(['reply' => "Erreur technique. Réessayez."], 200);
         }
     }
+    
+    function cleanBlade($content)
+    {
+        // Supprimer les directives Blade
+        $content = preg_replace('/@\w+(\(.*?\))?/', '', $content);
+
+        // Supprimer scripts
+        $content = preg_replace('/<script\b[^>]*>(.*?)<\/script>/is', '', $content);
+
+        // Réduire les espaces
+        $content = preg_replace('/\s+/', ' ', $content);
+
+        return trim($content);
+    }
+
 }
