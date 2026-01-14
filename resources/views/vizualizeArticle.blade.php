@@ -577,6 +577,7 @@
             <img id="zoomImageFull" src="" alt="Zoom Produit">
         </div>
     </div>
+    @include('layouts.footer')
 
     <script src="{{ asset('js/vizualizeArticle.js') }}" defer></script>
     <script>
@@ -598,6 +599,8 @@
             }
         }
     </script>
+
+    
 </body>
 
 </html>

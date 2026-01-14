@@ -1,3 +1,19 @@
+<style>
+footer {
+    background: #111;
+    color: #fff;
+    padding: 40px;
+    text-align: center;
+    font-size: 14px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    width: 100%;
+}
+a {
+    color: white;
+}
+</style>
+
 <footer class="bg-gray-900 text-white py-8 mt-12">
     <div class="container mx-auto px-4">
         <div class="flex flex-col md:flex-row justify-between items-center">
