@@ -7,7 +7,6 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Inscription</title>
     <link rel="stylesheet" href="{{ asset('css/inscription.css') }}">
-    <link rel="stylesheet" href="{{ asset('css/header.css') }}">
 </head>
 
 <body>

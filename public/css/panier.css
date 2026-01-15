@@ -1,8 +1,4 @@
-@font-face {
-    font-family: 'Damas Font';
-    src: url('../font/font.woff2');
-    font-display: swap;
-}
+
 
 * {
     box-sizing: border-box;

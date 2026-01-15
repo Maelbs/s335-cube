@@ -7,8 +7,6 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>{{ $article->nom_article }}</title>
-
-    <link rel="stylesheet" href="{{ asset('css/header.css') }}">
     <link rel="stylesheet" href="{{ asset('css/vizualizeArticle.css') }}">
 </head>
 
@@ -91,31 +89,31 @@
                 @endphp
 
                 <div class="carousel-track-container">
-                <ul class="carousel-track">
-                    @if(count($validImages) > 0)
-                        @foreach($validImages as $index => $imageUrl)
-                            <li class="carousel-slide {{ $index === 0 ? 'current-slide' : '' }}">
-                                @if($index === 0)
-                                    {{-- La première image est chargée immédiatement (priorité haute) --}}
-                                    <img src="{{ asset($imageUrl) }}" 
-                                        alt="{{ $article->nom_article }} - Vue {{ $index + 1 }}" 
-                                        fetchpriority="high">
-                                @else
-                                    {{-- Les autres images ont un placeholder transparent et l'URL réelle dans data-src --}}
-                                    <img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" 
-                                        data-src="{{ asset($imageUrl) }}" 
-                                        alt="{{ $article->nom_article }} - Vue {{ $index + 1 }}" 
-                                        loading="lazy"
-                                        class="lazy-image">
-                                @endif
+                    <ul class="carousel-track">
+                        @if(count($validImages) > 0)
+                            @foreach($validImages as $index => $imageUrl)
+                                <li class="carousel-slide {{ $index === 0 ? 'current-slide' : '' }}">
+                                    @if($index === 0)
+                                        {{-- La première image est chargée immédiatement (priorité haute) --}}
+                                        <img src="{{ asset($imageUrl) }}" 
+                                             alt="{{ $article->nom_article }} - Vue {{ $index + 1 }}" 
+                                             fetchpriority="high">
+                                    @else
+                                        {{-- Les autres images sont chargées via JS (Lazy Load manuel) --}}
+                                        <img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" 
+                                             data-src="{{ asset($imageUrl) }}" 
+                                             alt="{{ $article->nom_article }} - Vue {{ $index + 1 }}" 
+                                             loading="lazy"
+                                             class="lazy-image">
+                                    @endif
+                                </li>
+                            @endforeach
+                        @else
+                            <li class="carousel-slide current-slide">
+                                <img src="https://placehold.co/800x500?text=Image+Non+Disponible" alt="Pas d'image disponible">
                             </li>
-                        @endforeach
-                    @else
-                        <li class="carousel-slide current-slide">
-                            <img src="https://placehold.co/800x500?text=Image+Non+Disponible" alt="Pas d'image disponible">
-                        </li>
-                    @endif
-                </ul>
+                        @endif
+                    </ul>
 
                     @php
                         $ref = trim($article->reference);
@@ -481,7 +479,8 @@
             @endif
 
         </div>
-    </main> @if(!$isAccessoire)
+    </main> 
+    @if(!$isAccessoire)
         @include('layouts.bikeSizing')
     @endif
 
@@ -513,10 +512,10 @@
                                     @endphp
 
                                     @if(file_exists(public_path($imgPath)))
-                                        <img src="{{ asset($imgPath) }}" alt="{{ $accessoire->nom_article }}">
+                                        <img src="{{ asset($imgPath) }}" alt="{{ $accessoire->nom_article }}" loading="lazy">
                                     @else
                                         <img src="https://placehold.co/300x200?text=Image+Non+Disponible"
-                                            alt="{{ $accessoire->nom_article }}">
+                                            alt="{{ $accessoire->nom_article }}" loading="lazy">
                                     @endif
                                 </div>
 
@@ -559,10 +558,10 @@
                                     @endphp
 
                                     @if(file_exists(public_path($simImgPath)))
-                                        <img src="{{ asset($simImgPath) }}" alt="{{ $similaire->nom_article }}">
+                                        <img src="{{ asset($simImgPath) }}" alt="{{ $similaire->nom_article }}" loading="lazy">
                                     @else
                                         <img src="https://placehold.co/300x200?text=Image+Non+Disponible"
-                                            alt="{{ $similaire->nom_article }}">
+                                            alt="{{ $similaire->nom_article }}" loading="lazy">
                                     @endif
                                 </div>
 

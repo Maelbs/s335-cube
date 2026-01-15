@@ -1,21 +1,8 @@
 <head>
     <meta charset="UTF-8" name="description" content="Site non officiel de cube">
     <link rel="stylesheet" href="{{ asset('css/magasin.css') }}">
-    <style>
-        /* On cible l'ID et la Classe pour être sûr à 100% */
-        #store-locator-overlay, .sl-overlay {
-            display: none !important;
-            visibility: hidden !important;
-            opacity: 0 !important;
-        }
-
-        /* On autorise l'affichage UNIQUEMENT si la classe .visible est ajoutée par JS */
-        #store-locator-overlay.visible, .sl-overlay.visible {
-            display: flex !important;
-            visibility: visible !important;
-            opacity: 1 !important;
-        }
-    </style>
+    <link rel="stylesheet" href="{{ asset('css/header.css') }}">
+    <link rel="preload" href="{{ asset('font/font.woff2') }}" as="font" type="font/woff2" crossorigin>
 </head>
 
 <header>

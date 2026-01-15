@@ -6,7 +6,6 @@
     <title>Politique de Confidentialité - CUBE BIKES France</title>
     
     <link rel="stylesheet" href="{{ asset('css/style.css') }}">
-    <link rel="stylesheet" href="{{ asset('css/header.css') }}">
     <link rel="stylesheet" href="{{ asset('css/styleBody.css') }}">
 
     <style>

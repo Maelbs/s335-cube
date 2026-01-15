@@ -4,11 +4,6 @@
     <meta charset="UTF-8" name="description" content="Site non officiel de cube">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Contactez-nous | CUBE Bikes France</title>
-
-    
-    {{-- CSS du Header existant --}}
-    <link rel="stylesheet" href="{{ asset('css/header.css') }}">
-
     <style>
         /* --- STYLE SPÉCIFIQUE CONTACT --- */
         @font-face {

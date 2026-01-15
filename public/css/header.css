@@ -1,7 +1,7 @@
 @font-face {
     font-family: 'Damas Font';
     src: url('../font/font.woff2');
-    font-display: swap;
+    font-display: swap; /* Essentiel pour éviter le blocage du texte (CLS) */
 }
 
 header * {
@@ -9,7 +9,7 @@ header * {
 }
 
 header, header * {
-    box-sizing: border-box; 
+    box-sizing: border-box;
 }
 
 header ul {
@@ -32,7 +32,7 @@ header {
     top: 0;
     left: 0;
     width: 100%;
-    height: 100px;
+    height: 100px; /* Hauteur fixe : excellent pour le CLS */
     z-index: 10000;
     background-color: rgba(0, 0, 0, 0.3);
     border-bottom: 1px solid rgba(255, 255, 255, 0.2);
@@ -46,12 +46,12 @@ header.header-hidden {
     transform: translateY(-100%);
 }
 
-header:hover, 
+header:hover,
 header.menu-open {
     background-color: #fff;
     color: #000;
     border-bottom: 1px solid #eee;
-    box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
 }
 
 header nav {
@@ -75,6 +75,8 @@ header nav {
     display: flex;
     align-items: center;
     height: 70px;
+    width: auto; /* Permet la flexibilité */
+    min-width: 100px; /* Réserve un espace minimum pour le logo */
     margin-right: 40px;
     transition: transform 0.3s;
 }
@@ -82,6 +84,9 @@ header nav {
 .logo img {
     height: 100%;
     width: auto;
+    /* CORRECTIF CLS : Assure que l'image ne saute pas */
+    aspect-ratio: auto; 
+    display: block;
     filter: brightness(0) invert(1);
     transition: filter 0.3s;
 }
@@ -134,10 +139,10 @@ header:hover .logo img {
 }
 
 .menu-link-reset {
-    text-decoration: none; 
-    color: inherit; 
-    display: block; 
-    width: 100%; 
+    text-decoration: none;
+    color: inherit;
+    display: block;
+    width: 100%;
     height: 100%;
 }
 
@@ -150,6 +155,9 @@ header:hover .logo img {
     text-transform: uppercase;
     z-index: 10000;
     color: inherit;
+    /* CORRECTIF CLS : Empêche l'effondrement du conteneur avant chargement */
+    min-height: 40px; 
+    min-width: 40px; 
 }
 
 #magasin {
@@ -165,31 +173,38 @@ header:hover .logo img {
     padding-left: 20px;
 }
 
+/* CORRECTIF CLS : Fixation stricte de la taille des SVG */
 .menu-user svg {
     fill: none;
     stroke: currentColor;
     stroke-width: 2;
+    width: 25px;      /* Largeur fixe */
+    height: 25px;     /* Hauteur fixe */
+    min-width: 25px;  /* Sécurité anti-écrasement */
+    display: block;   /* Évite les décalages liés au line-height */
 }
 
 .menu-user svg:hover {
     cursor: pointer;
 }
 
+/* --- MEGA MENU --- */
+
 .mega-menu-dropdown {
-    display: block; 
+    display: block;
     position: absolute;
     top: 100px;
     left: 0;
     width: 100%;
     background: #fff;
     border-top: 1px solid #e5e5e5;
-    box-shadow: 0 15px 40px rgba(0,0,0,0.1);
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.1);
     z-index: 999;
     color: #333;
     opacity: 0;
     visibility: hidden;
     pointer-events: none;
-    transform: translateY(-2px); 
+    transform: translateY(-2px);
     transition: opacity 0.3s ease, transform 0.3s ease, visibility 0.3s linear;
 }
 
@@ -197,7 +212,7 @@ header:hover .logo img {
     opacity: 1;
     visibility: visible;
     pointer-events: auto;
-    transform: translateY(0); 
+    transform: translateY(0);
 }
 
 .mega-menu-wrapper {
@@ -209,17 +224,17 @@ header:hover .logo img {
     transition: all 0.5s ease;
 }
 
-.col-roots, 
-.col-subs-wrapper, 
+.col-roots,
+.col-subs-wrapper,
 .col-models-wrapper {
     overflow-y: auto;
-    overflow-x: hidden; 
-    scrollbar-width: none; 
+    overflow-x: hidden;
+    scrollbar-width: none;
     -webkit-overflow-scrolling: touch;
 }
 
-.col-roots::-webkit-scrollbar, 
-.col-subs-wrapper::-webkit-scrollbar, 
+.col-roots::-webkit-scrollbar,
+.col-subs-wrapper::-webkit-scrollbar,
 .col-models-wrapper::-webkit-scrollbar {
     display: none;
 }
@@ -267,7 +282,7 @@ header:hover .logo img {
     color: #ccc;
 }
 
-.menu-item:hover, 
+.menu-item:hover,
 .menu-item.active {
     color: #00b0f0;
     background-color: #fff;
@@ -318,17 +333,31 @@ header:hover .logo img {
     transform: translateX(5px);
 }
 
-.d-none { display: none !important; }
-.d-block { display: block !important; }
+.d-none {
+    display: none !important;
+}
+
+.d-block {
+    display: block !important;
+}
 
 @keyframes slideInRight {
-    from { opacity: 0; transform: translateX(5px); }
-    to { opacity: 1; transform: translateX(0); }
+    from {
+        opacity: 0;
+        transform: translateX(5px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
 }
 
-.subs-container, .models-container {
+.subs-container,
+.models-container {
     animation: slideInRight 0.4s ease-out forwards;
 }
+
+/* --- SEARCH OVERLAY --- */
 
 .search-overlay-full {
     position: fixed;
@@ -343,7 +372,7 @@ header:hover .logo img {
     justify-content: center;
     padding: 0 40px;
     box-sizing: border-box;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
 }
 
 .search-overlay-full.active {
@@ -352,8 +381,12 @@ header:hover .logo img {
 }
 
 @keyframes slideInTop {
-    from { transform: translateY(-100%); }
-    to { transform: translateY(0); }
+    from {
+        transform: translateY(-100%);
+    }
+    to {
+        transform: translateY(0);
+    }
 }
 
 .search-wrapper {
@@ -400,13 +433,7 @@ header:hover .logo img {
     color: #666;
 }
 
-.menu-link-reset {
-    text-decoration: none; 
-    color: inherit; 
-    display: block; 
-    width: 100%; 
-    height: 100%;
-}
+/* --- CART DROPDOWN --- */
 
 .cart-dropdown-wrapper {
     position: relative;
@@ -421,7 +448,7 @@ header:hover .logo img {
     right: -10px;
     width: 320px;
     background-color: #fff;
-    box-shadow: 0 5px 20px rgba(0,0,0,0.15);
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.15);
     opacity: 0;
     visibility: hidden;
     transform: translateY(10px);
@@ -443,8 +470,8 @@ header:hover .logo img {
     position: absolute;
     top: -8px;
     right: 18px;
-    width: 0; 
-    height: 0; 
+    width: 0;
+    height: 0;
     border-left: 8px solid transparent;
     border-right: 8px solid transparent;
     border-bottom: 8px solid #fff;
@@ -452,22 +479,34 @@ header:hover .logo img {
 
 .cart-items-list {
     padding: 20px;
-    max-height: 33vh; 
+    max-height: 33vh;
     overflow-y: auto;
     scrollbar-width: thin;
     scrollbar-color: #ccc #f1f1f1;
 }
 
-.cart-items-list::-webkit-scrollbar { width: 6px; }
-.cart-items-list::-webkit-scrollbar-track { background: #f1f1f1; }
-.cart-items-list::-webkit-scrollbar-thumb { background: #ccc; border-radius: 3px; }
+.cart-items-list::-webkit-scrollbar {
+    width: 6px;
+}
+
+.cart-items-list::-webkit-scrollbar-track {
+    background: #f1f1f1;
+}
+
+.cart-items-list::-webkit-scrollbar-thumb {
+    background: #ccc;
+    border-radius: 3px;
+}
 
 .cart-item {
     display: flex;
     align-items: center;
     margin-bottom: 20px;
 }
-.cart-item:last-child { margin-bottom: 0; }
+
+.cart-item:last-child {
+    margin-bottom: 0;
+}
 
 .cart-item-img {
     width: 60px;
@@ -480,6 +519,7 @@ header:hover .logo img {
     justify-content: center;
     margin-right: 15px;
 }
+
 .cart-item-img img {
     max-width: 100%;
     max-height: 100%;
@@ -525,6 +565,7 @@ header:hover .logo img {
     color: #000;
     text-transform: uppercase;
 }
+
 .cart-total-row .label small {
     font-weight: 400;
     color: #999;
@@ -558,10 +599,26 @@ header:hover .logo img {
     color: #fff;
 }
 
+/* --- STORE LOCATOR --- */
+
 .header-store-info {
     display: flex;
     align-items: center;
     font-size: 0.9rem;
+}
+
+#store-locator-overlay,
+.sl-overlay {
+    display: none !important;
+    visibility: hidden !important;
+    opacity: 0 !important;
+}
+
+#store-locator-overlay.visible,
+.sl-overlay.visible {
+    display: flex !important;
+    visibility: visible !important;
+    opacity: 1 !important;
 }
 
 .selected-store {

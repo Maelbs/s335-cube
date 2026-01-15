@@ -4,11 +4,7 @@
 /* Une fois le JS chargé, il enlèvera ce style ou passera en display: flex */
 
 /* Sinon, voici la version CSS renforcée */
-@font-face {
-    font-family: 'Damas Font';
-    src: url('../font/font.woff2');
-    font-display: swap;
-}
+
 .sl-overlay {
     position: fixed;
     top: 0;

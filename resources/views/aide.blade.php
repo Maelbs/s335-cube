@@ -7,7 +7,6 @@
     <title>Aide & FAQ | Cube Bikes</title>
 
     <link rel="stylesheet" href="{{ asset('css/styleBody.css') }}">
-    <link rel="stylesheet" href="{{ asset('css/header.css') }}">
 
     <style>
         @font-face {
