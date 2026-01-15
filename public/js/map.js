@@ -6,27 +6,10 @@ if (typeof window.mapScriptLoaded === "undefined") {
   var markersLayer = null;
   var userCoords = null; 
   var storeLocatorTimeout = null;
+  var greenIcon, redIcon, blueIcon;
 
   window.currentTailleId = null;
 
-  // --- Définitions d'icônes ---
-  var greenIcon = new L.Icon({
-    iconUrl: "https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-green.png",
-    shadowUrl: "https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png",
-    iconSize: [25, 41], iconAnchor: [12, 41], popupAnchor: [1, -34], shadowSize: [41, 41],
-  });
-  var redIcon = new L.Icon({
-    iconUrl: "https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-red.png",
-    shadowUrl: "https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png",
-    iconSize: [25, 41], iconAnchor: [12, 41], popupAnchor: [1, -34], shadowSize: [41, 41],
-  });
-  var blueIcon = new L.Icon({
-    iconUrl: "https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-blue.png",
-    shadowUrl: "https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png",
-    iconSize: [25, 41], iconAnchor: [12, 41], popupAnchor: [1, -34], shadowSize: [41, 41],
-  });
-
-  // --- Fonctions utilitaires ---
   window.getDistanceFromLatLonInKm = function (lat1, lon1, lat2, lon2) {
     var R = 6371; 
     var dLat = deg2rad(lat2 - lat1);
@@ -78,7 +61,28 @@ if (typeof window.mapScriptLoaded === "undefined") {
   };
 
   window.initMap = function () {
-    if (typeof L === "undefined" || map) return;
+    if (typeof L === "undefined") return;
+
+    if (!greenIcon) {
+        greenIcon = new L.Icon({
+            iconUrl: "https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-green.png",
+            shadowUrl: "https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png",
+            iconSize: [25, 41], iconAnchor: [12, 41], popupAnchor: [1, -34], shadowSize: [41, 41],
+        });
+        redIcon = new L.Icon({
+            iconUrl: "https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-red.png",
+            shadowUrl: "https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png",
+            iconSize: [25, 41], iconAnchor: [12, 41], popupAnchor: [1, -34], shadowSize: [41, 41],
+        });
+        blueIcon = new L.Icon({
+            iconUrl: "https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-blue.png",
+            shadowUrl: "https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png",
+            iconSize: [25, 41], iconAnchor: [12, 41], popupAnchor: [1, -34], shadowSize: [41, 41],
+        });
+    }
+
+    if (map) return;
+    
     map = L.map("sl-map").setView([46.603354, 1.888334], 6);
     L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", { attribution: "&copy; OpenStreetMap", }).addTo(map);
     markersLayer = L.layerGroup().addTo(map);
@@ -170,8 +174,6 @@ if (typeof window.mapScriptLoaded === "undefined") {
     setTimeout(window.sortStoreList, 2500);
   };
 
-  // --- Initialisation des écouteurs DANS le fichier map.js ---
-  // Puisque ce fichier est chargé tardivement, on attache les événements directement
   var overlay = document.getElementById("store-locator-overlay");
   if (overlay) overlay.addEventListener("click", function (e) {
       if (e.target.id === "store-locator-overlay") window.afficherInterfaceMap();
@@ -183,8 +185,6 @@ if (typeof window.mapScriptLoaded === "undefined") {
   var searchInput = document.getElementById("storeSearchInput");
   if (searchInput) searchInput.addEventListener("input", window.refreshStoreDisplay);
 
-  // --- FONCTION PRINCIPALE RENOMMÉE ---
-  // Cette fonction gère l'affichage/masquage de l'interface (overlay)
   window.afficherInterfaceMap = function () {
     var overlay = document.getElementById("store-locator-overlay");
     var header = document.querySelector("header");
@@ -196,27 +196,23 @@ if (typeof window.mapScriptLoaded === "undefined") {
       storeLocatorTimeout = null;
     }
 
-    // SI LE MENU EST OUVERT -> ON LE FERME
     if (overlay.classList.contains("visible")) {
-      overlay.classList.remove("visible"); // Lance l'anim CSS (opacity 0)
+      overlay.classList.remove("visible");
       if (header) header.classList.remove("header-hidden");
       body.style.overflow = "";
       
-      // On attend la fin de l'animation (300ms) pour remettre display:none
       storeLocatorTimeout = setTimeout(function () {
         overlay.style.display = "none"; 
       }, 300);
       
     } else {
-      // SI LE MENU EST FERMÉ -> ON L'OUVRE
       overlay.style.display = "flex"; 
-      // On force le navigateur à recalculer (reflow) pour que la transition CSS marche
       void overlay.offsetWidth; 
       
       body.style.overflow = "hidden";
       if (header) header.classList.add("header-hidden");
       
-      overlay.classList.add("visible"); // Lance l'anim CSS (opacity 1)
+      overlay.classList.add("visible"); 
       
       if (!mapInitialized) {
          window.switchView("list"); 

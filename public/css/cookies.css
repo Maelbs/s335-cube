@@ -1,10 +1,15 @@
-/* Reset et Overlay */
+@font-face {
+    font-family: 'Damas Font';
+    src: url('../font/font.woff2');
+    font-display: swap;
+}
+
 .cookie-overlay {
     display: none;
     position: fixed;
     top: 0; left: 0; right: 0; bottom: 0;
     width: 100vw; height: 100vh;
-    background: rgba(255, 255, 255, 0.5); /* Fond blanc semi-transparent */
+    background: rgba(255, 255, 255, 0.5);
     backdrop-filter: blur(5px);
     z-index: 999999999999;
     justify-content: center;
@@ -16,64 +21,64 @@
 /* La Modale */
 .cookie-modal {
     width: 900px;
-    height: 500px; /* Hauteur fixe */
+    height: 500px;
     max-width: 90vw;
     max-height: 90vh;
     background: #fff;
     box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2);
-    border-radius: 6px;/* Arrondi léger */
+    border-radius: 6px;
     border: 1px solid lightskyblue;
     display: flex; /* Active le mode colonnes */
-    overflow: hidden; /* CRUCIAL : Coupe l'image dans les coins arrondis */
-    font-family: 'Fira Sans', sans-serif;
+    overflow: hidden;
+    font-family: 'Damas Font', sans-serif;
     margin: auto;
     padding: 0 !important;
 }
 
+/* --- CORRECTION ICI --- */
 .cookie-col-left {
     position: relative;
     overflow: hidden;
+    width: 50%; /* AJOUT CAPITAL : Donne une largeur à la colonne */
 }
 
-/* La nouvelle image qui remplace le background */
 .cookie-bg-img {
     position: absolute;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
-    object-fit: cover; /* C'est l'équivalent de background-size: cover */
-    object-position: center; /* C'est l'équivalent de background-position: center */
-    z-index: 0; /* Reste en arrière plan */
+    object-fit: cover;
+    object-position: center;
+    z-index: 0;
 }
 
 /* COLONNE DROITE */
 .cookie-col-right {
-    width: 50%; /* Largeur 50% */
+    width: 50%;
     height: 100%;
-    padding: 0px 15px; /* Espace interne équilibré */
+    padding: 20px;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
-    padding: 20px;
 }
 
-/* 2. HEADER & LOGO (Rétréci et monté) */
+/* HEADER & LOGO */
 .cookie-header {
     text-align: center;
-    margin-bottom: 10px; /* Marge réduite */
+    margin-bottom: 10px;
     flex-shrink: 0;
 }
 
 .cookie-logo {
-    width: 110px; /* Logo plus petit (était 130-160px) */
+    width: 110px;
     height: auto;
     display: block;
     margin: 0 auto 8px auto;
 }
 
 .link-refuse {
-    font-size: 10px;
+    font-size: 0.8em;
     color: #000;
     text-decoration: none;
     font-weight: 600;
@@ -83,21 +88,19 @@
 }
 .link-refuse:hover { text-decoration: underline; }
 
-/* CORPS DU TEXTE (Optimisé sans scrollbar inutile) */
+/* CORPS DU TEXTE */
 .cookie-body {
-    font-size: 10px; /* Texte fin et lisible */
+    font-size: 10px;
     color: #444;
     line-height: 1.45;
     text-align: justify;
-    
-    flex-grow: 1; /* Prend tout l'espace libre au milieu */
-    overflow: hidden; /* Cache la scrollbar si ça dépasse à peine */
-    min-height: 0; /* Permet au flexbox de fonctionner correctement */
-    
+    flex-grow: 1;
+    overflow: hidden;
+    min-height: 0;
     margin-bottom: 15px;
 }
 
-.cookie-body p { margin-bottom: 8px; }
+.cookie-body p { margin-bottom: 8px; font-size: 1.25em;}
 .cookie-body a { color: #00bce4; text-decoration: none; }
 
 .cookie-bold-title {
@@ -132,7 +135,7 @@
     text-transform: uppercase;
     letter-spacing: 0.5px;
     transition: all 0.2s;
-    font-family: 'Fira Sans', sans-serif;
+    font-family: 'Damas Font', sans-serif;
     border-radius: 2px;
 }
 
@@ -140,6 +143,7 @@
 .btn-grey { background-color: #f2f2f2; color: #000; }
 .btn-blue { background-color: #0491b1; color: white; }
 
+/* --- ETAPE 2 (DETAILS) --- */
 .step2-wrapper {
     width: 100%;
     height: 100%;
@@ -150,7 +154,6 @@
     box-sizing: border-box;
 }
 
-/* Header (Titre + Croix) */
 .step2-header {
     display: flex;
     justify-content: space-between;
@@ -173,7 +176,6 @@
     line-height: 1;
 }
 
-/* Zone de scroll centrale */
 .step2-scroll-area {
     flex-grow: 1;
     overflow-y: auto;
@@ -182,7 +184,6 @@
     border-bottom: 1px solid #eee;
 }
 
-/* Personnalisation de la barre de scroll */
 .step2-scroll-area::-webkit-scrollbar { width: 6px; }
 .step2-scroll-area::-webkit-scrollbar-thumb { background-color: #ccc; border-radius: 3px; }
 .step2-scroll-area::-webkit-scrollbar-track { background: #f1f1f1; }
@@ -203,10 +204,7 @@
     text-transform: uppercase;
 }
 
-/* Sections (Nécessaire, Marketing...) */
-.cookie-section {
-    margin-bottom: 20px;
-}
+.cookie-section { margin-bottom: 20px; }
 
 .section-header {
     display: flex;
@@ -221,20 +219,17 @@
     color: #000;
 }
 
-.section-title.minus::before {
-    content: "- "; /* Simule le petit tiret devant le titre */
-}
+.section-title.minus::before { content: "- "; }
 
 .status-required {
     font-size: 10px;
     font-weight: 700;
-    color: #00bce4; /* Bleu Cube */
+    color: #00bce4;
     background: #eefbfc;
     padding: 3px 6px;
     border-radius: 3px;
 }
 
-/* Boutons Switch (Refuser | Accepter) */
 .toggle-group {
     display: flex;
     background: #f0f0f0;
@@ -260,7 +255,6 @@
     box-shadow: 0 1px 3px rgba(0,0,0,0.15);
 }
 
-/* Détails et listes */
 .section-row {
     display: flex;
     justify-content: space-between;
@@ -287,12 +281,14 @@
 }
 .detail-list li { margin-bottom: 2px; }
 
-/* Footer de l'étape 2 */
 .step2-footer {
     display: flex;
     justify-content: space-between;
     align-items: center;
     flex-shrink: 0;
+    margin-top: 10px;
+    padding-top: 10px;
+    border-top: 1px solid #eee;
 }
 
 .btn-partners {
@@ -319,15 +315,12 @@
 }
 .btn-save-choices:hover { opacity: 0.9; }
 
-/* --- STYLE ACCORDÉON & LISTES DÉPLIABLES --- */
-
-/* Groupe Accordéon */
+/* ACCORDEON */
 .accordion-group {
     border-bottom: 1px solid #eee;
     margin-bottom: 5px;
 }
 
-/* En-tête de section (cliquable) */
 .accordion-header {
     display: flex;
     justify-content: space-between;
@@ -339,9 +332,7 @@
     color: #000;
 }
 
-.accordion-header:hover {
-    background-color: #fcfcfc;
-}
+.accordion-header:hover { background-color: #fcfcfc; }
 
 .acc-title .icon {
     display: inline-block;
@@ -350,24 +341,16 @@
     color: #00bce4;
 }
 
-/* Corps de section (caché par défaut) */
 .accordion-body {
-    display: none; /* Caché initialement */
+    display: none;
     padding-bottom: 15px;
     padding-left: 15px;
     border-top: 1px solid #f9f9f9;
 }
 
-/* Classe ajoutée par JS pour afficher */
-.accordion-group.active .accordion-body {
-    display: block;
-}
+.accordion-group.active .accordion-body { display: block; }
+.accordion-group.active .acc-title .icon { content: "-"; }
 
-.accordion-group.active .acc-title .icon {
-    content: "-"; /* On changera le + en - via JS si besoin, ou juste visuel */
-}
-
-/* Description textuelle */
 .section-desc {
     font-size: 11px;
     color: #666;
@@ -378,7 +361,6 @@
     border: 1px solid #f0f0f0;
 }
 
-/* Ligne de sous-choix (Item + Switch) */
 .sub-item-row {
     display: flex;
     justify-content: space-between;
@@ -394,7 +376,6 @@
     max-width: 65%;
 }
 
-/* SWITCHS (Refuser | Accepter) */
 .toggle-container {
     display: flex;
     border: 1px solid #ddd;
@@ -414,20 +395,15 @@
     transition: all 0.2s;
 }
 
-.toggle-btn:first-child {
-    border-right: 1px solid #ddd;
-}
+.toggle-btn:first-child { border-right: 1px solid #ddd; }
 
-/* Bouton actif (Rouge pour Refuser, Vert/Bleu pour Accepter - ici style neutre ou coloré) */
-/* Style sélectionné */
 .toggle-btn.selected {
-    background: #f0f0f0; /* Fond gris clair */
-    color: #000;         /* Texte noir */
+    background: #f0f0f0;
+    color: #000;
     font-weight: 700;
     box-shadow: inset 0 1px 3px rgba(0,0,0,0.1);
 }
 
-/* Footer texte légal bas */
 .legal-footer-text {
     font-size: 10px;
     color: #444;
@@ -442,42 +418,8 @@
     text-decoration: underline;
 }
 
-/* Footer avec Logo Didomi et boutons */
-.step2-footer {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-top: 10px;
-    padding-top: 10px;
-    border-top: 1px solid #eee;
-}
-
 .footer-actions {
     display: flex;
     gap: 10px;
     align-items: center;
-}
-
-.btn-partners {
-    background: none;
-    border: 1px solid #ccc;
-    padding: 8px 12px;
-    font-size: 10px;
-    font-weight: 600;
-    cursor: pointer;
-    color: #555;
-}
-
-.btn-save-choices {
-    background: #f5f5f5; /* Gris clair par défaut */
-    color: #00bce4;
-    border: none;
-    padding: 10px 20px;
-    font-size: 12px;
-    font-weight: 800;
-    cursor: pointer;
-}
-.btn-save-choices:hover {
-    background: #e0e0e0;
-    color: #333;
 }

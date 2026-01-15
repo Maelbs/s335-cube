@@ -15,20 +15,20 @@
 <body>
     @include('layouts.header')
 
-    <div id="cartModal" class="modal-overlay">
+    <div id="cartModal" class="modal-overlay" role="dialog" aria-modal="true" aria-labelledby="modalHeaderTitle">
         <div class="modal-content">
-            <button class="modal-close" onclick="closeModalAndRefresh()">×</button>
-            <div class="modal-header">PRODUIT AJOUTÉ AU PANIER AVEC SUCCÈS</div>
+            <button class="modal-close" onclick="closeModalAndRefresh()" aria-label="Fermer la fenêtre modale">×</button>
+            <div class="modal-header" id="modalHeaderTitle">PRODUIT AJOUTÉ AU PANIER AVEC SUCCÈS</div>
             <div class="modal-body">
                 <div class="modal-product">
                     <div class="modal-img">
                         <div id="modalImg">
                             @if ($isAccessoire)
-                                <img src="{{ asset('images/ACCESSOIRES/' . substr($article->reference, 0, 5) . '/image_1.jpg') }}"
-                                    alt="{{ $article->nom_article }}">
+                                <img src="{{ asset('images/ACCESSOIRES/' . substr($article->reference, 0, 5) . '/image_1.webp') }}"
+                                    alt="{{ $article->nom_article }}" fetchpriority="high">
                             @else
-                                <img src="{{ asset('images/VELOS/' . substr($article->reference, 0, 6) . '/image_1.jpg') }}"
-                                    alt="{{ $article->nom_article }}">
+                                <img src="{{ asset('images/VELOS/' . substr($article->reference, 0, 6) . '/image_1.webp') }}"
+                                    alt="{{ $article->nom_article }}" fetchpriority="high">
                             @endif
                         </div>
                     </div>
@@ -59,11 +59,11 @@
         </div>
     </div>
 
-    <div class="page-product-container">
+    <main class="page-product-container">
 
         <div class="left-column-wrapper">
             <div class="product-hero-section" id="mainCarousel">
-                <button class="zoom-trigger-btn" onclick="openZoom()">
+                <button class="zoom-trigger-btn" onclick="openZoom()" aria-label="Agrandir l'image">
                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
                         stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                         <circle cx="11" cy="11" r="8"></circle>
@@ -82,8 +82,8 @@
                     $validImages = [];
 
                     for ($i = 1; $i <= 10; $i++) {
-                        if (file_exists($serverPath . '/image_' . $i . '.jpg')) {
-                            $validImages[] = $webPath . '/image_' . $i . '.jpg';
+                        if (file_exists($serverPath . '/image_' . $i . '.webp')) {
+                            $validImages[] = $webPath . '/image_' . $i . '.webp';
                         } else {
                             break;
                         }
@@ -91,37 +91,55 @@
                 @endphp
 
                 <div class="carousel-track-container">
-                    <ul class="carousel-track">
-                        @if(count($validImages) > 0)
-                            @foreach($validImages as $index => $imageUrl)
-                                <li class="carousel-slide {{ $index === 0 ? 'current-slide' : '' }}">
-                                    <img src="{{ asset($imageUrl) }}" alt="{{ $article->nom_article }}">
-                                </li>
-                            @endforeach
-                        @else
-                            <li class="carousel-slide current-slide">
-                                <img src="https://placehold.co/800x500?text=Image+Non+Disponible" alt="Pas d'image">
+                <ul class="carousel-track">
+                    @if(count($validImages) > 0)
+                        @foreach($validImages as $index => $imageUrl)
+                            <li class="carousel-slide {{ $index === 0 ? 'current-slide' : '' }}">
+                                @if($index === 0)
+                                    {{-- La première image est chargée immédiatement (priorité haute) --}}
+                                    <img src="{{ asset($imageUrl) }}" 
+                                        alt="{{ $article->nom_article }} - Vue {{ $index + 1 }}" 
+                                        fetchpriority="high">
+                                @else
+                                    {{-- Les autres images ont un placeholder transparent et l'URL réelle dans data-src --}}
+                                    <img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" 
+                                        data-src="{{ asset($imageUrl) }}" 
+                                        alt="{{ $article->nom_article }} - Vue {{ $index + 1 }}" 
+                                        loading="lazy"
+                                        class="lazy-image">
+                                @endif
                             </li>
-                        @endif
-                    </ul>
+                        @endforeach
+                    @else
+                        <li class="carousel-slide current-slide">
+                            <img src="https://placehold.co/800x500?text=Image+Non+Disponible" alt="Pas d'image disponible">
+                        </li>
+                    @endif
+                </ul>
 
-                    <button id="open-3d-btn" class="btn-3d-view" style="display: none;"
-                        data-folder="{{ asset('images/MODELE3D/' . trim($article->reference)) }}/"
-                        title="Ouvrir la vue 3D" aria-label="Ouvrir la vue 3D">
-                        <svg class="icon-3d" xmlns="http://www.w3.org/2000/svg" width="24" height="24"
-                            viewBox="0 0 24 24">
-                            <path fill="currentColor"
-                                d="M12 22q-2.075 0-3.9-.788t-3.175-2.137q-1.35-1.35-2.137-3.175T2 12h2q0 2.875 1.813 5.075t4.637 2.775L9 18.4l1.4-1.4l4.55 4.55q-.725.25-1.463.35T12 22Zm.5-7V9h3q.425 0 .713.288T16.5 10v4q0 .425-.288.713T15.5 15h-3Zm-5 0v-1.5H10v-1H8.5v-1H10v-1H7.5V9h3q.425 0 .713.288T11.5 10v4q0 .425-.288.713T10.5 15h-3Zm6.5-1.5h1v-3h-1v3Zm6-1.5q0-2.875-1.813-5.075T13.55 4.15L15 5.6L13.6 7L9.05 2.45q.725-.25 1.463-.35T12 2q2.075 0 3.9.788t3.175 2.137q1.35 1.35 2.138 3.175T22 12h-2Z" />
-                        </svg>
-                    </button>
+                    @php
+                        $ref = trim($article->reference);
+                        $dossier3d = public_path('images/MODELE3D/' . $ref);
+                        $existe = is_dir($dossier3d);
+                    @endphp
+
+                    @if($existe)
+                        <button id="open-3d-btn" class="btn-3d-view" style="display: none;"
+                                data-folder="{{ asset('images/MODELE3D/' . $ref) }}/"
+                                title="Ouvrir la vue 3D" aria-label="Ouvrir la vue 3D">
+                            <svg class="icon-3d" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+                                <path fill="currentColor" d="M12 22q-2.075 0-3.9-.788t-3.175-2.137q-1.35-1.35-2.137-3.175T2 12h2q0 2.875 1.813 5.075t4.637 2.775L9 18.4l1.4-1.4l4.55 4.55q-.725.25-1.463.35T12 22Zm.5-7V9h3q.425 0 .713.288T16.5 10v4q0 .425-.288.713T15.5 15h-3Zm-5 0v-1.5H10v-1H8.5v-1H10v-1H7.5V9h3q.425 0 .713.288T11.5 10v4q0 .425-.288.713T10.5 15h-3Zm6.5-1.5h1v-3h-1v3Zm6-1.5q0-2.875-1.813-5.075T13.55 4.15L15 5.6L13.6 7L9.05 2.45q.725-.25 1.463-.35T12 2q2.075 0 3.9.788t3.175 2.137q1.35 1.35 2.138 3.175T22 12h-2Z" />
+                            </svg>
+                        </button>
+                    @endif
                 </div>
 
                 @if(count($validImages) > 1)
-                    <button class="carousel-button carousel-button--left">❮</button>
-                    <button class="carousel-button carousel-button--right">❯</button>
+                    <button class="carousel-button carousel-button--left" aria-label="Image précédente">❮</button>
+                    <button class="carousel-button carousel-button--right" aria-label="Image suivante">❯</button>
                     <div class="carousel-nav">
                         @foreach($validImages as $index => $unused)
-                            <button class="carousel-indicator {{ $index === 0 ? 'current-slide' : '' }}"></button>
+                            <button class="carousel-indicator {{ $index === 0 ? 'current-slide' : '' }}" aria-label="Afficher l'image {{ $index + 1 }}"></button>
                         @endforeach
                     </div>
                 @endif
@@ -131,8 +149,8 @@
                 <div class="each-specs-column">
                     <div class="specs-header-row">
                         <h2>FICHE TECHNIQUE</h2>
-                        <span class="info-bubble" data-tooltip="Retrouvez ici tous les composants techniques. Pour l'assistance électrique, l'autonomie varie selon votre poids, le mode utilisé et le dénivelé.">?</span>
-                        <button class="toggle-specs-btn"></button>
+                        <span class="info-bubble" tabindex="0" data-tooltip="Retrouvez ici tous les composants techniques. Pour l'assistance électrique, l'autonomie varie selon votre poids, le mode utilisé et le dénivelé.">?</span>
+                        <button class="toggle-specs-btn" aria-label="Afficher ou masquer la fiche technique"></button>
                     </div>
 
                     <div class="specs-content">
@@ -166,16 +184,15 @@
                     <div class="geo-section each-specs-column">
                         <div class="specs-header-row">
                             <h2>GÉOMÉTRIE</h2>
-                            <span class="info-bubble" data-tooltip="La géométrie détermine votre position et le comportement du vélo (confort, stabilité ou agilité).">?</span>
-                            <button class="toggle-specs-btn"></button>
+                            <span class="info-bubble" tabindex="0" data-tooltip="La géométrie détermine votre position et le comportement du vélo (confort, stabilité ou agilité).">?</span>
+                            <button class="toggle-specs-btn" aria-label="Afficher ou masquer la géométrie"></button>
                         </div>
                         <div class="table-responsive">
                             <table class="geo-table">
                                 <thead>
                                     <tr>
-                                        <th></th>
-                                        @foreach ($tailleGeometrie->sortBy('id_taille') as $taille)
-                                            <th>
+                                        <th scope="col"></th> @foreach ($tailleGeometrie->sortBy('id_taille') as $taille)
+                                            <th scope="col">
                                                 {{ $taille->taille }}
                                                 <span style="font-size: 0.9em; font-weight: 600;">
                                                     ({{ $taille->taille_min }}-{{ $taille->taille_max }})
@@ -212,7 +229,7 @@
                     <div class="each-specs-column">
                         <div class="specs-header-row">
                             <h2>Description</h2>
-                            <button class="toggle-specs-btn"></button>
+                            <button class="toggle-specs-btn" aria-label="Afficher ou masquer la description"></button>
                         </div>
                         <p>{{ $article->varianteVelo->modele->description->texte_description ?? 'Aucune description disponible.' }}
                         </p>
@@ -222,7 +239,7 @@
                 <div class="each-specs-column" id="resume_container">
                     <div class="specs-header-row">
                         <h2>Résumé</h2>
-                        <button class="toggle-specs-btn"></button>
+                        <button class="toggle-specs-btn" aria-label="Afficher ou masquer le résumé"></button>
                     </div>
                     <p>{{ $article->resume->contenu_resume }}</p>
                 </div>
@@ -261,7 +278,7 @@
                 <div class="size-selector">
                     <p class="size-label">
                         TAILLE
-                        <span class="info-bubble" data-tooltip="Sélectionnez votre taille. Utilisez notre calculateur en bas de page pour trouver la correspondance idéale selon votre morphologie.">?</span>
+                        <span class="info-bubble" tabindex="0" data-tooltip="Sélectionnez votre taille. Utilisez notre calculateur en bas de page pour trouver la correspondance idéale selon votre morphologie.">?</span>
                     </p>
                     <div class="sizes-grid">
                         @php $stockWebVelo = 0 @endphp
@@ -286,7 +303,7 @@
                                             {{ $stockGlobal ?? 0 }}, 
                                             {{ $stockMonMagasin ?? 0 }}, 
                                             {{ $hasMagasin ? 'true' : 'false' }}
-                                        )">
+                                    )">
                                 {{ $inventaire->taille->taille }}
                                 <span style="font-size: 0.8em; display:block; font-weight: normal;">
                                     ({{ $inventaire->taille->taille_min }}-{{ $inventaire->taille->taille_max }})
@@ -303,7 +320,7 @@
                 <div class="dispo-info-container" style="margin-bottom: 15px;">
                     <p class="size-label" style="font-size: 11px; margin-bottom: 8px;">
                         LÉGENDE DISPONIBILITÉ 
-                        <span class="info-bubble" data-tooltip="Vert : Disponible immédiatement. Orange : Stock limité ou déporté. Rouge : Actuellement indisponible.">?</span>
+                        <span class="info-bubble" tabindex="0" data-tooltip="Vert : Disponible immédiatement. Orange : Stock limité ou déporté. Rouge : Actuellement indisponible.">?</span>
                     </p>
                     <div class="dispo-row">
                         <span id="dot-web" class="status-dot"></span>
@@ -426,6 +443,7 @@
                                 $bg = str_starts_with($hex, '#') ? $hex : '#' . $hex;
                             @endphp
                             <a href="{{ $lien }}" class="couleur-velo"
+                                aria-label="Voir la version couleur {{ $hex }}"
                                 style="display: inline-block; width: 30px; height: 30px; border-radius: 50%; margin-right: 5px; border: {{ $estActif ? '5px solid #cbcbcb' : '1px solid #ddd' }}; background-color: {{ $bg }};">
                             </a>
                         @endforeach
@@ -463,8 +481,7 @@
             @endif
 
         </div>
-    </div>
-    @if(!$isAccessoire)
+    </main> @if(!$isAccessoire)
         @include('layouts.bikeSizing')
     @endif
 
@@ -473,7 +490,7 @@
             <div class="st-section-header" style="text-align: center; margin-bottom: 20px;">
                 <h2 class="st-section-title text-section-grey">
                     D’autres cyclistes ont également acheté
-                    <span class="info-bubble" data-tooltip="Ces produits sont fréquemment achetés avec ce modèle pour une expérience de conduite optimale.">?</span>
+                    <span class="info-bubble" tabindex="0" data-tooltip="Ces produits sont fréquemment achetés avec ce modèle pour une expérience de conduite optimale.">?</span>
                 </h2>
                 <p class="text-section-grey">
                     Complétez votre équipement avec des accessoires populaires auprès de nos clients.
@@ -481,7 +498,7 @@
             </div>
 
             <div class="st-carousel-wrapper">
-                <button class="st-nav-btn st-btn-left">❮</button>
+                <button class="st-nav-btn st-btn-left" aria-label="Accessoires précédents">❮</button>
 
                 <div class="st-carousel-track">
                     @foreach ($article->varianteVelo->accessoires as $accessoire)
@@ -492,7 +509,7 @@
                                     @php
                                         $prefix = 5;
                                         $folder = substr($accessoire->reference, 0, $prefix);
-                                        $imgPath = 'images/ACCESSOIRES/' . $folder . '/image_1.jpg';
+                                        $imgPath = 'images/ACCESSOIRES/' . $folder . '/image_1.webp';
                                     @endphp
 
                                     @if(file_exists(public_path($imgPath)))
@@ -516,7 +533,7 @@
                     @endforeach
                 </div>
 
-                <button class="st-nav-btn st-btn-right">❯</button>
+                <button class="st-nav-btn st-btn-right" aria-label="Accessoires suivants">❯</button>
             </div>
         </section>
     @endif
@@ -526,7 +543,7 @@
             <h2 class="st-section-title">ARTICLES SIMILAIRES</h2>
 
             <div class="st-carousel-wrapper">
-                <button class="st-nav-btn st-btn-left">❮</button>
+                <button class="st-nav-btn st-btn-left" aria-label="Articles similaires précédents">❮</button>
 
                 <div class="st-carousel-track">
                     @foreach($articlesSimilaires as $similaire)
@@ -538,7 +555,7 @@
                                         $simPrefix = $isAccessoire ? 5 : 6;
                                         $simFolder = substr($similaire->reference, 0, $simPrefix);
                                         $dossierRacineSim = $isAccessoire ? 'images/ACCESSOIRES/' : 'images/VELOS/';
-                                        $simImgPath = $dossierRacineSim . $simFolder . '/image_1.jpg';
+                                        $simImgPath = $dossierRacineSim . $simFolder . '/image_1.webp';
                                     @endphp
 
                                     @if(file_exists(public_path($simImgPath)))
@@ -562,33 +579,15 @@
                     @endforeach
                 </div>
 
-                <button class="st-nav-btn st-btn-right">❯</button>
+                <button class="st-nav-btn st-btn-right" aria-label="Articles similaires suivants">❯</button>
             </div>
         </section>
     @endif
 
-    <div id="lightbox-3d" class="lightbox-3d">
-        <button id="close-3d-btn" class="close-3d-btn">×</button>
-        
-        <div id="loader-wrapper" class="loader-wrapper" style="display: none;">
-            <div class="loader"></div>
-            <p id="loader-text">Chargement 0%</p>
-        </div>
-
-        <div id="product-viewer" class="product-viewer">
-            <img id="bike-image" src="" alt="Vue 3D" draggable="false">
-            
-            <div class="viewer-instruction">
-                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 11V6a2 2 0 0 0-2-2v0a2 2 0 0 0-2 2v0"></path><path d="M14 10V4a2 2 0 0 0-2-2v0a2 2 0 0 0-2 2v2"></path><path d="M10 10.5V6a2 2 0 0 0-2-2v0a2 2 0 0 0-2 2v8"></path><path d="M18 8a2 2 0 1 1 4 0v6a8 8 0 0 1-8 8h-2c-2.8 0-4.5-.86-5.99-2.34l-3.6-3.6a2 2 0 0 1 2.83-2.82L7 15"></path></svg>
-                <span>Faites glisser pour tourner</span>
-            </div>
-        </div>
-    </div>
-
-    <div id="zoomModalOverlay" class="zoom-overlay">
-        <button class="zoom-close-btn" onclick="closeZoom(event)">×</button>
-        <button class="zoom-nav zoom-prev" onclick="changeZoomImage(-1)">❮</button>
-        <button class="zoom-nav zoom-next" onclick="changeZoomImage(1)">❯</button>
+    <div id="zoomModalOverlay" class="zoom-overlay" aria-hidden="true">
+        <button class="zoom-close-btn" onclick="closeZoom(event)" aria-label="Fermer le zoom">×</button>
+        <button class="zoom-nav zoom-prev" onclick="changeZoomImage(-1)" aria-label="Image zoom précédente">❮</button>
+        <button class="zoom-nav zoom-next" onclick="changeZoomImage(1)" aria-label="Image zoom suivante">❯</button>
         <div class="zoom-container" onclick="toggleZoomState(event)">
             <img id="zoomImageFull" src="" alt="Zoom Produit">
         </div>
@@ -616,7 +615,5 @@
         }
     </script>
 
-    
 </body>
-
 </html>

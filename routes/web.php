@@ -229,3 +229,7 @@ Route::get('/boutique/{type}/{cat_id?}/{sub_id?}/{model_id?}', [BoutiqueControll
     ->where('type', 'Musculaire|Electrique|Accessoires');
 
 Route::view('/aide', 'aide')->name('aide');
+
+
+// Route::get('/mon-image-privee/{filename}', [ImageController::class, 'show'])
+//     ->middleware('cache.images');

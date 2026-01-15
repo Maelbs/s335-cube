@@ -1,14 +1,16 @@
 <!DOCTYPE html>
 <html lang="fr">
-
+ 
 <head>
+ 
     <meta charset="UTF-8" name="description" content="Site non officiel de cube">
+ 
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <link rel="stylesheet" href="{{ asset('css/chatBox.css') }}">
 </head>
-
+ 
 <body>
-
+ 
     <div id="chat-button" class="chat-button">
         <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
             <path fill-rule="evenodd" clip-rule="evenodd"
@@ -16,14 +18,20 @@
             </path>
         </svg>
     </div>
-
+ 
     <div id="chat-box" class="chat-box">
         <div class="chat-header">
             <div class="chat-header-info">
                 <div class="chat-avatar">E</div>
                 <div class="chat-text-group">
                     <span class="chat-title">Expert CUBE</span>
-                    <span class="chat-status">Toujours là pour vous</span>
+                    <span class="chat-status" id="chat-status">
+                        @auth
+                            Ravi de vous revoir, {{ Auth::user()->prenom_client }}
+                        @else
+                            Toujours là pour vous
+                        @endauth
+                    </span>
                 </div>
             </div>
             <div class="header-actions">
@@ -31,27 +39,52 @@
                 <button id="close-chat" title="Fermer">✕</button>
             </div>
         </div>
-
+ 
         <div id="chat-content" class="chat-content">
         </div>
-
+ 
         <div class="chat-footer">
             <div class="input-wrapper">
                 <input type="text" id="chat-input" placeholder="Écrivez votre message...">
-
                 <button id="send-btn" class="send-btn" title="Envoyer">
                     <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                         <path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z" />
                     </svg>
                 </button>
-
             </div>
         </div>
     </div>
-
+ 
     <script>
+        function addToCartFromBot(ref, qty) {
+            const metaTag = document.querySelector('meta[name="csrf-token"]');
+            const token = metaTag ? metaTag.content : '{{ csrf_token() }}';
+ 
+            fetch('/bot/add-to-cart', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json',
+                    'X-CSRF-TOKEN': token
+                },
+                body: JSON.stringify({ ref: ref, qty: qty })
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.success) {
+                    alert("✅ " + data.message);
+                    window.location.reload();
+                } else {
+                    alert("❌ " + (data.error || 'Erreur lors de l\'ajout'));
+                }
+            })
+            .catch(err => {
+                console.error("Erreur Fetch:", err);
+                alert("Erreur de connexion au serveur.");
+            });
+        }
+ 
         document.addEventListener("DOMContentLoaded", function () {
-            // Sélecteurs
             const chatButton = document.getElementById("chat-button");
             const chatBox = document.getElementById("chat-box");
             const closeChatBtn = document.getElementById("close-chat");
@@ -59,99 +92,90 @@
             const sendBtn = document.getElementById("send-btn");
             const chatContent = document.getElementById("chat-content");
             const clearChat = document.getElementById("clear-chat");
-
-            // --- FONCTIONS ---
-
+ 
             function toggleChat() {
                 if (chatBox.style.display === "flex") {
                     chatBox.style.display = "none";
-                    chatBox.classList.remove('active');
                     localStorage.setItem('cube_chat_open', 'false');
                 } else {
                     chatBox.style.display = "flex";
-                    chatBox.classList.add('active');
                     localStorage.setItem('cube_chat_open', 'true');
                     setTimeout(() => chatInput.focus(), 100);
                 }
             }
-
+ 
             function addMessage(text, side, save = true) {
                 const msgDiv = document.createElement("div");
-                const cssClass = side === 'user' ? 'user-message' : 'bot-message';
-                msgDiv.className = `message ${cssClass}`;
+                msgDiv.className = `message ${side === 'user' ? 'user-message' : 'bot-message'}`;
                 msgDiv.innerHTML = text;
-
                 chatContent.appendChild(msgDiv);
                 chatContent.scrollTop = chatContent.scrollHeight;
-
+ 
                 if (save) {
                     let history = JSON.parse(localStorage.getItem('cube_chat_history')) || [];
                     history.push({ text, side });
                     localStorage.setItem('cube_chat_history', JSON.stringify(history));
                 }
             }
-
+ 
             async function handleSendMessage() {
                 const userMsg = chatInput.value.trim();
                 if (userMsg === "") return;
-
+ 
                 addMessage(userMsg, 'user');
                 chatInput.value = "";
-
+ 
                 const loadingDiv = document.createElement("div");
                 loadingDiv.className = "message bot-message";
                 loadingDiv.id = "temp-loader";
                 loadingDiv.innerHTML = '<span style="opacity:0.6">Expert CUBE réfléchit...</span>';
                 chatContent.appendChild(loadingDiv);
-                chatContent.scrollTop = chatContent.scrollHeight;
-
+ 
                 try {
-                    const response = await axios.post("/chat/ask", {
-                        message: userMsg
-                    }, {
-                        headers: { 'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || '{{ csrf_token() }}' }
+                    const response = await axios.post("/chat/ask", { message: userMsg }, {
+                        headers: { 'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.content || '{{ csrf_token() }}' }
                     });
-
                     document.getElementById("temp-loader").remove();
                     addMessage(response.data.reply, 'bot');
-
                 } catch (error) {
                     if (document.getElementById("temp-loader")) document.getElementById("temp-loader").remove();
-                    console.error(error);
-                    addMessage("Désolé, une erreur est survenue. Veuillez réessayer.", 'bot');
+                    addMessage("Désolé, une erreur est survenue.", 'bot');
                 }
             }
-
-            // --- INITIALISATION ---
+ 
             const savedHistory = JSON.parse(localStorage.getItem('cube_chat_history')) || [];
             if (savedHistory.length > 0) {
                 savedHistory.forEach(msg => addMessage(msg.text, msg.side, false));
             } else {
-                // Message de base au chargement si vide
-                addMessage("Comment puis-je vous aider ? 🚲", 'bot', true);
+                @auth
+                    const prenom = {!! json_encode(Auth::user()->prenom_client) !!};
+                    addMessage(`Bonjour ${prenom} ! Comment puis-je vous aider aujourd'hui ?`, 'bot', true);
+                @else
+                    addMessage("Comment puis-je vous aider ? ", 'bot', true);
+                @endauth
             }
-
+ 
             if (localStorage.getItem('cube_chat_open') === 'true') {
                 chatBox.style.display = "flex";
-                chatBox.classList.add('active');
             }
-
-            // --- EVENT LISTENERS ---
+ 
             chatButton.onclick = toggleChat;
             closeChatBtn.onclick = toggleChat;
             sendBtn.onclick = handleSendMessage;
-            chatInput.onkeypress = (e) => {
-                if (e.key === "Enter") handleSendMessage();
-            };
-
-            // --- CLICK POUBELLE : Reset immédiat avec le message standard ---
+            chatInput.onkeypress = (e) => { if (e.key === "Enter") handleSendMessage(); };
+ 
             clearChat.onclick = () => {
-                localStorage.removeItem('cube_chat_history');
-                chatContent.innerHTML = "";
-                addMessage("Comment puis-je vous aider ? 🚲", 'bot', true);
+                if(confirm("Voulez-vous effacer la discussion ?")) {
+                    localStorage.removeItem('cube_chat_history');
+                    chatContent.innerHTML = "";
+                    @auth
+                        addMessage(`Comment puis-je vous aider, {{ Auth::user()->prenom_client }} ?`, 'bot', true);
+                    @else
+                        addMessage("Comment puis-je vous aider ?", 'bot', true);
+                    @endauth
+                }
             };
         });
     </script>
-
 </body>
 </html>

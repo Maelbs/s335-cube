@@ -14,20 +14,15 @@
 
 <div class="cookie-overlay" id="cookieOverlay">
     <div class="cookie-modal" id="cookieModal">
-    
-<<<<<<< HEAD
-    <div class="cookie-col-left">
-        <img src="{{ asset('images/cookies-bg.jpg') }}" 
-            alt="" 
-            fetchpriority="high" 
-            class="cookie-bg-img"
-            width="400" 
-            height="600"> 
-    </div>
-=======
     <div id="step1-container" style="display: flex; width: 100%; height: 100%;">
-        <div class="cookie-col-left" style="background-image: url('{{ asset('images/cookies-bg.webp') }}');"></div>
->>>>>>> 8c8f1c6fea396bdf7d40caffb3f3a60c678dcd58
+        <div class="cookie-col-left">
+            <img src="{{ asset('images/cookies-bg.webp') }}" 
+                alt=""
+                fetchpriority="high"
+                class="cookie-bg-img"
+                width="400" 
+                height="600"> 
+        </div>
 
         <div class="cookie-col-right">
             <div class="cookie-header">
