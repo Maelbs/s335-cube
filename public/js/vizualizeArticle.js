@@ -1,5 +1,4 @@
 document.addEventListener("DOMContentLoaded", function () {
-  // --- 1. GESTION DES ACCORDÉONS (Fiche technique, Description...) ---
   const toggles = document.querySelectorAll(".toggle-specs-btn");
 
   toggles.forEach((btn) => {
@@ -28,7 +27,6 @@ document.addEventListener("DOMContentLoaded", function () {
     });
   });
 
-  // --- 2. CARROUSEL SECONDAIRE (Produits similaires) ---
   const trackSimple = document.querySelector(".st-carousel-track");
   const btnLeft = document.querySelector(".st-btn-left");
   const btnRight = document.querySelector(".st-btn-right");
@@ -47,7 +45,6 @@ document.addEventListener("DOMContentLoaded", function () {
     btnRight.addEventListener("click", () => scrollCarousel("right"));
   }
 
-  // --- 3. CARROUSEL PRINCIPAL (Logique refondue : Lazy Load + Dots Sync) ---
   const track = document.querySelector(".carousel-track");
   if (track && track.children.length > 1) {
     const slides = Array.from(track.children);
@@ -56,14 +53,12 @@ document.addEventListener("DOMContentLoaded", function () {
     const dotsNav = document.querySelector(".carousel-nav");
     const dots = dotsNav ? Array.from(dotsNav.children) : [];
 
-    // Positionnement initial des slides
     const slideWidth = slides[0].getBoundingClientRect().width;
     const setSlidePosition = (slide, index) => {
       slide.style.left = slideWidth * index + "px";
     };
     slides.forEach(setSlidePosition);
 
-    // Fonction pour mettre à jour les points (dots)
     const updateDotsByIndex = (index) => {
       if (!dotsNav) return;
       dots.forEach((d) => d.classList.remove("current-slide"));
@@ -72,9 +67,7 @@ document.addEventListener("DOMContentLoaded", function () {
       }
     };
 
-    // Fonction principale de mouvement avec Lazy Loading
     const moveToSlide = (track, currentSlide, targetSlide) => {
-      // A. Lazy Loading : Si l'image cible a un data-src, on la charge
       const img = targetSlide.querySelector("img");
       if (img && img.hasAttribute("data-src")) {
         img.src = img.getAttribute("data-src");
@@ -82,45 +75,37 @@ document.addEventListener("DOMContentLoaded", function () {
         img.classList.remove("lazy-image");
       }
 
-      // B. Déplacement du rail
       track.style.transform = "translateX(-" + targetSlide.style.left + ")";
-      
-      // C. Gestion des classes actives
+
       currentSlide.classList.remove("current-slide");
       targetSlide.classList.add("current-slide");
 
-      // D. Synchronisation des dots
       const targetIndex = slides.indexOf(targetSlide);
       updateDotsByIndex(targetIndex);
     };
 
-    // Écouteur Flèche Droite
     if (nextButton) {
       nextButton.addEventListener("click", () => {
         const currentSlide = track.querySelector(".current-slide");
         let nextSlide = currentSlide.nextElementSibling;
-        
-        // Boucle : si on est à la fin, on retourne au début
+
         if (!nextSlide) nextSlide = slides[0];
 
         moveToSlide(track, currentSlide, nextSlide);
       });
     }
 
-    // Écouteur Flèche Gauche
     if (prevButton) {
       prevButton.addEventListener("click", () => {
         const currentSlide = track.querySelector(".current-slide");
         let prevSlide = currentSlide.previousElementSibling;
 
-        // Boucle : si on est au début, on va à la fin
         if (!prevSlide) prevSlide = slides[slides.length - 1];
 
         moveToSlide(track, currentSlide, prevSlide);
       });
     }
 
-    // Écouteur Clic sur les Dots
     if (dotsNav) {
       dotsNav.addEventListener("click", (e) => {
         const targetDot = e.target.closest("button");
@@ -134,7 +119,6 @@ document.addEventListener("DOMContentLoaded", function () {
       });
     }
 
-    // Recalcul au redimensionnement de la fenêtre
     window.addEventListener("resize", () => {
       const newSlideWidth = slides[0].getBoundingClientRect().width;
       slides.forEach((slide, index) => {
@@ -145,7 +129,6 @@ document.addEventListener("DOMContentLoaded", function () {
     });
   }
 
-  // --- 4. SÉLECTION DES TAILLES ---
   const sizeSelectors = document.querySelectorAll(".size-btn");
   const btnPanier = document.getElementById("btn-panier");
 
@@ -165,7 +148,6 @@ document.addEventListener("DOMContentLoaded", function () {
     });
   });
 
-  // --- 5. VISUALISEUR 3D ---
   const openBtn = document.getElementById("open-3d-btn");
   const closeBtn = document.getElementById("close-3d-btn");
   const lightbox = document.getElementById("lightbox-3d");
@@ -175,7 +157,6 @@ document.addEventListener("DOMContentLoaded", function () {
     const extension = ".webp";
     const totalImages = 20;
 
-    // Vérifie si la première image existe avant d'afficher le bouton
     const testImageSrc = `${folderPath}01${extension}`;
     const tester = new Image();
     tester.onload = () => {
@@ -308,19 +289,18 @@ document.addEventListener("DOMContentLoaded", function () {
   }
 });
 
-// --- 6. GESTION DU ZOOM (Fonctions globales) ---
-
 window.openZoom = function () {
   const overlay = document.getElementById("zoomModalOverlay");
   const zoomImg = document.getElementById("zoomImageFull");
-  const activeSlide = document.querySelector(".carousel-slide.current-slide img");
+  const activeSlide = document.querySelector(
+    ".carousel-slide.current-slide img"
+  );
 
   if (activeSlide && overlay && zoomImg) {
-    // Si l'image n'est pas encore chargée (cas rare mais possible), on prend le data-src
-    const imgSrc = activeSlide.hasAttribute('data-src') 
-                 ? activeSlide.getAttribute('data-src') 
-                 : activeSlide.src;
-                 
+    const imgSrc = activeSlide.hasAttribute("data-src")
+      ? activeSlide.getAttribute("data-src")
+      : activeSlide.src;
+
     zoomImg.src = imgSrc;
     overlay.style.display = "flex";
     document.body.classList.add("zoom-is-open");
@@ -333,7 +313,11 @@ window.openZoom = function () {
 window.closeZoom = function (e) {
   if (e) {
     e.stopPropagation();
-    if (e.target.id === "zoomImageFull" || e.target.classList.contains("zoom-nav")) return;
+    if (
+      e.target.id === "zoomImageFull" ||
+      e.target.classList.contains("zoom-nav")
+    )
+      return;
   }
   const overlay = document.getElementById("zoomModalOverlay");
   const zoomImg = document.getElementById("zoomImageFull");
@@ -352,42 +336,37 @@ window.closeZoom = function (e) {
 window.changeZoomImage = function (direction) {
   const track = document.querySelector(".carousel-track");
   if (!track) return;
-  
+
   const slides = Array.from(track.children);
   const currentSlide = track.querySelector(".current-slide");
   let currentIndex = slides.indexOf(currentSlide);
   let newIndex = currentIndex + direction;
 
-  // Gestion des limites (boucle)
   if (newIndex < 0) newIndex = slides.length - 1;
   else if (newIndex >= slides.length) newIndex = 0;
 
   const targetSlide = slides[newIndex];
-  
-  // A. Lazy Loading si on navigue via le zoom
+
   const targetImgInSlider = targetSlide.querySelector("img");
-  if (targetImgInSlider && targetImgInSlider.hasAttribute('data-src')) {
-      targetImgInSlider.src = targetImgInSlider.getAttribute('data-src');
-      targetImgInSlider.removeAttribute('data-src');
-      targetImgInSlider.classList.remove('lazy-image');
+  if (targetImgInSlider && targetImgInSlider.hasAttribute("data-src")) {
+    targetImgInSlider.src = targetImgInSlider.getAttribute("data-src");
+    targetImgInSlider.removeAttribute("data-src");
+    targetImgInSlider.classList.remove("lazy-image");
   }
 
   const slideWidth = slides[0].getBoundingClientRect().width;
 
-  // B. Synchronisation du carrousel en arrière-plan
   track.style.transform = "translateX(-" + slideWidth * newIndex + "px)";
   currentSlide.classList.remove("current-slide");
   targetSlide.classList.add("current-slide");
 
-  // C. Synchronisation des DOTS
   const dotsNav = document.querySelector(".carousel-nav");
   if (dotsNav) {
-      const dots = Array.from(dotsNav.children);
-      dots.forEach(d => d.classList.remove('current-slide'));
-      if (dots[newIndex]) dots[newIndex].classList.add('current-slide');
+    const dots = Array.from(dotsNav.children);
+    dots.forEach((d) => d.classList.remove("current-slide"));
+    if (dots[newIndex]) dots[newIndex].classList.add("current-slide");
   }
 
-  // D. Mise à jour de l'image dans le Zoom
   const zoomImg = document.getElementById("zoomImageFull");
   if (zoomImg) {
     zoomImg.style.opacity = 0.5;
@@ -401,7 +380,10 @@ window.changeZoomImage = function (direction) {
 window.toggleZoomState = function (e) {
   if (e.target.tagName === "BUTTON") return;
   const img = document.getElementById("zoomImageFull");
-  if (img && (e.target === img || e.target.classList.contains("zoom-container"))) {
+  if (
+    img &&
+    (e.target === img || e.target.classList.contains("zoom-container"))
+  ) {
     img.classList.toggle("zoomed-in");
     if (img.classList.contains("zoomed-in")) {
       img.onmousemove = function (evt) {
@@ -417,9 +399,13 @@ window.toggleZoomState = function (e) {
   }
 };
 
-// --- 7. GESTION PANIER / STOCK / MAGASIN ---
-
-window.selectionnerTaille = function (tailleNom, qtyWeb, qtyGlobal, qtyLocal, isStoreSelected) {
+window.selectionnerTaille = function (
+  tailleNom,
+  qtyWeb,
+  qtyGlobal,
+  qtyLocal,
+  isStoreSelected
+) {
   const inputTaille = document.getElementById("input-taille-selected");
   if (inputTaille) inputTaille.value = tailleNom;
 
@@ -565,44 +551,3 @@ window.closeModalAndRefresh = function () {
   if (modal) modal.style.display = "none";
   location.reload();
 };
-
-let isMapSystemLoaded = false;
-
-window.toggleStoreLocator = function () {
-  if (isMapSystemLoaded && typeof window.afficherInterfaceMap === 'function') {
-    window.afficherInterfaceMap(); 
-    return;
-  }
-  
-  const link = document.createElement("link");
-  link.rel = "stylesheet";
-  link.href = "https://unpkg.com/leaflet@1.9.4/dist/leaflet.css";
-  document.head.appendChild(link);
-
-  const scriptLeaflet = document.createElement("script");
-  scriptLeaflet.src = "https://unpkg.com/leaflet@1.9.4/dist/leaflet.js";
-  scriptLeaflet.async = true;
-  
-  scriptLeaflet.onload = function () {
-    chargerMapScript();
-  };
-  
-  document.body.appendChild(scriptLeaflet);
-};
-
-function chargerMapScript() {
-    const scriptMap = document.createElement("script");
-    scriptMap.src = "/js/map.js"; 
-
-    scriptMap.onload = function() {
-        isMapSystemLoaded = true;
-        if (typeof window.afficherInterfaceMap === 'function') {
-            window.afficherInterfaceMap();
-        }
-    };
-    scriptMap.onerror = function() {
-        alert("Erreur lors du chargement de la carte.");
-    };
-
-    document.body.appendChild(scriptMap);
-}

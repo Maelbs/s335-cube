@@ -1,10 +1,4 @@
-@font-face {
-    font-family: "Damas Font";
-    src: url("../font/font.woff2");
-    font-display: swap;
-}
 
-/* --- VARIABLES & DESIGN SYSTEM --- */
 :root {
     --primary-color: #01729e;
     --primary-gradient: linear-gradient(135deg, #01729e, #005f85);

@@ -10,6 +10,81 @@ if (typeof window.mapScriptLoaded === "undefined") {
 
   window.currentTailleId = null;
 
+  window.toggleStoreLocator = function () {
+    if (typeof L !== 'undefined') {
+      window.afficherInterfaceMap();
+      return;
+    }
+    
+    const link = document.createElement("link");
+    link.rel = "stylesheet";
+    link.href = "https://unpkg.com/leaflet@1.9.4/dist/leaflet.css";
+    document.head.appendChild(link);
+
+    const scriptLeaflet = document.createElement("script");
+    scriptLeaflet.src = "https://unpkg.com/leaflet@1.9.4/dist/leaflet.js";
+    scriptLeaflet.async = true;
+    
+    scriptLeaflet.onload = function () {
+        window.afficherInterfaceMap();
+    };
+    scriptLeaflet.onerror = function () {
+        alert("Erreur lors du chargement de la carte.");
+    };
+    
+    document.body.appendChild(scriptLeaflet);
+  };
+
+  window.afficherInterfaceMap = function () {
+    var overlay = document.getElementById("store-locator-overlay");
+    var header = document.querySelector("header");
+    var body = document.body;
+    if (!overlay) return;
+    
+    if (storeLocatorTimeout) {
+      clearTimeout(storeLocatorTimeout);
+      storeLocatorTimeout = null;
+    }
+
+    if (overlay.classList.contains("visible")) {
+      overlay.classList.remove("visible");
+      if (header) header.classList.remove("header-hidden");
+      body.style.overflow = "";
+      
+      storeLocatorTimeout = setTimeout(function () {
+        overlay.style.display = "none"; 
+      }, 300);
+      
+    } else {
+      overlay.style.display = "flex"; 
+      void overlay.offsetWidth; 
+      
+      body.style.overflow = "hidden";
+      if (header) header.classList.add("header-hidden");
+      
+      overlay.classList.add("visible"); 
+      
+      if (!mapInitialized) {
+         window.switchView("list"); 
+         window.initMap();
+         mapInitialized = true;
+      }
+    }
+  };
+
+  window.updateStoreLocatorStocks = function (idInventaire) {
+    window.currentTailleId = idInventaire;
+    const cards = document.querySelectorAll(".sl-card");
+    cards.forEach((card) => {
+      const displayDiv = card.querySelector(".js-stock-display");
+      if (!displayDiv) return;
+      var isAvailable = checkAvailability(card);
+      var message = isAvailable ? (idInventaire ? "Disponible (Taille sélectionnée)" : "Disponible") : (idInventaire ? "Indisponible (Taille sélectionnée)" : "Indisponible");
+      displayDiv.innerHTML = isAvailable ? `<div class="sl-stock-status status-dispo"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#00AEEF" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg> ${message}</div>` : `<div class="sl-stock-status status-indispo" style="color: #999;"><span style="font-size:12px;">✖</span> ${message}</div>`;
+    });
+    window.refreshStoreDisplay();
+  };
+
   window.getDistanceFromLatLonInKm = function (lat1, lon1, lat2, lon2) {
     var R = 6371; 
     var dLat = deg2rad(lat2 - lat1);
@@ -173,54 +248,6 @@ if (typeof window.mapScriptLoaded === "undefined") {
     });
     setTimeout(window.sortStoreList, 2500);
   };
-
-  var overlay = document.getElementById("store-locator-overlay");
-  if (overlay) overlay.addEventListener("click", function (e) {
-      if (e.target.id === "store-locator-overlay") window.afficherInterfaceMap();
-  });
-  
-  var stockToggle = document.getElementById("stockToggle");
-  if (stockToggle) stockToggle.addEventListener("change", window.refreshStoreDisplay);
-  
-  var searchInput = document.getElementById("storeSearchInput");
-  if (searchInput) searchInput.addEventListener("input", window.refreshStoreDisplay);
-
-  window.afficherInterfaceMap = function () {
-    var overlay = document.getElementById("store-locator-overlay");
-    var header = document.querySelector("header");
-    var body = document.body;
-    if (!overlay) return;
-    
-    if (storeLocatorTimeout) {
-      clearTimeout(storeLocatorTimeout);
-      storeLocatorTimeout = null;
-    }
-
-    if (overlay.classList.contains("visible")) {
-      overlay.classList.remove("visible");
-      if (header) header.classList.remove("header-hidden");
-      body.style.overflow = "";
-      
-      storeLocatorTimeout = setTimeout(function () {
-        overlay.style.display = "none"; 
-      }, 300);
-      
-    } else {
-      overlay.style.display = "flex"; 
-      void overlay.offsetWidth; 
-      
-      body.style.overflow = "hidden";
-      if (header) header.classList.add("header-hidden");
-      
-      overlay.classList.add("visible"); 
-      
-      if (!mapInitialized) {
-         window.switchView("list"); 
-         window.initMap();
-         mapInitialized = true;
-      }
-    }
-  };
   
   window.switchView = function (viewName) {
     var tabs = document.querySelectorAll(".sl-tab");
@@ -263,17 +290,17 @@ if (typeof window.mapScriptLoaded === "undefined") {
     });
     cards.forEach(function (card) { container.appendChild(card); });
   };
-}
+  
+  document.addEventListener("DOMContentLoaded", function() {
+      var overlay = document.getElementById("store-locator-overlay");
+      if (overlay) overlay.addEventListener("click", function (e) {
+        if (e.target.id === "store-locator-overlay") window.afficherInterfaceMap();
+      });
 
-window.updateStoreLocatorStocks = function (idInventaire) {
-  window.currentTailleId = idInventaire;
-  const cards = document.querySelectorAll(".sl-card");
-  cards.forEach((card) => {
-    const displayDiv = card.querySelector(".js-stock-display");
-    if (!displayDiv) return;
-    var isAvailable = checkAvailability(card);
-    var message = isAvailable ? (idInventaire ? "Disponible (Taille sélectionnée)" : "Disponible") : (idInventaire ? "Indisponible (Taille sélectionnée)" : "Indisponible");
-    displayDiv.innerHTML = isAvailable ? `<div class="sl-stock-status status-dispo"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#00AEEF" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg> ${message}</div>` : `<div class="sl-stock-status status-indispo" style="color: #999;"><span style="font-size:12px;">✖</span> ${message}</div>`;
+      var stockToggle = document.getElementById("stockToggle");
+      if (stockToggle) stockToggle.addEventListener("change", window.refreshStoreDisplay);
+
+      var searchInput = document.getElementById("storeSearchInput");
+      if (searchInput) searchInput.addEventListener("input", window.refreshStoreDisplay);
   });
-  window.refreshStoreDisplay();
-};
+}

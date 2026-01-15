@@ -15,7 +15,8 @@
 
     <div id="cartModal" class="modal-overlay" role="dialog" aria-modal="true" aria-labelledby="modalHeaderTitle">
         <div class="modal-content">
-            <button class="modal-close" onclick="closeModalAndRefresh()" aria-label="Fermer la fenêtre modale">×</button>
+            <button class="modal-close" onclick="closeModalAndRefresh()"
+                aria-label="Fermer la fenêtre modale">×</button>
             <div class="modal-header" id="modalHeaderTitle">PRODUIT AJOUTÉ AU PANIER AVEC SUCCÈS</div>
             <div class="modal-body">
                 <div class="modal-product">
@@ -50,7 +51,7 @@
                     <div class="tax-info">Taxes incluses : <span id="cartTax">0,00 €</span></div>
                     <div class="modal-actions">
                         <button onclick="closeModalAndRefresh()" class="btn-continue">◀ Continuer mes achats</button>
-                        <a href="{{ route('cart.index') }}" class="btn-checkout">Commander ▶</a>
+                        <a href="{{ route('cart.index') }}?t={{ time() }}" class="btn-checkout">Commander ▶</a>
                     </div>
                 </div>
             </div>
@@ -95,22 +96,21 @@
                                 <li class="carousel-slide {{ $index === 0 ? 'current-slide' : '' }}">
                                     @if($index === 0)
                                         {{-- La première image est chargée immédiatement (priorité haute) --}}
-                                        <img src="{{ asset($imageUrl) }}" 
-                                             alt="{{ $article->nom_article }} - Vue {{ $index + 1 }}" 
-                                             fetchpriority="high">
+                                        <img src="{{ asset($imageUrl) }}" alt="{{ $article->nom_article }} - Vue {{ $index + 1 }}"
+                                            fetchpriority="high">
                                     @else
                                         {{-- Les autres images sont chargées via JS (Lazy Load manuel) --}}
-                                        <img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" 
-                                             data-src="{{ asset($imageUrl) }}" 
-                                             alt="{{ $article->nom_article }} - Vue {{ $index + 1 }}" 
-                                             loading="lazy"
-                                             class="lazy-image">
+                                        <img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7"
+                                            data-src="{{ asset($imageUrl) }}"
+                                            alt="{{ $article->nom_article }} - Vue {{ $index + 1 }}" loading="lazy"
+                                            class="lazy-image">
                                     @endif
                                 </li>
                             @endforeach
                         @else
                             <li class="carousel-slide current-slide">
-                                <img src="https://placehold.co/800x500?text=Image+Non+Disponible" alt="Pas d'image disponible">
+                                <img src="https://placehold.co/800x500?text=Image+Non+Disponible"
+                                    alt="Pas d'image disponible">
                             </li>
                         @endif
                     </ul>
@@ -123,10 +123,12 @@
 
                     @if($existe)
                         <button id="open-3d-btn" class="btn-3d-view" style="display: none;"
-                                data-folder="{{ asset('images/MODELE3D/' . $ref) }}/"
-                                title="Ouvrir la vue 3D" aria-label="Ouvrir la vue 3D">
-                            <svg class="icon-3d" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
-                                <path fill="currentColor" d="M12 22q-2.075 0-3.9-.788t-3.175-2.137q-1.35-1.35-2.137-3.175T2 12h2q0 2.875 1.813 5.075t4.637 2.775L9 18.4l1.4-1.4l4.55 4.55q-.725.25-1.463.35T12 22Zm.5-7V9h3q.425 0 .713.288T16.5 10v4q0 .425-.288.713T15.5 15h-3Zm-5 0v-1.5H10v-1H8.5v-1H10v-1H7.5V9h3q.425 0 .713.288T11.5 10v4q0 .425-.288.713T10.5 15h-3Zm6.5-1.5h1v-3h-1v3Zm6-1.5q0-2.875-1.813-5.075T13.55 4.15L15 5.6L13.6 7L9.05 2.45q.725-.25 1.463-.35T12 2q2.075 0 3.9.788t3.175 2.137q1.35 1.35 2.138 3.175T22 12h-2Z" />
+                            data-folder="{{ asset('images/MODELE3D/' . $ref) }}/" title="Ouvrir la vue 3D"
+                            aria-label="Ouvrir la vue 3D">
+                            <svg class="icon-3d" xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+                                viewBox="0 0 24 24">
+                                <path fill="currentColor"
+                                    d="M12 22q-2.075 0-3.9-.788t-3.175-2.137q-1.35-1.35-2.137-3.175T2 12h2q0 2.875 1.813 5.075t4.637 2.775L9 18.4l1.4-1.4l4.55 4.55q-.725.25-1.463.35T12 22Zm.5-7V9h3q.425 0 .713.288T16.5 10v4q0 .425-.288.713T15.5 15h-3Zm-5 0v-1.5H10v-1H8.5v-1H10v-1H7.5V9h3q.425 0 .713.288T11.5 10v4q0 .425-.288.713T10.5 15h-3Zm6.5-1.5h1v-3h-1v3Zm6-1.5q0-2.875-1.813-5.075T13.55 4.15L15 5.6L13.6 7L9.05 2.45q.725-.25 1.463-.35T12 2q2.075 0 3.9.788t3.175 2.137q1.35 1.35 2.138 3.175T22 12h-2Z" />
                             </svg>
                         </button>
                     @endif
@@ -137,7 +139,8 @@
                     <button class="carousel-button carousel-button--right" aria-label="Image suivante">❯</button>
                     <div class="carousel-nav">
                         @foreach($validImages as $index => $unused)
-                            <button class="carousel-indicator {{ $index === 0 ? 'current-slide' : '' }}" aria-label="Afficher l'image {{ $index + 1 }}"></button>
+                            <button class="carousel-indicator {{ $index === 0 ? 'current-slide' : '' }}"
+                                aria-label="Afficher l'image {{ $index + 1 }}"></button>
                         @endforeach
                     </div>
                 @endif
@@ -147,7 +150,8 @@
                 <div class="each-specs-column">
                     <div class="specs-header-row">
                         <h2>FICHE TECHNIQUE</h2>
-                        <span class="info-bubble" tabindex="0" data-tooltip="Retrouvez ici tous les composants techniques. Pour l'assistance électrique, l'autonomie varie selon votre poids, le mode utilisé et le dénivelé.">?</span>
+                        <span class="info-bubble" tabindex="0"
+                            data-tooltip="Retrouvez ici tous les composants techniques. Pour l'assistance électrique, l'autonomie varie selon votre poids, le mode utilisé et le dénivelé.">?</span>
                         <button class="toggle-specs-btn" aria-label="Afficher ou masquer la fiche technique"></button>
                     </div>
 
@@ -182,7 +186,8 @@
                     <div class="geo-section each-specs-column">
                         <div class="specs-header-row">
                             <h2>GÉOMÉTRIE</h2>
-                            <span class="info-bubble" tabindex="0" data-tooltip="La géométrie détermine votre position et le comportement du vélo (confort, stabilité ou agilité).">?</span>
+                            <span class="info-bubble" tabindex="0"
+                                data-tooltip="La géométrie détermine votre position et le comportement du vélo (confort, stabilité ou agilité).">?</span>
                             <button class="toggle-specs-btn" aria-label="Afficher ou masquer la géométrie"></button>
                         </div>
                         <div class="table-responsive">
@@ -276,7 +281,8 @@
                 <div class="size-selector">
                     <p class="size-label">
                         TAILLE
-                        <span class="info-bubble" tabindex="0" data-tooltip="Sélectionnez votre taille. Utilisez notre calculateur en bas de page pour trouver la correspondance idéale selon votre morphologie.">?</span>
+                        <span class="info-bubble" tabindex="0"
+                            data-tooltip="Sélectionnez votre taille. Utilisez notre calculateur en bas de page pour trouver la correspondance idéale selon votre morphologie.">?</span>
                     </p>
                     <div class="sizes-grid">
                         @php $stockWebVelo = 0 @endphp
@@ -295,13 +301,13 @@
                             @endphp
 
                             <button class="size-btn {{ $classeCss }}" onclick="handleSizeSelection(
-                                            {{ $inventaire->id_inventaire ?? $inventaire->id_taille ?? 0 }}, 
-                                            '{{ addslashes($inventaire->taille->taille) }}', 
-                                            {{ $stockWeb ?? 0 }}, 
-                                            {{ $stockGlobal ?? 0 }}, 
-                                            {{ $stockMonMagasin ?? 0 }}, 
-                                            {{ $hasMagasin ? 'true' : 'false' }}
-                                    )">
+                                                    {{ $inventaire->id_inventaire ?? $inventaire->id_taille ?? 0 }}, 
+                                                    '{{ addslashes($inventaire->taille->taille) }}', 
+                                                    {{ $stockWeb ?? 0 }}, 
+                                                    {{ $stockGlobal ?? 0 }}, 
+                                                    {{ $stockMonMagasin ?? 0 }}, 
+                                                    {{ $hasMagasin ? 'true' : 'false' }}
+                                            )">
                                 {{ $inventaire->taille->taille }}
                                 <span style="font-size: 0.8em; display:block; font-weight: normal;">
                                     ({{ $inventaire->taille->taille_min }}-{{ $inventaire->taille->taille_max }})
@@ -317,8 +323,9 @@
 
                 <div class="dispo-info-container" style="margin-bottom: 15px;">
                     <p class="size-label" style="font-size: 11px; margin-bottom: 8px;">
-                        LÉGENDE DISPONIBILITÉ 
-                        <span class="info-bubble" tabindex="0" data-tooltip="Vert : Disponible immédiatement. Orange : Stock limité ou déporté. Rouge : Actuellement indisponible.">?</span>
+                        LÉGENDE DISPONIBILITÉ
+                        <span class="info-bubble" tabindex="0"
+                            data-tooltip="Vert : Disponible immédiatement. Orange : Stock limité ou déporté. Rouge : Actuellement indisponible.">?</span>
                     </p>
                     <div class="dispo-row">
                         <span id="dot-web" class="status-dot"></span>
@@ -440,8 +447,7 @@
                                 $hex = $variante->couleur->hexa_couleur ?? '000000';
                                 $bg = str_starts_with($hex, '#') ? $hex : '#' . $hex;
                             @endphp
-                            <a href="{{ $lien }}" class="couleur-velo"
-                                aria-label="Voir la version couleur {{ $hex }}"
+                            <a href="{{ $lien }}" class="couleur-velo" aria-label="Voir la version couleur {{ $hex }}"
                                 style="display: inline-block; width: 30px; height: 30px; border-radius: 50%; margin-right: 5px; border: {{ $estActif ? '5px solid #cbcbcb' : '1px solid #ddd' }}; background-color: {{ $bg }};">
                             </a>
                         @endforeach
@@ -479,7 +485,7 @@
             @endif
 
         </div>
-    </main> 
+    </main>
     @if(!$isAccessoire)
         @include('layouts.bikeSizing')
     @endif
@@ -489,7 +495,8 @@
             <div class="st-section-header" style="text-align: center; margin-bottom: 20px;">
                 <h2 class="st-section-title text-section-grey">
                     D’autres cyclistes ont également acheté
-                    <span class="info-bubble" tabindex="0" data-tooltip="Ces produits sont fréquemment achetés avec ce modèle pour une expérience de conduite optimale.">?</span>
+                    <span class="info-bubble" tabindex="0"
+                        data-tooltip="Ces produits sont fréquemment achetés avec ce modèle pour une expérience de conduite optimale.">?</span>
                 </h2>
                 <p class="text-section-grey">
                     Complétez votre équipement avec des accessoires populaires auprès de nos clients.
@@ -591,6 +598,27 @@
             <img id="zoomImageFull" src="" alt="Zoom Produit">
         </div>
     </div>
+
+    <div id="lightbox-3d" class="lightbox-3d-overlay">
+        <div class="lightbox-3d-content">
+            <button id="close-3d-btn" class="close-3d-btn" aria-label="Fermer la vue 3D">×</button>
+            
+            <div id="loader-wrapper" class="loader-wrapper">
+                <div class="loader-spinner"></div>
+                <p id="loader-text">Chargement 0%</p>
+            </div>
+
+            <div id="product-viewer" class="product-viewer-container">
+                <img id="bike-image" src="" alt="Vue 360 du vélo" draggable="false">
+            </div>
+
+            <div class="instruction-3d">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 11V6a2 2 0 0 0-2-2v0a2 2 0 0 0-2 2v0"/><path d="M14 10V4a2 2 0 0 0-2-2v0a2 2 0 0 0-2 2v2"/><path d="M10 10.5V6a2 2 0 0 0-2-2v0a2 2 0 0 0-2 2v8"/><path d="M18 8a2 2 0 1 1 4 0v6a8 8 0 0 1-8 8h-2c-2.8 0-4.5-.86-5.99-2.34l-3.6-3.6a2 2 0 0 1 2.83-2.82L7 15"/></svg>
+                <span>Faites glisser pour tourner</span>
+            </div>
+        </div>
+    </div>
+
     @include('layouts.footer')
 
     <script src="{{ asset('js/vizualizeArticle.js') }}" defer></script>
@@ -615,4 +643,5 @@
     </script>
 
 </body>
+
 </html>

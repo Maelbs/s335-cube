@@ -230,6 +230,7 @@ Route::get('/boutique/{type}/{cat_id?}/{sub_id?}/{model_id?}', [BoutiqueControll
 
 Route::view('/aide', 'aide')->name('aide');
 
+Route::post('/bot/add-to-cart', [ChatBotController::class, 'addToCartFromBot'])->name('bot.addToCart');
 
-// Route::get('/mon-image-privee/{filename}', [ImageController::class, 'show'])
-//     ->middleware('cache.images');
+Route::get('/mon-image-privee/{filename}', [ImageController::class, 'show'])
+    ->middleware('cache.images');

@@ -157,7 +157,7 @@
                         <span class="info-bubble" data-tooltip="Prix : Ajustez les bornes selon votre budget maximal.">?</span>
                         <i class="fas fa-chevron-up"></i>
                     </div>
-                   
+                    
                     <div class="filter-content price-filter-container">
                         <div id="price-slider"></div>
                         <input type="hidden" name="prix_min" id="input-prix-min" value="{{ request('prix_min') ?? 0 }}">
@@ -245,7 +245,7 @@
                         </span>
                         <i class="fas fa-chevron-down"></i>
                     </button>
-                   
+                    
                     <div class="dropdown-content" id="sortOptions">
                         <div onclick="applySort('relevance')">PERTINENCE</div>
                         <div onclick="applySort('name_asc')">NOM, A À Z</div>
@@ -274,9 +274,24 @@
                             <div class="product-image">
                                 <a href="{{ url($isAccessoire ? '/accessoire/' : '/velo/') . '/' . $article->reference }}">
                                     @if ($isAccessoire)
-                                        <img src="{{ asset('images/ACCESSOIRES/' . substr($article->reference,0,5) . '/image_1.webp') }}" alt="{{ $article->nom_article }}">
+                                        <img src="{{ asset('images/ACCESSOIRES/' . substr($article->reference,0,5) . '/image_1.webp') }}" 
+                                             alt="{{ $article->nom_article }}"
+                                             {{-- Optimisation LCP : Les 6 premiers sont 'eager', les autres 'lazy' --}}
+                                             @if($loop->index < 6)
+                                                 fetchpriority="{{ $loop->index === 0 ? 'high' : 'auto' }}"
+                                             @else
+                                                 loading="lazy"
+                                             @endif
+                                        >
                                     @else
-                                        <img src="{{ asset('images/VELOS/' . substr($article->reference,0,6) . '/image_1.webp') }}" alt="{{ $article->nom_article }}">
+                                        <img src="{{ asset('images/VELOS/' . substr($article->reference,0,6) . '/image_1.webp') }}" 
+                                             alt="{{ $article->nom_article }}"
+                                             @if($loop->index < 6)
+                                                 fetchpriority="{{ $loop->index === 0 ? 'high' : 'auto' }}"
+                                             @else
+                                                 loading="lazy"
+                                             @endif
+                                        >
                                     @endif
                                 </a>
                             </div>
