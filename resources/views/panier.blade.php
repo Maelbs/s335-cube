@@ -7,6 +7,7 @@
     <link rel="stylesheet" href="{{ asset('css/panier.css') }}">
     <meta name="csrf-token" content="{{ csrf_token() }}">
 </head>
+
 <body>
 
     @include('layouts.header')
@@ -47,7 +48,8 @@
 
                             <div class="card-actions">
                                 <div class="row-total-price">
-                                    <span class="item-total-display">{{ number_format($item['price'] * $item['quantity'], 2, ',', ' ') }}</span>
+                                    <span
+                                        class="item-total-display">{{ number_format($item['price'] * $item['quantity'], 2, ',', ' ') }}</span>
                                     € TTC
                                 </div>
 
@@ -75,7 +77,8 @@
                         <a href="/" class="back-link">
                             <span>&larr;</span> CONTINUER MES ACHATS
                         </a>
-                        <a href="{{ Auth::check() ? route('payment.show') : route('login') }}" class="btn-cube-red btn-validate">
+                        <a href="{{ Auth::check() ? route('payment.show') : route('login') }}"
+                            class="btn-cube-red btn-validate">
                             <span>► Valider mon panier</span>
                         </a>
                     </div>
@@ -92,12 +95,13 @@
 
                         @if(isset($discountAmount) && $discountAmount > 0)
                             <div class="summary-row promo-active-row">
-                                    <div class="promo-label-group">
-                                        <span>Réduction ({{ $promoCode }})</span>
-                                        <button type="button" id="btn-remove-promo" class="btn-remove-promo" title="Retirer le code">
-                                            &times;
-                                        </button>
-                                    </div>
+                                <div class="promo-label-group">
+                                    <span>Réduction ({{ $promoCode }})</span>
+                                    <button type="button" id="btn-remove-promo" class="btn-remove-promo"
+                                        title="Retirer le code">
+                                        &times;
+                                    </button>
+                                </div>
                                 <span class="promo-amount">- {{ number_format($discountAmount, 2, ',', ' ') }} €</span>
                             </div>
                         @endif
@@ -111,16 +115,19 @@
 
                         <div class="summary-row total-row">
                             <span>Total TTC</span>
-                            <span>{{ number_format($total ?? 0, 2, ',', ' ') }} €</span>
+                            {{-- MODIFICATION IMPORTANTE ICI : AJOUT DE L'ID cartTotal --}}
+                            <span id="cartTotal">{{ number_format($total ?? 0, 2, ',', ' ') }} €</span>
                         </div>
-                        
+
                         <div class="taxes-info">
                             Taxes incluses : {{ number_format(($total ?? 0) * 0.2, 2, ',', ' ') }} €
-                            <span class="info-bubble" data-tooltip="Le montant de la TVA (20%) est déjà inclus dans le prix total affiché.">?</span>
+                            <span class="info-bubble"
+                                data-tooltip="Le montant de la TVA (20%) est déjà inclus dans le prix total affiché.">?</span>
                         </div>
 
                         <div class="summary-btn-container">
-                            <a href="{{ Auth::check() ? route('payment.show') : route('login') }}" class="btn-cube-red btn-validate">
+                            <a href="{{ Auth::check() ? route('payment.show') : route('login') }}"
+                                class="btn-cube-red btn-validate">
                                 <span>► Valider mon panier</span>
                             </a>
                         </div>
@@ -129,16 +136,18 @@
                     <div class="promo-container">
                         <h3 class="promo-title">
                             CODE PROMO
-                            <span class="info-bubble" data-tooltip="Si vous possédez un code de réduction Cube France, saisissez-le ici pour mettre à jour votre total.">?</span>
+                            <span class="info-bubble"
+                                data-tooltip="Si vous possédez un code de réduction Cube France, saisissez-le ici pour mettre à jour votre total.">?</span>
                         </h3>
-                        
+
                         <div class="promo-box">
-                            <input type="text" id="promo-input" class="promo-input" placeholder="Code promo" value="{{ $promoCode ?? '' }}">
+                            <input type="text" id="promo-input" class="promo-input" placeholder="Code promo"
+                                value="{{ $promoCode ?? '' }}">
                             <button type="button" id="btn-apply-promo" class="btn-cube-black">
                                 <span>► Appliquer</span>
                             </button>
                         </div>
-                        
+
                         <div id="promo-message" class="promo-msg"></div>
                     </div>
 
@@ -158,13 +167,13 @@
                     },
                     body: JSON.stringify({ id: rowId, quantity: newQty })
                 })
-                .then(response => response.json())
-                .then(data => {
-                    if (data.success) {
-                        window.location.reload(); 
-                    }
-                })
-                .catch(error => console.error('Erreur:', error));
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            window.location.reload();
+                        }
+                    })
+                    .catch(error => console.error('Erreur:', error));
             };
 
             document.querySelectorAll('.cart-item-row').forEach(row => {
@@ -203,10 +212,10 @@
             const msgPromo = document.getElementById('promo-message');
 
             if (btnPromo) {
-                btnPromo.addEventListener('click', function(e) {
+                btnPromo.addEventListener('click', function (e) {
                     e.preventDefault();
                     const code = inputPromo.value.trim();
-                    if(!code) return;
+                    if (!code) return;
                     fetch('{{ route("cart.applyPromo") }}', {
                         method: 'POST',
                         headers: {
@@ -216,43 +225,42 @@
                         },
                         body: JSON.stringify({ code_promo: code })
                     })
-                    .then(response => response.json())
-                    .then(data => {
-                        if(data.success) {
-                            window.location.reload();
-                        } else {
-                            msgPromo.textContent = data.message;
-                            msgPromo.className = 'promo-msg error';
-                            msgPromo.style.color = '#e02b2b';
-                        }
-                    })
-                    .catch(error => console.error(error));
+                        .then(response => response.json())
+                        .then(data => {
+                            if (data.success) {
+                                window.location.reload();
+                            } else {
+                                msgPromo.textContent = data.message;
+                                msgPromo.className = 'promo-msg error';
+                                msgPromo.style.color = '#e02b2b';
+                            }
+                        })
+                        .catch(error => console.error(error));
                 });
             }
 
             const btnRemovePromo = document.getElementById('btn-remove-promo');
             if (btnRemovePromo) {
-                btnRemovePromo.addEventListener('click', function(e) {
+                btnRemovePromo.addEventListener('click', function (e) {
                     e.preventDefault();
                     fetch('{{ route("cart.removePromo") }}', {
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json',
                             'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
-                        }
+                        },
                     })
-                    .then(response => response.json())
-                    .then(data => {
-                        if (data.success) {
-                            window.location.reload();
-                        }
-                    });
+                        .then(response => response.json())
+                        .then(data => {
+                            if (data.success) {
+                                window.location.reload();
+                            }
+                        });
                 });
             }
         });
     </script>
 
-
-
 </body>
+
 </html>

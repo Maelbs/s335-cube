@@ -524,8 +524,10 @@ window.fillAndOpenModal = function (data) {
   if (document.getElementById("modalQty"))
     document.getElementById("modalQty").textContent = data.product.qty;
 
-  if (document.getElementById("cartCount"))
-    document.getElementById("cartCount").textContent = data.cart.count;
+  const counters = document.querySelectorAll(".cart-count-display");
+  counters.forEach((el) => {
+    el.textContent = data.cart.count;
+  });
 
   const formattedTotal = new Intl.NumberFormat("fr-FR", {
     style: "currency",

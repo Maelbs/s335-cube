@@ -221,6 +221,7 @@ Route::post('/panier/update', [PanierController::class, 'updateQuantity'])->name
 Route::post('/panier/ajouter-accessoire/{reference}', [PanierController::class, 'addAccessoire'])->name('cart.addAccessoire');
 Route::post('/panier/apply-promo', [PanierController::class, 'applyPromo'])->name('cart.applyPromo');
 Route::post('/panier/remove-promo', [PanierController::class, 'removePromo'])->name('cart.removePromo');
+Route::get('/panier/count', [PanierController::class, 'count'])->name('cart.count');
 
 Route::post('/chat/ask', [ChatBotController::class, 'ask']);
 
