@@ -16,7 +16,7 @@
     font-family: 'Damas Font', sans-serif;
 }
 
-/* --- BOUTON FLOTTANT --- */
+
 .chat-button {
     position: fixed;
     bottom: 30px;
@@ -39,14 +39,13 @@
     box-shadow: 0 8px 25px rgba(1, 114, 158, 0.5);
 }
 
-/* --- CORRECTION TAILLE ICONE PRINCIPALE --- */
 .chat-button svg {
     width: 32px;
-    /* MODIFIER ICI POUR CHANGER LA TAILLE (ex: 40px) */
+  
     height: 32px;
-    /* MODIFIER ICI AUSSI */
+
     fill: white;
-    /* Force la couleur blanche */
+
     transition: transform 0.3s ease;
 }
 
@@ -54,7 +53,7 @@
     transform: scale(1.1);
 }
 
-/* --- FENÊTRE DE CHAT --- */
+
 .chat-box {
     position: fixed;
     bottom: 100px;
@@ -85,7 +84,7 @@
     display: flex;
 }
 
-/* --- HEADER --- */
+
 .chat-header {
     background: var(--primary-gradient);
     color: white;
@@ -148,7 +147,7 @@
     background: rgba(255, 255, 255, 0.15);
 }
 
-/* --- CONTENT --- */
+
 .chat-content {
     flex-grow: 1;
     padding: 20px;
@@ -199,7 +198,7 @@
     font-weight: 500;
 }
 
-/* --- FOOTER (INPUT) --- */
+
 .chat-footer {
     padding: 15px;
     background: white;
@@ -233,12 +232,12 @@
     padding: 8px 0;
 }
 
-/* --- CORRECTION BOUTON ENVOYER --- */
+
 .send-btn {
     background: var(--primary-color);
     border: none;
     width: 36px;
-    /* Un peu plus grand pour l'ergonomie */
+   
     height: 36px;
     border-radius: 50%;
     display: flex;
@@ -248,7 +247,7 @@
     transition: transform 0.2s;
     margin-left: 8px;
     padding: 0;
-    /* Important pour le centrage */
+
 }
 
 .send-btn:hover {
@@ -259,7 +258,7 @@
     width: 18px;
     height: 18px;
     fill: white;
-    /* L'icône devient blanche */
+
     margin-left: 2px;
-    /* Petit ajustement optique pour centrer l'avion */
+ 
 }

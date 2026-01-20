@@ -44,8 +44,7 @@ class ProfilController extends Controller
             'tel' => $request->tel,
             'date_naissance' => $request->birthday,
             
-            // --- AJOUT ICI ---
-            // Si la checkbox est cochée, has() renvoie true, sinon false
+        
             'double_auth' => $request->has('double_auth') ? true : false,
         ]);
 
@@ -59,7 +58,6 @@ class ProfilController extends Controller
 
 
 
-// --- US48 : SUPPRESSION DE COMPTE (SECURE) ---
 public function destroy(Request $request)
     {
         $user = \Illuminate\Support\Facades\Auth::user();
@@ -69,19 +67,17 @@ public function destroy(Request $request)
                 
                 $aCommandes = $user->commandes()->exists();
 
-                // --- CORRECTION DU BUG SQL ICI ---
-                // 1. On identifie les paniers liés à une commande (Intouchables)
                 $paniersLies = DB::table('commande')
                                 ->where('id_client', $user->id_client)
                                 ->pluck('id_panier')
                                 ->toArray();
 
-                // 2. On supprime SEULEMENT les paniers qui NE SONT PAS dans cette liste (Paniers abandonnés)
+             
                 DB::table('panier')
                     ->where('id_client', $user->id_client)
                     ->whereNotIn('id_panier', $paniersLies)
                     ->delete();
-                // ----------------------------------
+          
 
                 $user->velosEnregistres()->delete();
                 $user->codesPromoUtilises()->detach();
@@ -114,7 +110,7 @@ public function destroy(Request $request)
                         ]);
                 
                 } else {
-                    // --- SUPPRESSION TOTALE ---
+                    
                     $user->adressesLivraison()->detach();
                     $user->delete();
                 }
@@ -127,7 +123,7 @@ public function destroy(Request $request)
             return redirect()->route('home')->with('success', 'Compte supprimé avec succès.');
 
         } catch (\Exception $e) {
-            // Affiche l'erreur si ça plante encore
+          
             dd("ERREUR : " . $e->getMessage());
         }
     }
@@ -140,9 +136,7 @@ public function destroy(Request $request)
         try {
             DB::transaction(function () use ($user) {
 
-                /* ===============================
-                1. Suppression des paniers abandonnés
-                =============================== */
+         
 
                 $paniersLies = DB::table('commande')
                     ->where('id_client', $user->id_client)
@@ -154,16 +148,11 @@ public function destroy(Request $request)
                     ->whereNotIn('id_panier', $paniersLies)
                     ->delete();
 
-                /* ===============================
-                2. Nettoyage des données annexes
-                =============================== */
+          
 
                 $user->velosEnregistres()->delete();
                 $user->codesPromoUtilises()->detach();
 
-                /* ===============================
-                3. Anonymisation stricte du client
-                =============================== */
 
                 $suffixeUnique = $user->id_client . '_' . time();
 
@@ -181,9 +170,7 @@ public function destroy(Request $request)
                         'updated_at'             => now(),
                     ]);
 
-                /* ===============================
-                4. Anonymisation des adresses
-                =============================== */
+
 
                 DB::table('adresse_livraison')
                     ->where('id_client', $user->id_client)
@@ -193,9 +180,7 @@ public function destroy(Request $request)
                     ]);
             });
 
-            /* ===============================
-            5. Déconnexion forcée
-            =============================== */
+         
 
             \Illuminate\Support\Facades\Auth::logout();
             $request->session()->invalidate();

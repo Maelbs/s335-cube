@@ -19,16 +19,16 @@ use App\Models\Adresse;
 
 class PaymentController extends Controller
 {
-    // Affiche la page de paiement
+
     public function paymentShow()
     {
         $client = Auth::user();
         $adresses = $client->adressesLivraison()->get();
 
-        // On récupère le magasin associé au client
+  
         $magasin = MagasinPartenaire::with('adresses')->find($client->id_magasin);
 
-        // Vérifie si le panier contient un vélo (pour forcer le retrait magasin)
+
         $panier = Panier::where('id_client', $client->id_client)->first();
         
         $contientVelo = false;
@@ -41,27 +41,25 @@ class PaymentController extends Controller
         return view('commande', compact('client', 'adresses', 'magasin', 'contientVelo'));
     }
 
-    /**
-     * Logique centrale pour récupérer ou créer l'adresse de livraison
-     */
+
     private function getOrCreateAddress(Request $request)
     {
         $mode = $request->input('delivery_mode');
 
-        // CAS 1 : Retrait en magasin
+        // Retrait en magasin
         if ($mode === 'magasin') {
-            // On ne crée pas d'adresse client, on retournera l'adresse du magasin plus tard
+            
             return null;
         }
 
-        // CAS 2 : Adresse existante sélectionnée
+      
         if ($request->id_adresse && $request->id_adresse !== 'new') {
             $request->validate(['id_adresse' => 'exists:adresse,id_adresse']);
             return $request->id_adresse;
         }
 
-        // CAS 3 : Nouvelle adresse saisie
-        // Validation stricte des champs
+       
+       
         $validator = Validator::make($request->all(), [
             'rue' => 'required|string|max:255',
             'zipcode' => 'required|string|max:20',
@@ -95,44 +93,42 @@ class PaymentController extends Controller
         return $adresse->id_adresse;
     }
 
-    /**
-     * Récupère l'ID final de l'adresse et le type de livraison
-     */
+ 
     private function getInfosLivraison($adresseId)
     {
         // Si une adresse précise a été résolue (Livraison Domicile)
         if ($adresseId) {
             return [
                 'id_adresse' => $adresseId,
-                'id_type_livraison' => 1 // 1 = Domicile (selon votre BDD)
+                'id_type_livraison' => 1 
             ];
         }
 
-        // Sinon, c'est un retrait Magasin : On cherche l'adresse du magasin du client
+       
         $client = Auth::user();
         
-        // Priorité 1 : Le magasin enregistré en BDD sur le client
+
         $idMagasin = $client->id_magasin;
         
-        // Priorité 2 : La session (fallback)
+       
         if (!$idMagasin && session()->has('id_magasin_choisi')) {
             $idMagasin = session('id_magasin_choisi');
         }
 
         if ($idMagasin) {
             $magasin = MagasinPartenaire::with('adresses')->find($idMagasin);
-            // On prend la première adresse du magasin (si elle existe)
+     
             $adresseMagasin = $magasin ? $magasin->adresses->first() : null;
 
             if ($adresseMagasin) {
                 return [
                     'id_adresse' => $adresseMagasin->id_adresse,
-                    'id_type_livraison' => 2 // 2 = Magasin (selon votre BDD)
+                    'id_type_livraison' => 2 
                 ];
             }
         }
 
-        // Erreur critique : Pas d'adresse trouvée
+
         return [
             'id_adresse' => null,
             'id_type_livraison' => 1
@@ -165,7 +161,7 @@ class PaymentController extends Controller
         return max($subTotal - $discountAmount, 0);
     }
 
-    // --- PAYPAL ---
+  
     public function paymentPaypal(Request $request)
     {
         try {
@@ -177,7 +173,7 @@ class PaymentController extends Controller
         $total = $this->calculerTotalPanier();
         if ($total <= 0) return redirect()->route('cart.index')->with('error', 'Panier vide.');
 
-        // Récupération infos finales pour l'URL de retour
+      
         $infos = $this->getInfosLivraison($idAdresseResolue);
         
         if (!$infos['id_adresse']) {
@@ -222,16 +218,9 @@ class PaymentController extends Controller
 
         if (isset($response['status']) && $response['status'] == 'COMPLETED') {
             $idAdresse = $request->query('id_adresse');
-            // On recalcule le type (1 ou 2) en fonction de l'adresse ID pour être sûr
-            // (Simplification : ici on assume 1 par défaut, mais idéalement il faudrait revérifier si c'est un magasin)
-            // Pour faire simple, on réutilise getInfosLivraison si c'est une livraison domicile, 
-            // mais l'ID adresse suffit pour créer la commande.
-            
-            // Astuce : si l'adresse appartient à un magasin, c'est type 2, sinon 1.
-            // On peut simplifier : 
+           
             $typeLivraison = 1; 
-            // Vérif si c'est une adresse magasin (optionnel mais recommandé)
-            // ...
+      
             
             return $this->finalizeOrder($idAdresse, 'Paypal');
         }
@@ -239,7 +228,7 @@ class PaymentController extends Controller
         return redirect()->route('paypal.cancel');
     }
 
-    // --- STRIPE ---
+
     public function paymentStripe(Request $request)
     {
         try {
@@ -302,7 +291,7 @@ class PaymentController extends Controller
         return $this->finalizeOrder($idAdresse, 'CB', $typeLivraison);
     }
 
-    // --- COMMUN : CRÉATION COMMANDE ---
+
     private function finalizeOrder($idAdresse, $modePaiement, $typeLivraison = 1)
     {
         $clientId = Auth::id();

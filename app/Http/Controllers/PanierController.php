@@ -282,7 +282,7 @@ class PanierController extends Controller
                 }
             }
 
-            // MODIFICATION ICI : Sauvegarde forcée de la session avant le retour JSON
+    
             $request->session()->save();
 
             return response()->json([
@@ -376,7 +376,7 @@ class PanierController extends Controller
 
         $formattedTotal = number_format($newTotalPanier, 2, ',', ' ');
 
-        // MODIFICATION ICI : Sauvegarde forcée de la session
+
         $request->session()->save();
 
         return response()->json([
