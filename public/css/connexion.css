@@ -231,7 +231,7 @@ small.text-muted {
   text-decoration: none;  
 }
 
-/* Le reste ne change pas */
+
 .btn-google:before {
   content: "";
   position: absolute;
@@ -252,7 +252,7 @@ small.text-muted {
 .btn-google:hover {
   box-shadow: 0 8px 25px rgba(0, 113, 227, 0.35);
   transform: translateY(-2px);
-  color: #fff; /* Force le blanc au survol pour éviter que le lien devienne bleu */
+  color: #fff; 
 }
 .google-icon {
   width: 20px;

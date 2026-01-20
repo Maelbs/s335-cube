@@ -38,7 +38,7 @@ class ProfileCompletionController extends Controller
         
         $client = Auth::user();
 
-        // === ÉTAPE 1 : Création de l'adresse de LIVRAISON ===
+  
         // On crée toujours cette adresse en premier
         $adresseLivraison = new Adresse();
         $adresseLivraison->rue         = $request->input('rue');
@@ -47,7 +47,7 @@ class ProfileCompletionController extends Controller
         $adresseLivraison->pays        = $request->input('country');
         $adresseLivraison->save();
 
-        // === ÉTAPE 2 : Liaison Livraison -> Client (Table Pivot) ===
+      
         // On vérifie si le lien existe déjà pour éviter les doublons (prudence)
         $exists = DB::table('adresse_livraison')
                     ->where('id_client', $client->id_client)
@@ -61,7 +61,7 @@ class ProfileCompletionController extends Controller
             ]);
         }
 
-        // === ÉTAPE 3 : Création de l'adresse de FACTURATION ===
+
         // On crée une NOUVELLE ligne quoiqu'il arrive (Double Insert)
         $adresseFacturation = new Adresse();
 
@@ -79,9 +79,9 @@ class ProfileCompletionController extends Controller
             $adresseFacturation->pays        = $request->input('billing_country');
         }
         
-        $adresseFacturation->save(); // On sauvegarde la 2ème adresse (ID différent)
+        $adresseFacturation->save(); 
 
-        // === ÉTAPE 4 : Mise à jour du Profil Client ===
+  
         $client->tel = $request->input('tel');
         
         // On lie le client à cette NOUVELLE adresse de facturation

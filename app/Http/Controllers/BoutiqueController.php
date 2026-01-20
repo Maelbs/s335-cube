@@ -21,14 +21,12 @@ class BoutiqueController extends Controller
         $isAccessoire = ($type === 'Accessoires');
         $isSearchMode = $request->filled('search');
         
-        // On crée une clé de cache unique pour cette page spécifique
+      
         $cacheKey = "filters_{$type}_" . ($cat_id ?? 'all') . "_" . ($sub_id ?? 'all') . "_" . ($model_id ?? 'all') . "_" . ($isSearchMode ? 'search' : 'normal');
         
         $titrePage = $isAccessoire ? "TOUS LES ACCESSOIRES" : "TOUS LES VÉLOS " . strtoupper($type) . "S";
 
-        // -------------------------------------------------------
-        // 1. CONSTRUCTION DE LA REQUÊTE (PRODUITS) - Identique à avant
-        // -------------------------------------------------------
+      
         if ($isAccessoire) {
             $query = Accessoire::query()->with(['parent', 'categorie', 'parent.photos', 'inventaires.taille']);
             
@@ -71,7 +69,7 @@ class BoutiqueController extends Controller
             if ($request->filled('materiaux')) $query->whereIn('materiau', $request->materiaux);
 
         } else {
-            // PARTIE VÉLO
+          
             $dbType = ($type === 'Electrique') ? 'electrique' : 'musculaire';
             
             $query = VarianteVelo::query()
@@ -121,9 +119,6 @@ class BoutiqueController extends Controller
             if ($request->filled('batteries')) $query->whereIn('id_batterie', $request->batteries);
         }
 
-        // -------------------------------------------------------
-        // 2. OPTIMISATION DES COMPTEURS (Stocks)
-        // -------------------------------------------------------
         $hasSize = $request->filled('tailles');
         
         if ($hasSize) {
@@ -156,16 +151,14 @@ class BoutiqueController extends Controller
              $countStore = (clone $query)->whereHas('inventaires.magasins', fn($q) => $q->where('quantite_stock_magasin', '>', 0))->count();
         }
 
-        // -------------------------------------------------------
-        // 3. RECUPERATION DES FILTRES (AVEC CACHE CORRIGÉ)
-        // -------------------------------------------------------
+
         $filters = Cache::remember($cacheKey, 3600, function () use ($isAccessoire, $type, $isSearchMode, $sub_id, $cat_id, $model_id) {
             
             $data = [];
             
             if ($isAccessoire) {
                 $data['materiaux'] = Accessoire::select('materiau')->distinct()->whereNotNull('materiau')->orderBy('materiau')->pluck('materiau');
-                // Logique originale remise ici
+              
                 $data['tailles'] = Taille::whereHas('ArticleInventaire.articles.accessoire')
                     ->distinct()
                     ->orderBy('id_taille')
@@ -178,9 +171,7 @@ class BoutiqueController extends Controller
             } else {
                 $dbType = ($type === 'Electrique') ? 'electrique' : 'musculaire';
                 
-                // --- CORRECTION ICI : On réutilise tes requêtes d'origine pour ne choper que ce qui existe ---
-                
-            // 1. Couleurs (Filtrées pour n'afficher que celles qui ont des vélos correspondants)
+     
             $data['couleurs'] = Couleur::whereHas('varianteVelos.modele', function($q) use ($isSearchMode, $dbType) {
                 if (!$isSearchMode) {
                     $q->where('type_velo', $dbType);
@@ -189,35 +180,34 @@ class BoutiqueController extends Controller
             ->orderBy('nom_couleur')
             ->get();
                 
-                // 2. Fourches (Filtré par type de vélo)
+               
                 $data['fourches'] = Fourche::whereHas('varianteVelos.modele', fn($q) => !$isSearchMode ? $q->where('type_velo', $dbType) : $q)
                     ->orderBy('nom_fourche')
                     ->get();
                 
-                // 3. Batteries
+          
                 if ($type === 'Electrique' || $isSearchMode) {
                     $data['batteries'] = Batterie::orderBy('capacite_batterie', 'asc')->get();
                 } else {
                     $data['batteries'] = collect();
                 }
                 
-                // 4. Matériaux et Millésimes (Filtrés par type)
+               
                 $filterQuery = Modele::query();
                 if (!$isSearchMode) $filterQuery->where('type_velo', $dbType);
                 
                 $data['materiaux'] = (clone $filterQuery)->select('materiau_cadre')->distinct()->whereNotNull('materiau_cadre')->pluck('materiau_cadre');
                 $data['millesimes'] = (clone $filterQuery)->select('millesime_modele')->distinct()->orderBy('millesime_modele', 'desc')->pluck('millesime_modele');
                 
-                // 5. Tailles (LA CORRECTION PRINCIPALE EST LÀ)
-                // On utilise ta logique "distinct" et "whereHas" pour éviter les doublons et les tailles inutiles
+    
                 $data['tailles'] = Taille::whereHas('ArticleInventaire.articles.varianteVelo.modele', function($q) use ($isSearchMode, $dbType) {
                         if (!$isSearchMode) $q->where('type_velo', $dbType);
                     })
-                    ->distinct() // <--- Ce distinct est vital pour éviter "S, M, S, M"
+                    ->distinct() 
                     ->orderBy('id_taille')
                     ->get();
 
-                // Hiérarchie (Identique à avant)
+            
                 if ($model_id) {
                      $data['hierarchyTitle'] = "AUTRES MODÈLES"; $data['hierarchyLevel'] = 'model';
                      $data['hierarchyItems'] = Modele::where('id_categorie', $sub_id)->where('type_velo', $dbType)->orderBy('nom_modele')->get()->map(fn($item) => (object)['name' => $item->nom_modele, 'id' => $item->id_modele]);
@@ -248,7 +238,7 @@ class BoutiqueController extends Controller
         $hierarchyTitle = $filters['hierarchyTitle'] ?? "";
         $hierarchyLevel = $filters['hierarchyLevel'] ?? "";
 
-        // Prix max (En cache aussi pour être cohérent)
+ 
         $maxPrice = Cache::remember('max_price_' . ($isAccessoire ? 'acc' : 'velo'), 3600, function () use ($isAccessoire) {
             return $isAccessoire ? Accessoire::max('prix') : VarianteVelo::max('prix');
         });
