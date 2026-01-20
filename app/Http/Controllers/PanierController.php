@@ -408,7 +408,7 @@ class PanierController extends Controller
         $prefixLength = $isAccessoire ? 5 : 6;
         $refDossier = (strlen($ref) >= $prefixLength) ? substr($ref, 0, $prefixLength) : $ref;
 
-        return asset('images/' . $dossier . '/' . $refDossier . '/image_1.jpg');
+        return asset('images/' . $dossier . '/' . $refDossier . '/image_1.webp');
     }
 
     private function calculerStockMax($reference, $tailleNom)
