@@ -6,7 +6,6 @@
     <title>Finaliser l'inscription - CUBE Bikes</title>
     <link rel="stylesheet" href="{{ asset('css/inscription.css') }}">
     <link rel="stylesheet" href="{{ asset('css/facturation.css') }}">
-    <link rel="stylesheet" href="{{ asset('css/header.css') }}">
 </head>
 <style>
     #title {

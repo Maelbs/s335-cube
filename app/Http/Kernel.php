@@ -21,6 +21,8 @@ class Kernel extends HttpKernel
         \Illuminate\Foundation\Http\Middleware\ValidatePostSize::class,
         \App\Http\Middleware\TrimStrings::class,
         \Illuminate\Foundation\Http\Middleware\ConvertEmptyStringsToNull::class,
+        \App\Http\Middleware\GzipResponse::class,
+        'cache.images' => \App\Http\Middleware\CacheLongueDuree::class,
     ];
 
     /**
@@ -66,6 +68,7 @@ class Kernel extends HttpKernel
         'throttle' => \Illuminate\Routing\Middleware\ThrottleRequests::class,
         'verified' => \Illuminate\Auth\Middleware\EnsureEmailIsVerified::class,
         'commercial' => \App\Http\Middleware\IsCommercial::class,
+        'is_dpo' => \App\Http\Middleware\IsDPO::class,
         'ensure.client.address' => \App\Http\Middleware\EnsureClientAddress::class,
     ];
 }

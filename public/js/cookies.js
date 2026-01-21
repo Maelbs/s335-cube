@@ -7,7 +7,7 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 });
 
-/* --- UTILITAIRES --- */
+
 function setCookie(name, valueObject, days) {
     let expires = "";
     if (days) {
@@ -31,34 +31,33 @@ function getCookie(name) {
     }
     return null;
 }
-/* --- ACTIONS --- */
 
-// Bouton "Tout Accepter" (Step 1) ou "Enregistrer" (Step 2 si tout vert)
+
+
 function acceptCookies() {
     const choices = { analytics: true };
     setCookie('cube_consent', choices, 365);
     closeModal();
 }
 
-// Bouton "Continuer sans accepter"
+
 function refuseCookies() {
     const choices = { analytics: false };
     setCookie('cube_consent', choices, 365);
     closeModal();
 }
 
-// Bouton "Enregistrer" du Step 2 (Mode Custom)
-// IMPORTANT : On a changé la logique ici car on n'a plus que 2 groupes
+
 function saveCustomPreferences() {
     const groups = document.querySelectorAll('.accordion-group');
     
-    // Le groupe "Mesure" est le 2ème (index 1), car le premier (index 0) est "Nécessaires"
+
     let analyticsAccepted = false;
 
     if (groups[1]) {
         // On regarde le header du groupe Mesure
         const headerBtns = groups[1].querySelector('.accordion-header .toggle-container').querySelectorAll('.toggle-btn');
-        // Le bouton "Accepter" est le 2ème (index 1)
+     
         if (headerBtns[1].classList.contains('selected')) {
             analyticsAccepted = true;
         }
@@ -70,7 +69,7 @@ function saveCustomPreferences() {
 }
 
 
-/* --- INTERFACE (Navigation & Toggles) --- */
+
 
 function goToStep2() {
     document.getElementById('step1-container').style.display = 'none';

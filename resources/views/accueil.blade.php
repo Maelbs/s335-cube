@@ -1,27 +1,30 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-    <meta charset="UTF-8">
-    <link rel="stylesheet" href="{{ asset('css/header.css') }}">
+    <meta charset="UTF-8" name="description" content="Site non officiel de cube">
     <link rel="stylesheet" href="{{ asset('css/styleBody.css') }}">
     <link rel="stylesheet" href="{{ asset('css/cookies.css') }}">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Fira+Sans:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
     <title>CUBE Bikes France</title>
 </head>
 <body>
 
 <div class="cookie-overlay" id="cookieOverlay">
     <div class="cookie-modal" id="cookieModal">
-    
     <div id="step1-container" style="display: flex; width: 100%; height: 100%;">
-        <div class="cookie-col-left" style="background-image: url('{{ asset('images/cookies-bg.jpg') }}');"></div>
+        <div class="cookie-col-left">
+            <img src="{{ asset('images/cookies-bg.webp') }}" 
+                alt=""
+                fetchpriority="high"
+                class="cookie-bg-img"
+                width="400" 
+                height="600"> 
+        </div>
 
         <div class="cookie-col-right">
             <div class="cookie-header">
-                <img src="{{ asset('images/cubelogo.png') }}" alt="CUBE" class="cookie-logo">
+                {{-- Logo cookie : Lazy load car petite et potentiellement pas critique pour le LCP par rapport au bg --}}
+                <img src="{{ asset('images/cubelogo.png') }}" alt="CUBE" class="cookie-logo" loading="lazy">
                 <a href="#" class="link-refuse" onclick="refuseCookies()">Continuer sans accepter &rarr;</a>
             </div>
 
@@ -108,9 +111,12 @@
     <main>
         <section class="intro-carousel" id="intro-carousel">
             <div id="image-carousel" class="carousel">
-                <img src="{{ asset('images/1.png') }}" alt="Image 1" class="carousel-image active">
-                <img src="{{ asset('images/2.jpg') }}" alt="Image 2" class="carousel-image">
-                <img src="{{ asset('images/3.jpg') }}" alt="Image 3" class="carousel-image">
+                {{-- Image 1 : Priorité HAUTE car visible immédiatement (LCP) --}}
+                <img src="{{ asset('images/1.webp') }}" alt="Image 1" class="carousel-image active" fetchpriority="high">
+                
+                {{-- Images 2 & 3 : Lazy loading car masquées au début --}}
+                <img src="{{ asset('images/2.webp') }}" alt="Image 2" class="carousel-image" loading="lazy">
+                <img src="{{ asset('images/3.webp') }}" alt="Image 3" class="carousel-image" loading="lazy">
             </div>
 
             <div class="text-intro">
@@ -142,11 +148,12 @@
                           <a href="{{ url('/boutique/Musculaire/2') }}" class="btn">Voir les vélos de route</a>
                         </div>
                         <div class="card-image">
-                            <img src="{{ asset('images/velo_route.jpg') }}" alt="Vélo de route">
+                            {{-- Ajout de loading="lazy" --}}
+                            <img src="{{ asset('images/velo_route.webp') }}" alt="Vélo de route" loading="lazy">
                         </div>
-                                 
+                                  
                     </div>
-               
+                
                 </div>
 
               
@@ -160,7 +167,8 @@
                                   <a href="{{ url('/boutique/Musculaire/1') }}" class="btn">Voir les VTT</a>
                         </div>
                         <div class="card-image">
-                            <img src="{{ asset('images/velo_vtt.jpg') }}" alt="VTT">
+                             {{-- Ajout de loading="lazy" --}}
+                            <img src="{{ asset('images/velo_vtt.webp') }}" alt="VTT" loading="lazy">
                         </div>
                     
                     </div>
@@ -175,9 +183,10 @@
                                    <a href="{{ url('/boutique/Electrique') }}" class="btn">Voir les vélos électriques</a>
                         </div>
                         <div class="card-image">
-                            <img src="{{ asset('images/velo_electrique.jpg') }}" alt="Vélos Électriques">
+                             {{-- Ajout de loading="lazy" --}}
+                            <img src="{{ asset('images/velo_electrique.webp') }}" alt="Vélos Électriques" loading="lazy">
                         </div>
-                 
+                  
                     </div>
                 </div>
             </div>
@@ -186,19 +195,20 @@
             <h2>Accessoires indispensables pour votre vélo</h2> 
             <div class="accessoires-cards">
                 <div class="accessoire-card">
-                    <div class="accessoire-image" style="background-image: url('{{ asset('images/selle.jpg') }}');">
+                    {{-- Note: loading="lazy" ne fonctionne pas sur les background-image CSS. --}}
+                    <div class="accessoire-image" style="background-image: url('{{ asset('images/selle.webp') }}');">
                         <h3>Selle</h3>
                     </div>
                     <a href="{{ url('/boutique/Accessoires') }}" class="btn">Voir les selles</a>
                 </div>
                 <div class="accessoire-card">
-                    <div class="accessoire-image" style="background-image: url('{{ asset('images/roue.jpg') }}');">
+                    <div class="accessoire-image" style="background-image: url('{{ asset('images/roue.webp') }}');">
                         <h3>Roue</h3>
                     </div>
                     <a href="{{ url('/boutique/Accessoires') }}" class="btn">Voir les roues</a>
                 </div>
                 <div class="accessoire-card">
-                    <div class="accessoire-image" style="background-image: url('{{ asset('images/eclairage.jpg') }}');">
+                    <div class="accessoire-image" style="background-image: url('{{ asset('images/eclairage.webp') }}');">
                         <h3>Éclairages</h3>
                     </div>
                     <a href="{{ url('/boutique/Accessoires') }}" class="btn">Voir les éclairages</a>
@@ -207,9 +217,10 @@
         </section>
     
         <div id="image-carousel-bottom" class="carousel">
-          <img src="{{ asset('images/1.png') }}" alt="Image 1" class="carousel-image active">
-          <img src="{{ asset('images/2.jpg') }}" alt="Image 2" class="carousel-image">
-          <img src="{{ asset('images/3.jpg') }}" alt="Image 3" class="carousel-image">
+          {{-- Tout le carrousel du bas est en lazy load --}}
+          <img src="{{ asset('images/1.webp') }}" alt="Image 1" class="carousel-image active" loading="lazy">
+          <img src="{{ asset('images/2.webp') }}" alt="Image 2" class="carousel-image" loading="lazy">
+          <img src="{{ asset('images/3.webp') }}" alt="Image 3" class="carousel-image" loading="lazy">
         </div>
     </main>
     

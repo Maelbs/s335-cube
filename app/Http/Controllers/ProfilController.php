@@ -44,8 +44,7 @@ class ProfilController extends Controller
             'tel' => $request->tel,
             'date_naissance' => $request->birthday,
             
-            // --- AJOUT ICI ---
-            // Si la checkbox est cochée, has() renvoie true, sinon false
+        
             'double_auth' => $request->has('double_auth') ? true : false,
         ]);
 
@@ -57,7 +56,8 @@ class ProfilController extends Controller
         return redirect()->route('profil')->with('success', 'Vos informations ont été mises à jour avec succès.');
     }
 
-// --- US48 : SUPPRESSION DE COMPTE (SECURE) ---
+
+
 public function destroy(Request $request)
     {
         $user = \Illuminate\Support\Facades\Auth::user();
@@ -67,19 +67,17 @@ public function destroy(Request $request)
                 
                 $aCommandes = $user->commandes()->exists();
 
-                // --- CORRECTION DU BUG SQL ICI ---
-                // 1. On identifie les paniers liés à une commande (Intouchables)
                 $paniersLies = DB::table('commande')
                                 ->where('id_client', $user->id_client)
                                 ->pluck('id_panier')
                                 ->toArray();
 
-                // 2. On supprime SEULEMENT les paniers qui NE SONT PAS dans cette liste (Paniers abandonnés)
+             
                 DB::table('panier')
                     ->where('id_client', $user->id_client)
                     ->whereNotIn('id_panier', $paniersLies)
                     ->delete();
-                // ----------------------------------
+          
 
                 $user->velosEnregistres()->delete();
                 $user->codesPromoUtilises()->detach();
@@ -112,7 +110,7 @@ public function destroy(Request $request)
                         ]);
                 
                 } else {
-                    // --- SUPPRESSION TOTALE ---
+                    
                     $user->adressesLivraison()->detach();
                     $user->delete();
                 }
@@ -125,8 +123,91 @@ public function destroy(Request $request)
             return redirect()->route('home')->with('success', 'Compte supprimé avec succès.');
 
         } catch (\Exception $e) {
-            // Affiche l'erreur si ça plante encore
+          
             dd("ERREUR : " . $e->getMessage());
         }
     }
+
+
+    public function anonymize(Request $request)
+    {
+        $user = \Illuminate\Support\Facades\Auth::user();
+
+        try {
+            DB::transaction(function () use ($user) {
+
+         
+
+                $paniersLies = DB::table('commande')
+                    ->where('id_client', $user->id_client)
+                    ->pluck('id_panier')
+                    ->toArray();
+
+                DB::table('panier')
+                    ->where('id_client', $user->id_client)
+                    ->whereNotIn('id_panier', $paniersLies)
+                    ->delete();
+
+          
+
+                $user->velosEnregistres()->delete();
+                $user->codesPromoUtilises()->detach();
+
+
+                $suffixeUnique = $user->id_client . '_' . time();
+
+                DB::table('client')
+                    ->where('id_client', $user->id_client)
+                    ->update([
+                        'id_adresse_facturation' => null,
+                        'nom_client'             => 'UTILISATEUR',
+                        'prenom_client'          => 'ANONYME',
+                        'email_client'           => 'anon_' . $suffixeUnique . '@anonyme.cube',
+                        'tel'                    => '0000000000',
+                        'date_naissance'         => '1900-01-01',
+                        'mdp'                    => bcrypt(\Illuminate\Support\Str::random(64)),
+                        'google_id'              => null,
+                        'updated_at'             => now(),
+                    ]);
+
+
+
+                DB::table('adresse_livraison')
+                    ->where('id_client', $user->id_client)
+                    ->update([
+                        'nom_destinataire'    => 'ANONYME',
+                        'prenom_destinataire' => 'ANONYME',
+                    ]);
+            });
+
+         
+
+            \Illuminate\Support\Facades\Auth::logout();
+            $request->session()->invalidate();
+            $request->session()->regenerateToken();
+
+            return redirect()
+                ->route('home')
+                ->with('success', 'Votre compte a été anonymisé. L’accès est désormais désactivé.');
+
+        } catch (\Exception $e) {
+            dd("ERREUR ANONYMISATION : " . $e->getMessage());
+        }
+    }
+
+    public function anonymizeShow()
+    {
+        return view('anonymiserCompte');
+    }
+
+    public function destroyShow ()
+    {
+        return view('supprimerCompte');
+    }
+
+    public function show()
+    {
+        $client = Auth::user(); 
+    return view('profil', compact('client'));
+}
 }

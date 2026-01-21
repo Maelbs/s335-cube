@@ -1,16 +1,19 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-    <meta charset="UTF-8">
+    <meta charset="UTF-8" name="description" content="Site non officiel de cube">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Mon Compte | Cube Bikes</title>
-    <link rel="stylesheet" href="{{ asset('css/header.css') }}">
     <link rel="stylesheet" href="{{ asset('css/profil.css') }}">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     
     <style>
-        /* --- TA VERSION AMÉLIORÉE (Isolation & Lisibilité) --- */
+        @font-face {
+            font-family: 'Damas Font';
+            src: url('../font/font.woff2');
+            font-display: swap;
+        }
+        
         .info-bubble {
             display: inline-flex;
             align-items: center;
@@ -51,7 +54,7 @@
             pointer-events: none;
             visibility: hidden; opacity: 0;
             transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            font-family: sans-serif !important;
+            font-family: 'Damas Font', sans-serif !important;
             font-size: 12px !important;
             font-weight: 400 !important;
             line-height: 1.4 !important;
@@ -84,6 +87,75 @@
         .info-bubble { animation: bubble-pulse 2s infinite; }
 
         .card-header h2 { display: flex; align-items: center; }
+
+
+        
+    .modal-overlay {
+            display: none; 
+            position: fixed;
+            z-index: 9999; 
+            left: 0;
+            top: 0;     
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.8); 
+            backdrop-filter: blur(4px); 
+        }
+
+        .modal-box {
+            background-color: #222; 
+            color: #fff;
+            margin: 10% auto;
+            padding: 25px;
+            border: 1px solid ; 
+            width: 90%;
+            max-width: 500px;
+            border-radius: 10px;
+            position: relative;
+            font-family: sans-serif;
+        }
+
+        .close-btn {
+            position: absolute;
+            top: 10px;
+            right: 15px;
+            color: #aaa;
+            font-size: 24px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+        .close-btn:hover { color: #fff; }
+
+        .data-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px 0;
+            border-bottom: 1px solid #444;
+        }
+
+        .btn-suppression {
+            display: block;
+            width: 100%;
+            margin-top: 20px;
+            padding: 12px;
+            background-color: #ff4d4d;
+            color: white;
+            text-align: center;
+            text-decoration: none;
+            border-radius: 5px;
+            font-weight: bold;
+        }       
+        .btn-suppression:hover { background-color: #ff3333; }
+
+
+        .card-clickable {
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+        .card-clickable:hover {
+            transform: scale(1.02);
+            border-color: #00ecff;
+        }
     </style>
 </head>
 <body>
@@ -148,19 +220,76 @@
                     </div>
                 </div>
 
-                <div class="dashboard-card">
+               <div class="dashboard-card card-clickable" onclick="openModal()">
                     <div class="card-body centered-content flex-col">
-                        <i class="fa-solid fa-user-lock icon-large"></i>
-                        <h3>
+                        <i class="fa-solid fa-user-lock icon-large" style="margin-bottom:10px;"></i>
+                            <h3>
                             MES DONNÉES PERSONNELLES
-                            <span class="info-bubble" data-tooltip="Vos données sont protégées selon les normes RGPD. Nous utilisons un chiffrement ANSSI pour sécuriser vos accès.">?</span>
-                        </h3>
+                            <span class="info-bubble" data-tooltip="Cliquez pour voir vos données stockées">?</span>
+                            </h3>
+                         <p style="font-size: 0.8em; color: gray; margin-top:5px;">Cliquez ici pour consulter</p>
                     </div>
                 </div>
 
             </div>
         </main>
     </div>
+
+    <div id="rgpdModal" class="modal-overlay">
+    <div class="modal-box">
+        <span class="close-btn" onclick="closeModal()">&times;</span>
+        
+        <h2 style="color: #00ecff; margin-top: 0;">Mes Données</h2>
+        <p style="font-size: 0.9em; margin-bottom: 20px; color: #ccc;">
+            Voici les informations stockées vous concernant :
+        </p>
+
+        <div class="data-list">
+            <div class="data-row">
+                <span>Nom :</span>
+                <strong>{{ $client->nom_client ?? 'N/A' }}</strong>
+            </div>
+            <div class="data-row">
+                <span>Prénom :</span>
+                <strong>{{ $client->prenom_client ?? 'N/A' }}</strong>
+            </div>
+            <div class="data-row">
+                <span>Email :</span>
+                <strong>{{ $client->email_client ?? 'N/A' }}</strong>
+            </div>
+            <div class="data-row">
+                <span>Téléphone :</span>
+                <strong>{{ $client->tel ?? 'N/A' }}</strong>
+            </div>
+            <div class="data-row">
+                <span>Date Inscription :</span>
+                <strong>{{ $client->date_inscription ?? 'N/A' }}</strong>
+            </div>
+        </div>
+
+        <a href="mailto:admin@cube-bikes.fr?subject=Demande suppression données (Client {{ $client->id_client }})&body=Je souhaite supprimer mes données personnelles..." class="btn-suppression">
+            <i class="fa-solid fa-trash"></i> Demander la suppression
+        </a>
+    </div>
+</div>
+
+    <script>
+        function openModal() {
+            document.getElementById('rgpdModal').style.display = 'block';
+        }
+
+        function closeModal() {
+            document.getElementById('rgpdModal').style.display = 'none';
+        }
+
+        
+        window.onclick = function(event) {
+            var modal = document.getElementById('rgpdModal');
+            if (event.target == modal) {
+                closeModal();
+            }
+        }
+    </script>
 
     <script src="{{ asset('js/header.js') }}" defer></script>
 </body>

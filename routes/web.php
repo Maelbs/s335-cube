@@ -2,6 +2,8 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Models\Visit; // Pour les stats admin
+use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Response;
 
 // Controllers
 use App\Http\Controllers\CommercialController;
@@ -23,6 +25,7 @@ use App\Http\Controllers\ChatBotController;
 use App\Http\Controllers\ContactController; 
 use App\Http\Controllers\GoogleAuthController;
 use App\Http\Controllers\ProfileCompletionController;
+use App\Http\Controllers\DpoController;
 
 /* ------------------------------------------------------ */
 /* ROUTES PUBLIQUES                                       */
@@ -109,7 +112,14 @@ Route::middleware('auth')->group(function () {
     // Profil & Logout
     Route::get('/profil', [ProfilController::class, 'profil'])->name('profil');
     Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
-    Route::delete('/profil/destroy', [ProfilController::class, 'destroy'])->name('profil.destroy');
+    Route::get('/profil/supprimer', [ProfilController::class, 'destroyShow'])
+        ->name('profil.destroy.show');
+    Route::get('/profil/anonymiser', [ProfilController::class, 'anonymizeShow'])
+        ->name('profil.anonymize.show');
+    Route::delete('/profil/supprimer', [ProfilController::class, 'destroy'])
+        ->name('profil.destroy');
+    Route::post('/profil/anonymiser', [ProfilController::class, 'anonymize'])
+        ->name('profil.anonymize');
     Route::get('/profil/modifier', [ProfilController::class, 'showUpdateForm'])->name('profil.update.form');
     Route::put('/profil/modifier', [ProfilController::class, 'update'])->name('profil.update'); 
 
@@ -169,6 +179,13 @@ Route::middleware('auth')->group(function () {
         Route::get('/commercial/choix-caracteristiques', [CommercialController::class, 'articleListCaracteristique'])->name('commercial.choix.caracteristique');
         Route::get('/commercial/ajouter-caracteristique/{reference}', [CommercialController::class, 'addCaracteristique'])->name('commercial.add.caracteristique');
         Route::post('/commercial/store-caracteristique', [CommercialController::class, 'storeCaracteristique'])->name('commercial.store.caracteristique');
+
+
+    });
+
+    Route::middleware(['auth', 'is_dpo'])->group(function () {
+        Route::get('/dpo/anonymiser', [DpoController::class, 'index'])->name('dpo.index');
+        Route::post('/dpo/anonymiser', [DpoController::class, 'anonymize'])->name('dpo.process');
     });
 });
 
@@ -204,6 +221,7 @@ Route::post('/panier/update', [PanierController::class, 'updateQuantity'])->name
 Route::post('/panier/ajouter-accessoire/{reference}', [PanierController::class, 'addAccessoire'])->name('cart.addAccessoire');
 Route::post('/panier/apply-promo', [PanierController::class, 'applyPromo'])->name('cart.applyPromo');
 Route::post('/panier/remove-promo', [PanierController::class, 'removePromo'])->name('cart.removePromo');
+Route::get('/panier/count', [PanierController::class, 'count'])->name('cart.count');
 
 Route::post('/chat/ask', [ChatBotController::class, 'ask']);
 
@@ -212,3 +230,8 @@ Route::get('/boutique/{type}/{cat_id?}/{sub_id?}/{model_id?}', [BoutiqueControll
     ->where('type', 'Musculaire|Electrique|Accessoires');
 
 Route::view('/aide', 'aide')->name('aide');
+
+Route::post('/bot/add-to-cart', [ChatBotController::class, 'addToCartFromBot'])->name('bot.addToCart');
+
+Route::get('/mon-image-privee/{filename}', [ImageController::class, 'show'])
+    ->middleware('cache.images');

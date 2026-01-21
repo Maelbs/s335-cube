@@ -1,7 +1,3 @@
-@font-face {
-    font-family: 'Damas Font';
-    src: url('../font/font.woff2');
-}
 
 :root {
     --cube-red: #e30613;
@@ -25,6 +21,8 @@
     --status-default-bg: #dcdcdc;
     --status-default-text: #555555;
 }
+
+
 
 header {
     background-color: #ffffff !important;

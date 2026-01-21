@@ -1,3 +1,5 @@
+
+
 :root {
     --primary-dark: #0f1623;
     --input-bg: #f1f5f9;
@@ -52,7 +54,7 @@
     margin-bottom: 8px;
     display: block;
     text-transform: uppercase;
-    font-family: 'Fira Sans', sans-serif;
+    font-family: 'Damas Font', sans-serif;
 }
 
 .form-control {

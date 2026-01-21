@@ -9,10 +9,7 @@
     --cube-red: #cc0000;
 }
 
-@font-face {
-    font-family: "Damas Font";
-    src: url("../font/font.woff2");
-}
+
 
 html {
     font-family: "Damas Font", sans-serif;

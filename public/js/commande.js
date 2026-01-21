@@ -1,7 +1,4 @@
-/**
- * Gère l'affichage des options de livraison (Domicile vs Magasin)
- * Appelé via onchange sur les boutons radio dans le HTML
- */
+
 function toggleDeliveryMode() {
     const modeMagasin = document.getElementById("mode_magasin");
     const isMagasin = modeMagasin ? modeMagasin.checked : false;

@@ -1,13 +1,11 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-    <meta charset="UTF-8">
+    <meta charset="UTF-8" name="description" content="Site non officiel de cube">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>CUBE Bikes - {{ $titrePage }}</title>
     <link rel="stylesheet" href="{{ asset('css/listArticle.css') }}">
-    <link rel="stylesheet" href="{{ asset('css/header.css') }}">
     <link rel="stylesheet" href="{{ asset('css/styleBody.css') }}">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/noUiSlider/15.7.1/nouislider.min.css">
     
     <script src="https://cdnjs.cloudflare.com/ajax/libs/noUiSlider/15.7.1/nouislider.min.js"></script>
@@ -52,7 +50,7 @@
         $bgImage = 'https://www.cubebikes.fr/img/c/4518.jpg';
     }
     else {
-        $bgImage = asset('images/accessoires-de-velo.png');
+        $bgImage = asset('images/accessoires-de-velo.webp');
     }
     @endphp
    
@@ -77,7 +75,7 @@
                 @if($hierarchyItems->isNotEmpty())
                     <div class="filter-section">
                         <div class="filter-header" onclick="toggleSection(this)">
-                            <h3>{{ $hierarchyTitle }}</h3>
+                            <h2>{{ $hierarchyTitle }}</h2>
                             <span class="info-bubble" data-tooltip="Catégorie : Choisissez selon vos besoins (VTT, Ville, Gravel...)">?</span>
                             <i class="fas fa-chevron-up"></i>
                         </div>
@@ -137,7 +135,7 @@
  
                 <div class="filter-section">
                     <div class="filter-header" onclick="toggleSection(this)">
-                        <h3>DISPONIBILITÉ</h3>
+                        <h2>DISPONIBILITÉ</h2>
                         <span class="info-bubble" data-tooltip="Vérifiez si l'article est prêt à être expédié ou disponible chez un partenaire.">?</span>
                         <i class="fas fa-chevron-up"></i>
                     </div>
@@ -155,11 +153,11 @@
  
                 <div class="filter-section">
                     <div class="filter-header" onclick="toggleSection(this)">
-                        <h3>PRIX</h3>
+                        <h2>PRIX</h2>
                         <span class="info-bubble" data-tooltip="Prix : Ajustez les bornes selon votre budget maximal.">?</span>
                         <i class="fas fa-chevron-up"></i>
                     </div>
-                   
+                    
                     <div class="filter-content price-filter-container">
                         <div id="price-slider"></div>
                         <input type="hidden" name="prix_min" id="input-prix-min" value="{{ request('prix_min') ?? 0 }}">
@@ -170,7 +168,7 @@
                 @if($availableTailles->isNotEmpty())
                     <div class="filter-section">
                         <div class="filter-header" onclick="toggleSection(this)">
-                            <h3>TAILLE</h3>
+                            <h2>TAILLE</h2>
                             <span class="info-bubble" data-tooltip="Taille : Calculez votre taille idéale avec notre outil sur la fiche produit.">?</span>
                             <i class="fas fa-chevron-up"></i>
                         </div>
@@ -186,7 +184,7 @@
                 @endif
                 @if($isAccessoire && isset($availableMateriaux) && $availableMateriaux->isNotEmpty())
                     <div class="filter-section">
-                        <div class="filter-header" onclick="toggleSection(this)"><h3>MATÉRIAU</h3><i class="fas fa-chevron-up"></i></div>
+                        <div class="filter-header" onclick="toggleSection(this)"><h2>MATÉRIAU</h2><i class="fas fa-chevron-up"></i></div>
                         <div class="filter-content" style="max-height: 200px; overflow-y: auto;">
                             @foreach($availableMateriaux as $mat)
                                 <label class="cube-checkbox">
@@ -200,7 +198,7 @@
 
                 @if(!$isAccessoire)
                     <div class="filter-section">
-                        <div class="filter-header" onclick="toggleSection(this)"><h3>COULEUR</h3><i class="fas fa-chevron-up"></i></div>
+                        <div class="filter-header" onclick="toggleSection(this)"><h2>COULEUR</h2><i class="fas fa-chevron-up"></i></div>
                         <div class="filter-content" style="max-height: 200px; overflow-y: auto;">
                             @foreach($availableCouleurs as $c)
                                 <label class="cube-checkbox">
@@ -247,7 +245,7 @@
                         </span>
                         <i class="fas fa-chevron-down"></i>
                     </button>
-                   
+                    
                     <div class="dropdown-content" id="sortOptions">
                         <div onclick="applySort('relevance')">PERTINENCE</div>
                         <div onclick="applySort('name_asc')">NOM, A À Z</div>
@@ -276,9 +274,24 @@
                             <div class="product-image">
                                 <a href="{{ url($isAccessoire ? '/accessoire/' : '/velo/') . '/' . $article->reference }}">
                                     @if ($isAccessoire)
-                                        <img src="{{ asset('images/ACCESSOIRES/' . substr($article->reference,0,5) . '/image_1.jpg') }}" alt="{{ $article->nom_article }}">
+                                        <img src="{{ asset('images/ACCESSOIRES/' . substr($article->reference,0,5) . '/image_1.webp') }}" 
+                                             alt="{{ $article->nom_article }}"
+                                             {{-- Optimisation LCP : Les 6 premiers sont 'eager', les autres 'lazy' --}}
+                                             @if($loop->index < 6)
+                                                 fetchpriority="{{ $loop->index === 0 ? 'high' : 'auto' }}"
+                                             @else
+                                                 loading="lazy"
+                                             @endif
+                                        >
                                     @else
-                                        <img src="{{ asset('images/VELOS/' . substr($article->reference,0,6) . '/image_1.jpg') }}" alt="{{ $article->nom_article }}">
+                                        <img src="{{ asset('images/VELOS/' . substr($article->reference,0,6) . '/image_1.webp') }}" 
+                                             alt="{{ $article->nom_article }}"
+                                             @if($loop->index < 6)
+                                                 fetchpriority="{{ $loop->index === 0 ? 'high' : 'auto' }}"
+                                             @else
+                                                 loading="lazy"
+                                             @endif
+                                        >
                                     @endif
                                 </a>
                             </div>
@@ -325,7 +338,7 @@
                                     </div>
                                     <div class="status-line">
                                         <span class="dot {{ $dispoMag ? 'green' : 'red' }}"></span>
-                                        <span class="text">Disponible en magasins <i class="far fa-question-circle info-icon"></i></span>
+                                        <span class="text">Disponible en magasins </span>
                                     </div>
                                 </div>
  
@@ -347,7 +360,7 @@
     </div>
 
     @include('layouts.footer')
-    
+
 
     <script src="{{ asset('js/header.js') }}" defer></script>
  
@@ -380,6 +393,16 @@
                 ],
                 step: 10,
             });
+
+            var handles = slider.querySelectorAll('.noUi-handle');
+            
+            if (handles[0]) {
+                handles[0].setAttribute('aria-label', 'Prix minimum');
+            }
+            if (handles[1]) {
+                handles[1].setAttribute('aria-label', 'Prix maximum');
+            }
+
             slider.noUiSlider.on('change', function (values, handle) {
                 document.getElementById('input-prix-min').value = Math.round(values[0]);
                 document.getElementById('input-prix-max').value = Math.round(values[1]);

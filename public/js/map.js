@@ -6,25 +6,84 @@ if (typeof window.mapScriptLoaded === "undefined") {
   var markersLayer = null;
   var userCoords = null; 
   var storeLocatorTimeout = null;
+  var greenIcon, redIcon, blueIcon;
 
   window.currentTailleId = null;
 
-  // ... (Tes définitions d'icônes restent identiques, je ne les touche pas) ...
-  var greenIcon = new L.Icon({
-    iconUrl: "https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-green.png",
-    shadowUrl: "https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png",
-    iconSize: [25, 41], iconAnchor: [12, 41], popupAnchor: [1, -34], shadowSize: [41, 41],
-  });
-  var redIcon = new L.Icon({
-    iconUrl: "https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-red.png",
-    shadowUrl: "https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png",
-    iconSize: [25, 41], iconAnchor: [12, 41], popupAnchor: [1, -34], shadowSize: [41, 41],
-  });
-  var blueIcon = new L.Icon({
-    iconUrl: "https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-blue.png",
-    shadowUrl: "https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png",
-    iconSize: [25, 41], iconAnchor: [12, 41], popupAnchor: [1, -34], shadowSize: [41, 41],
-  });
+  window.toggleStoreLocator = function () {
+    if (typeof L !== 'undefined') {
+      window.afficherInterfaceMap();
+      return;
+    }
+    
+    const link = document.createElement("link");
+    link.rel = "stylesheet";
+    link.href = "https://unpkg.com/leaflet@1.9.4/dist/leaflet.css";
+    document.head.appendChild(link);
+
+    const scriptLeaflet = document.createElement("script");
+    scriptLeaflet.src = "https://unpkg.com/leaflet@1.9.4/dist/leaflet.js";
+    scriptLeaflet.async = true;
+    
+    scriptLeaflet.onload = function () {
+        window.afficherInterfaceMap();
+    };
+    scriptLeaflet.onerror = function () {
+        alert("Erreur lors du chargement de la carte.");
+    };
+    
+    document.body.appendChild(scriptLeaflet);
+  };
+
+  window.afficherInterfaceMap = function () {
+    var overlay = document.getElementById("store-locator-overlay");
+    var header = document.querySelector("header");
+    var body = document.body;
+    if (!overlay) return;
+    
+    if (storeLocatorTimeout) {
+      clearTimeout(storeLocatorTimeout);
+      storeLocatorTimeout = null;
+    }
+
+    if (overlay.classList.contains("visible")) {
+      overlay.classList.remove("visible");
+      if (header) header.classList.remove("header-hidden");
+      body.style.overflow = "";
+      
+      storeLocatorTimeout = setTimeout(function () {
+        overlay.style.display = "none"; 
+      }, 300);
+      
+    } else {
+      overlay.style.display = "flex"; 
+      void overlay.offsetWidth; 
+      
+      body.style.overflow = "hidden";
+      if (header) header.classList.add("header-hidden");
+      
+      overlay.classList.add("visible"); 
+      
+      if (!mapInitialized) {
+         window.switchView("list"); 
+         window.initMap();
+         mapInitialized = true;
+      }
+    }
+  };
+
+  window.updateStoreLocatorStocks = function (idInventaire) {
+    window.currentTailleId = idInventaire;
+    const cards = document.querySelectorAll(".sl-card");
+    cards.forEach((card) => {
+      const displayDiv = card.querySelector(".js-stock-display");
+      if (!displayDiv) return;
+      var isAvailable = checkAvailability(card);
+      var message = isAvailable ? (idInventaire ? "Disponible (Taille sélectionnée)" : "Disponible") : (idInventaire ? "Indisponible (Taille sélectionnée)" : "Indisponible");
+      displayDiv.innerHTML = isAvailable ? `<div class="sl-stock-status status-dispo"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#00AEEF" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg> ${message}</div>` : `<div class="sl-stock-status status-indispo" style="color: #999;"><span style="font-size:12px;">✖</span> ${message}</div>`;
+    });
+    window.refreshStoreDisplay();
+  };
 
   window.getDistanceFromLatLonInKm = function (lat1, lon1, lat2, lon2) {
     var R = 6371; 
@@ -77,7 +136,28 @@ if (typeof window.mapScriptLoaded === "undefined") {
   };
 
   window.initMap = function () {
-    if (typeof L === "undefined" || map) return;
+    if (typeof L === "undefined") return;
+
+    if (!greenIcon) {
+        greenIcon = new L.Icon({
+            iconUrl: "https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-green.png",
+            shadowUrl: "https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png",
+            iconSize: [25, 41], iconAnchor: [12, 41], popupAnchor: [1, -34], shadowSize: [41, 41],
+        });
+        redIcon = new L.Icon({
+            iconUrl: "https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-red.png",
+            shadowUrl: "https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png",
+            iconSize: [25, 41], iconAnchor: [12, 41], popupAnchor: [1, -34], shadowSize: [41, 41],
+        });
+        blueIcon = new L.Icon({
+            iconUrl: "https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-blue.png",
+            shadowUrl: "https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png",
+            iconSize: [25, 41], iconAnchor: [12, 41], popupAnchor: [1, -34], shadowSize: [41, 41],
+        });
+    }
+
+    if (map) return;
+    
     map = L.map("sl-map").setView([46.603354, 1.888334], 6);
     L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", { attribution: "&copy; OpenStreetMap", }).addTo(map);
     markersLayer = L.layerGroup().addTo(map);
@@ -168,61 +248,7 @@ if (typeof window.mapScriptLoaded === "undefined") {
     });
     setTimeout(window.sortStoreList, 2500);
   };
-
-  document.addEventListener("DOMContentLoaded", function () {
-    var overlay = document.getElementById("store-locator-overlay");
-    if (overlay) overlay.addEventListener("click", function (e) {
-        if (e.target.id === "store-locator-overlay") window.toggleStoreLocator();
-      });
-    var stockToggle = document.getElementById("stockToggle");
-    if (stockToggle) stockToggle.addEventListener("change", window.refreshStoreDisplay);
-    var searchInput = document.getElementById("storeSearchInput");
-    if (searchInput) searchInput.addEventListener("input", window.refreshStoreDisplay);
-  });
-
-  // --- C'EST LA PARTIE QUE J'AI CORRIGÉE POUR LE FLASH ---
-  window.toggleStoreLocator = function () {
-    var overlay = document.getElementById("store-locator-overlay");
-    var header = document.querySelector("header");
-    var body = document.body;
-    if (!overlay) return;
-    
-    if (storeLocatorTimeout) {
-      clearTimeout(storeLocatorTimeout);
-      storeLocatorTimeout = null;
-    }
-
-    // SI LE MENU EST OUVERT -> ON LE FERME
-    if (overlay.classList.contains("visible")) {
-      overlay.classList.remove("visible"); // Lance l'anim CSS (opacity 0)
-      if (header) header.classList.remove("header-hidden");
-      body.style.overflow = "";
-      
-      // On attend la fin de l'animation (300ms) pour remettre display:none
-      storeLocatorTimeout = setTimeout(function () {
-        overlay.style.display = "none"; // <--- REMPLACÉ visibility par display
-      }, 300);
-      
-    } else {
-      // SI LE MENU EST FERMÉ -> ON L'OUVRE
-      overlay.style.display = "flex"; // <--- REMPLACÉ visibility par display
-      // On force le navigateur à recalculer (reflow) pour que la transition CSS marche
-      void overlay.offsetWidth; 
-      
-      body.style.overflow = "hidden";
-      if (header) header.classList.add("header-hidden");
-      
-      overlay.classList.add("visible"); // Lance l'anim CSS (opacity 1)
-      
-      if (!mapInitialized) {
-         window.switchView("list"); 
-         window.initMap();
-         mapInitialized = true;
-      }
-    }
-  };
-  // -------------------------------------------------------
-
+  
   window.switchView = function (viewName) {
     var tabs = document.querySelectorAll(".sl-tab");
     var list = document.getElementById("view-list");
@@ -264,17 +290,17 @@ if (typeof window.mapScriptLoaded === "undefined") {
     });
     cards.forEach(function (card) { container.appendChild(card); });
   };
-}
+  
+  document.addEventListener("DOMContentLoaded", function() {
+      var overlay = document.getElementById("store-locator-overlay");
+      if (overlay) overlay.addEventListener("click", function (e) {
+        if (e.target.id === "store-locator-overlay") window.afficherInterfaceMap();
+      });
 
-window.updateStoreLocatorStocks = function (idInventaire) {
-  window.currentTailleId = idInventaire;
-  const cards = document.querySelectorAll(".sl-card");
-  cards.forEach((card) => {
-    const displayDiv = card.querySelector(".js-stock-display");
-    if (!displayDiv) return;
-    var isAvailable = checkAvailability(card);
-    var message = isAvailable ? (idInventaire ? "Disponible (Taille sélectionnée)" : "Disponible") : (idInventaire ? "Indisponible (Taille sélectionnée)" : "Indisponible");
-    displayDiv.innerHTML = isAvailable ? `<div class="sl-stock-status status-dispo"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#00AEEF" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg> ${message}</div>` : `<div class="sl-stock-status status-indispo" style="color: #999;"><span style="font-size:12px;">✖</span> ${message}</div>`;
+      var stockToggle = document.getElementById("stockToggle");
+      if (stockToggle) stockToggle.addEventListener("change", window.refreshStoreDisplay);
+
+      var searchInput = document.getElementById("storeSearchInput");
+      if (searchInput) searchInput.addEventListener("input", window.refreshStoreDisplay);
   });
-  window.refreshStoreDisplay();
-};
+}

@@ -1,18 +1,33 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-    <meta charset="UTF-8">
+    <meta charset="UTF-8" name="description" content="Site non officiel de cube">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Politique de Confidentialité - CUBE BIKES France</title>
     
     <link rel="stylesheet" href="{{ asset('css/style.css') }}">
-    <link rel="stylesheet" href="{{ asset('css/header.css') }}">
     <link rel="stylesheet" href="{{ asset('css/styleBody.css') }}">
 
     <style>
+        @font-face {
+            font-family: 'Damas Font';
+            src: url('../font/font.woff2');
+            font-display: swap;
+        }
         body {
             background-color: #ffffff !important;
             color: #333;
+        }
+
+        header {
+            background-color: #ffffff !important;
+            border-bottom: 1px solid #e5e5e5;
+            color: #000000 !important;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.03);
+        }
+
+        .logo img {
+            filter: brightness(0) !important;
         }
 
         .privacy-page-container {
@@ -151,6 +166,7 @@
     </style>
 </head>
 <body>
+    @include('layouts.header')
 
     <main class="privacy-page-container">
         

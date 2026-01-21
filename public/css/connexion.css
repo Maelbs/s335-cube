@@ -1,13 +1,14 @@
 @font-face {
-  font-family: "Damas Font";
-  src: url("../font/font.woff2");
+  font-family: 'Damas Font';
+  src: url('../font/font.woff2');
+  font-display: swap;
 }
 body {
   font-family: "Damas Font", sans-serif;
   margin: 0;
   padding: 0;
   background: linear-gradient(rgba(10, 20, 30, 0.5), rgba(10, 20, 30, 0.7)),
-    url("../images/connexionBackground.jpg");
+    url("../images/connexionBackground.webp");
   background-size: cover;
   background-position: center;
   background-attachment: fixed;
@@ -215,7 +216,6 @@ small.text-muted {
 
 .btn-google {
   position: relative;
-  width: 100%;
   background-color: #ffffff;
   color: #0f172a;
   border: none;
@@ -223,7 +223,7 @@ small.text-muted {
   transition: all 0.3s ease;
   margin-top: 25px;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
-  width: 92.5%;
+  width: 100%;
 
   display: flex; 
   justify-content: center;  
@@ -231,7 +231,7 @@ small.text-muted {
   text-decoration: none;  
 }
 
-/* Le reste ne change pas */
+
 .btn-google:before {
   content: "";
   position: absolute;
@@ -252,7 +252,7 @@ small.text-muted {
 .btn-google:hover {
   box-shadow: 0 8px 25px rgba(0, 113, 227, 0.35);
   transform: translateY(-2px);
-  color: #fff; /* Force le blanc au survol pour éviter que le lien devienne bleu */
+  color: #fff; 
 }
 .google-icon {
   width: 20px;

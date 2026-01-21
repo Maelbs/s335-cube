@@ -1,23 +1,28 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-    <meta charset="UTF-8">
+    <meta charset="UTF-8" name="description" content="Site non officiel de cube">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Contactez-nous | CUBE Bikes France</title>
-
-    {{-- Polices et Icônes --}}
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    
-    {{-- CSS du Header existant --}}
-    <link rel="stylesheet" href="{{ asset('css/header.css') }}">
-
     <style>
         /* --- STYLE SPÉCIFIQUE CONTACT --- */
         @font-face {
             font-family: 'Damas Font';
             src: url('../font/font.woff2');
+            font-display: swap;
         }
 
+        header {
+            background-color: #ffffff !important;
+            border-bottom: 1px solid #e5e5e5;
+            color: #000000 !important;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.03);
+        }
+
+        .logo img {
+            filter: brightness(0) !important;
+        }
+        
         body {
             font-family: 'Damas Font', sans-serif;
             background-color: #fff;

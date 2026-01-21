@@ -2,8 +2,8 @@ document.addEventListener("DOMContentLoaded", function () {
   const toggles = document.querySelectorAll(".toggle-specs-btn");
 
   toggles.forEach((btn) => {
-    if (btn.textContent.trim() === "") btn.textContent = ""; 
-    
+    if (btn.textContent.trim() === "") btn.textContent = "";
+
     const headerRow = btn.closest(".specs-header-row");
     const content = headerRow.nextElementSibling;
 
@@ -54,38 +54,44 @@ document.addEventListener("DOMContentLoaded", function () {
     const dots = dotsNav ? Array.from(dotsNav.children) : [];
 
     const slideWidth = slides[0].getBoundingClientRect().width;
-
     const setSlidePosition = (slide, index) => {
       slide.style.left = slideWidth * index + "px";
     };
     slides.forEach(setSlidePosition);
 
-    const moveToSlide = (track, currentSlide, targetSlide) => {
-      track.style.transform = "translateX(-" + targetSlide.style.left + ")";
-      currentSlide.classList.remove("current-slide");
-      targetSlide.classList.add("current-slide");
+    const updateDotsByIndex = (index) => {
+      if (!dotsNav) return;
+      dots.forEach((d) => d.classList.remove("current-slide"));
+      if (dots[index]) {
+        dots[index].classList.add("current-slide");
+      }
     };
 
-    const updateDots = (currentDot, targetDot) => {
-      if (currentDot && targetDot) {
-        currentDot.classList.remove("current-slide");
-        targetDot.classList.add("current-slide");
+    const moveToSlide = (track, currentSlide, targetSlide) => {
+      const img = targetSlide.querySelector("img");
+      if (img && img.hasAttribute("data-src")) {
+        img.src = img.getAttribute("data-src");
+        img.removeAttribute("data-src");
+        img.classList.remove("lazy-image");
       }
+
+      track.style.transform = "translateX(-" + targetSlide.style.left + ")";
+
+      currentSlide.classList.remove("current-slide");
+      targetSlide.classList.add("current-slide");
+
+      const targetIndex = slides.indexOf(targetSlide);
+      updateDotsByIndex(targetIndex);
     };
 
     if (nextButton) {
       nextButton.addEventListener("click", () => {
         const currentSlide = track.querySelector(".current-slide");
         let nextSlide = currentSlide.nextElementSibling;
-        const currentDot = dotsNav ? dotsNav.querySelector(".current-slide") : null;
-        let nextDot = currentDot ? currentDot.nextElementSibling : null;
 
-        if (!nextSlide) {
-          nextSlide = slides[0];
-          if (dots.length) nextDot = dots[0];
-        }
+        if (!nextSlide) nextSlide = slides[0];
+
         moveToSlide(track, currentSlide, nextSlide);
-        updateDots(currentDot, nextDot);
       });
     }
 
@@ -93,15 +99,10 @@ document.addEventListener("DOMContentLoaded", function () {
       prevButton.addEventListener("click", () => {
         const currentSlide = track.querySelector(".current-slide");
         let prevSlide = currentSlide.previousElementSibling;
-        const currentDot = dotsNav ? dotsNav.querySelector(".current-slide") : null;
-        let prevDot = currentDot ? currentDot.previousElementSibling : null;
 
-        if (!prevSlide) {
-          prevSlide = slides[slides.length - 1];
-          if (dots.length) prevDot = dots[dots.length - 1];
-        }
+        if (!prevSlide) prevSlide = slides[slides.length - 1];
+
         moveToSlide(track, currentSlide, prevSlide);
-        updateDots(currentDot, prevDot);
       });
     }
 
@@ -109,12 +110,12 @@ document.addEventListener("DOMContentLoaded", function () {
       dotsNav.addEventListener("click", (e) => {
         const targetDot = e.target.closest("button");
         if (!targetDot) return;
+
         const currentSlide = track.querySelector(".current-slide");
-        const currentDot = dotsNav.querySelector(".current-slide");
         const targetIndex = dots.findIndex((dot) => dot === targetDot);
         const targetSlide = slides[targetIndex];
+
         moveToSlide(track, currentSlide, targetSlide);
-        updateDots(currentDot, targetDot);
       });
     }
 
@@ -133,8 +134,8 @@ document.addEventListener("DOMContentLoaded", function () {
 
   sizeSelectors.forEach((selector) => {
     selector.addEventListener("click", function () {
-      sizeSelectors.forEach(btn => btn.classList.remove('active'));
-      this.classList.add('active');
+      sizeSelectors.forEach((btn) => btn.classList.remove("active"));
+      this.classList.add("active");
 
       if (btnPanier) {
         btnPanier.style.display = "inline-block";
@@ -158,32 +159,36 @@ document.addEventListener("DOMContentLoaded", function () {
 
     const testImageSrc = `${folderPath}01${extension}`;
     const tester = new Image();
-    tester.onload = () => { openBtn.style.display = "flex"; };
-    tester.onerror = () => { openBtn.style.display = "none"; };
+    tester.onload = () => {
+      openBtn.style.display = "flex";
+    };
+    tester.onerror = () => {
+      openBtn.style.display = "none";
+    };
     tester.src = testImageSrc;
 
     openBtn.addEventListener("click", () => {
-      if(lightbox) {
-          lightbox.classList.add("active");
-          document.body.classList.add("zoom-is-open");
-          init3DViewer(folderPath, extension, totalImages);
+      if (lightbox) {
+        lightbox.classList.add("active");
+        document.body.classList.add("zoom-is-open");
+        init3DViewer(folderPath, extension, totalImages);
       }
     });
 
     if (closeBtn) {
-        closeBtn.addEventListener("click", () => {
-            lightbox.classList.remove("active");
-            document.body.classList.remove("zoom-is-open");
-        });
+      closeBtn.addEventListener("click", () => {
+        lightbox.classList.remove("active");
+        document.body.classList.remove("zoom-is-open");
+      });
     }
 
     if (lightbox) {
-        lightbox.addEventListener("click", (e) => {
-            if (e.target === lightbox) {
-                lightbox.classList.remove("active");
-                document.body.classList.remove("zoom-is-open");
-            }
-        });
+      lightbox.addEventListener("click", (e) => {
+        if (e.target === lightbox) {
+          lightbox.classList.remove("active");
+          document.body.classList.remove("zoom-is-open");
+        }
+      });
     }
   }
 
@@ -201,90 +206,137 @@ document.addEventListener("DOMContentLoaded", function () {
     if (loaderWrapper) loaderWrapper.style.display = "flex";
 
     for (let i = 1; i <= totalImages; i++) {
-        const imageNumber = i.toString().padStart(2, "0");
-        const imgSrc = `${folderPath}${imageNumber}${extension}`;
-        const img = new Image();
-        img.src = imgSrc;
-        img.onload = () => {
-          loadedCount++;
-          if (loaderText) loaderText.innerText = `Chargement ${Math.floor((loadedCount / totalImages) * 100)}%`;
-          if (loadedCount === totalImages) startViewer();
-        };
-        images.push(imgSrc);
+      const imageNumber = i.toString().padStart(2, "0");
+      const imgSrc = `${folderPath}${imageNumber}${extension}`;
+      const img = new Image();
+      img.src = imgSrc;
+      img.onload = () => {
+        loadedCount++;
+        if (loaderText)
+          loaderText.innerText = `Chargement ${Math.floor(
+            (loadedCount / totalImages) * 100
+          )}%`;
+        if (loadedCount === totalImages) startViewer();
+      };
+      images.push(imgSrc);
     }
 
     function startViewer() {
       if (loaderWrapper) loaderWrapper.style.display = "none";
       updateImage(1);
-      
+
       const newViewer = viewer.cloneNode(true);
       viewer.parentNode.replaceChild(newViewer, viewer);
 
-      newViewer.addEventListener("mousedown", (e) => { isDragging = true; startX = e.pageX; newViewer.style.cursor = "grabbing"; e.preventDefault(); });
-      window.addEventListener("mouseup", () => { isDragging = false; if(newViewer) newViewer.style.cursor = "grab"; });
-      window.addEventListener("mousemove", (e) => {
-         if (!isDragging) return;
-         const change = e.pageX - startX;
-         if (Math.abs(change) > sensitivity) {
-            change > 0 ? prevFrame() : nextFrame();
-            startX = e.pageX;
-         }
+      newViewer.addEventListener("mousedown", (e) => {
+        isDragging = true;
+        startX = e.pageX;
+        newViewer.style.cursor = "grabbing";
+        e.preventDefault();
       });
-      
-      newViewer.addEventListener("touchstart", (e) => { isDragging = true; startX = e.touches[0].pageX; }, { passive: false });
-      window.addEventListener("touchend", () => { isDragging = false; });
-      window.addEventListener("touchmove", (e) => {
-         if (!isDragging) return;
-         const change = e.touches[0].pageX - startX;
-         if (Math.abs(change) > sensitivity) {
+      window.addEventListener("mouseup", () => {
+        isDragging = false;
+        if (newViewer) newViewer.style.cursor = "grab";
+      });
+      window.addEventListener("mousemove", (e) => {
+        if (!isDragging) return;
+        const change = e.pageX - startX;
+        if (Math.abs(change) > sensitivity) {
+          change > 0 ? prevFrame() : nextFrame();
+          startX = e.pageX;
+        }
+      });
+
+      newViewer.addEventListener(
+        "touchstart",
+        (e) => {
+          isDragging = true;
+          startX = e.touches[0].pageX;
+        },
+        { passive: false }
+      );
+      window.addEventListener("touchend", () => {
+        isDragging = false;
+      });
+      window.addEventListener(
+        "touchmove",
+        (e) => {
+          if (!isDragging) return;
+          const change = e.touches[0].pageX - startX;
+          if (Math.abs(change) > sensitivity) {
             change > 0 ? prevFrame() : nextFrame();
             startX = e.touches[0].pageX;
-         }
-      }, { passive: false });
+          }
+        },
+        { passive: false }
+      );
     }
 
-    function nextFrame() { currentFrame++; if (currentFrame > totalImages) currentFrame = 1; updateImage(currentFrame); }
-    function prevFrame() { currentFrame--; if (currentFrame < 1) currentFrame = totalImages; updateImage(currentFrame); }
+    function nextFrame() {
+      currentFrame++;
+      if (currentFrame > totalImages) currentFrame = 1;
+      updateImage(currentFrame);
+    }
+    function prevFrame() {
+      currentFrame--;
+      if (currentFrame < 1) currentFrame = totalImages;
+      updateImage(currentFrame);
+    }
     function updateImage(frame) {
-        const imgEl = document.getElementById("bike-image");
-        if (imgEl) imgEl.src = images[frame - 1];
+      const imgEl = document.getElementById("bike-image");
+      if (imgEl) imgEl.src = images[frame - 1];
     }
   }
 });
 
-window.openZoom = function() {
+window.openZoom = function () {
   const overlay = document.getElementById("zoomModalOverlay");
   const zoomImg = document.getElementById("zoomImageFull");
-  const activeSlide = document.querySelector(".carousel-slide.current-slide img");
+  const activeSlide = document.querySelector(
+    ".carousel-slide.current-slide img"
+  );
 
   if (activeSlide && overlay && zoomImg) {
-    zoomImg.src = activeSlide.src;
+    const imgSrc = activeSlide.hasAttribute("data-src")
+      ? activeSlide.getAttribute("data-src")
+      : activeSlide.src;
+
+    zoomImg.src = imgSrc;
     overlay.style.display = "flex";
     document.body.classList.add("zoom-is-open");
-    setTimeout(() => { overlay.classList.add("active"); }, 10);
+    setTimeout(() => {
+      overlay.classList.add("active");
+    }, 10);
   }
 };
 
-window.closeZoom = function(e) {
+window.closeZoom = function (e) {
   if (e) {
     e.stopPropagation();
-    if (e.target.id === "zoomImageFull" || e.target.classList.contains("zoom-nav")) return;
+    if (
+      e.target.id === "zoomImageFull" ||
+      e.target.classList.contains("zoom-nav")
+    )
+      return;
   }
   const overlay = document.getElementById("zoomModalOverlay");
   const zoomImg = document.getElementById("zoomImageFull");
-  
+
   if (overlay && zoomImg) {
-      overlay.classList.remove("active");
-      zoomImg.classList.remove("zoomed-in");
-      zoomImg.style.transformOrigin = "center center";
-      document.body.classList.remove("zoom-is-open");
-      setTimeout(() => { overlay.style.display = "none"; }, 300);
+    overlay.classList.remove("active");
+    zoomImg.classList.remove("zoomed-in");
+    zoomImg.style.transformOrigin = "center center";
+    document.body.classList.remove("zoom-is-open");
+    setTimeout(() => {
+      overlay.style.display = "none";
+    }, 300);
   }
 };
 
-window.changeZoomImage = function(direction) {
+window.changeZoomImage = function (direction) {
   const track = document.querySelector(".carousel-track");
-  if(!track) return;
+  if (!track) return;
+
   const slides = Array.from(track.children);
   const currentSlide = track.querySelector(".current-slide");
   let currentIndex = slides.indexOf(currentSlide);
@@ -294,26 +346,44 @@ window.changeZoomImage = function(direction) {
   else if (newIndex >= slides.length) newIndex = 0;
 
   const targetSlide = slides[newIndex];
+
+  const targetImgInSlider = targetSlide.querySelector("img");
+  if (targetImgInSlider && targetImgInSlider.hasAttribute("data-src")) {
+    targetImgInSlider.src = targetImgInSlider.getAttribute("data-src");
+    targetImgInSlider.removeAttribute("data-src");
+    targetImgInSlider.classList.remove("lazy-image");
+  }
+
   const slideWidth = slides[0].getBoundingClientRect().width;
 
   track.style.transform = "translateX(-" + slideWidth * newIndex + "px)";
   currentSlide.classList.remove("current-slide");
   targetSlide.classList.add("current-slide");
 
+  const dotsNav = document.querySelector(".carousel-nav");
+  if (dotsNav) {
+    const dots = Array.from(dotsNav.children);
+    dots.forEach((d) => d.classList.remove("current-slide"));
+    if (dots[newIndex]) dots[newIndex].classList.add("current-slide");
+  }
+
   const zoomImg = document.getElementById("zoomImageFull");
-  if(zoomImg) {
-      zoomImg.style.opacity = 0.5;
-      setTimeout(() => {
-        zoomImg.src = targetSlide.querySelector("img").src;
-        zoomImg.style.opacity = 1;
-      }, 150);
+  if (zoomImg) {
+    zoomImg.style.opacity = 0.5;
+    setTimeout(() => {
+      zoomImg.src = targetImgInSlider.src;
+      zoomImg.style.opacity = 1;
+    }, 150);
   }
 };
 
-window.toggleZoomState = function(e) {
+window.toggleZoomState = function (e) {
   if (e.target.tagName === "BUTTON") return;
   const img = document.getElementById("zoomImageFull");
-  if (img && (e.target === img || e.target.classList.contains("zoom-container"))) {
+  if (
+    img &&
+    (e.target === img || e.target.classList.contains("zoom-container"))
+  ) {
     img.classList.toggle("zoomed-in");
     if (img.classList.contains("zoomed-in")) {
       img.onmousemove = function (evt) {
@@ -329,10 +399,15 @@ window.toggleZoomState = function(e) {
   }
 };
 
-window.selectionnerTaille = function(tailleNom, qtyWeb, qtyGlobal, qtyLocal, isStoreSelected) {
-  
+window.selectionnerTaille = function (
+  tailleNom,
+  qtyWeb,
+  qtyGlobal,
+  qtyLocal,
+  isStoreSelected
+) {
   const inputTaille = document.getElementById("input-taille-selected");
-  if(inputTaille) inputTaille.value = tailleNom;
+  if (inputTaille) inputTaille.value = tailleNom;
 
   const formPanier = document.getElementById("form-ajout-panier");
   const btnMagasin = document.getElementById("btn-contact-magasin");
@@ -344,55 +419,64 @@ window.selectionnerTaille = function(tailleNom, qtyWeb, qtyGlobal, qtyLocal, isS
   const textMagasin = document.getElementById("text-magasin");
 
   if (qtyWeb > 0) {
-    if(formPanier) formPanier.style.display = "inline-block";
-    if(dotWeb) { dotWeb.style.backgroundColor = "#28a745"; textWeb.textContent = "Disponible en ligne"; textWeb.style.color = "#333"; }
+    if (formPanier) formPanier.style.display = "inline-block";
+    if (dotWeb) {
+      dotWeb.style.backgroundColor = "#28a745";
+      textWeb.textContent = "Disponible en ligne";
+      textWeb.style.color = "#333";
+    }
   } else {
-    if(formPanier) formPanier.style.display = "none";
-    if(dotWeb) { dotWeb.style.backgroundColor = "#dc3545"; textWeb.textContent = "Indisponible en ligne"; textWeb.style.color = "#6b7280"; }
-  }
-
-  if (btnMagasin) btnMagasin.style.display = "inline-block"; 
-
-  if (isStoreSelected) 
-  {
-    if (qtyLocal > 0) 
-    {
-      if(dotMagasin) { dotMagasin.style.backgroundColor = "#28a745"; textMagasin.textContent = "Disponible dans votre magasin"; }
-    } 
-    else if (qtyGlobal > 0) 
-    {
-      if(dotMagasin) { dotMagasin.style.backgroundColor = "#ffc107"; textMagasin.textContent = "Disponible dans d'autres magasins"; }
-    } 
-    else 
-    {
-      if(dotMagasin) { dotMagasin.style.backgroundColor = "#dc3545"; textMagasin.textContent = "Indisponible dans votre magasin"; }
-    }
-  } 
-  else 
-  {
-    if (qtyGlobal > 0) 
-    {
-      if(dotMagasin) { dotMagasin.style.backgroundColor = "#28a745"; textMagasin.textContent = "Disponible en magasin"; }
-    } 
-    else 
-    {
-      if(dotMagasin) { dotMagasin.style.backgroundColor = "#dc3545"; textMagasin.textContent = "Indisponible en magasin"; }
+    if (formPanier) formPanier.style.display = "none";
+    if (dotWeb) {
+      dotWeb.style.backgroundColor = "#dc3545";
+      textWeb.textContent = "Indisponible en ligne";
+      textWeb.style.color = "#6b7280";
     }
   }
 
-  if (qtyWeb <= 0 && qtyGlobal <= 0) 
-  {
-    if(msgIndispo) msgIndispo.style.display = "block";
-  } 
-  else 
-  {
-    if(msgIndispo) msgIndispo.style.display = "none";
+  if (btnMagasin) btnMagasin.style.display = "inline-block";
+
+  if (isStoreSelected) {
+    if (qtyLocal > 0) {
+      if (dotMagasin) {
+        dotMagasin.style.backgroundColor = "#28a745";
+        textMagasin.textContent = "Disponible dans votre magasin";
+      }
+    } else if (qtyGlobal > 0) {
+      if (dotMagasin) {
+        dotMagasin.style.backgroundColor = "#ffc107";
+        textMagasin.textContent = "Disponible dans d'autres magasins";
+      }
+    } else {
+      if (dotMagasin) {
+        dotMagasin.style.backgroundColor = "#dc3545";
+        textMagasin.textContent = "Indisponible dans votre magasin";
+      }
+    }
+  } else {
+    if (qtyGlobal > 0) {
+      if (dotMagasin) {
+        dotMagasin.style.backgroundColor = "#28a745";
+        textMagasin.textContent = "Disponible en magasin";
+      }
+    } else {
+      if (dotMagasin) {
+        dotMagasin.style.backgroundColor = "#dc3545";
+        textMagasin.textContent = "Indisponible en magasin";
+      }
+    }
+  }
+
+  if (qtyWeb <= 0 && qtyGlobal <= 0) {
+    if (msgIndispo) msgIndispo.style.display = "block";
+  } else {
+    if (msgIndispo) msgIndispo.style.display = "none";
   }
 };
 
-window.addToCartAjax = function() {
+window.addToCartAjax = function () {
   const form = document.getElementById("form-ajout-panier");
-  if(!form) return;
+  if (!form) return;
 
   const url = form.dataset.action;
   const formData = new FormData(form);
@@ -422,33 +506,50 @@ window.addToCartAjax = function() {
     });
 };
 
-window.fillAndOpenModal = function(data) {
+window.fillAndOpenModal = function (data) {
   const modal = document.getElementById("cartModal");
-  if(!modal) return;
+  if (!modal) return;
 
   document.getElementById("modalName").textContent = data.product.name;
-  document.getElementById("modalPrice").textContent = new Intl.NumberFormat("fr-FR", {
-    style: "currency", currency: "EUR"
-  }).format(data.product.price) + " TTC";
-  
-  if(document.getElementById("modalImg")) document.getElementById("modalImg").src = data.product.image;
-  if(document.getElementById("modalSize")) document.getElementById("modalSize").textContent = data.product.taille;
-  if(document.getElementById("modalQty")) document.getElementById("modalQty").textContent = data.product.qty;
+  document.getElementById("modalPrice").textContent =
+    new Intl.NumberFormat("fr-FR", {
+      style: "currency",
+      currency: "EUR",
+    }).format(data.product.price) + " TTC";
 
-  if(document.getElementById("cartCount")) document.getElementById("cartCount").textContent = data.cart.count;
-  
-  const formattedTotal = new Intl.NumberFormat("fr-FR", { style: "currency", currency: "EUR" }).format(data.cart.total);
-  const formattedTax = new Intl.NumberFormat("fr-FR", { style: "currency", currency: "EUR" }).format(data.cart.total * 0.2);
+  if (document.getElementById("modalImg"))
+    document.getElementById("modalImg").src = data.product.image;
+  if (document.getElementById("modalSize"))
+    document.getElementById("modalSize").textContent = data.product.taille;
+  if (document.getElementById("modalQty"))
+    document.getElementById("modalQty").textContent = data.product.qty;
 
-  if(document.getElementById("cartSubtotal")) document.getElementById("cartSubtotal").textContent = formattedTotal;
-  if(document.getElementById("cartTotal")) document.getElementById("cartTotal").textContent = formattedTotal;
-  if(document.getElementById("cartTax")) document.getElementById("cartTax").textContent = formattedTax;
+  const counters = document.querySelectorAll(".cart-count-display");
+  counters.forEach((el) => {
+    el.textContent = data.cart.count;
+  });
+
+  const formattedTotal = new Intl.NumberFormat("fr-FR", {
+    style: "currency",
+    currency: "EUR",
+  }).format(data.cart.total);
+  const formattedTax = new Intl.NumberFormat("fr-FR", {
+    style: "currency",
+    currency: "EUR",
+  }).format(data.cart.total * 0.2);
+
+  if (document.getElementById("cartSubtotal"))
+    document.getElementById("cartSubtotal").textContent = formattedTotal;
+  if (document.getElementById("cartTotal"))
+    document.getElementById("cartTotal").textContent = formattedTotal;
+  if (document.getElementById("cartTax"))
+    document.getElementById("cartTax").textContent = formattedTax;
 
   modal.style.display = "flex";
 };
 
-window.closeModalAndRefresh = function() {
-    const modal = document.getElementById('cartModal');
-    if (modal) modal.style.display = 'none';
-    location.reload();
+window.closeModalAndRefresh = function () {
+  const modal = document.getElementById("cartModal");
+  if (modal) modal.style.display = "none";
+  location.reload();
 };

@@ -1,58 +1,52 @@
 <style>
-.btn-delete-account {
-  position: relative;
-  width: 100%;
-  padding: 16px;
-  background-color:rgb(199, 4, 4);
-  color: #fff;
-  border: none;
-  border-radius: 4px;
-  font-family: "Damas Font", sans-serif;
-  font-weight: 700;
-  font-size: 14px;
-  text-transform: uppercase;
-  letter-spacing: 1.5px;
-  cursor: pointer;
-  overflow: hidden;
-  z-index: 1;
-  transition: all 0.3s ease;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
-  clip-path: polygon(15px 0, 100% 0, 100% 100%, 0% 100%);
-  border-radius: 0 !important;
+
+@font-face {
+    font-family: 'Damas Font';
+    src: url('../font/font.woff2');
+    font-display: swap;
 }
 
-.btn-delete-account::before {
-  content: "";
-  position: absolute;
-  top: 0;
-  left: -15px;
-  width: 0%;
-  height: 100%;
-  background-color:rgb(245, 11, 11);
-  z-index: -1;
-  transform: skewX(-20deg);
-  transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-}
-
-.btn-delete-account:hover::before {
-  width: 160%;
-}
-
-.btn-delete-account:hover {
-  box-shadow: 0 8px 25px rgba(0, 113, 227, 0.35);
-  transform: translateY(-2px);
-}
-
-.sidebar-content {
-    position: relative;
+i{
+    margin-right: 10px;
 }
 
 .delete-account-section {
-    position: relative;
-    width: 100%;
-    margin-top: 20px;
-}
+        margin-top: 0px;
+        display: flex;
+        flex-direction: column;
+        align-items: center; 
+        gap: 15px;
+        padding-bottom: 20px;
+    }
 
+    .btn-delete-account {
+        display: flex;
+        align-items: center;
+        justify-content: center; 
+        width: 100%;
+        padding: 16px;
+        background-color: #c70404;
+        color: #fff;
+        border: none;
+        border-radius: 10px;
+        font-family: "Damas Font", sans-serif;
+        font-weight: 700;
+        font-size: 13px;
+        text-transform: uppercase;
+        text-decoration: none;
+        transition: all 0.3s ease;
+    }
+
+    .anonym-button {
+        background-color: #111;
+        color: #777;
+        border: 1px solid #222;
+    }
+
+    .btn-delete-account:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 10px 20px rgba(233, 34, 34, 0.73);
+    }
 
 </style>
 <aside class="sidebar">
@@ -109,8 +103,21 @@
             </ul>
         </nav>
     </div>
-    <div class="delete-account-section"> 
-        <form action="{{ route('profil.destroy') }}" method="POST" 
-        onsubmit="return confirm('⚠️ ATTENTION ⚠️\n\nÊtes-vous sûr de vouloir supprimer votre compte définitivement ?\n\nCette action est irréversible et effacera vos données personnelles.');"> @csrf @method('DELETE') <button type="submit" class="btn-delete-account"> <i class="fa-solid fa-trash-can"></i> Supprimer mon compte </button> </form> 
-    </div>
+    <div class="delete-account-section">
+    {{-- ANONYMISER --}}
+    <a href="{{ route('profil.anonymize.show') }}" class="btn-delete-account anonym-button">
+        <i class="fa-solid fa-user-secret"></i>
+        Anonymiser mon compte
+    </a>
+</div>
+
+
+<div class="delete-account-section">
+    {{-- SUPPRIMER --}}
+    <a href="{{ route('profil.destroy.show') }}" class="btn-delete-account btn-delete-danger">
+        <i class="fa-solid fa-trash-can"> </i>
+        Supprimer mon compte
+    </a>
+</div>
+ 
 </aside>

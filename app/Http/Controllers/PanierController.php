@@ -14,23 +14,73 @@ use App\Models\CodePromo;
 
 class PanierController extends Controller
 {
+    public function count()
+    {
+        $count = 0;
+        $cartTotal = 0;
+        $items = [];
+
+        if (Auth::check()) {
+            $panier = Panier::where('id_client', Auth::id())->first();
+            if ($panier) {
+                $lignes = LignePanier::where('id_panier', $panier->id_panier)->with('article')->get();
+                $count = $lignes->count();
+
+                foreach ($lignes as $ligne) {
+                    $totalLigne = $ligne->article->prix * $ligne->quantite_article;
+                    $cartTotal += $totalLigne;
+
+                    $items[] = [
+                        'name' => $ligne->article->nom_article,
+                        'price' => number_format($ligne->article->prix, 2, ',', ' ') . ' €',
+                        'image' => $this->getImageLocale($ligne->reference),
+                        'quantity' => $ligne->quantite_article,
+                        'taille' => $ligne->taille_selectionnee,
+                    ];
+                }
+            }
+        } else {
+            $cart = Session::get('cart', []);
+            $count = count($cart);
+
+            foreach ($cart as $item) {
+                $totalLigne = $item['price'] * $item['quantity'];
+                $cartTotal += $totalLigne;
+
+                $items[] = [
+                    'name' => $item['name'],
+                    'price' => number_format($item['price'], 2, ',', ' ') . ' €',
+                    'image' => $item['image'],
+                    'quantity' => $item['quantity'],
+                    'taille' => $item['taille'] ?? 'Non renseigné',
+                ];
+            }
+        }
+
+        return response()->json([
+            'count' => $count,
+            'total' => number_format($cartTotal, 2, ',', ' ') . ' € TTC',
+            'items' => $items
+        ])
+            ->header('Cache-Control', 'no-cache, no-store, must-revalidate')
+            ->header('Pragma', 'no-cache')
+            ->header('Expires', '0');
+    }
+
     public function index()
     {
-        
         $cart = [];
         $subTotal = 0;
         $discountAmount = 0;
         $promoCode = null;
         $total = 0;
 
-        
         if (Auth::check()) {
             $panier = Panier::firstOrCreate(
                 ['id_client' => Auth::id()],
                 ['date_creation' => now(), 'montant_total_panier' => 0]
             );
 
-            
             $lignes = LignePanier::with(['article'])
                 ->where('id_panier', $panier->id_panier)
                 ->get();
@@ -54,20 +104,15 @@ class PanierController extends Controller
                 ];
             }
 
-            
             if ($panier->code_promo) {
                 $promo = CodePromo::find($panier->code_promo);
                 if ($promo) {
                     $promoCode = $promo->id_codepromo;
-                    
                 }
             }
-
         } else {
-            
             $cart = Session::get('cart', []);
 
-            
             foreach ($cart as $key => &$item) {
                 $item['image'] = $this->getImageLocale($item['reference']);
                 $item['max_stock'] = $this->calculerStockMax($item['reference'], $item['taille'] ?? 'Non renseigné');
@@ -75,19 +120,16 @@ class PanierController extends Controller
             unset($item);
             Session::put('cart', $cart);
 
-            
             $sessionPromo = Session::get('promo');
             if ($sessionPromo) {
                 $promoCode = $sessionPromo['code'];
             }
         }
 
-        
         foreach ($cart as $item) {
             $subTotal += $item['price'] * $item['quantity'];
         }
 
-        
         if ($promoCode) {
             $promoObj = CodePromo::find($promoCode);
             if ($promoObj) {
@@ -95,56 +137,52 @@ class PanierController extends Controller
             }
         }
 
-        
         $total = $subTotal - $discountAmount;
 
-       
-        return view('panier', compact('cart', 'total', 'subTotal', 'discountAmount', 'promoCode'));
+        // MODIFICATION ICI : On retourne une réponse avec des headers pour empêcher le cache
+        return response()
+            ->view('panier', compact('cart', 'total', 'subTotal', 'discountAmount', 'promoCode'))
+            ->header('Cache-Control', 'no-store, no-cache, must-revalidate, max-age=0')
+            ->header('Pragma', 'no-cache')
+            ->header('Expires', 'Sat, 01 Jan 2000 00:00:00 GMT');
     }
 
     public function applyPromo(Request $request)
-{
-    $code = trim($request->input('code_promo'));
+    {
+        $code = trim($request->input('code_promo'));
+        $promo = CodePromo::find($code);
 
-    
-    $promo = CodePromo::find($code);
-
-    if (!$promo) {
-        return response()->json([
-            'success' => false,
-            'message' => 'Ce code promo n\'existe pas.'
-        ]);
-    }
-    
-    if (Auth::check()) {
-        $client = Auth::user(); 
-
-        
-        if ($client->codesPromoUtilises()->where('utilisation_code_promo.id_codepromo', $promo->id_codepromo)->exists()) {
+        if (!$promo) {
             return response()->json([
                 'success' => false,
-                'message' => 'Vous avez déjà utilisé ce code promo par le passé.'
+                'message' => 'Ce code promo n\'existe pas.'
             ]);
         }
-        
-        
-        $panier = Panier::firstOrCreate(['id_client' => Auth::id()]);
-        $panier->code_promo = $promo->id_codepromo;
-        $panier->save();
 
-    } else {
-        
-        session()->put('promo', [
-            'code' => $promo->id_codepromo,
-            'pourcentage' => $promo->pourcentage
+        if (Auth::check()) {
+            $client = Auth::user();
+            if ($client->codesPromoUtilises()->where('utilisation_code_promo.id_codepromo', $promo->id_codepromo)->exists()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Vous avez déjà utilisé ce code promo par le passé.'
+                ]);
+            }
+            $panier = Panier::firstOrCreate(['id_client' => Auth::id()]);
+            $panier->code_promo = $promo->id_codepromo;
+            $panier->save();
+        } else {
+            session()->put('promo', [
+                'code' => $promo->id_codepromo,
+                'pourcentage' => $promo->pourcentage
+            ]);
+        }
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Code appliqué avec succès !'
         ]);
     }
 
-    return response()->json([
-        'success' => true,
-        'message' => 'Code appliqué avec succès !'
-    ]);
-}
     public function add(Request $request, $reference)
     {
         $request->validate([
@@ -244,6 +282,9 @@ class PanierController extends Controller
                 }
             }
 
+    
+            $request->session()->save();
+
             return response()->json([
                 'success' => true,
                 'message' => 'Article ajouté',
@@ -335,6 +376,9 @@ class PanierController extends Controller
 
         $formattedTotal = number_format($newTotalPanier, 2, ',', ' ');
 
+
+        $request->session()->save();
+
         return response()->json([
             'success' => true,
             'newTotal' => $formattedTotal
@@ -364,7 +408,7 @@ class PanierController extends Controller
         $prefixLength = $isAccessoire ? 5 : 6;
         $refDossier = (strlen($ref) >= $prefixLength) ? substr($ref, 0, $prefixLength) : $ref;
 
-        return asset('images/' . $dossier . '/' . $refDossier . '/image_1.jpg');
+        return asset('images/' . $dossier . '/' . $refDossier . '/image_1.webp');
     }
 
     private function calculerStockMax($reference, $tailleNom)
@@ -372,7 +416,7 @@ class PanierController extends Controller
         $idMagasinCible = null;
 
         if (Auth::check()) {
-            $idMagasinCible = Auth::user()->id_magasin; 
+            $idMagasinCible = Auth::user()->id_magasin;
         } else {
             $idMagasinCible = Session::get('selected_store_id');
         }
@@ -397,13 +441,13 @@ class PanierController extends Controller
 
         foreach ($inventaires as $inv) {
             $stockWeb = $inv->quantite_stock_en_ligne ?? 0;
-            
+
             $queryMagasin = DB::table('inventaire_magasin')
                 ->where('id_article_inventaire', $inv->id_article_inventaire);
 
             if ($idMagasinCible) {
                 $queryMagasin->where('id_magasin', $idMagasinCible);
-            } 
+            }
 
             $stockMagasins = $queryMagasin->sum('quantite_stock_magasin');
 
@@ -417,16 +461,16 @@ class PanierController extends Controller
         if (Auth::check()) {
             $panier = Panier::where('id_client', Auth::id())->first();
             if ($panier) {
-                $panier->code_promo = null; 
+                $panier->code_promo = null;
                 $panier->save();
             }
         } else {
-            
+
             session()->forget('promo');
         }
 
         return response()->json([
-            'success' => true, 
+            'success' => true,
             'message' => 'Code promo retiré.'
         ]);
     }
