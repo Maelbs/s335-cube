@@ -3,8 +3,11 @@
 namespace App\Http\Controllers;
 
 use App\Models\Client;
+use App\Models\Panier;     
+use App\Models\LignePanier;  
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Session;
 use Laravel\Socialite\Facades\Socialite;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Http;
@@ -27,6 +30,7 @@ class GoogleAuthController extends Controller
             ->with(['prompt' => 'consent select_account'])
             ->redirect();
     }
+
     public function callback()
     {
         try {
@@ -53,8 +57,7 @@ class GoogleAuthController extends Controller
                         }
                     }
                 }
-            } catch (\Exception $e) {
-            }
+            } catch (\Exception $e) {} 
 
             $client = Client::where('google_id', $googleUser->getId())
                 ->orWhere('email_client', $googleUser->getEmail())
@@ -79,15 +82,59 @@ class GoogleAuthController extends Controller
 
             Auth::login($client);
 
+            request()->session()->regenerate();
+
+            $this->fusionnerPanier($client->id_client);
+
             if (empty($client->tel) || empty($client->id_adresse_facturation) || empty($client->date_naissance)) {
-                return redirect()->route('client.complete_profile');
+                $route = 'client.complete_profile';
+            } else {
+                $route = 'home';
             }
 
-            return redirect()->route('home');
+            return redirect()->route($route);
 
         } catch (\Exception $e) {
-            //return redirect()->route('login')->with('error', 'Erreur Google : ' . $e->getMessage());
-            //dd($e->getMessage());
+            dd($e->getMessage());
         }
+    }
+
+    private function fusionnerPanier($clientId)
+    {
+        $sessionCart = Session::get('cart', []);
+
+        if (empty($sessionCart)) {
+            return;
+        }
+
+        $panier = Panier::firstOrCreate(
+            ['id_client' => $clientId],
+            ['date_creation' => now(), 'montant_total_panier' => 0,]
+        );
+
+        foreach ($sessionCart as $item) {
+            $ref = $item['reference'];
+            $qteSession = $item['quantity'];
+            $taille = (isset($item['taille']) && $item['taille'] !== 'Unique' && $item['taille'] !== '')
+                ? $item['taille'] : 'Non renseigné';
+
+            $ligneExistante = LignePanier::where('id_panier', $panier->id_panier)
+                ->where('reference', $ref)
+                ->where('taille_selectionnee', $taille)
+                ->first();
+
+            if ($ligneExistante) {
+                $ligneExistante->quantite_article += $qteSession;
+                $ligneExistante->save();
+            } else {
+                LignePanier::create([
+                    'id_panier' => $panier->id_panier,
+                    'reference' => $ref,
+                    'quantite_article' => $qteSession,
+                    'taille_selectionnee' => $taille
+                ]);
+            }
+        }
+        Session::forget('cart');
     }
 }

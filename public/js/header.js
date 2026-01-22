@@ -58,10 +58,10 @@ document.addEventListener("DOMContentLoaded", function () {
         activeItems.forEach((item) => item.classList.remove("active"));
 
         const openContainers = navItem.querySelectorAll(
-          ".subs-container, .models-container"
+          ".subs-container, .models-container",
         );
         openContainers.forEach((container) =>
-          container.classList.add("d-none")
+          container.classList.add("d-none"),
         );
       }, 300);
     });
@@ -105,3 +105,13 @@ function closeSearch() {
   const overlay = document.getElementById("full-search-overlay");
   overlay.classList.remove("active");
 }
+
+window.addEventListener("pageshow", function (event) {
+  var historyTraversal =
+    event.persisted ||
+    (typeof window.performance != "undefined" &&
+      window.performance.navigation.type === 2);
+  if (historyTraversal) {
+    window.location.reload();
+  }
+});
