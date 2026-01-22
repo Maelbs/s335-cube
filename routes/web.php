@@ -182,11 +182,6 @@ Route::middleware('auth')->group(function () {
 
 
     });
-
-    Route::middleware(['auth', 'is_dpo'])->group(function () {
-        Route::get('/dpo/anonymiser', [DpoController::class, 'index'])->name('dpo.index');
-        Route::post('/dpo/anonymiser', [DpoController::class, 'anonymize'])->name('dpo.process');
-    });
 });
 
 /* ------------------------------------------------------ */
