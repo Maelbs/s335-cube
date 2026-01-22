@@ -59,7 +59,7 @@
                             $refClean = trim($article->reference);
                             $isAccessoire = strlen($refClean) === 5;
                             $dossier = $isAccessoire ? 'ACCESSOIRES' : 'VELOS';
-                            $cheminImage = 'images/' . $dossier . '/' . $refClean . '/image_1.jpg';
+                            $cheminImage = 'images/' . $dossier . '/' . $refClean . '/image_1.webp';
                             $imageFinale = file_exists(public_path($cheminImage)) ? asset($cheminImage) : 'https://placehold.co/100x80?text=No+Image';
                         @endphp
 

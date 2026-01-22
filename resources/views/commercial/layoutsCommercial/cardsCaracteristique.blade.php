@@ -107,8 +107,8 @@
         $refClean = trim($article->reference);
 
         // 2. Construction du chemin relatif
-        // On suppose que l'image s'appelle toujours 'image_1.jpg'
-        $cheminRelatif = 'images/' . $dossier . '/' . $refClean . '/image_1.jpg';
+        // On suppose que l'image s'appelle toujours 'image_1.webp'
+        $cheminRelatif = 'images/' . $dossier . '/' . $refClean . '/image_1.webp';
 
         // 3. Vérification physique du fichier
         // public_path() donne le chemin absolu sur le serveur (C:/wamp/www/...)

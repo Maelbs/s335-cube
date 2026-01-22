@@ -54,11 +54,11 @@
                                 </div>
                             </div>
                         @else
-                            <div class="alert alert-warning border-warning" style="background-color: #fff3cd; color: #856404;">
+                            <div class="alert alert-warning border-warning" style="background-color: #ffffff; color: #951709;">
                                 <i class="fa-solid fa-exclamation-triangle"></i>
                                 <strong>Attention :</strong> L'achat d'un vélo nécessite un retrait en magasin.
                                 <br>
-                                <button type="button" onclick="toggleStoreLocation()" class="btn btn-sm btn-dark mt-2">
+                                <button type="button" onclick="toggleStoreLocator()" class="btn btn-sm btn-dark mt-2 btn-magasin">
                                     <i class="fa-solid fa-map-location-dot"></i> Choisir un magasin partenaire
                                 </button>
                             </div>
