@@ -1,11 +1,9 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use App\Models\Visit; // Pour les stats admin
+use App\Models\Visit;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Response;
-
-// Controllers
 use App\Http\Controllers\CommercialController;
 use App\Http\Controllers\ArticleSimilaireController;
 use App\Http\Controllers\InfoArticleController;
@@ -189,11 +187,9 @@ Route::middleware('auth')->group(function () {
 /* ------------------------------------------------------ */
 
 Route::get('/admin-logs', function () {
-    // 1. SÉCURITÉ : On lit les valeurs du fichier .env
     $login = env('LOGS_ADMIN_USER', 'admin'); 
     $password = env('LOGS_ADMIN_PASSWORD'); 
 
-    // Sécurité supplémentaire : Si pas de mot de passe configuré, on bloque tout
     if (!$password) {
         abort(403, 'Configuration de sécurité manquante.');
     }
@@ -228,5 +224,4 @@ Route::view('/aide', 'aide')->name('aide');
 
 Route::post('/bot/add-to-cart', [ChatBotController::class, 'addToCartFromBot'])->name('bot.addToCart');
 
-Route::get('/mon-image-privee/{filename}', [ImageController::class, 'show'])
-    ->middleware('cache.images');
+Route::get('/mon-image-privee/{filename}', [ImageController::class, 'show'])->middleware('cache.images');
