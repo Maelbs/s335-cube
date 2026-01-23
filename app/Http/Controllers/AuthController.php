@@ -209,17 +209,19 @@ class AuthController extends Controller
 
         $client = Client::where('email_client', $request->email)->first();
 
-        if ($client && Hash::check($request->password, $client->mdp)) {
-            if ($client->double_auth) {
-                $code = rand(100000, 999999);
+        if ($client && $client->mdp != null) {
+            if (Hash::check($request->password, $client->mdp)) {
+                if ($client->double_auth) {
+                    $code = rand(100000, 999999);
 
-                Cache::put('login_2fa_' . $client->id_client, $code, now()->addMinutes(10));
+                    Cache::put('login_2fa_' . $client->id_client, $code, now()->addMinutes(10));
 
-                Mail::to($client->email_client)->send(new VerificationCodeMail($code));
+                    Mail::to($client->email_client)->send(new VerificationCodeMail($code));
 
-                $request->session()->put('2fa_client_id', $client->id_client);
+                    $request->session()->put('2fa_client_id', $client->id_client);
 
-                return redirect()->route('login.2fa.form');
+                    return redirect()->route('login.2fa.form');
+                }
             }
 
             Auth::login($client);

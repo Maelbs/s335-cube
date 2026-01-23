@@ -58,7 +58,7 @@
                                 <i class="fa-solid fa-exclamation-triangle"></i>
                                 <strong>Attention :</strong> L'achat d'un vélo nécessite un retrait en magasin.
                                 <br>
-                                <button type="button" onclick="toggleStoreLocator()" class="btn btn-sm btn-dark mt-2 btn-magasin">
+                                <button type="button" onclick="toggleStoreLocator();" class="btn btn-sm btn-dark mt-2 btn-magasin">
                                     <i class="fa-solid fa-map-location-dot"></i> Choisir un magasin partenaire
                                 </button>
                             </div>
@@ -87,13 +87,13 @@
                                             </div>
                                         </div>
                                     @else
-                                        <div class="p-3 d-flex align-items-center" style="background-color: #fff3cd; color: #856404;">
+                                        <div class="alert alert-warning border-warning" style="background-color: #ffffff; color: #951709;">
                                             <i class="fa-solid fa-triangle-exclamation mr-3" style="font-size: 24px;"></i>
                                             <div>
                                                 <strong>Retrait en magasin partenaire</strong><br>
                                                 <span class="small">Aucun magasin sélectionné. Cliquez pour choisir sur la carte.</span>
                                             </div>
-                                            <button type="button" onclick="toggleStoreLocation();" class="btn btn-sm btn-dark ml-auto">
+                                            <button type="button" onclick="toggleStoreLocator();" class="btn btn-sm btn-dark ml-auto btn-magasin">
                                                 Choisir
                                             </button>
                                         </div>

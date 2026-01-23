@@ -5,11 +5,9 @@
 
     RewriteEngine On
 
-    # Gestion des headers d'autorisation
     RewriteCond %{HTTP:Authorization} .
     RewriteRule .* - [E=HTTP_AUTHORIZATION:%{HTTP:Authorization}]
 
-    # Redirection des slashs de fin
     RewriteCond %{REQUEST_FILENAME} !-d
     RewriteCond %{REQUEST_URI} (.+)/$
     RewriteRule ^ %1 [L,R=301]
@@ -20,43 +18,27 @@
     RewriteRule ^ index.php [L]
 </IfModule>
 
-# ======================================================================
-#  GESTION DU CACHE (LOGIQUE INVERSÉE - PLUS SÛR)
-# ======================================================================
-
-# 1. D'ABORD : ON TUE LE CACHE PAR DÉFAUT (Pour PHP, HTML, etc.)
-# C'est vital. On force Apache à dire "No-Cache" à tout le monde.
 <IfModule mod_headers.c>
     Header set Cache-Control "no-store, no-cache, must-revalidate, max-age=0"
     Header set Pragma "no-cache"
     Header set Expires "Sun, 01 Jan 2014 00:00:00 GMT"
 </IfModule>
 
-# 2. ENSUITE : ON RÉACTIVE LE CACHE UNIQUEMENT POUR LES FICHIERS STATIQUES
-# On écrase les règles précédentes seulement si c'est une image, du CSS ou du JS
 <FilesMatch "\.(ico|pdf|flv|jpg|jpeg|png|gif|webp|avif|js|css|svg|woff|woff2|ttf|otf)$">
     <IfModule mod_headers.c>
-        # On enlève les interdictions de cache
         Header unset Pragma
         Header unset Expires
-        
-        # On met le cache long (1 an)
+
         Header set Cache-Control "max-age=31536000, public, immutable"
-        
-        # On enlève ETag pour la performance
+
         Header unset ETag
     </IfModule>
 </FilesMatch>
 
-# 3. ON DÉSACTIVE MOD_EXPIRES GLOBALEMENT
-# Car c'est lui qui mettait le bazar avec son "ExpiresDefault"
 <IfModule mod_expires.c>
     ExpiresActive Off
 </IfModule>
 
-# ======================================================================
-#  COMPRESSION GZIP
-# ======================================================================
 <IfModule mod_deflate.c>
     AddOutputFilterByType DEFLATE text/html text/plain text/xml text/css text/javascript
     AddOutputFilterByType DEFLATE application/javascript application/x-javascript application/json

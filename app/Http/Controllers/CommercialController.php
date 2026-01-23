@@ -213,8 +213,6 @@ class CommercialController extends Controller
                         'cat_id_categorie_accessoire' => $request->parent_id,
                     ]);
                 } else {
-                    // Insertion Vélo (Musculaire ou Électrique)
-                    // Note : On ne stocke pas le type_velo ici car votre table categorie_velo est neutre
                     CategorieVelo::create([
                         'nom_categorie'    => $request->nom_categorie,
                         'cat_id_categorie' => $request->parent_id,
@@ -222,12 +220,10 @@ class CommercialController extends Controller
                 }
             });
 
-            // Succès
             return redirect()->route('commercial.dashboard')
                              ->with('success', 'Catégorie "' . $request->nom_categorie . '" ajoutée avec succès !');
 
         } catch (\Exception $e) {
-            // En cas d'erreur technique (ex: base de données inaccessible)
             return back()->withErrors(['error' => 'Erreur lors de la création de la catégorie : ' . $e->getMessage()])
                          ->withInput(); // Garde les champs remplis
         }
