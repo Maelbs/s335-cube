@@ -91,41 +91,40 @@
 
 
 <script>
-    // Récupération des données PHP (Arbre des catégories de vélo)
+   
     const categoriesData = @json($categoriesVelos);
 
     const selectType = document.getElementById('type_velo');
     const selectRoot = document.getElementById('root_category');
     const selectSub  = document.getElementById('sub_category_id');
 
-    // 1. QUAND ON CHOISIT LE TYPE
+ 
     selectType.addEventListener('change', function() {
-        // On active le menu Famille
+      
         selectRoot.disabled = false;
         selectRoot.innerHTML = '<option value="" disabled selected>Choisir une famille...</option>';
         
-        // On reset le menu Catégorie
+       
         selectSub.disabled = true;
         selectSub.innerHTML = '<option value="">En attente de la famille...</option>';
 
-        // On remplit le menu Famille (Racines)
-        // Note : Les familles (VTT, Route...) sont les mêmes pour Elec et Musculaire
+     
         categoriesData.forEach((cat, index) => {
             let option = document.createElement('option');
             option.value = cat.id_categorie; 
             option.text = cat.nom_categorie;
-            option.dataset.index = index; // On stocke l'index pour retrouver les enfants
+            option.dataset.index = index;
             selectRoot.add(option);
         });
     });
 
-    // 2. QUAND ON CHOISIT LA FAMILLE (RACINE)
+  
     selectRoot.addEventListener('change', function() {
-        // On active le menu Catégorie
+      
         selectSub.disabled = false;
         selectSub.innerHTML = '<option value="" disabled selected>Choisir une catégorie...</option>';
 
-        // On récupère les enfants de la famille sélectionnée
+ 
         const selectedIndex = this.options[this.selectedIndex].dataset.index;
         const selectedFamily = categoriesData[selectedIndex];
 

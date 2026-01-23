@@ -34,7 +34,7 @@
     </div>
 
     <script>
-        // 1. FORCAGE DU RECHARGEMENT SI RETOUR NAVIGATEUR (BFCache)
+
         window.onpageshow = function (event) {
             if (event.persisted) {
                 console.log("Page chargée depuis le cache navigateur (BFCache) -> Rechargement forcé.");
@@ -47,7 +47,7 @@
         });
 
         function refreshCartGlobal() {
-            // Timestamp pour être sûr que le serveur ne renvoie pas une vieille réponse
+      
             const url = "{{ route('cart.count') }}" + "?t=" + new Date().getTime();
 
             fetch(url, {
@@ -60,7 +60,7 @@
             })
                 .then(response => response.json())
                 .then(data => {
-                    // --- A. MISE À JOUR HEADER (Bulle rouge & Prix) ---
+              
                     const counters = document.querySelectorAll('.cart-count-display');
                     counters.forEach(el => {
                         el.textContent = data.count;
@@ -70,7 +70,7 @@
                     const headerTotal = document.querySelector('.cart-total-row .price');
                     if (headerTotal) headerTotal.textContent = data.total;
 
-                    // --- B. MISE À JOUR PREVIEW MINI-PANIER ---
+                   
                     const cartList = document.querySelector('.cart-items-list');
                     if (cartList && data.items) {
                         if (data.count === 0) {
@@ -93,12 +93,11 @@
                         }
                     }
 
-                    // --- C. DÉTECTION ET CORRECTION DE LA PAGE PANIER PRINCIPALE ---
+              
                     // On vérifie si on est sur la page panier
                     if (document.querySelector('.page-wrapper .cart-items-section')) {
 
-                        // 1. Comparaison par NOMBRE d'articles (Le plus fiable)
-                        // Dans ton panier.blade.php, tu as : <h2 ...>PANIER (<span id="cart-count">...</span>)</h2>
+                     
                         const pageCountEl = document.getElementById('cart-count');
 
                         if (pageCountEl) {
@@ -108,14 +107,14 @@
                             if (currentCount !== serverCount) {
                                 console.log(`Mismatch Compteur : Page(${currentCount}) vs Serveur(${serverCount}). Reloading...`);
                                 window.location.reload();
-                                return; // Stop ici
+                                return; 
                             }
                         }
 
-                        // 2. Comparaison par PRIX TOTAL (Sécurité supplémentaire)
+                      
                         const pageTotalEl = document.getElementById('cartTotal');
                         if (pageTotalEl) {
-                            // Fonction pour nettoyer le prix (garder que les chiffres)
+                      
                             const clean = (str) => str.replace(/[^0-9]/g, '');
 
                             const htmlPrice = clean(pageTotalEl.textContent);
@@ -123,9 +122,7 @@
 
                             if (htmlPrice !== serverPrice) {
                                 console.log("Mismatch Prix. Reloading...");
-                                // Optionnel : On peut essayer de mettre à jour le texte directement sans reload
-                                // pageTotalEl.textContent = data.total; 
-                                // Mais le reload est plus sûr pour recalculer les frais de port/promo
+              
                                 window.location.reload();
                             }
                         }

@@ -68,7 +68,7 @@
 </html>
 
 <style>
-    /* Variables CUBE */
+   
     :root {
         --cube-red: #e30613;
         --cube-black: #1a1a1a;
@@ -95,7 +95,7 @@
         margin: 0;
     }
 
-    /* --- ONGLETS (TABS) --- */
+   
     .tabs-header {
         display: flex;
         justify-content: center;
@@ -126,7 +126,6 @@
         border-bottom-color: var(--cube-red);
     }
 
-    /* Contenu des onglets */
     .tab-content {
         display: none;
         animation: fadeIn 0.4s ease-in-out;
@@ -141,14 +140,13 @@
         to { opacity: 1; transform: translateY(0); }
     }
 
-    /* --- GRILLE --- */
     .products-grid {
         display: grid;
         grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
         gap: 30px;
     }
     
-    /* Messages */
+
     .alert-box {
         padding: 15px;
         margin-bottom: 20px;

@@ -6,10 +6,10 @@
     <title>Ajouter un Vélo - CUBE</title>
     <link rel="stylesheet" href="{{ asset('css/commercial/addModele.css') }}">
     <style>
-        /* Styles mis à jour pour la grille de stock */
+     
         .checkbox-grid {
             display: grid;
-            /* On élargit un peu les colonnes pour faire tenir le champ nombre */
+         
             grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
             gap: 15px;
             margin-top: 5px;
@@ -20,7 +20,7 @@
         }
         .checkbox-item {
             display: flex;
-            flex-direction: column; /* Taille au dessus, input en dessous */
+            flex-direction: column; 
             gap: 5px;
             padding: 5px;
             border: 1px solid transparent;
@@ -45,7 +45,7 @@
             border: 1px solid #ccc;
             border-radius: 3px;
         }
-        /* Griser l'input quand désactivé */
+      
         .qty-input:disabled {
             background-color: #e9ecef;
             cursor: not-allowed;
@@ -206,7 +206,7 @@
     {{-- SCRIPTS JS --}}
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            // 1. GESTION BATTERIE
+        
             const selectModele = document.getElementById('id_modele');
             const divBatterie = document.getElementById('batterie-wrapper');
             const selectBatterie = document.getElementById('id_batterie');
@@ -226,7 +226,7 @@
             toggleBatterie();
         });
 
-        // 2. GESTION STOCK PAR TAILLE (Appelé par onchange dans le HTML)
+
         function toggleQtyInput(idTaille) {
             const checkbox = document.getElementById('taille_' + idTaille);
             const inputQty = document.getElementById('qty_' + idTaille);

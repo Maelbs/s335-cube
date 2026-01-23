@@ -1,5 +1,5 @@
 document.addEventListener('DOMContentLoaded', function() {
-    // Si pas de cookie, on affiche la modale
+   
     if (!getCookie('cube_consent')) {
         setTimeout(() => {
             document.getElementById('cookieOverlay').style.display = 'flex';
@@ -15,7 +15,7 @@ function setCookie(name, valueObject, days) {
         date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
         expires = "; expires=" + date.toUTCString();
     }
-    // MODIFICATION ICI : on ajoute encodeURIComponent
+
     const jsonValue = encodeURIComponent(JSON.stringify(valueObject));
     document.cookie = name + "=" + jsonValue + expires + "; path=/";
 }
@@ -26,7 +26,7 @@ function getCookie(name) {
     for(let i=0;i < ca.length;i++) {
         let c = ca[i];
         while (c.charAt(0)==' ') c = c.substring(1,c.length);
-        // MODIFICATION ICI : on ajoute decodeURIComponent
+      
         if (c.indexOf(nameEQ) == 0) return decodeURIComponent(c.substring(nameEQ.length,c.length));
     }
     return null;
@@ -55,7 +55,7 @@ function saveCustomPreferences() {
     let analyticsAccepted = false;
 
     if (groups[1]) {
-        // On regarde le header du groupe Mesure
+
         const headerBtns = groups[1].querySelector('.accordion-header .toggle-container').querySelectorAll('.toggle-btn');
      
         if (headerBtns[1].classList.contains('selected')) {
@@ -78,8 +78,7 @@ function goToStep2() {
     modal.style.width = '600px'; 
     modal.style.height = 'auto';
     modal.style.maxHeight = '90vh';
-    
-    // On rebranche le bouton ENREGISTRER sur la fonction custom
+
     const btnSave = document.querySelector('.btn-save-choices');
     btnSave.onclick = saveCustomPreferences; 
 }

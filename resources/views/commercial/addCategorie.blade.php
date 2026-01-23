@@ -61,7 +61,7 @@
 
 
 <script>
-    // On reçoit les parents VELOS (communs) et ACCESSOIRES
+  
     const dataVelos = @json($parentsVelos);
     const dataAccessoires = @json($parentsAccessoires);
 
@@ -69,20 +69,20 @@
     const selectParent = document.getElementById('parent_id');
 
     selectType.addEventListener('change', function() {
-        // Reset du menu
+    
         selectParent.innerHTML = '<option value="" disabled selected>Choisir une catégorie parente...</option>';
         selectParent.disabled = false;
 
         let optionsData = [];
 
-        // Logique corrigée : Musculaire et Electrique partagent les mêmes catégories racines
+   
         if (this.value === 'Musculaire' || this.value === 'Electrique') {
             optionsData = dataVelos;
         } else if (this.value === 'Accessoires') {
             optionsData = dataAccessoires;
         }
 
-        // Remplissage du menu
+     
         optionsData.forEach(cat => {
             let id, nom;
             
