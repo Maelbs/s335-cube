@@ -137,7 +137,11 @@ class BoutiqueController extends Controller
         if ($request->filled('sort')) {
             switch ($request->sort) {
                 case 'price_desc': $query->orderBy('prix', 'desc'); break;
+                case 'price_asc': $query->orderBy('prix', 'asc'); break;
+                case 'name_desc': $query->orderBy('nom_article', 'desc'); break;
                 case 'name_asc': $query->orderBy('nom_article', 'asc'); break;
+                case 'ref_asc': $query->orderBy('reference', 'asc'); break;
+                case 'ref_desc': $query->orderBy('reference', 'desc'); break;
                 default: $query->orderBy('prix', 'asc'); break;
             }
         } else {

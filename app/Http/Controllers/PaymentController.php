@@ -46,9 +46,7 @@ class PaymentController extends Controller
     {
         $mode = $request->input('delivery_mode');
 
-        // Retrait en magasin
-        if ($mode === 'magasin') {
-            
+        if ($mode === 'magasin') {   
             return null;
         }
 

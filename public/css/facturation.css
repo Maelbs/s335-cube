@@ -16,7 +16,7 @@ html {
 }
 
 body {
-    background: linear-gradient(rgba(10, 20, 30, 0.5), rgba(10, 20, 30, 0.7)), url('../images/connexionBackground.jpg') no-repeat;
+    background: linear-gradient(rgba(10, 20, 30, 0.5), rgba(10, 20, 30, 0.7)), url('../images/connexionBackground.webp') no-repeat;
     background-size: cover;
     background-attachment: fixed;
     color: var(--primary-dark);

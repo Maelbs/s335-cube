@@ -6,42 +6,31 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Vérification du code</title>
     <style>
-        /* CORRECTION 1 : Utilisation de asset() pour les fonts */
-        @font-face {
-            font-family: 'Damas Font';
-            src: url("{{ asset('font/font.woff2') }}");
-        }
-
         body {
             font-family: 'Damas Font', sans-serif;
-            /* CORRECTION 1 : Utilisation de asset() pour l'image de fond */
-            background: linear-gradient(rgba(10, 20, 30, 0.5), rgba(10, 20, 30, 0.7)), url("{{ asset('images/connexionBackground.jpg') }}") no-repeat center center fixed;
+            background: linear-gradient(rgba(10, 20, 30, 0.5), rgba(10, 20, 30, 0.7)), url("{{ asset('images/connexionBackground.webp') }}") no-repeat center center fixed;
             background-size: cover;
             margin: 0;
             padding: 0;
-            /* On enlève le flex sur le body pour ne pas casser le header */
             display: block; 
             min-height: 100vh;
         }
-
-        /* NOUVEAU : Conteneur pour centrer le formulaire sans impacter le header */
         .main-container {
             display: flex;
             justify-content: center;
             align-items: center;
-            /* On soustrait la hauteur approximative du header pour bien centrer */
             min-height: calc(100vh - 80px); 
             padding: 20px;
         }
 
         section {
             background: white;
-            padding: 30px; /* Un peu plus d'espace */
+            padding: 30px;
             border-radius: 8px;
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2); /* Ombre plus moderne */
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
             width: 100%;
-            max-width: 350px; /* Responsive: max-width au lieu de width fixe */
-            text-align: center; /* Pour centrer le titre */
+            max-width: 350px;
+            text-align: center; 
         }
 
         h2 {
@@ -63,7 +52,6 @@
             gap: 15px;
         }
 
-        /* ... VOTRE CSS POUR LE BOUTON ET INPUT RESTE IDENTIQUE ... */
         button {
             position: relative;
             width: 100%;
@@ -71,7 +59,6 @@
             background-color: #0f172a;
             color: #fff;
             border: none;
-            font-family: 'Damas Font', sans-serif;
             font-weight: 700;
             font-size: 14px;
             text-transform: uppercase;
@@ -83,7 +70,7 @@
             margin-top: 10px;
             box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
         }
-        /* ... Le reste du CSS bouton ... */
+
         button::before {
             content: '';
             position: absolute;
@@ -116,9 +103,8 @@
             color: #333;
             box-sizing: border-box;
             transition: all 0.4s ease;
-            font-family: 'Damas Font', sans-serif;
-            text-align: center; /* Plus joli pour un code */
-            letter-spacing: 2px; /* Espacement pour un code */
+            text-align: center; 
+            letter-spacing: 2px; 
             font-weight: bold;
         }
 
@@ -148,14 +134,11 @@
 
 <body>
     
-    {{-- Le header reste en haut --}}
     @include('layouts.header')
 
-    {{-- CORRECTION 2 : Un conteneur dédié pour centrer le formulaire --}}
     <div class="main-container">
         <section>
-            
-            {{-- AJOUT : Un titre pour guider l'utilisateur --}}
+
             <h2>Vérification</h2>
             <p class="info-text">Entrez le code reçu par email</p>
 
@@ -167,8 +150,6 @@
 
             <form method="POST" action="{{ route('login.2fa.verify') }}">
                 @csrf
-
-                {{-- Sécurité : Vérifier que reg_data existe avant d'afficher --}}
                 @if(session()->has('reg_data.email'))
                     <input type="hidden" name="email" value="{{ session('reg_data.email') }}">
                 @endif
@@ -180,7 +161,7 @@
                        required 
                        placeholder="123456"
                        maxlength="6" 
-                       autocomplete="one-time-code" /> {{-- Aide le mobile à suggérer le code SMS/Email --}}
+                       autocomplete="one-time-code" />
 
                 @error('code')
                     <div class="error-message">
@@ -190,8 +171,7 @@
 
                 <button type="submit">Valider le code</button>
             </form>
-            
-            {{-- Lien de retour ou renvoi (Optionnel mais recommandé) --}}
+
             <div style="margin-top: 15px;">
                 <a href="{{ route('login') }}" style="color: #666; font-size: 13px; text-decoration: none;">Retour à la connexion</a>
             </div>

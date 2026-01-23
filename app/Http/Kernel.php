@@ -39,11 +39,12 @@ class Kernel extends HttpKernel
             \App\Http\Middleware\VerifyCsrfToken::class,
             \Illuminate\Routing\Middleware\SubstituteBindings::class,
             \App\Http\Middleware\LogVisits::class,
+            \App\Http\Middleware\PreventBackHistory::class,
         ],
 
         'api' => [
             // \Laravel\Sanctum\Http\Middleware\EnsureFrontendRequestsAreStateful::class,
-            \Illuminate\Routing\Middleware\ThrottleRequests::class.':api',
+            \Illuminate\Routing\Middleware\ThrottleRequests::class . ':api',
             \Illuminate\Routing\Middleware\SubstituteBindings::class,
         ],
     ];
@@ -71,4 +72,9 @@ class Kernel extends HttpKernel
         'is_dpo' => \App\Http\Middleware\IsDPO::class,
         'ensure.client.address' => \App\Http\Middleware\EnsureClientAddress::class,
     ];
+
+    protected function schedule(Schedule $schedule)
+    {
+        $schedule->command('rgpd:cleanup')->dailyAt('03:00');
+    }
 }

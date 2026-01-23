@@ -213,8 +213,6 @@ class CommercialController extends Controller
                         'cat_id_categorie_accessoire' => $request->parent_id,
                     ]);
                 } else {
-                    // Insertion Vélo (Musculaire ou Électrique)
-                    // Note : On ne stocke pas le type_velo ici car votre table categorie_velo est neutre
                     CategorieVelo::create([
                         'nom_categorie'    => $request->nom_categorie,
                         'cat_id_categorie' => $request->parent_id,
@@ -222,12 +220,10 @@ class CommercialController extends Controller
                 }
             });
 
-            // Succès
             return redirect()->route('commercial.dashboard')
                              ->with('success', 'Catégorie "' . $request->nom_categorie . '" ajoutée avec succès !');
 
         } catch (\Exception $e) {
-            // En cas d'erreur technique (ex: base de données inaccessible)
             return back()->withErrors(['error' => 'Erreur lors de la création de la catégorie : ' . $e->getMessage()])
                          ->withInput(); // Garde les champs remplis
         }
@@ -329,7 +325,7 @@ class CommercialController extends Controller
     public function addVelo()
     {
 
-        $modeles  = Modele::all(); /
+        $modeles  = Modele::all(); 
         $couleurs = \App\Models\Couleur::all(); 
         $fourches = \App\Models\Fourche::all();
         $tailles  = \App\Models\Taille::whereNotNull('taille_min')->get();
@@ -490,11 +486,11 @@ class CommercialController extends Controller
         try {
     
           
-            $existingFiles = glob($pathCible . '/image_*.jpg');
+            $existingFiles = glob($pathCible . '/image_*.webp');
     
             $maxNum = 0;
             foreach ($existingFiles as $file) {
-                if (preg_match('/image_(\d+)\.jpg$/', $file, $matches)) {
+                if (preg_match('/image_(\d+)\.webp$/', $file, $matches)) {
                     $num = (int) $matches[1];
                     if ($num > $maxNum) {
                         $maxNum = $num;
@@ -511,13 +507,13 @@ class CommercialController extends Controller
                 rsort($existingFiles);
     
                 foreach ($existingFiles as $file) {
-                    if (preg_match('/image_(\d+)\.jpg$/', $file, $matches)) {
+                    if (preg_match('/image_(\d+)\.webp$/', $file, $matches)) {
                         $currentNum = (int) $matches[1];
                         $newNum = $currentNum + 1;
     
                         rename(
-                            $pathCible . '/image_' . $currentNum . '.jpg',
-                            $pathCible . '/image_' . $newNum . '.jpg'
+                            $pathCible . '/image_' . $currentNum . '.webp',
+                            $pathCible . '/image_' . $newNum . '.webp'
                         );
                     }
                 }
@@ -529,10 +525,10 @@ class CommercialController extends Controller
             foreach ($request->file('photos') as $index => $file) {
     
                 if ($isMainChecked && $index === 0) {
-                    $filename = 'image_1.jpg';
+                    $filename = 'image_1.webp';
                 } else {
                     $maxNum++;
-                    $filename = 'image_' . $maxNum . '.jpg';
+                    $filename = 'image_' . $maxNum . '.webp';
                 }
     
                 $fullPath = $pathCible . '/' . $filename;
@@ -560,7 +556,7 @@ class CommercialController extends Controller
                     imagefilledrectangle($outputImage, 0, 0, $width, $height, $white);
                     imagecopy($outputImage, $sourceImage, 0, 0, 0, 0, $width, $height);
     
-                    imagejpeg($outputImage, $fullPath, 90);
+                    imagewebp($outputImage, $fullPath, 90);
     
                     imagedestroy($sourceImage);
                     imagedestroy($outputImage);

@@ -8,7 +8,7 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Session;
-use Illuminate\Support\Facades\DB; 
+use Illuminate\Support\Facades\DB;
 use App\Mail\VerificationCodeMail;
 use App\Models\Client;
 use App\Models\Adresse;
@@ -36,7 +36,9 @@ class AuthController extends Controller
 
     public function showLoginForm()
     {
-        return view('connexion');
+        $response = response()->view('connexion');
+
+        return $response;
     }
 
     public function checkInscription(Request $request)
@@ -57,7 +59,12 @@ class AuthController extends Controller
         }
 
         $request->session()->put('reg_data', $request->only([
-            'lastname', 'firstname', 'email', 'password', 'tel', 'birthday'
+            'lastname',
+            'firstname',
+            'email',
+            'password',
+            'tel',
+            'birthday'
         ]));
 
         return redirect()->route('facturation.form');
@@ -94,7 +101,7 @@ class AuthController extends Controller
         ];
 
         if ($request->has('use_same_address')) {
-            $billingData = $deliveryData; 
+            $billingData = $deliveryData;
             $sameAddress = true;
         } else {
             $billingData = [
@@ -199,34 +206,36 @@ class AuthController extends Controller
             'email' => ['required', 'email'],
             'password' => ['required'],
         ]);
-    
+
         $client = Client::where('email_client', $request->email)->first();
-    
-        if ($client && Hash::check($request->password, $client->mdp)) {
-            if ($client->double_auth) {
-                $code = rand(100000, 999999);
-                
-                Cache::put('login_2fa_' . $client->id_client, $code, now()->addMinutes(10));
-    
-                Mail::to($client->email_client)->send(new VerificationCodeMail($code));
-    
-                $request->session()->put('2fa_client_id', $client->id_client);
-    
-                return redirect()->route('login.2fa.form');
+
+        if ($client && $client->mdp != null) {
+            if (Hash::check($request->password, $client->mdp)) {
+                if ($client->double_auth) {
+                    $code = rand(100000, 999999);
+
+                    Cache::put('login_2fa_' . $client->id_client, $code, now()->addMinutes(10));
+
+                    Mail::to($client->email_client)->send(new VerificationCodeMail($code));
+
+                    $request->session()->put('2fa_client_id', $client->id_client);
+
+                    return redirect()->route('login.2fa.form');
+                }
             }
-    
+
             Auth::login($client);
             $request->session()->regenerate();
-    
+
             if ($request->session()->has('id_magasin_choisi')) {
                 $client->id_magasin = $request->session()->get('id_magasin_choisi');
                 $client->save();
             } elseif ($client->id_magasin) {
                 $request->session()->put('id_magasin_choisi', $client->id_magasin);
             }
-    
+
             $this->fusionnerPanier($client->id_client);
-    
+
             if ($client->role === 'commercial') {
                 return redirect()->route('commercial.dashboard');
             }
@@ -234,10 +243,10 @@ class AuthController extends Controller
             if ($client->role === 'dpo') {
                 return redirect()->route('dpo.index');
             }
-    
+
             return redirect()->route('home');
         }
-    
+
         return back()->withErrors(['email' => 'Identifiants incorrects.']);
     }
 
@@ -285,6 +294,7 @@ class AuthController extends Controller
         Auth::logout();
         $request->session()->invalidate();
         $request->session()->regenerateToken();
+
         return redirect('/');
     }
 
@@ -348,7 +358,7 @@ class AuthController extends Controller
 
         // Mise à jour du client (Table custom)
         $client = Client::where('email_client', $request->email)->first();
-        
+
         if (!$client) {
             return back()->withErrors(['email' => 'Utilisateur introuvable.']);
         }
@@ -361,14 +371,14 @@ class AuthController extends Controller
 
         return redirect()->route('login')->with('success', 'Votre mot de passe a été modifié avec succès !');
     }
-    
+
     public function show2FAForm()
     {
         if (!session()->has('2fa_client_id')) {
             return redirect()->route('login');
         }
 
-        return view('2fa_verify'); 
+        return view('2fa_verify');
     }
 
     public function verify2FACode(Request $request)
@@ -388,7 +398,7 @@ class AuthController extends Controller
         if (!$cachedCode || $cachedCode != $request->code) {
             return back()->withErrors(['code' => 'Code invalide ou expiré.']);
         }
-        
+
         $client = Client::find($clientId);
 
         if (!$client) {
@@ -400,7 +410,7 @@ class AuthController extends Controller
 
         Cache::forget('login_2fa_' . $clientId);
         $request->session()->forget('2fa_client_id');
-        
+
         if ($request->session()->has('id_magasin_choisi')) {
             $client->id_magasin = $request->session()->get('id_magasin_choisi');
             $client->save();

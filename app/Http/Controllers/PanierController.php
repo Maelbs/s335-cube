@@ -61,10 +61,7 @@ class PanierController extends Controller
             'count' => $count,
             'total' => number_format($cartTotal, 2, ',', ' ') . ' € TTC',
             'items' => $items
-        ])
-            ->header('Cache-Control', 'no-cache, no-store, must-revalidate')
-            ->header('Pragma', 'no-cache')
-            ->header('Expires', '0');
+        ]);
     }
 
     public function index()
@@ -139,12 +136,8 @@ class PanierController extends Controller
 
         $total = $subTotal - $discountAmount;
 
-        // MODIFICATION ICI : On retourne une réponse avec des headers pour empêcher le cache
         return response()
-            ->view('panier', compact('cart', 'total', 'subTotal', 'discountAmount', 'promoCode'))
-            ->header('Cache-Control', 'no-store, no-cache, must-revalidate, max-age=0')
-            ->header('Pragma', 'no-cache')
-            ->header('Expires', 'Sat, 01 Jan 2000 00:00:00 GMT');
+            ->view('panier', compact('cart', 'total', 'subTotal', 'discountAmount', 'promoCode'));
     }
 
     public function applyPromo(Request $request)
@@ -408,7 +401,7 @@ class PanierController extends Controller
         $prefixLength = $isAccessoire ? 5 : 6;
         $refDossier = (strlen($ref) >= $prefixLength) ? substr($ref, 0, $prefixLength) : $ref;
 
-        return asset('images/' . $dossier . '/' . $refDossier . '/image_1.jpg');
+        return asset('images/' . $dossier . '/' . $refDossier . '/image_1.webp');
     }
 
     private function calculerStockMax($reference, $tailleNom)

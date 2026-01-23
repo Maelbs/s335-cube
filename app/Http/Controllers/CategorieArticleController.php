@@ -11,8 +11,6 @@ class CategorieArticleController extends Controller
 {
     public function index()
     {
-        // On met en cache TOUTES les données de la page d'accueil pour 1 heure (3600s).
-       
         $data = Cache::remember('home_page_data', 3600, function () {
             
           

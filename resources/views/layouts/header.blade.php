@@ -247,12 +247,10 @@
 
         <div class="header-store-info">
             @if(isset($magasinHeader) && $magasinHeader)
-                {{-- CAS 1 : Un magasin est sélectionné --}}
                 <button onclick="toggleStoreLocator()"
                     class="btn-select-store">{{ strtoupper($magasinHeader->nom_magasin) }}</button>
 
             @else
-                {{-- CAS 2 : Aucun magasin sélectionné --}}
                 <button onclick="toggleStoreLocator()" class="btn-select-store">
                     Choisir mon magasin
                 </button>
@@ -309,8 +307,6 @@
                     </svg>
                 </a>
             @endguest
-
-            {{-- MINI PANIER --}}
 
             <div class="cart-dropdown-wrapper">
                <a id="panier" 

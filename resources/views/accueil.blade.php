@@ -24,7 +24,7 @@
         <div class="cookie-col-right">
             <div class="cookie-header">
                 {{-- Logo cookie : Lazy load car petite et potentiellement pas critique pour le LCP par rapport au bg --}}
-                <img src="{{ asset('images/cubelogo.png') }}" alt="CUBE" class="cookie-logo" loading="lazy">
+                <img src="{{ asset('images/logo-cube.webp') }}" alt="CUBE" class="cookie-logo" loading="lazy">
                 <a href="#" class="link-refuse" onclick="refuseCookies()">Continuer sans accepter &rarr;</a>
             </div>
 

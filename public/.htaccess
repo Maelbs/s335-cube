@@ -1,6 +1,3 @@
-# ----------------------------------------------------------------------
-# | 1. RÈGLES STANDARD LARAVEL                                         |
-# ----------------------------------------------------------------------
 <IfModule mod_rewrite.c>
     <IfModule mod_negotiation.c>
         Options -MultiViews -Indexes
@@ -8,11 +5,9 @@
 
     RewriteEngine On
 
-    # Gestion des headers d'autorisation
     RewriteCond %{HTTP:Authorization} .
     RewriteRule .* - [E=HTTP_AUTHORIZATION:%{HTTP:Authorization}]
 
-    # Redirection des slashs de fin
     RewriteCond %{REQUEST_FILENAME} !-d
     RewriteCond %{REQUEST_URI} (.+)/$
     RewriteRule ^ %1 [L,R=301]
@@ -23,53 +18,28 @@
     RewriteRule ^ index.php [L]
 </IfModule>
 
-# ----------------------------------------------------------------------
-# | 2. GESTION DU CACHE (OPTIMISATION PAGESPEED)                       |
-# ----------------------------------------------------------------------
-<IfModule mod_expires.c>
-    ExpiresActive On
-    ExpiresDefault "access plus 1 month"
-
-    # Images (Cache 1 an)
-    ExpiresByType image/jpg "access plus 1 year"
-    ExpiresByType image/jpeg "access plus 1 year"
-    ExpiresByType image/gif "access plus 1 year"
-    ExpiresByType image/png "access plus 1 year"
-    ExpiresByType image/webp "access plus 1 year"
-    ExpiresByType image/svg+xml "access plus 1 year"
-    ExpiresByType image/x-icon "access plus 1 year"
-    ExpiresByType image/avif "access plus 1 year"
-
-    # CSS & JS (Cache 1 an)
-    ExpiresByType text/css "access plus 1 year"
-    ExpiresByType text/javascript "access plus 1 year"
-    ExpiresByType application/javascript "access plus 1 year"
-    ExpiresByType application/x-javascript "access plus 1 year"
-
-    # Fonts (Cache 1 an)
-    ExpiresByType application/font-woff "access plus 1 year"
-    ExpiresByType application/font-woff2 "access plus 1 year"
-    ExpiresByType application/vnd.ms-fontobject "access plus 1 year"
-    ExpiresByType font/ttf "access plus 1 year"
-    ExpiresByType font/opentype "access plus 1 year"
-</IfModule>
-
-# Force le Cache-Control public et immutable
 <IfModule mod_headers.c>
-    # On ajoute 'immutable' pour dire au navigateur que le contenu ne changera jamais pour cette URL
-    <FilesMatch "\.(ico|pdf|flv|jpg|jpeg|png|gif|webp|avif|js|css|svg|woff|woff2|ttf|otf)$">
-        Header set Cache-Control "max-age=31536000, public, immutable"
-        # Supprime ETag pour économiser des requêtes de validation
-        Header unset ETag
-    </FilesMatch>
-    FileETag None
+    Header set Cache-Control "no-store, no-cache, must-revalidate, max-age=0"
+    Header set Pragma "no-cache"
+    Header set Expires "Sun, 01 Jan 2014 00:00:00 GMT"
 </IfModule>
 
-# ----------------------------------------------------------------------
-# | 3. COMPRESSION GZIP (VITESSE DE CHARGEMENT)                        |
-# ----------------------------------------------------------------------
+<FilesMatch "\.(ico|pdf|flv|jpg|jpeg|png|gif|webp|avif|js|css|svg|woff|woff2|ttf|otf)$">
+    <IfModule mod_headers.c>
+        Header unset Pragma
+        Header unset Expires
+
+        Header set Cache-Control "max-age=31536000, public, immutable"
+
+        Header unset ETag
+    </IfModule>
+</FilesMatch>
+
+<IfModule mod_expires.c>
+    ExpiresActive Off
+</IfModule>
+
 <IfModule mod_deflate.c>
-    # Compression active
     AddOutputFilterByType DEFLATE text/html text/plain text/xml text/css text/javascript
     AddOutputFilterByType DEFLATE application/javascript application/x-javascript application/json
     AddOutputFilterByType DEFLATE application/xml application/xhtml+xml application/rss+xml
