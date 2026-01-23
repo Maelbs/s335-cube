@@ -6,7 +6,7 @@ use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Foundation\Validation\ValidatesRequests;
 use Illuminate\Routing\Controller as BaseController;
 use Illuminate\Support\Facades\View;
-use Illuminate\Support\Facades\Cache; // <--- J'ai ajouté ça
+use Illuminate\Support\Facades\Cache; 
 use App\Models\CategorieVelo;
 
 class Controller extends BaseController
@@ -15,13 +15,8 @@ class Controller extends BaseController
 
     public function __construct()
     {
-        // On enveloppe tout dans un Cache::remember.
-        // 'menus_header' est le nom de la clé.
-        // 60*60 = 3600 secondes (1 heure). Le menu ne sera recalculé que toutes les heures.
         $menus = Cache::remember('menus_header', 60 * 60, function () {
-            
-            // On prépare une fonction pour éviter de copier-coller le code
-            // Cela rend le code plus lisible et plus propre.
+
             $getMenu = function ($type) {
                 return CategorieVelo::whereNull('cat_id_categorie')
                     ->whereHas('enfants.modeles', function ($q) use ($type) {
@@ -38,14 +33,12 @@ class Controller extends BaseController
                     ->get();
             };
 
-            // On retourne un tableau avec les deux menus
             return [
                 'menuVelo' => $getMenu('musculaire'),
                 'menuElec' => $getMenu('electrique'),
             ];
         });
 
-        // On partage les données récupérées du cache (ou de la BDD si cache expiré)
         View::share('menuVelo', $menus['menuVelo']);
         View::share('menuElec', $menus['menuElec']);
     }

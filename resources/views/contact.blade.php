@@ -5,13 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Contactez-nous | CUBE Bikes France</title>
     <style>
-        /* --- STYLE SPÉCIFIQUE CONTACT --- */
-        @font-face {
-            font-family: 'Damas Font';
-            src: url('../font/font.woff2');
-            font-display: swap;
-        }
-
         header {
             background-color: #ffffff !important;
             border-bottom: 1px solid #e5e5e5;
@@ -32,14 +25,13 @@
 
         .contact-container {
             max-width: 1100px;
-            margin: 140px auto 60px; /* Marge pour le header fixed */
+            margin: 140px auto 60px;
             padding: 0 20px;
             display: grid;
-            grid-template-columns: 1fr 1.5fr; /* 2 Colonnes : Infos / Formulaire */
+            grid-template-columns: 1fr 1.5fr;
             gap: 50px;
         }
 
-        /* --- COLONNE GAUCHE : INFOS --- */
         .contact-info {
             background-color: #f8f9fa;
             padding: 40px;
@@ -83,7 +75,6 @@
             line-height: 1.5;
         }
 
-        /* --- COLONNE DROITE : FORMULAIRE --- */
         .contact-form h1 {
             font-size: 42px;
             font-weight: 900;
@@ -115,7 +106,7 @@
             padding: 15px;
             border: 1px solid #ddd;
             border-radius: 4px;
-            font-family: 'Segoe UI', sans-serif; /* Plus lisible pour écrire */
+            font-family: 'Segoe UI', sans-serif;
             font-size: 15px;
             transition: border-color 0.3s;
             background: #fdfdfd;
@@ -154,7 +145,6 @@
             box-shadow: 0 5px 15px rgba(0, 176, 240, 0.3);
         }
 
-        /* --- MESSAGES ALERTE --- */
         .alert-success {
             background-color: #d4edda;
             color: #155724;
@@ -172,14 +162,13 @@
             margin-bottom: 20px;
         }
 
-        /* --- RESPONSIVE --- */
         @media (max-width: 768px) {
             .contact-container {
                 grid-template-columns: 1fr;
                 margin-top: 120px;
             }
             .contact-info {
-                order: 2; /* Infos en bas sur mobile */
+                order: 2; 
             }
             .contact-form {
                 order: 1;

@@ -1,10 +1,3 @@
-/* --- LE CORRECTIF PRINCIPAL POUR LE FOUC --- */
-/* Empêche le panneau d'être visible avant que le JS ne prenne le relais */
-/* Ajoute style="display: none;" directement dans ta balise HTML <div class="sl-overlay"> */
-/* Une fois le JS chargé, il enlèvera ce style ou passera en display: flex */
-
-/* Sinon, voici la version CSS renforcée */
-
 .sl-overlay {
     position: fixed;
     top: 0;
@@ -13,22 +6,16 @@
     height: 100%;
     background: rgba(0, 0, 0, 0.5);
     z-index: 10000000 !important;
-    display: none; /* <--- CHANGEMENT ICI : On cache par défaut en CSS */
+    display: none;
     justify-content: flex-end;
     opacity: 0;
-    /* visibility: hidden; <--- Pas nécessaire si on utilise display: none */
     transition: opacity 0.3s ease;
 }
 
-/* Quand on ouvre le menu, on ajoute la classe .open ou .visible en JS */
-/* Le JS devra faire : element.style.display = 'flex'; puis ajouter la classe .visible après 10ms */
 .sl-overlay.visible {
-    display: flex; /* <--- On force l'affichage quand c'est visible */
+    display: flex; 
     opacity: 1;
-    /* visibility: visible; */
 }
-
-/* --- LE RESTE DU FICHIER (Optimisé) --- */
 
 .sl-panel {
     background: white;
@@ -38,8 +25,6 @@
     box-shadow: -5px 0 20px rgba(0, 0, 0, 0.15);
     display: flex;
     flex-direction: column;
-    
-    /* On garde le transform pour l'animation */
     transform: translateX(100%);
     transition: transform 0.3s ease-out;
     
@@ -49,9 +34,6 @@
 .sl-overlay.visible .sl-panel {
     transform: translateX(0);
 }
-
-/* ... Le reste de ton CSS reste identique ... */
-/* Je te remets tout le bloc en dessous pour que tu puisses copier-coller proprement */
 
 .sl-header {
     padding: 20px 30px;

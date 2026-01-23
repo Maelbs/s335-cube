@@ -17,7 +17,6 @@ class ProfileCompletionController extends Controller
 
     public function saveDetails(Request $request)
     {
-        // 1. Validation des données
         $rules = [
             'tel'     => 'required|string|max:20',
             'rue'     => 'required|string',
@@ -26,7 +25,6 @@ class ProfileCompletionController extends Controller
             'country' => 'required|string',
         ];
 
-        // Si l'utilisateur veut une adresse de facturation différente, on valide les champs 'billing_'
         if (!$request->has('use_same_address')) {
             $rules['billing_rue']     = 'required|string';
             $rules['billing_city']    = 'required|string';
@@ -38,8 +36,6 @@ class ProfileCompletionController extends Controller
         
         $client = Auth::user();
 
-  
-        // On crée toujours cette adresse en premier
         $adresseLivraison = new Adresse();
         $adresseLivraison->rue         = $request->input('rue');
         $adresseLivraison->ville       = $request->input('city');
@@ -47,8 +43,6 @@ class ProfileCompletionController extends Controller
         $adresseLivraison->pays        = $request->input('country');
         $adresseLivraison->save();
 
-      
-        // On vérifie si le lien existe déjà pour éviter les doublons (prudence)
         $exists = DB::table('adresse_livraison')
                     ->where('id_client', $client->id_client)
                     ->where('id_adresse', $adresseLivraison->id_adresse)
@@ -61,18 +55,14 @@ class ProfileCompletionController extends Controller
             ]);
         }
 
-
-        // On crée une NOUVELLE ligne quoiqu'il arrive (Double Insert)
         $adresseFacturation = new Adresse();
 
         if ($request->has('use_same_address')) {
-            // Cas A : Identique -> On copie les données saisies pour la livraison
             $adresseFacturation->rue         = $request->input('rue');
             $adresseFacturation->ville       = $request->input('city');
             $adresseFacturation->code_postal = $request->input('zipcode');
             $adresseFacturation->pays        = $request->input('country');
         } else {
-            // Cas B : Différente -> On prend les champs spécifiques facturation
             $adresseFacturation->rue         = $request->input('billing_rue');
             $adresseFacturation->ville       = $request->input('billing_city');
             $adresseFacturation->code_postal = $request->input('billing_zipcode');
@@ -84,7 +74,6 @@ class ProfileCompletionController extends Controller
   
         $client->tel = $request->input('tel');
         
-        // On lie le client à cette NOUVELLE adresse de facturation
         $client->id_adresse_facturation = $adresseFacturation->id_adresse; 
         
         if ($request->has('date_naissance')) {

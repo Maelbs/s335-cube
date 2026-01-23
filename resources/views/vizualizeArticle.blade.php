@@ -95,11 +95,9 @@
                             @foreach($validImages as $index => $imageUrl)
                                 <li class="carousel-slide {{ $index === 0 ? 'current-slide' : '' }}">
                                     @if($index === 0)
-                                        {{-- La première image est chargée immédiatement (priorité haute) --}}
                                         <img src="{{ asset($imageUrl) }}" alt="{{ $article->nom_article }} - Vue {{ $index + 1 }}"
                                             fetchpriority="high">
                                     @else
-                                        {{-- Les autres images sont chargées via JS (Lazy Load manuel) --}}
                                         <img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7"
                                             data-src="{{ asset($imageUrl) }}"
                                             alt="{{ $article->nom_article }} - Vue {{ $index + 1 }}" loading="lazy"

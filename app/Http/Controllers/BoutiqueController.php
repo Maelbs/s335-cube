@@ -110,8 +110,7 @@ class BoutiqueController extends Controller
                     }
                 }
             }
-            
-            // Filtres utilisateur
+
             if ($request->filled('couleurs')) $query->whereIn('id_couleur', $request->couleurs);
             if ($request->filled('materiaux')) $query->whereHas('modele', fn($q) => $q->whereIn('materiau_cadre', $request->materiaux));
             if ($request->filled('millesimes')) $query->whereHas('modele', fn($q) => $q->whereIn('millesime_modele', $request->millesimes));

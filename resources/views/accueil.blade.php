@@ -148,7 +148,6 @@
                           <a href="{{ url('/boutique/Musculaire/2') }}" class="btn">Voir les vélos de route</a>
                         </div>
                         <div class="card-image">
-                            {{-- Ajout de loading="lazy" --}}
                             <img src="{{ asset('images/velo_route.webp') }}" alt="Vélo de route" loading="lazy">
                         </div>
                                   
@@ -167,7 +166,6 @@
                                   <a href="{{ url('/boutique/Musculaire/1') }}" class="btn">Voir les VTT</a>
                         </div>
                         <div class="card-image">
-                             {{-- Ajout de loading="lazy" --}}
                             <img src="{{ asset('images/velo_vtt.webp') }}" alt="VTT" loading="lazy">
                         </div>
                     
@@ -183,7 +181,6 @@
                                    <a href="{{ url('/boutique/Electrique') }}" class="btn">Voir les vélos électriques</a>
                         </div>
                         <div class="card-image">
-                             {{-- Ajout de loading="lazy" --}}
                             <img src="{{ asset('images/velo_electrique.webp') }}" alt="Vélos Électriques" loading="lazy">
                         </div>
                   
@@ -217,7 +214,6 @@
         </section>
     
         <div id="image-carousel-bottom" class="carousel">
-          {{-- Tout le carrousel du bas est en lazy load --}}
           <img src="{{ asset('images/1.webp') }}" alt="Image 1" class="carousel-image active" loading="lazy">
           <img src="{{ asset('images/2.webp') }}" alt="Image 2" class="carousel-image" loading="lazy">
           <img src="{{ asset('images/3.webp') }}" alt="Image 3" class="carousel-image" loading="lazy">
