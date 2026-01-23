@@ -72,10 +72,10 @@
             .then(res => res.json())
             .then(data => {
                 if (data.success) {
-                    alert("✅ " + data.message);
+                    alert("" + data.message);
                     window.location.reload();
                 } else {
-                    alert("❌ " + (data.error || 'Erreur lors de l\'ajout'));
+                    alert("" + (data.error || 'Erreur lors de l\'ajout'));
                 }
             })
             .catch(err => {
